@@ -36,6 +36,29 @@
         "url": "https://js-code-output.vercel.app/"
     }
     </script>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+        authDomain: "js-code-output.firebaseapp.com",
+        projectId: "js-code-output",
+        storageBucket: "js-code-output.firebasestorage.app",
+        messagingSenderId: "600350018167",
+        appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+        measurementId: "G-L47M0E9V96"
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const analytics = getAnalytics(app);
+
+    console.log("🔥 Firebase connected successfully!");
+</script>
+
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
