@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS CODE OUTPUT - Live Web & App Builder</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CodeMirror Editor Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    
+    <!-- CodeMirror Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+
+    <style>
+        .CodeMirror {
+            height: 100% !important;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glow-effect {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans h-screen flex flex-col overflow-hidden select-none">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between z-20">
+        <!-- Logo & Branding -->
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid font-bold text-white text-lg font-mono">&lt;/&gt;</i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent uppercase">
+                    JS CODE OUTPUT
+                </h1>
+                <p class="text-[10px] text-slate-400 font-medium tracking-wide">Real-time Live Design & App Workbench</p>
+            </div>
+        </div>
+
+        <!-- Center Controls: Presets / Templates -->
+        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 p-1 rounded-lg border border-slate-700/50">
+            <span class="text-xs text-slate-400 pl-2 font-medium"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-1"></i> Templates:</span>
+            <button onclick="loadTemplate('saas')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
+                🚀 Mobile App UI
+            </button>
+            <button onclick="loadTemplate('game')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
+                🎮 Arcade Game
+            </button>
+            <button onclick="loadTemplate('three')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
+                🌐 3D Canvas
+            </button>
+            <button onclick="loadTemplate('glass')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
+                💎 Glass UI Card
+            </button>
+        </div>
+
+        <!-- Action Tools: Run, Clear, Export, Fullscreen -->
+        <div class="flex items-center space-x-2">
+            <!-- Auto Run Toggle -->
+            <label class="hidden sm:flex items-center cursor-pointer mr-2 space-x-2 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+                <input type="checkbox" id="autoRunToggle" checked class="sr-only peer">
+                <div class="w-7 h-4 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 relative"></div>
+                <span class="text-xs text-slate-300 font-medium">Auto Sync</span>
+            </label>
+
+            <!-- Manual Run Button -->
+            <button onclick="updatePreview()" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium text-xs rounded-lg shadow-md hover:shadow-emerald-500/20 flex items-center space-x-1.5 transition active:scale-95">
+                <i class="fa-solid fa-play"></i>
+                <span>Run Code</span>
+            </button>
+
+            <!-- Library Injector Dropdown -->
+            <div class="relative inline-block text-left">
+                <button onclick="toggleLibsModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-xs rounded-lg flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-cube text-indigo-400"></i>
+                    <span>Libraries</span>
+                </button>
+            </div>
+
+            <!-- Export Code -->
+            <button onclick="downloadCode()" title="Download Single File HTML" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
+                <i class="fa-solid fa-download"></i>
+            </button>
+
+            <!-- Copy Code -->
+            <button onclick="copyCode()" title="Copy Combined Code" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        
+        <!-- LEFT PANEL: CODE EDITORS -->
+        <div id="editorPanel" class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col border-r border-slate-800 bg-slate-900/90">
+            <!-- Code Tab Bar -->
+            <div class="flex items-center justify-between bg-slate-950 px-2 pt-2 border-b border-slate-800">
+                <div class="flex space-x-1">
+                    <button id="tab-html" onclick="switchTab('html')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 text-orange-400 border-t-2 border-orange-500 flex items-center space-x-2">
+                        <i class="fa-brands fa-html5 text-sm"></i>
+                        <span>HTML</span>
+                    </button>
+                    <button id="tab-css" onclick="switchTab('css')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-sky-400 border-t-2 border-transparent flex items-center space-x-2 transition">
+                        <i class="fa-brands fa-css3-alt text-sm"></i>
+                        <span>CSS</span>
+                    </button>
+                    <button id="tab-js" onclick="switchTab('js')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-yellow-400 border-t-2 border-transparent flex items-center space-x-2 transition">
+                        <i class="fa-brands fa-js text-sm"></i>
+                        <span>JavaScript</span>
+                    </button>
+                </div>
+                <!-- Clean Editor Button -->
+                <button onclick="clearEditors()" class="text-xs text-slate-500 hover:text-rose-400 px-2 py-1 rounded transition" title="Clear All Editors">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+
+            <!-- CodeMirror Containers -->
+            <div class="flex-1 relative overflow-hidden bg-slate-900">
+                <div id="wrapper-html" class="absolute inset-0">
+                    <textarea id="code-html"></textarea>
+                </div>
+                <div id="wrapper-css" class="absolute inset-0 hidden">
+                    <textarea id="code-css"></textarea>
+                </div>
+                <div id="wrapper-js" class="absolute inset-0 hidden">
+                    <textarea id="code-js"></textarea>
+                </div>
+            </div>
+
+            <!-- Editor Footer Info -->
+            <div class="h-7 bg-slate-950 border-t border-slate-800 px-3 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                <div class="flex items-center space-x-3">
+                    <span id="activeLanguageLabel" class="text-indigo-400 uppercase font-bold">HTML Mode</span>
+                    <span>UTF-8</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-400">Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESIZER BAR (Visual divider) -->
+        <div class="hidden md:flex w-1 bg-slate-800 hover:bg-indigo-500 cursor-col-resize transition-colors items-center justify-center">
+            <div class="w-0.5 h-8 bg-slate-600 rounded"></div>
+        </div>
+
+        <!-- RIGHT PANEL: LIVE DESIGN PREVIEW -->
+        <div id="previewPanel" class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col bg-slate-950 relative">
+            
+            <!-- Preview Controls Bar -->
+            <div class="h-10 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span class="text-xs font-semibold text-slate-400 ml-2">LIVE OUTPUT PREVIEW</span>
+                </div>
+
+                <!-- Responsive Device Screen Toggle -->
+                <div class="flex items-center space-x-1 bg-slate-950 p-0.5 rounded-md border border-slate-800">
+                    <button onclick="setScreenSize('full')" id="btn-screen-full" class="px-2 py-0.5 text-xs text-indigo-400 bg-slate-800 rounded font-medium transition" title="Full Width Screen">
+                        <i class="fa-solid fa-desktop"></i>
+                    </button>
+                    <button onclick="setScreenSize('tablet')" id="btn-screen-tablet" class="px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition" title="Tablet View (768px)">
+                        <i class="fa-solid fa-tablet-screen-button"></i>
+                    </button>
+                    <button onclick="setScreenSize('mobile')" id="btn-screen-mobile" class="px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition" title="Mobile View (375px)">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </button>
+                </div>
+
+                <!-- Console & Refresh Tools -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleConsole()" class="px-2 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 flex items-center space-x-1 transition">
+                        <i class="fa-solid fa-terminal text-amber-400"></i>
+                        <span>Console</span>
+                        <span id="consoleBadge" class="hidden bg-amber-500 text-slate-950 font-bold px-1.5 py-0.2 text-[10px] rounded-full">0</span>
+                    </button>
+                    <button onclick="updatePreview()" title="Refresh Frame" class="p-1 text-xs text-slate-400 hover:text-white transition">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Iframe Sandbox Canvas Wrapper -->
+            <div id="iframeContainer" class="flex-1 w-full h-full bg-slate-950 flex items-center justify-center p-0 transition-all duration-300 overflow-hidden relative">
+                <iframe id="outputIframe" class="w-full h-full bg-white border-none shadow-2xl transition-all duration-300" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
+            </div>
+
+            <!-- LIVE CONSOLE DRAWER -->
+            <div id="consoleDrawer" class="h-44 bg-slate-900 border-t border-slate-800 flex flex-col hidden transition-all">
+                <div class="h-7 bg-slate-950 px-3 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                    <span class="flex items-center space-x-2">
+                        <i class="fa-solid fa-terminal text-amber-400"></i>
+                        <span class="font-bold text-slate-300">Console Output</span>
+                    </span>
+                    <button onclick="clearConsole()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">
+                        <i class="fa-solid fa-ban mr-1"></i>Clear Logs
+                    </button>
+                </div>
+                <div id="consoleLogs" class="flex-1 p-3 overflow-y-auto font-mono text-xs space-y-1 bg-slate-950/80">
+                    <div class="text-slate-500 italic">// Console messages and runtime logs will appear here...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LIBRARIES / CDNS SELECTION MODAL -->
+    <div id="libsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl w-11/12 max-w-md p-5 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <h3 class="font-bold text-slate-100 text-base flex items-center space-x-2">
+                    <i class="fa-solid fa-cubes text-indigo-400"></i>
+                    <span>Include Popular Libraries</span>
+                </h3>
+                <button onclick="toggleLibsModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+            </div>
+            
+            <div class="space-y-3">
+                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-css3-alt text-sky-400 text-xl"></i>
+                        <div>
+                            <div class="text-sm font-semibold text-slate-200">Tailwind CSS 3.x</div>
+                            <div class="text-xs text-slate-400">Utility-first CSS framework</div>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="lib-tailwind" checked onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
+                </label>
+
+                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-icons text-pink-400 text-xl"></i>
+                        <div>
+                            <div class="text-sm font-semibold text-slate-200">Font Awesome 6.x</div>
+                            <div class="text-xs text-slate-400">Icons for apps & UI components</div>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="lib-fontawesome" checked onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
+                </label>
+
+                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-cube text-emerald-400 text-xl"></i>
+                        <div>
+                            <div class="text-sm font-semibold text-slate-200">Three.js</div>
+                            <div class="text-xs text-slate-400">3D Graphics Library</div>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="lib-three" onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
+                </label>
+
+                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-chart-pie text-amber-400 text-xl"></i>
+                        <div>
+                            <div class="text-sm font-semibold text-slate-200">Chart.js</div>
+                            <div class="text-xs text-slate-400">Charts & Data Visualization</div>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="lib-chart" onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
+                </label>
+            </div>
+
+            <div class="mt-5 pt-3 border-t border-slate-800 text-right">
+                <button onclick="toggleLibsModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition">
+                    Apply & Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION MESSAGE BOX -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 border border-indigo-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-medium">Notification message</span>
+    </div>
+
+    <script>
+        
+        // Code Editors Initialization
+        let editorHTML, editorCSS, editorJS;
+        let activeTab = 'html';
+        let consoleCount = 0;
+
+        // Default Starter Templates
+        const templates = {
+            saas: {
+                html: `<!-- Modern Mobile Fitness App UI -->
+<div class="bg-slate-900 min-h-screen text-slate-100 p-4 flex justify-center items-center">
+  <div class="w-full max-w-sm bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl">
+    
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <p class="text-xs text-slate-400">Welcome back 👋</p>
+        <h2 class="text-xl font-bold text-white">Alex Morgan</h2>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md">
+        AM
+      </div>
+    </div>
+
+    <!-- Main Goal Card -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-5 mb-6 text-white shadow-lg relative overflow-hidden">
+      <div class="relative z-10">
+        <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Daily Goal</span>
+        <h3 class="text-2xl font-extrabold mt-3 mb-1">8,420 <span class="text-sm font-normal text-indigo-200">/ 10,000 steps</span></h3>
+        <div class="w-full bg-black/20 rounded-full h-2 mt-3">
+          <div class="bg-white h-2 rounded-full" style="width: 84%"></div>
+        </div>
+      </div>
+      <i class="fa-solid fa-fire text-6xl absolute -right-2 -bottom-2 text-white/10"></i>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <i class="fa-solid fa-bolt text-amber-400 text-lg mb-2"></i>
+        <div class="text-lg font-bold">540 kcal</div>
+        <div class="text-xs text-slate-400">Calories Burned</div>
+      </div>
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <i class="fa-solid fa-heart-pulse text-rose-500 text-lg mb-2"></i>
+        <div class="text-lg font-bold">118 bpm</div>
+        <div class="text-xs text-slate-400">Avg Heart Rate</div>
+      </div>
+    </div>
+
+    <!-- Interactive Action Button -->
+    <button id="workoutBtn" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center space-x-2">
+      <i class="fa-solid fa-play"></i>
+      <span>Start Workout Now</span>
+    </button>
+  </div>
+</div>`,
+                css: `/* Custom CSS Animations */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.8); }
+}
+
+#workoutBtn {
+  animation: pulseGlow 2s infinite;
+}`,
+                js: `// Interactive Button Event
+const btn = document.getElementById('workoutBtn');
+btn.addEventListener('click', () => {
+  console.log('Workout session initiated!');
+  alert('🚀 Workout Session Started! Keep Pushing Your Limits!');
+});`
+            },
+
+            game: {
+                html: `<!-- Canvas Mini Arcade Ping-Pong Game -->
+<div class="bg-slate-950 min-h-screen flex flex-col justify-center items-center p-4">
+  <div class="text-center mb-4">
+    <h1 class="text-2xl font-black text-amber-400 tracking-wide uppercase">Arcade Paddle Game</h1>
+    <p class="text-xs text-slate-400">Move your mouse inside the box to control the paddle!</p>
+  </div>
+
+  <canvas id="gameCanvas" width="480" height="320" class="bg-slate-900 border-2 border-amber-500/50 rounded-xl shadow-2xl cursor-none"></canvas>
+
+  <div class="mt-4 flex space-x-4 text-xs font-mono text-slate-300">
+    <div>SCORE: <span id="scoreText" class="text-amber-400 font-bold">0</span></div>
+  </div>
+</div>`,
+                css: `canvas {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}`,
+                js: `const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const scoreText = document.getElementById('scoreText');
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 3;
+let dy = -3;
+let ballRadius = 8;
+let paddleHeight = 10;
+let paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+let score = 0;
+
+canvas.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const relativeX = e.clientX - rect.left;
+  if(relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
+});
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#f59e0b";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#6366f1";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+  drawPaddle();
+
+  if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+  if(y + dy < ballRadius) {
+    dy = -dy;
+  } else if(y + dy > canvas.height - ballRadius) {
+    if(x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+      score += 10;
+      scoreText.innerText = score;
+      console.log('Hit! Score:', score);
+    } else {
+      console.log('Game Over! Final Score:', score);
+      x = canvas.width / 2;
+      y = canvas.height - 30;
+      dx = 3;
+      dy = -3;
+      score = 0;
+      scoreText.innerText = score;
+    }
+  }
+
+  x += dx;
+  y += dy;
+  requestAnimationFrame(draw);
+}
+
+draw();`
+            },
+
+            three: {
+                html: `<!-- 3D Interactive Animated Sphere -->
+<div id="three-container" class="w-full h-screen bg-slate-950 relative overflow-hidden">
+  <div class="absolute top-4 left-4 z-10 bg-slate-900/80 backdrop-blur p-3 rounded-xl border border-slate-700">
+    <h2 class="text-sm font-bold text-white">Three.js 3D Visualizer</h2>
+    <p class="text-xs text-slate-400">Drag mouse to rotate canvas!</p>
+  </div>
+</div>`,
+                css: `body { margin: 0; overflow: hidden; }`,
+                js: `// Ensure Three.js is loaded
+if (typeof THREE !== 'undefined') {
+  const container = document.getElementById('three-container');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  // Wireframe Geometry
+  const geometry = new THREE.IcosahedronGeometry(2, 2);
+  const material = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true });
+  const sphere = new THREE.Mesh(geometry, material);
+  scene.add(sphere);
+
+  camera.position.z = 5;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    sphere.rotation.x += 0.008;
+    sphere.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  console.log('3D Interactive Mesh Rendered Successfully!');
+} else {
+  console.log('Please enable Three.js from the Libraries menu above!');
+}`
+            },
+
+            glass: {
+                html: `<!-- Modern Glassmorphism Credit Card -->
+<div class="min-h-screen bg-gradient-to-tr from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-6">
+  <div class="w-96 h-56 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-105 transition duration-500">
+    
+    <!-- Decorative Glow -->
+    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-500/30 rounded-full blur-2xl"></div>
+    <div class="absolute -left-10 -top-10 w-40 h-40 bg-indigo-500/30 rounded-full blur-2xl"></div>
+
+    <div class="flex justify-between items-center z-10">
+      <span class="text-xs font-mono tracking-widest text-slate-300 uppercase">JS Platinum Card</span>
+      <i class="fa-brands fa-cc-visa text-3xl text-white/80"></i>
+    </div>
+
+    <div class="z-10 my-4">
+      <div class="w-12 h-9 rounded-lg bg-gradient-to-r from-amber-300 to-amber-500 mb-4 opacity-90"></div>
+      <div class="text-xl font-mono tracking-widest text-white">4532 •••• •••• 8892</div>
+    </div>
+
+    <div class="flex justify-between items-end z-10 text-xs text-slate-300 font-mono">
+      <div>
+        <div class="text-[9px] uppercase text-slate-400">Card Holder</div>
+        <div class="font-bold text-white">SUBHAJIT ROY</div>
+      </div>
+      <div>
+        <div class="text-[9px] uppercase text-slate-400">Expires</div>
+        <div class="font-bold text-white">12/28</div>
+      </div>
+    </div>
+  </div>
+</div>`,
+                css: ``,
+                js: `console.log('Glassmorphism Card Rendered!');`
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Setup CodeMirror Editors
+            editorHTML = CodeMirror.fromTextArea(document.getElementById('code-html'), {
+                mode: 'htmlmixed',
+                theme: 'dracula',
+                lineNumbers: true,
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+
+            editorCSS = CodeMirror.fromTextArea(document.getElementById('code-css'), {
+                mode: 'css',
+                theme: 'dracula',
+                lineNumbers: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+
+            editorJS = CodeMirror.fromTextArea(document.getElementById('code-js'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+
+            // Set initial template
+            loadTemplate('saas');
+
+            // Auto-run on changes if enabled
+            const handleCodeChange = () => {
+                const autoRun = document.getElementById('autoRunToggle').checked;
+                if (autoRun) {
+                    debouncedUpdate();
+                }
+            };
+
+            editorHTML.on('change', handleCodeChange);
+            editorCSS.on('change', handleCodeChange);
+            editorJS.on('change', handleCodeChange);
+        });
+
+        // Debounce timer for smooth real-time compilation
+        let debounceTimer;
+        function debouncedUpdate() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(updatePreview, 400);
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            ['html', 'css', 'js'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const wrapper = document.getElementById(`wrapper-${t}`);
+                if (t === tab) {
+                    btn.className = `px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 border-t-2 ${
+                        t === 'html' ? 'text-orange-400 border-orange-500' :
+                        t === 'css' ? 'text-sky-400 border-sky-500' : 'text-yellow-400 border-yellow-500'
+                    } flex items-center space-x-2`;
+                    wrapper.classList.remove('hidden');
+                } else {
+                    btn.className = 'px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 border-t-2 border-transparent flex items-center space-x-2 transition';
+                    wrapper.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('activeLanguageLabel').innerText = `${tab.toUpperCase()} MODE`;
+
+            // Refresh active editor instance for line wrapping recalculation
+            if (tab === 'html') editorHTML.refresh();
+            if (tab === 'css') editorCSS.refresh();
+            if (tab === 'js') editorJS.refresh();
+        }
+
+        function updatePreview() {
+            const html = editorHTML.getValue();
+            const css = editorCSS.getValue();
+            const js = editorJS.getValue();
+
+            // Library CDN Inclusion
+            const useTailwind = document.getElementById('lib-tailwind').checked;
+            const useFA = document.getElementById('lib-fontawesome').checked;
+            const useThree = document.getElementById('lib-three').checked;
+            const useChart = document.getElementById('lib-chart').checked;
+
+            const tailwindScript = useTailwind ? '<script src="https://cdn.tailwindcss.com"><\/script>' : '';
+            const faCss = useFA ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : '';
+            const threeScript = useThree ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : '';
+            const chartScript = useChart ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : '';
+
+            // Console Interceptor Snippet
+            const consoleInterceptor = `
+                <script>
+                    (function() {
+                        const originalLog = console.log;
+                        const originalError = console.error;
+                        const originalWarn = console.warn;
+                        
+                        function sendToParent(type, args) {
+                            const message = Array.from(args).map(a => 
+                                typeof a === 'object' ? JSON.stringify(a) : String(a)
+                            ).join(' ');
+                            window.parent.postMessage({ type: 'CONSOLE_LOG', level: type, msg: message }, '*');
+                        }
+
+                        console.log = function(...args) {
+                            sendToParent('log', args);
+                            originalLog.apply(console, args);
+                        };
+                        console.error = function(...args) {
+                            sendToParent('error', args);
+                            originalError.apply(console, args);
+                        };
+                        console.warn = function(...args) {
+                            sendToParent('warn', args);
+                            originalWarn.apply(console, args);
+                        };
+
+                        window.onerror = function(msg, url, lineNo, columnNo, error) {
+                            sendToParent('error', [\`Error: \${msg} (Line \${lineNo})\`]);
+                            return false;
+                        };
+                    })();
+                <\/script>
+            `;
+
+            const fullContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    ${tailwindScript}
+                    ${faCss}
+                    ${threeScript}
+                    ${chartScript}
+                    ${consoleInterceptor}
+                    <style>
+                        ${css}
+                    </style>
+                </head>
+                <body class="bg-white">
+                    ${html}
+                    <script>
+                        try {
+                            ${js}
+                        } catch (err) {
+                            console.error(err.message);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            const iframe = document.getElementById('outputIframe');
+            iframe.srcdoc = fullContent;
+        }
+
+        // Catch messages from Iframe Console
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'CONSOLE_LOG') {
+                appendConsoleLog(event.data.level, event.data.msg);
+            }
+        });
+
+        function appendConsoleLog(level, msg) {
+            const logsContainer = document.getElementById('consoleLogs');
+            const badge = document.getElementById('consoleBadge');
+            
+            consoleCount++;
+            badge.innerText = consoleCount;
+            badge.classList.remove('hidden');
+
+            const logItem = document.createElement('div');
+            logItem.className = `flex items-start space-x-2 border-b border-slate-800/40 pb-1 ${
+                level === 'error' ? 'text-rose-400' :
+                level === 'warn' ? 'text-amber-400' : 'text-slate-300'
+            }`;
+
+            const icon = level === 'error' ? 'fa-circle-xmark' : level === 'warn' ? 'fa-triangle-exclamation' : 'fa-angle-right';
+            logItem.innerHTML = `<i class="fa-solid ${icon} mt-0.5 text-[10px]"></i><span>${msg}</span>`;
+            
+            logsContainer.appendChild(logItem);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleLogs').innerHTML = '<div class="text-slate-500 italic">// Console messages cleared.</div>';
+            consoleCount = 0;
+            const badge = document.getElementById('consoleBadge');
+            badge.innerText = '0';
+            badge.classList.add('hidden');
+        }
+
+        function toggleConsole() {
+            const drawer = document.getElementById('consoleDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function loadTemplate(key) {
+            if (templates[key]) {
+                // Check if Three.js is required
+                if (key === 'three') {
+                    document.getElementById('lib-three').checked = true;
+                }
+                
+                editorHTML.setValue(templates[key].html);
+                editorCSS.setValue(templates[key].css);
+                editorJS.setValue(templates[key].js);
+                
+                updatePreview();
+                showToast(`Template "${key.toUpperCase()}" loaded successfully!`);
+            }
+        }
+
+        function clearEditors() {
+            editorHTML.setValue('');
+            editorCSS.setValue('');
+            editorJS.setValue('');
+            clearConsole();
+            updatePreview();
+            showToast('All editors cleared!');
+        }
+
+        function setScreenSize(size) {
+            const container = document.getElementById('iframeContainer');
+            const iframe = document.getElementById('outputIframe');
+            
+            ['full', 'tablet', 'mobile'].forEach(s => {
+                const btn = document.getElementById(`btn-screen-${s}`);
+                if (s === size) {
+                    btn.className = 'px-2 py-0.5 text-xs text-indigo-400 bg-slate-800 rounded font-medium transition';
+                } else {
+                    btn.className = 'px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition';
+                }
+            });
+
+            if (size === 'full') {
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.classList.remove('rounded-2xl', 'border-4', 'border-slate-800');
+            } else if (size === 'tablet') {
+                iframe.style.width = '768px';
+                iframe.style.height = '95%';
+                iframe.classList.add('rounded-2xl', 'border-4', 'border-slate-800');
+            } else if (size === 'mobile') {
+                iframe.style.width = '375px';
+                iframe.style.height = '95%';
+                iframe.classList.add('rounded-2xl', 'border-4', 'border-slate-800');
+            }
+        }
+
+        function toggleLibsModal() {
+            const modal = document.getElementById('libsModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function downloadCode() {
+            const html = editorHTML.getValue();
+            const css = editorCSS.getValue();
+            const js = editorJS.getValue();
+
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Code Output Export</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        ${css}
+    </style>
+</head>
+<body>
+    ${html}
+    <script>
+        ${js}
+    <\/script>
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'jscodeoutput_project.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('HTML Project file downloaded!');
+        }
+
+        function copyCode() {
+            const combined = `<!-- HTML -->\n${editorHTML.getValue()}\n\n/* CSS */\n${editorCSS.getValue()}\n\n// JS\n${editorJS.getValue()}`;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = combined;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast('All code copied to clipboard!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
