@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Code Editor with Live Output | JS CODE OUTPUT</title>
+
+    <meta
+        name="description"
+        content="Use JS CODE OUTPUT as a free online code editor with live output. Write HTML, CSS and JavaScript, run your code online, and instantly preview the result in your browser."
+    >
+
+    <meta name="robots" content="index, follow">
+
+    <link
+        rel="canonical"
+        href="https://js-code-output.vercel.app/online-code-editor.html"
+    >
+
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Online Code Editor with Live Output | JS CODE OUTPUT"
+    >
+
+    <meta
+        property="og:description"
+        content="Write HTML, CSS and JavaScript online and instantly see your live code output with JS CODE OUTPUT."
+    >
+
+    <meta
+        property="og:url"
+        content="https://js-code-output.vercel.app/online-code-editor.html"
+    >
+
+    <meta property="og:type" content="website">
+
+    <!-- Google AdSense -->
+    <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737041538621289"
+        crossorigin="anonymous">
+    </script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "JS CODE OUTPUT Online Code Editor",
+        "url": "https://js-code-output.vercel.app/online-code-editor.html",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web Browser",
+        "description": "A free online code editor for writing HTML, CSS and JavaScript with live output preview.",
+        "browserRequirements": "Requires a modern web browser"
+    }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: #020617;
+            color: #e2e8f0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .editor {
+            width: 100%;
+            min-height: 230px;
+            resize: vertical;
+            background: #020617;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            outline: none;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            tab-size: 2;
+        }
+
+        .editor:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+        }
+
+        .output-frame {
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            background: white;
+        }
+
+        .gradient-text {
+            background: linear-gradient(
+                90deg,
+                #818cf8,
+                #c084fc,
+                #38bdf8
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <header class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
+
+        <div class="max-w-7xl mx-auto px-5">
+
+            <div class="h-16 flex items-center justify-between">
+
+                <a
+                    href="/"
+                    class="flex items-center gap-3 text-white font-bold"
+                >
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+
+                    <span class="text-lg">
+                        JS CODE OUTPUT
+                    </span>
+                </a>
+
+                <a
+                    href="/"
+                    class="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 hover:text-white hover:border-indigo-500 transition"
+                >
+                    <i class="fa-solid fa-arrow-left mr-2"></i>
+                    Back to Editor
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <main>
+
+        <section class="px-5 pt-16 pb-12">
+
+            <div class="max-w-5xl mx-auto text-center">
+
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-semibold mb-6">
+
+                    <i class="fa-solid fa-bolt"></i>
+
+                    FREE ONLINE CODE EDITOR
+
+                </div>
+
+
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+
+                    Online Code Editor
+                    <br>
+
+                    <span class="gradient-text">
+                        With Live Output
+                    </span>
+
+                </h1>
+
+
+                <p class="max-w-3xl mx-auto mt-6 text-slate-400 text-lg leading-8">
+
+                    Write HTML, CSS and JavaScript online and instantly see
+                    your code output in the browser. Build, test and preview
+                    web projects without installing any software.
+
+                </p>
+
+
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+
+                    <a
+                        href="#editor"
+                        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition shadow-lg shadow-indigo-900/30"
+                    >
+                        <i class="fa-solid fa-play mr-2"></i>
+                        Start Coding
+                    </a>
+
+                    <a
+                        href="/"
+                        class="px-6 py-3 rounded-xl border border-slate-700 hover:border-indigo-500 text-slate-300 hover:text-white font-semibold transition"
+                    >
+                        Open Full Editor
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FEATURES
+        ========================== -->
+
+        <section class="px-5 py-10">
+
+            <div class="max-w-6xl mx-auto">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center mb-5">
+                            <i class="fa-brands fa-html5 text-2xl"></i>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-white mb-3">
+                            HTML Editor
+                        </h2>
+
+                        <p class="text-slate-400 leading-7">
+                            Write HTML code online and instantly preview
+                            your webpage in the live output window.
+                        </p>
+
+                    </div>
+
+
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+
+                        <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-5">
+                            <i class="fa-brands fa-css3-alt text-2xl"></i>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-white mb-3">
+                            CSS Editor
+                        </h2>
+
+                        <p class="text-slate-400 leading-7">
+                            Experiment with CSS styles and see design changes
+                            immediately in the live preview.
+                        </p>
+
+                    </div>
+
+
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800">
+
+                        <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center mb-5">
+                            <i class="fa-brands fa-js text-2xl"></i>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-white mb-3">
+                            JavaScript Editor
+                        </h2>
+
+                        <p class="text-slate-400 leading-7">
+                            Run JavaScript online and test interactive
+                            features directly in your browser.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             LIVE EDITOR
+        ========================== -->
+
+        <section id="editor" class="px-5 py-12">
+
+            <div class="max-w-7xl mx-auto">
+
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+
+                    <div>
+
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">
+                            Try the Online Code Editor
+                        </h2>
+
+                        <p class="text-slate-400 mt-2">
+                            Write code and see the live output instantly.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        onclick="runCode()"
+                        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition"
+                    >
+                        <i class="fa-solid fa-play mr-2"></i>
+                        Run Code
+                    </button>
+
+                </div>
+
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                    <!-- CODE SIDE -->
+
+                    <div class="space-y-5">
+
+                        <div>
+
+                            <div class="flex items-center justify-between mb-2">
+
+                                <label class="text-sm font-semibold text-orange-400">
+                                    <i class="fa-brands fa-html5 mr-2"></i>
+                                    HTML
+                                </label>
+
+                            </div>
+
+                            <textarea
+                                id="htmlCode"
+                                class="editor"
+                                spellcheck="false"
+                            ><div class="hello">
+    <h1>Hello from JS CODE OUTPUT</h1>
+    <p>Write code and see the result instantly.</p>
+    <button onclick="showMessage()">Click Me</button>
+</div></textarea>
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="block text-sm font-semibold text-sky-400 mb-2">
+                                <i class="fa-brands fa-css3-alt mr-2"></i>
+                                CSS
+                            </label>
+
+                            <textarea
+                                id="cssCode"
+                                class="editor"
+                                spellcheck="false"
+                            >body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    text-align: center;
+}
+
+.hello {
+    padding: 30px;
+    border-radius: 20px;
+    background: #eef2ff;
+}
+
+h1 {
+    color: #4f46e5;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4338ca;
+}</textarea>
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="block text-sm font-semibold text-yellow-400 mb-2">
+                                <i class="fa-brands fa-js mr-2"></i>
+                                JavaScript
+                            </label>
+
+                            <textarea
+                                id="jsCode"
+                                class="editor"
+                                spellcheck="false"
+                            >function showMessage() {
+    alert("Your JavaScript is working!");
+}</textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OUTPUT SIDE -->
+
+                    <div>
+
+                        <div class="flex items-center justify-between mb-3">
+
+                            <div>
+
+                                <h3 class="text-lg font-bold text-white">
+                                    Live Output
+                                </h3>
+
+                                <p class="text-sm text-slate-500">
+                                    Your code preview appears here.
+                                </p>
+
+                            </div>
+
+                            <div class="flex items-center gap-2 text-xs text-emerald-400">
+
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+
+                                LIVE
+
+                            </div>
+
+                        </div>
+
+
+                        <iframe
+                            id="output"
+                            class="output-frame"
+                            title="Live code output preview"
+                            sandbox="allow-scripts"
+                        ></iframe>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SEO CONTENT
+        ========================== -->
+
+        <section class="px-5 py-14 border-t border-slate-800">
+
+            <div class="max-w-4xl mx-auto">
+
+                <h2 class="text-3xl font-bold text-white mb-6">
+                    What Is an Online Code Editor?
+                </h2>
+
+                <p class="text-slate-400 leading-8 mb-5">
+
+                    An online code editor is a browser-based development
+                    environment that lets you write and test code without
+                    installing a traditional desktop code editor.
+
+                    JS CODE OUTPUT provides a simple online environment for
+                    writing HTML, CSS and JavaScript and viewing the result
+                    through a live output preview.
+
+                </p>
+
+
+                <h2 class="text-3xl font-bold text-white mb-6 mt-10">
+                    Run HTML, CSS and JavaScript Online
+                </h2>
+
+                <p class="text-slate-400 leading-8 mb-5">
+
+                    With JS CODE OUTPUT, you can write HTML, CSS and
+                    JavaScript separately and combine them into a live web
+                    page. The output preview lets you quickly see how your
+                    code behaves in the browser.
+
+                </p>
+
+
+                <h2 class="text-3xl font-bold text-white mb-6 mt-10">
+                    Live Code Output and Preview
+                </h2>
+
+                <p class="text-slate-400 leading-8">
+
+                    The live output feature makes it easy to experiment with
+                    web layouts, styles, buttons, animations and JavaScript
+                    interactions. You can make changes to your code and run
+                    the preview immediately.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FAQ
+        ========================== -->
+
+        <section class="px-5 py-14">
+
+            <div class="max-w-4xl mx-auto">
+
+                <h2 class="text-3xl font-bold text-white mb-8">
+                    Frequently Asked Questions
+                </h2>
+
+
+                <div class="space-y-4">
+
+                    <details class="group rounded-xl border border-slate-800 bg-slate-900 p-5">
+
+                        <summary class="cursor-pointer font-semibold text-white">
+                            Can I write HTML, CSS and JavaScript online?
+                        </summary>
+
+                        <p class="text-slate-400 leading-7 mt-4">
+                            Yes. JS CODE OUTPUT provides separate areas for
+                            HTML, CSS and JavaScript so you can write and
+                            preview web code directly in your browser.
+                        </p>
+
+                    </details>
+
+
+                    <details class="group rounded-xl border border-slate-800 bg-slate-900 p-5">
+
+                        <summary class="cursor-pointer font-semibold text-white">
+                            Can I see my code output instantly?
+                        </summary>
+
+                        <p class="text-slate-400 leading-7 mt-4">
+                            Yes. Run your code and the live output preview
+                            will display the resulting webpage.
+                        </p>
+
+                    </details>
+
+
+                    <details class="group rounded-xl border border-slate-800 bg-slate-900 p-5">
+
+                        <summary class="cursor-pointer font-semibold text-white">
+                            Do I need to install software?
+                        </summary>
+
+                        <p class="text-slate-400 leading-7 mt-4">
+                            No. The editor works in a modern web browser,
+                            allowing you to write and preview code online.
+                        </p>
+
+                    </details>
+
+
+                    <details class="group rounded-xl border border-slate-800 bg-slate-900 p-5">
+
+                        <summary class="cursor-pointer font-semibold text-white">
+                            Is JS CODE OUTPUT free?
+                        </summary>
+
+                        <p class="text-slate-400 leading-7 mt-4">
+                            The online editor is designed to provide a free
+                            browser-based environment for experimenting with
+                            HTML, CSS and JavaScript.
+                        </p>
+
+                    </details>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CTA
+        ========================== -->
+
+        <section class="px-5 py-16">
+
+            <div class="max-w-5xl mx-auto rounded-3xl border border-indigo-500/20 bg-indigo-500/5 p-8 md:p-12 text-center">
+
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+                    Ready to Build Something?
+                </h2>
+
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto leading-7">
+
+                    Open the full JS CODE OUTPUT editor and create your next
+                    HTML, CSS or JavaScript project.
+
+                </p>
+
+                <a
+                    href="/"
+                    class="inline-flex items-center mt-7 px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition"
+                >
+                    <i class="fa-solid fa-code mr-2"></i>
+                    Open JS CODE OUTPUT
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="border-t border-slate-800 bg-slate-950">
+
+        <div class="max-w-6xl mx-auto px-5 py-8">
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+
+                <p class="text-slate-500 text-sm">
+                    © 2026 JS CODE OUTPUT. All rights reserved.
+                </p>
+
+
+                <div class="flex flex-wrap justify-center gap-5 text-sm">
+
+                    <a
+                        href="/"
+                        class="text-slate-400 hover:text-white transition"
+                    >
+                        Home
+                    </a>
+
+                    <a
+                        href="/about.html"
+                        class="text-slate-400 hover:text-white transition"
+                    >
+                        About Us
+                    </a>
+
+                    <a
+                        href="/contact.html"
+                        class="text-slate-400 hover:text-white transition"
+                    >
+                        Contact Us
+                    </a>
+
+                    <a
+                        href="/privacy.html"
+                        class="text-slate-400 hover:text-white transition"
+                    >
+                        Privacy Policy
+                    </a>
+
+                    <a
+                        href="/terms.html"
+                        class="text-slate-400 hover:text-white transition"
+                    >
+                        Terms & Conditions
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================
+         EDITOR SCRIPT
+    ========================== -->
+
+    <script>
+
+        const htmlCode = document.getElementById("htmlCode");
+        const cssCode = document.getElementById("cssCode");
+        const jsCode = document.getElementById("jsCode");
+        const output = document.getElementById("output");
+
+
+        function runCode() {
+
+            const html = htmlCode.value;
+            const css = cssCode.value;
+            const js = jsCode.value;
+
+
+            const documentContent = `
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+${css}
+
+</style>
+
+</head>
+
+<body>
+
+${html}
+
+<script>
+
+${js.replace(/<\/script>/gi, "<\\/script>")}
+
+<\/script>
+
+</body>
+
+</html>
+`;
+
+
+            output.srcdoc = documentContent;
+
+        }
+
+
+        /*
+         * Run automatically when the page loads.
+         */
+
+        runCode();
+
+
+        /*
+         * Ctrl + Enter = Run Code
+         */
+
+        document.addEventListener("keydown", function(event) {
+
+            if (
+                (event.ctrlKey || event.metaKey) &&
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                runCode();
+
+            }
+
+        });
+
+    </script>
+
+
+    <!-- FAQ Structured Data -->
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Can I write HTML, CSS and JavaScript online?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. JS CODE OUTPUT provides separate areas for HTML, CSS and JavaScript so you can write and preview web code directly in your browser."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I see my code output instantly?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Run your code and the live output preview will display the resulting webpage."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need to install software?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. The editor works in a modern web browser, allowing you to write and preview code online."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is JS CODE OUTPUT free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The online editor is designed to provide a free browser-based environment for experimenting with HTML, CSS and JavaScript."
+                }
+            }
+        ]
+    }
+    </script>
+
+</body>
+</html>
