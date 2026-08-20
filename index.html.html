@@ -126,11 +126,451 @@
         .glow-effect {
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
         }
-        
+       /* =========================================
+   JS CODE OUTPUT - WELCOME SCREEN
+   ========================================= */
+
+#welcomeScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(99,102,241,0.18), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(168,85,247,0.18), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(236,72,153,0.12), transparent 35%),
+        #020617;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    transition:
+        opacity 0.7s ease,
+        visibility 0.7s ease;
+}
+
+#welcomeScreen.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Animated Background Grid */
+
+.welcome-grid {
+    position: absolute;
+    inset: -50%;
+    background-image:
+        linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(500px) rotateX(60deg);
+    animation: gridMove 12s linear infinite;
+}
+
+@keyframes gridMove {
+    from {
+        transform: perspective(500px) rotateX(60deg) translateY(0);
+    }
+    to {
+        transform: perspective(500px) rotateX(60deg) translateY(60px);
+    }
+}
+
+/* Floating glowing orbs */
+
+.welcome-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: 0.6;
+    animation: orbFloat 7s ease-in-out infinite;
+}
+
+.welcome-orb.one {
+    width: 180px;
+    height: 180px;
+    background: rgba(99,102,241,0.25);
+    top: 10%;
+    left: 8%;
+}
+
+.welcome-orb.two {
+    width: 130px;
+    height: 130px;
+    background: rgba(168,85,247,0.25);
+    bottom: 12%;
+    right: 10%;
+    animation-delay: -2s;
+}
+
+.welcome-orb.three {
+    width: 90px;
+    height: 90px;
+    background: rgba(236,72,153,0.25);
+    top: 25%;
+    right: 20%;
+    animation-delay: -4s;
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(30px, -35px) scale(1.15);
+    }
+}
+
+/* Floating code symbols */
+
+.code-symbol {
+    position: absolute;
+    color: rgba(129,140,248,0.25);
+    font-family: monospace;
+    font-weight: bold;
+    pointer-events: none;
+    animation: symbolFloat linear infinite;
+}
+
+.code-symbol.s1 {
+    left: 8%;
+    top: 30%;
+    font-size: 34px;
+    animation-duration: 8s;
+}
+
+.code-symbol.s2 {
+    right: 10%;
+    top: 18%;
+    font-size: 28px;
+    animation-duration: 10s;
+    animation-delay: -2s;
+}
+
+.code-symbol.s3 {
+    left: 15%;
+    bottom: 15%;
+    font-size: 25px;
+    animation-duration: 9s;
+    animation-delay: -4s;
+}
+
+.code-symbol.s4 {
+    right: 18%;
+    bottom: 20%;
+    font-size: 40px;
+    animation-duration: 11s;
+    animation-delay: -5s;
+}
+
+@keyframes symbolFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.2;
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(8deg);
+        opacity: 0.55;
+    }
+}
+
+/* Main Welcome Content */
+
+.welcome-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 30px;
+    max-width: 850px;
+    animation: welcomeAppear 1s ease forwards;
+}
+
+@keyframes welcomeAppear {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Logo */
+
+.welcome-logo {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(135deg,
+        #6366f1,
+        #8b5cf6,
+        #ec4899);
+
+    box-shadow:
+        0 0 30px rgba(99,102,241,0.45),
+        0 0 80px rgba(168,85,247,0.15);
+
+    animation: logoPulse 3s ease-in-out infinite;
+}
+
+.welcome-logo span {
+    color: white;
+    font-family: monospace;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+@keyframes logoPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow:
+            0 0 30px rgba(99,102,241,0.45);
+    }
+
+    50% {
+        transform: scale(1.06);
+        box-shadow:
+            0 0 45px rgba(99,102,241,0.7);
+    }
+}
+
+/* Title */
+
+.welcome-title {
+    font-size: clamp(38px, 7vw, 78px);
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -3px;
+    margin-bottom: 18px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #818cf8,
+            #c084fc,
+            #f472b6,
+            #818cf8
+        );
+
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+
+    animation: gradientText 5s linear infinite;
+}
+
+@keyframes gradientText {
+    to {
+        background-position: 300% center;
+    }
+}
+
+.welcome-subtitle {
+    color: #cbd5e1;
+    font-size: clamp(16px, 2vw, 21px);
+    margin-bottom: 12px;
+}
+
+.welcome-description {
+    color: #64748b;
+    font-size: 14px;
+    max-width: 600px;
+    margin: 0 auto 35px;
+    line-height: 1.7;
+}
+
+/* Start Button */
+
+.start-building-btn {
+    position: relative;
+    overflow: hidden;
+
+    border: none;
+    cursor: pointer;
+
+    padding: 15px 32px;
+
+    border-radius: 14px;
+
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6366f1,
+            #8b5cf6,
+            #ec4899
+        );
+
+    box-shadow:
+        0 10px 35px rgba(99,102,241,0.35);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.start-building-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+
+    box-shadow:
+        0 15px 45px rgba(139,92,246,0.55);
+}
+
+.start-building-btn:active {
+    transform: scale(0.97);
+}
+
+/* Button shine */
+
+.start-building-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+
+    width: 60%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.35),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    animation: buttonShine 3s infinite;
+}
+
+@keyframes buttonShine {
+    0% {
+        left: -100%;
+    }
+
+    45%, 100% {
+        left: 140%;
+    }
+}
+
+/* Bottom text */
+
+.welcome-bottom {
+    margin-top: 28px;
+    font-size: 11px;
+    color: #475569;
+    letter-spacing: 1px;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+
+    .welcome-content {
+        padding: 20px;
+    }
+
+    .welcome-title {
+        letter-spacing: -2px;
+    }
+
+    .welcome-logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+    }
+
+    .welcome-description {
+        font-size: 13px;
+    }
+
+    .start-building-btn {
+        width: 100%;
+        max-width: 280px;
+    }
+} 
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans h-screen flex flex-col overflow-hidden select-none">
+<!-- =========================================
+     JS CODE OUTPUT - WELCOME SCREEN
+     ========================================= -->
 
+<div id="welcomeScreen">
+
+    <!-- Animated Grid -->
+    <div class="welcome-grid"></div>
+
+    <!-- Glowing Orbs -->
+    <div class="welcome-orb one"></div>
+    <div class="welcome-orb two"></div>
+    <div class="welcome-orb three"></div>
+
+    <!-- Floating Code Symbols -->
+    <div class="code-symbol s1">&lt;/&gt;</div>
+    <div class="code-symbol s2">{ }</div>
+    <div class="code-symbol s3">&lt;div&gt;</div>
+    <div class="code-symbol s4">JS</div>
+
+    <!-- Main Content -->
+    <div class="welcome-content">
+
+        <!-- Logo -->
+        <div class="welcome-logo">
+            <span>&lt;/&gt;</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="welcome-title">
+            START BUILDING
+        </h1>
+
+        <div class="welcome-subtitle">
+            Build. Create. Experiment.
+        </div>
+
+        <p class="welcome-description">
+            Write HTML, CSS & JavaScript and instantly turn your ideas
+            into interactive live websites.
+        </p>
+
+        <!-- Start Button -->
+        <button
+            class="start-building-btn"
+            onclick="startBuilding()"
+        >
+            🚀 START BUILDING
+            <span style="margin-left:6px;">→</span>
+        </button>
+
+        <div class="welcome-bottom">
+            FREE ONLINE CODE EDITOR • HTML • CSS • JAVASCRIPT
+        </div>
+
+    </div>
+
+</div>
+
+<!-- END WELCOME SCREEN -->
     <!-- TOP NAVIGATION HEADER -->
     <header class="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between z-20">
         <!-- Logo & Branding -->
@@ -390,7 +830,22 @@
     </div>
 
     <script>
-        
+       // =========================================
+// WELCOME SCREEN
+// =========================================
+
+function startBuilding() {
+    const welcomeScreen = document.getElementById('welcomeScreen');
+
+    if (!welcomeScreen) return;
+
+    welcomeScreen.classList.add('hide');
+
+    // Remove from screen after animation
+    setTimeout(() => {
+        welcomeScreen.style.display = 'none';
+    }, 750);
+} 
         // Code Editors Initialization
         let editorHTML, editorCSS, editorJS;
         let activeTab = 'html';
