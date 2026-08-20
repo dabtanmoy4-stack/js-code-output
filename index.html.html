@@ -570,7 +570,154 @@
     </div>
 
 </div>
+<!-- START / WELCOME SCREEN -->
+<div id="startScreen"
+     class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center overflow-hidden">
 
+    <!-- Animated Background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+
+        <div class="absolute w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl
+                    -top-20 -left-20 animate-pulse"></div>
+
+        <div class="absolute w-80 h-80 bg-purple-600/20 rounded-full blur-3xl
+                    -bottom-20 -right-20 animate-pulse"></div>
+
+        <div class="absolute w-64 h-64 bg-pink-600/10 rounded-full blur-3xl
+                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+
+    </div>
+
+
+    <!-- Start Card -->
+    <div class="relative z-10 w-[92%] max-w-md text-center">
+
+        <!-- Logo -->
+        <div class="mx-auto mb-6 w-20 h-20 rounded-3xl
+                    bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500
+                    flex items-center justify-center
+                    shadow-2xl shadow-indigo-500/30">
+
+            <span class="text-white text-3xl font-black font-mono">
+                &lt;/&gt;
+            </span>
+
+        </div>
+
+
+        <!-- Title -->
+        <h1 class="text-4xl sm:text-5xl font-black tracking-tight
+                   bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
+                   bg-clip-text text-transparent">
+
+            JS CODE OUTPUT
+
+        </h1>
+
+
+        <p class="mt-4 text-slate-400 text-sm sm:text-base">
+            Build websites, experiments and crazy projects
+            with live HTML, CSS & JavaScript.
+        </p>
+
+
+        <!-- Start Button -->
+        <button
+            onclick="openStartLogin()"
+            class="mt-8 w-full py-4 rounded-2xl
+                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                   hover:scale-[1.02] active:scale-95
+                   text-white font-bold text-base
+                   shadow-xl shadow-indigo-500/20
+                   transition-all duration-300">
+
+            <i class="fa-solid fa-rocket mr-2"></i>
+
+            START BUILDING
+
+        </button>
+
+
+        <p class="mt-4 text-[11px] text-slate-600">
+            Free online code editor • No installation required
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- GOOGLE LOGIN SCREEN -->
+<div id="startLoginScreen"
+     class="fixed inset-0 z-[110] bg-slate-950/95 backdrop-blur-xl
+            flex items-center justify-center hidden">
+
+    <div class="w-[92%] max-w-sm
+                bg-slate-900 border border-slate-800
+                rounded-3xl p-7 shadow-2xl text-center">
+
+        <!-- Icon -->
+        <div class="mx-auto mb-5 w-16 h-16 rounded-2xl
+                    bg-indigo-500/10
+                    border border-indigo-500/20
+                    flex items-center justify-center">
+
+            <i class="fa-solid fa-cloud-arrow-up
+                      text-indigo-400 text-2xl"></i>
+
+        </div>
+
+
+        <h2 class="text-2xl font-bold text-white">
+            Start Building
+        </h2>
+
+
+        <p class="mt-2 text-sm text-slate-400 leading-relaxed">
+            Sign in with Google to save your projects
+            and continue them later.
+        </p>
+
+
+        <!-- Google Button -->
+        <button
+            onclick="continueWithGoogle()"
+            class="mt-7 w-full py-3.5 rounded-xl
+                   bg-white hover:bg-slate-100
+                   text-slate-900 font-semibold
+                   flex items-center justify-center gap-3
+                   transition active:scale-95">
+
+            <span class="font-bold text-lg">G</span>
+
+            Continue with Google
+
+        </button>
+
+
+        <!-- Maybe Later -->
+        <button
+            onclick="startWithoutLogin()"
+            class="mt-4 w-full py-3 rounded-xl
+                   bg-slate-800 hover:bg-slate-700
+                   border border-slate-700
+                   text-slate-300
+                   text-sm font-medium
+                   transition">
+
+            Maybe Later
+
+        </button>
+
+
+        <p class="mt-5 text-[10px] text-slate-600">
+            You can sign in later when you want to save
+            your project to the cloud.
+        </p>
+
+    </div>
+
+</div>
 <!-- END WELCOME SCREEN -->
     <!-- TOP NAVIGATION HEADER -->
     <header class="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between z-20">
@@ -957,6 +1104,41 @@ function startBuilding() {
         welcomeScreen.style.display = 'none';
     }, 750);
 } 
+        // =========================================
+// START SCREEN
+// =========================================
+
+function openStartLogin() {
+
+    document
+        .getElementById('startLoginScreen')
+        .classList.remove('hidden');
+
+}
+
+
+// Start without Google
+
+function startWithoutLogin() {
+
+    document
+        .getElementById('startLoginScreen')
+        .classList.add('hidden');
+
+    document
+        .getElementById('startScreen')
+        .classList.add('hidden');
+
+}
+
+
+// Google button - Firebase will be connected in Step 2
+
+function continueWithGoogle() {
+
+    alert('Google Sign-In will be connected in the next step.');
+
+}
         // Code Editors Initialization
         let editorHTML, editorCSS, editorJS;
         let activeTab = 'html';
