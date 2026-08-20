@@ -98,6 +98,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
 
@@ -627,9 +628,9 @@
             </div>
 
             <!-- Export Code -->
-            <button onclick="downloadCode()" title="Download Single File HTML" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
-                <i class="fa-solid fa-download"></i>
-            </button>
+           <button onclick="openDownloadMenu()" title="Download Project" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
+    <i class="fa-solid fa-download"></i>
+</button>
 
             <!-- Copy Code -->
             <button onclick="copyCode()" title="Copy Combined Code" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
@@ -780,6 +781,95 @@
     </div>
 
     <!-- LIBRARIES / CDNS SELECTION MODAL -->
+    <!-- =========================================
+     DOWNLOAD PROJECT MODAL
+     ========================================= -->
+
+<div id="downloadModal"
+     class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-11/12 max-w-sm p-5 shadow-2xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+
+            <div>
+                <h3 class="font-bold text-slate-100 text-base">
+                    Download Project
+                </h3>
+
+                <p class="text-xs text-slate-500 mt-1">
+                    Choose your preferred download format
+                </p>
+            </div>
+
+            <button
+                onclick="closeDownloadMenu()"
+                class="text-slate-400 hover:text-white text-lg font-bold"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <!-- Single HTML -->
+        <button
+            onclick="downloadHTMLFile()"
+            class="w-full p-4 mb-3 rounded-xl bg-slate-800/70 border border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/10 transition flex items-center space-x-4 text-left"
+        >
+
+            <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center">
+                <i class="fa-brands fa-html5 text-xl"></i>
+            </div>
+
+            <div>
+                <div class="text-sm font-bold text-slate-200">
+                    Download HTML File
+                </div>
+
+                <div class="text-xs text-slate-500 mt-1">
+                    Download your complete project as one HTML file
+                </div>
+            </div>
+
+        </button>
+
+
+        <!-- ZIP Project -->
+        <button
+            onclick="downloadZIPProject()"
+            class="w-full p-4 rounded-xl bg-slate-800/70 border border-slate-700 hover:border-purple-500 hover:bg-purple-500/10 transition flex items-center space-x-4 text-left"
+        >
+
+            <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                <i class="fa-solid fa-file-zipper text-xl"></i>
+            </div>
+
+            <div>
+                <div class="text-sm font-bold text-slate-200">
+                    Download ZIP Project
+                </div>
+
+                <div class="text-xs text-slate-500 mt-1">
+                    Download HTML, CSS & JavaScript as separate files
+                </div>
+            </div>
+
+        </button>
+
+
+        <!-- Close -->
+        <button
+            onclick="closeDownloadMenu()"
+            class="w-full mt-4 py-2 text-xs text-slate-500 hover:text-white transition"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+</div>
     <div id="libsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-xl w-11/12 max-w-md p-5 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
@@ -1437,41 +1527,191 @@ function handleFileUpload(event) {
             const modal = document.getElementById('libsModal');
             modal.classList.toggle('hidden');
         }
+// =========================================
+// DOWNLOAD MENU
+// =========================================
 
-        function downloadCode() {
-            const html = editorHTML.getValue();
-            const css = editorCSS.getValue();
-            const js = editorJS.getValue();
+function openDownloadMenu() {
+    document.getElementById('downloadModal').classList.remove('hidden');
+}
 
-            const fullHTML = `<!DOCTYPE html>
+function closeDownloadMenu() {
+    document.getElementById('downloadModal').classList.add('hidden');
+}
+
+
+// =========================================
+// DOWNLOAD SINGLE HTML FILE
+// =========================================
+
+function downloadHTMLFile() {
+
+    closeDownloadMenu();
+
+    const html = editorHTML.getValue();
+    const css = editorCSS.getValue();
+    const js = editorJS.getValue();
+
+    const fullHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>JS Code Output Export</title>
+
     <script src="https://cdn.tailwindcss.com"><\/script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
     <style>
         ${css}
     </style>
+
 </head>
+
 <body>
+
     ${html}
+
     <script>
         ${js}
     <\/script>
+
 </body>
 </html>`;
 
-            const blob = new Blob([fullHTML], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'jscodeoutput_project.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast('HTML Project file downloaded!');
-        }
+    const blob = new Blob(
+        [fullHTML],
+        { type: 'text/html' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = 'jscodeoutput_project.html';
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+
+    showToast('HTML project downloaded successfully!');
+}
+
+
+// =========================================
+// DOWNLOAD ZIP PROJECT
+// =========================================
+
+function downloadZIPProject() {
+
+    closeDownloadMenu();
+
+    if (typeof JSZip === 'undefined') {
+
+        showToast('ZIP library is not loaded. Please refresh the page.');
+
+        return;
+    }
+
+    const html = editorHTML.getValue();
+    const css = editorCSS.getValue();
+    const js = editorJS.getValue();
+
+
+    // Create ZIP
+    const zip = new JSZip();
+
+
+    // INDEX.HTML
+    const indexHTML = `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>JS Code Output Project</title>
+
+    <script src="https://cdn.tailwindcss.com"><\/script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    ${html}
+
+    <script src="script.js"><\/script>
+
+</body>
+
+</html>`;
+
+
+    // Add files to ZIP
+
+    zip.file(
+        "index.html",
+        indexHTML
+    );
+
+    zip.file(
+        "style.css",
+        css
+    );
+
+    zip.file(
+        "script.js",
+        js
+    );
+
+
+    // Generate ZIP
+
+    zip.generateAsync({
+        type: "blob"
+    }).then(function(content) {
+
+        const url = URL.createObjectURL(content);
+
+        const a = document.createElement("a");
+
+        a.href = url;
+
+        a.download = "jscodeoutput_project.zip";
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+
+        showToast('ZIP project downloaded successfully!');
+
+    });
+}
+        
 
         function copyCode() {
             const combined = `<!-- HTML -->\n${editorHTML.getValue()}\n\n/* CSS */\n${editorCSS.getValue()}\n\n// JS\n${editorJS.getValue()}`;
