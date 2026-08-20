@@ -44,7 +44,12 @@
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
     const firebaseConfig = {
         apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
         authDomain: "js-code-output.firebaseapp.com",
@@ -54,12 +59,99 @@
         appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
         measurementId: "G-L47M0E9V96"
     };
-
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
     const app = initializeApp(firebaseConfig);
 
-    const analytics = getAnalytics(app);
+const analytics = getAnalytics(app);
 
-    console.log("🔥 Firebase connected successfully!");
+// Firebase Authentication
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const db = getFirestore(app);
+        window.saveProjectDraft = async function () {
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        return false;
+    }
+
+    try {
+
+        const projectRef = doc(
+            db,
+            "users",
+            user.uid,
+            "projects",
+            "main"
+        );
+
+        await setDoc(projectRef, {
+
+            html: window.editorHTMLValue || "",
+            css: window.editorCSSValue || "",
+            js: window.editorJSValue || "",
+
+            updatedAt: serverTimestamp()
+
+        }, { merge: true });
+
+        console.log("☁️ Project draft saved!");
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "❌ Draft save failed:",
+            error
+        );
+
+        return false;
+    }
+};
+        
+console.log("🔥 Firebase connected successfully!");
+        window.firebaseAuth = auth;
+window.googleProvider = googleProvider;
+
+window.googleSignIn = async function () {
+
+    try {
+
+        const result = await signInWithPopup(
+            auth,
+            googleProvider
+        );
+
+        const user = result.user;
+
+        console.log(
+            "✅ Google Sign-In successful:",
+            user.displayName
+        );
+
+        return user;
+
+    } catch (error) {
+
+        console.error(
+            "❌ Google Sign-In error:",
+            error
+        );
+
+        throw error;
+
+    }
+
+};
 </script>
 
     
@@ -1134,9 +1226,47 @@ function startWithoutLogin() {
 
 // Google button - Firebase will be connected in Step 2
 
-function continueWithGoogle() {
+async function continueWithGoogle() {
 
-    alert('Google Sign-In will be connected in the next step.');
+    try {
+
+        const user = await window.googleSignIn();
+
+        if (!user) return;
+
+        console.log("👤 Logged in:", user.displayName);
+
+        // Close login screen
+        document
+            .getElementById('startLoginScreen')
+            .classList.add('hidden');
+
+        // Close welcome screen
+        document
+            .getElementById('startScreen')
+            .classList.add('hidden');
+
+        showToast(
+            `Welcome, ${user.displayName}!`
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        if (error.code === 'auth/popup-closed-by-user') {
+
+            showToast('Google Sign-In cancelled.');
+
+        } else {
+
+            showToast(
+                'Google Sign-In failed. Please try again.'
+            );
+
+        }
+
+    }
 
 }
         // Code Editors Initialization
@@ -1528,6 +1658,9 @@ function handleFileUpload(event) {
         }
 
         function updatePreview() {
+            window.editorHTMLValue = editorHTML.getValue();
+window.editorCSSValue = editorCSS.getValue();
+window.editorJSValue = editorJS.getValue();
             const html = editorHTML.getValue();
             const css = editorCSS.getValue();
             const js = editorJS.getValue();
