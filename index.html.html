@@ -75,25 +75,28 @@
         window.googleProvider = googleProvider;
         window.firebaseDB = db;
 
-        // FIXED: Expose googleSignIn to window object
         window.googleSignIn = function() {
             return signInWithPopup(auth, googleProvider);
         };
 
-        // Save Draft
+        // Fixed Save Draft for current project
         window.saveProjectDraft = async function () {
             const user = auth.currentUser;
             if (!user) return false;
-            if (!window.editorHTML || !window.editorCSS || !window.editorJS) return false;
+            const pId = window.currentProjectId;
+            if (!pId) return false;
+            
+            if (window.editor && window.activeFile) {
+                window.files[window.activeFile] = window.editor.getValue();
+            }
+
             try {
-                const projectRef = doc(db, "users", user.uid, "projects", "main");
+                const projectRef = doc(db, "users", user.uid, "projects", pId);
                 await setDoc(projectRef, {
-                    html: window.editorHTML.getValue(),
-                    css: window.editorCSS.getValue(),
-                    js: window.editorJS.getValue(),
+                    files: window.files,
                     updatedAt: serverTimestamp()
                 }, { merge: true });
-                console.log("☁️ Cloud draft saved.");
+                console.log("☁️ Cloud draft saved for project:", pId);
                 return true;
             } catch (error) {
                 console.error("Cloud draft save failed:", error);
@@ -101,20 +104,28 @@
             }
         };
 
-        // Load Draft
+        // Fixed Load Draft for current project
         window.loadProjectDraft = async function () {
             const user = auth.currentUser;
             if (!user) return false;
+            const pId = window.currentProjectId;
+            if (!pId) return false;
+
             try {
-                const projectRef = doc(db, "users", user.uid, "projects", "main");
+                const projectRef = doc(db, "users", user.uid, "projects", pId);
                 const snapshot = await getDoc(projectRef);
                 if (!snapshot.exists()) return false;
                 const data = snapshot.data();
-                if (window.editorHTML && typeof data.html === "string") window.editorHTML.setValue(data.html);
-                if (window.editorCSS && typeof data.css === "string") window.editorCSS.setValue(data.css);
-                if (window.editorJS && typeof data.js === "string") window.editorJS.setValue(data.js);
-                if (typeof window.updatePreview === "function") window.updatePreview();
-                console.log("☁️ Cloud draft loaded.");
+                if (data.files && typeof data.files === "object") {
+                    window.files = { ...data.files };
+                    window.saveFiles();
+                    window.renderFileExplorer();
+                    if (window.editor) {
+                        window.editor.setValue(window.files[window.activeFile] || "");
+                    }
+                    if (typeof window.updatePreview === "function") window.updatePreview();
+                }
+                console.log("☁️ Cloud draft loaded for project:", pId);
                 return true;
             } catch (error) {
                 console.error("Cloud draft load failed:", error);
@@ -130,11 +141,9 @@
             if (user) {
                 console.log("👤 Signed in:", user.displayName || user.email);
                 window.updateUserUI?.(user);
-                    if (window.currentProject) {
-        updateCurrentProjectName(
-            window.currentProject.name
-        );
-    }
+                if (window.currentProject) {
+                    window.updateCurrentProjectName(window.currentProject.name);
+                }
                 const projectsUserName = document.getElementById("projectsUserName");
                 if (projectsUserName) projectsUserName.textContent = user.displayName || user.email || "Developer";
                 
@@ -144,9 +153,9 @@
                     if (typeof loadProjects === "function") await loadProjects();
                 }
             } else {
-    window.updateUserUI?.(null);
-    updateCurrentProjectName("Untitled Project");
-}
+                window.updateUserUI?.(null);
+                window.updateCurrentProjectName("Untitled Project");
+            }
         });
         console.log("🔥 Firebase connected successfully!");
     </script>
@@ -344,73 +353,45 @@
             <button onclick="loadTemplate('three')" class="px-2 py-1 text-[10px] rounded hover:bg-indigo-600">🌐 3D</button>
             <button onclick="loadTemplate('glass')" class="px-2 py-1 text-[10px] rounded hover:bg-indigo-600">💎 Glass</button>
         </div>
+        
         <!-- CURRENT PROJECT SWITCHER -->
-<div id="projectSwitcher" class="relative">
-    <button
-        id="currentProjectButton"
-        onclick="toggleProjectSwitcher(event)"
-        class="flex items-center gap-2 max-w-[220px] px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-indigo-500 transition text-xs"
-        title="Switch Project"
-    >
-        <i class="fa-solid fa-folder-open text-indigo-400"></i>
-
-        <span
-            id="currentProjectName"
-            class="truncate max-w-[140px] text-slate-200 font-semibold"
-        >
-            Untitled Project
-        </span>
-
-        <i
-            id="projectSwitcherArrow"
-            class="fa-solid fa-chevron-down text-[9px] text-slate-500"
-        ></i>
-    </button>
-
-    <!-- PROJECT DROPDOWN -->
-    <div
-        id="projectSwitcherMenu"
-        class="hidden absolute right-0 top-full mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-[500]"
-    >
-        <div class="px-4 py-3 border-b border-slate-800">
-            <div class="text-[10px] uppercase tracking-wider text-slate-500">
-                Current Project
-            </div>
-
-            <div
-                id="dropdownCurrentProject"
-                class="mt-1 text-sm font-semibold text-white truncate"
-            >
-                Untitled Project
-            </div>
-        </div>
-
-        <div class="px-4 py-2 border-b border-slate-800">
-            <span class="text-[10px] uppercase tracking-wider text-slate-500">
-                Your Projects
-            </span>
-        </div>
-
-        <div
-            id="headerProjectsList"
-            class="max-h-64 overflow-y-auto p-2"
-        >
-            <div class="px-3 py-4 text-center text-xs text-slate-500">
-                Sign in to view your projects.
-            </div>
-        </div>
-
-        <div class="border-t border-slate-800 p-2">
+        <div id="projectSwitcher" class="relative">
             <button
-                onclick="headerAddProject()"
-                class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-xs font-semibold transition"
+                id="currentProjectButton"
+                onclick="toggleProjectSwitcher(event)"
+                class="flex items-center gap-2 max-w-[220px] px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-indigo-500 transition text-xs"
+                title="Switch Project"
             >
-                <i class="fa-solid fa-plus"></i>
-                Add Project
+                <i class="fa-solid fa-folder-open text-indigo-400"></i>
+                <span id="currentProjectName" class="truncate max-w-[140px] text-slate-200 font-semibold">
+                    Untitled Project
+                </span>
+                <i id="projectSwitcherArrow" class="fa-solid fa-chevron-down text-[9px] text-slate-500"></i>
             </button>
+
+            <!-- PROJECT DROPDOWN -->
+            <div id="projectSwitcherMenu" class="hidden absolute right-0 top-full mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-[500]">
+                <div class="px-4 py-3 border-b border-slate-800">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-500">Current Project</div>
+                    <div id="dropdownCurrentProject" class="mt-1 text-sm font-semibold text-white truncate">Untitled Project</div>
+                </div>
+
+                <div class="px-4 py-2 border-b border-slate-800">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-500">Your Projects</span>
+                </div>
+
+                <div id="headerProjectsList" class="max-h-64 overflow-y-auto p-2">
+                    <div class="px-3 py-4 text-center text-xs text-slate-500">Sign in to view your projects.</div>
+                </div>
+
+                <div class="border-t border-slate-800 p-2">
+                    <button onclick="headerAddProject()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-xs font-semibold transition">
+                        <i class="fa-solid fa-plus"></i> Add Project
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+
         <div class="flex items-center gap-1.5">
             <label class="hidden lg:flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
                 <input id="autoRunToggle" type="checkbox" checked class="accent-emerald-500">
@@ -549,97 +530,45 @@
 </div>
 
 <style>
-   /* =====================================================
-   PROJECT SWITCHER
-===================================================== */
-
 #projectSwitcherMenu {
     transform-origin: top right;
     animation: projectMenuOpen .16s ease-out;
 }
 
 @keyframes projectMenuOpen {
-    from {
-        opacity: 0;
-        transform: translateY(-5px) scale(.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(-5px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .header-project-item {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 11px;
-    border-radius: 8px;
-    color: #cbd5e1;
-    font-size: 12px;
-    text-align: left;
-    transition: .15s ease;
+    width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 11px;
+    border-radius: 8px; color: #cbd5e1; font-size: 12px; text-align: left; transition: .15s ease;
 }
 
-.header-project-item:hover {
-    background: #1e293b;
-    color: white;
-}
+.header-project-item:hover { background: #1e293b; color: white; }
+.header-project-item.current { background: rgba(99, 102, 241, .14); color: #a5b4fc; }
+.header-project-item .project-check { margin-left: auto; color: #818cf8; }
 
-.header-project-item.current {
-    background: rgba(99, 102, 241, .14);
-    color: #a5b4fc;
-}
-
-.header-project-item .project-check {
-    margin-left: auto;
-    color: #818cf8;
-}
-
-#headerProjectsList::-webkit-scrollbar {
-    width: 5px;
-}
-
-#headerProjectsList::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#headerProjectsList::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 5px;
-}
+#headerProjectsList::-webkit-scrollbar { width: 5px; }
+#headerProjectsList::-webkit-scrollbar-track { background: transparent; }
+#headerProjectsList::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
 
 @media (max-width: 640px) {
-
-    #currentProjectButton {
-        max-width: 145px;
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    #currentProjectName {
-        max-width: 85px;
-    }
-
-    #projectSwitcherMenu {
-        position: fixed;
-        top: 60px;
-        right: 8px;
-        width: min(300px, calc(100vw - 16px));
-    }
+    #currentProjectButton { max-width: 145px; padding-left: 8px; padding-right: 8px; }
+    #currentProjectName { max-width: 85px; }
+    #projectSwitcherMenu { position: fixed; top: 60px; right: 8px; width: min(300px, calc(100vw - 16px)); }
 }
-    .editor-tab { height: 36px; padding: 0 14px; border-radius: 7px 7px 0 0; color: #64748b; font-size: 11px; font-weight: 600; transition: .2s; }
-    .editor-tab:hover { color: white; background: #0f172a; }
-    .editor-tab.active-html { color: #fb923c; background: #0f172a; border-top: 2px solid #f97316; }
-    .editor-tab.active-css { color: #38bdf8; background: #0f172a; border-top: 2px solid #0ea5e9; }
-    .editor-tab.active-js { color: #facc15; background: #0f172a; border-top: 2px solid #eab308; }
-    .screen-btn { padding: 3px 7px; border-radius: 4px; color: #64748b; font-size: 11px; }
-    .screen-btn:hover { color: #a5b4fc; }
-    .screen-btn.active { color: #a5b4fc; background: #1e293b; }
-    .library-option { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 9px; background: rgba(30,41,59,.7); border: 1px solid #334155; cursor: pointer; font-size: 12px; }
-    .library-option:hover { background: #1e293b; }
+
+.editor-tab { height: 36px; padding: 0 14px; border-radius: 7px 7px 0 0; color: #64748b; font-size: 11px; font-weight: 600; transition: .2s; }
+.editor-tab:hover { color: white; background: #0f172a; }
+.editor-tab.active-html { color: #fb923c; background: #0f172a; border-top: 2px solid #f97316; }
+.editor-tab.active-css { color: #38bdf8; background: #0f172a; border-top: 2px solid #0ea5e9; }
+.editor-tab.active-js { color: #facc15; background: #0f172a; border-top: 2px solid #eab308; }
+.screen-btn { padding: 3px 7px; border-radius: 4px; color: #64748b; font-size: 11px; }
+.screen-btn:hover { color: #a5b4fc; }
+.screen-btn.active { color: #a5b4fc; background: #1e293b; }
+.library-option { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 9px; background: rgba(30,41,59,.7); border: 1px solid #334155; cursor: pointer; font-size: 12px; }
+.library-option:hover { background: #1e293b; }
 </style>
 
 <!-- APPLICATION JAVASCRIPT -->
@@ -672,14 +601,16 @@ let debounceTimer = null;
 let cloudSaveTimer = null;
 let consoleCount = 0;
 let editor = null;
-let currentProjectId = null;
+let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
 
-// FIXED: continueWithGoogle uses the window.googleSignIn exposed from the module
+window.files = files;
+window.activeFile = activeFile;
+window.currentProjectId = currentProjectId;
+
 async function continueWithGoogle() {
     try {
         if (typeof window.googleSignIn === "function") {
             await window.googleSignIn();
-            // hide modals after successful popup login
             document.getElementById("startLoginScreen")?.classList.add("hidden");
             document.getElementById("startScreen")?.classList.add("hidden");
         } else {
@@ -722,9 +653,9 @@ async function createProject() {
     const projectId = "project_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
     
     const projectFiles = {
-        "index.html": { language: "html", content: `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <title>${escapeHTML(projectName)}</title>\n</head>\n<body>\n    <h1>Hello World!</h1>\n</body>\n</html>` },
-        "style.css": { language: "css", content: `body { font-family: Arial, sans-serif; }` },
-        "script.js": { language: "javascript", content: `console.log("Hello from ${projectName}");` }
+        "index.html": `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <title>${escapeHTML(projectName)}</title>\n</head>\n<body>\n    <h1>Hello World!</h1>\n</body>\n</html>`,
+        "style.css": `body { font-family: Arial, sans-serif; }`,
+        "script.js": `console.log("Hello from ${projectName}");`
     };
     
     const projectData = {
@@ -737,43 +668,21 @@ async function createProject() {
     try {
         const projectRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", projectId);
         await window.firebaseSetDoc(projectRef, projectData);
-        /* ---------------------------------------------
-           UPDATE USER PROJECT INDEX
-        ---------------------------------------------- */
 
-        if (
-            window.firebaseSetDoc &&
-            window.firebaseArrayUnion
-        ) {
-
-            const userRef =
-                window.firebaseDoc(
-                    window.firebaseDB,
-                    "users",
-                    user.uid
-                );
-
-            // updateDoc এর পরিবর্তে setDoc এবং { merge: true } ব্যবহার করা হলো
-            await window.firebaseSetDoc(
-                userRef,
-                {
-                    projectIds: window.firebaseArrayUnion(projectId)
-                },
-                { merge: true }
-            );
-
+        if (window.firebaseSetDoc && window.firebaseArrayUnion) {
+            const userRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
+            await window.firebaseSetDoc(userRef, { projectIds: window.firebaseArrayUnion(projectId) }, { merge: true });
         }
-       currentProjectId = projectId;
-window.currentProjectId = projectId;
-window.currentProject = projectData;
+        
+        currentProjectId = projectId;
+        window.currentProjectId = projectId;
+        window.currentProject = projectData;
 
-updateCurrentProjectName(projectName);
+        updateCurrentProjectName(projectName);
+        closeCreateProject();
+        openProjectInEditor(projectData);
 
-closeCreateProject();
-
-openProjectInEditor(projectData);
-
-showToast(`Project "${projectName}" created successfully.`);
+        showToast(`Project "${projectName}" created successfully.`);
     } catch (error) {
         console.error("Project creation failed:", error);
         alert("Could not create project. Please try again.");
@@ -810,296 +719,123 @@ async function loadProjects() {
         projectsList.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Failed to load projects.</div>`;
     }
 }
-/* =====================================================
-   HEADER PROJECT SWITCHER
-===================================================== */
 
 function toggleProjectSwitcher(event) {
     if (event) event.stopPropagation();
-
     const menu = document.getElementById("projectSwitcherMenu");
     const arrow = document.getElementById("projectSwitcherArrow");
-
     if (!menu) return;
-
     const willOpen = menu.classList.contains("hidden");
-
     menu.classList.toggle("hidden");
-
-    if (arrow) {
-        arrow.style.transform = willOpen
-            ? "rotate(180deg)"
-            : "rotate(0deg)";
-    }
-
-    if (willOpen) {
-        loadHeaderProjects();
-    }
+    if (arrow) arrow.style.transform = willOpen ? "rotate(180deg)" : "rotate(0deg)";
+    if (willOpen) loadHeaderProjects();
 }
-
 
 function closeProjectSwitcher() {
-
     const menu = document.getElementById("projectSwitcherMenu");
     const arrow = document.getElementById("projectSwitcherArrow");
-
-    if (menu) {
-        menu.classList.add("hidden");
-    }
-
-    if (arrow) {
-        arrow.style.transform = "rotate(0deg)";
-    }
+    if (menu) menu.classList.add("hidden");
+    if (arrow) arrow.style.transform = "rotate(0deg)";
 }
-
-
-/* -----------------------------------------------------
-   UPDATE CURRENT PROJECT NAME
------------------------------------------------------ */
 
 function updateCurrentProjectName(projectName) {
-
-    const name =
-        projectName ||
-        window.currentProject?.name ||
-        "Untitled Project";
-
-    const currentName =
-        document.getElementById("currentProjectName");
-
-    const dropdownName =
-        document.getElementById("dropdownCurrentProject");
-
-    if (currentName) {
-        currentName.textContent = name;
-        currentName.title = name;
-    }
-
-    if (dropdownName) {
-        dropdownName.textContent = name;
-        dropdownName.title = name;
-    }
+    const name = projectName || window.currentProject?.name || "Untitled Project";
+    const currentName = document.getElementById("currentProjectName");
+    const dropdownName = document.getElementById("dropdownCurrentProject");
+    if (currentName) { currentName.textContent = name; currentName.title = name; }
+    if (dropdownName) { dropdownName.textContent = name; dropdownName.title = name; }
 }
 
-
-/* -----------------------------------------------------
-   LOAD PROJECTS INTO HEADER DROPDOWN
------------------------------------------------------ */
-
 async function loadHeaderProjects() {
-
-    const container =
-        document.getElementById("headerProjectsList");
-
+    const container = document.getElementById("headerProjectsList");
     if (!container) return;
-
     const user = window.firebaseCurrentUser;
 
     if (!user) {
-
         container.innerHTML = `
             <div class="px-3 py-5 text-center">
                 <i class="fa-solid fa-user-lock text-slate-600 text-xl mb-2"></i>
-                <div class="text-xs text-slate-500">
-                    Sign in to view your projects.
-                </div>
-            </div>
-        `;
-
+                <div class="text-xs text-slate-500">Sign in to view your projects.</div>
+            </div>`;
         return;
     }
 
     container.innerHTML = `
         <div class="px-3 py-4 text-center text-xs text-slate-500">
-            <i class="fa-solid fa-spinner fa-spin mr-1"></i>
-            Loading projects...
-        </div>
-    `;
+            <i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading projects...
+        </div>`;
 
     try {
-
-        const userRef = window.firebaseDoc(
-            window.firebaseDB,
-            "users",
-            user.uid
-        );
-
-        const userSnap =
-            await window.firebaseGetDoc(userRef);
-
+        const userRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
+        const userSnap = await window.firebaseGetDoc(userRef);
         let projectIds = [];
-
-        if (userSnap.exists()) {
-
-            projectIds =
-                userSnap.data().projectIds || [];
-
-        }
+        if (userSnap.exists()) projectIds = userSnap.data().projectIds || [];
 
         container.innerHTML = "";
-
         if (!projectIds.length) {
-
             container.innerHTML = `
                 <div class="px-3 py-6 text-center">
                     <div class="text-2xl mb-2">📁</div>
-
-                    <div class="text-xs text-slate-500">
-                        No projects yet.
-                    </div>
-
-                    <div class="text-[10px] text-slate-600 mt-1">
-                        Create your first project below.
-                    </div>
-                </div>
-            `;
-
+                    <div class="text-xs text-slate-500">No projects yet.</div>
+                </div>`;
             return;
         }
 
-        const currentId =
-            window.currentProjectId ||
-            currentProjectId ||
-            null;
+        const currentId = window.currentProjectId || currentProjectId;
 
         for (const projectId of projectIds) {
-
             try {
-
-                const projectRef =
-                    window.firebaseDoc(
-                        window.firebaseDB,
-                        "users",
-                        user.uid,
-                        "projects",
-                        projectId
-                    );
-
-                const snapshot =
-                    await window.firebaseGetDoc(projectRef);
-
+                const projectRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", projectId);
+                const snapshot = await window.firebaseGetDoc(projectRef);
                 if (!snapshot.exists()) continue;
-
                 const project = snapshot.data();
 
-                const item =
-                    document.createElement("button");
-
+                const item = document.createElement("button");
                 item.type = "button";
-
-                item.className =
-                    "header-project-item" +
-                    (projectId === currentId
-                        ? " current"
-                        : "");
-
+                item.className = "header-project-item" + (projectId === currentId ? " current" : "");
                 item.innerHTML = `
                     <i class="fa-solid fa-folder text-indigo-400"></i>
-
-                    <span class="truncate flex-1">
-                        ${escapeHTML(project.name || "Untitled Project")}
-                    </span>
-
-                    ${
-                        projectId === currentId
-                            ? `<i class="fa-solid fa-check project-check"></i>`
-                            : ""
-                    }
+                    <span class="truncate flex-1">${escapeHTML(project.name || "Untitled Project")}</span>
+                    ${projectId === currentId ? `<i class="fa-solid fa-check project-check"></i>` : ""}
                 `;
 
                 item.onclick = function (event) {
-
                     event.stopPropagation();
-
+                    saveFiles(); // Save current project before switching
                     currentProjectId = projectId;
                     window.currentProjectId = projectId;
-
                     openProjectInEditor(project);
-
-                    updateCurrentProjectName(
-                        project.name
-                    );
-
+                    updateCurrentProjectName(project.name);
                     closeProjectSwitcher();
-
-                    showToast(
-                        `"${project.name}" selected.`
-                    );
+                    showToast(`"${project.name}" selected.`);
                 };
-
                 container.appendChild(item);
-
             } catch (projectError) {
-
-                console.error(
-                    "Header project load error:",
-                    projectError
-                );
-
+                console.error("Header project load error:", projectError);
             }
-
         }
-
     } catch (error) {
-
-        console.error(
-            "Could not load header projects:",
-            error
-        );
-
-        container.innerHTML = `
-            <div class="px-3 py-5 text-center text-xs text-rose-400">
-                Failed to load projects.
-            </div>
-        `;
+        console.error("Could not load header projects:", error);
+        container.innerHTML = `<div class="px-3 py-5 text-center text-xs text-rose-400">Failed to load projects.</div>`;
     }
 }
 
-
-/* -----------------------------------------------------
-   ADD PROJECT FROM HEADER
------------------------------------------------------ */
-
 function headerAddProject() {
-
     closeProjectSwitcher();
-
     showCreateProject();
 }
 
-
-/* -----------------------------------------------------
-   CLOSE WHEN CLICKING OUTSIDE
------------------------------------------------------ */
-
 document.addEventListener("click", function (event) {
-
-    const switcher =
-        document.getElementById("projectSwitcher");
-
-    const menu =
-        document.getElementById("projectSwitcherMenu");
-
+    const switcher = document.getElementById("projectSwitcher");
+    const menu = document.getElementById("projectSwitcherMenu");
     if (!switcher || !menu) return;
-
-    if (!switcher.contains(event.target)) {
-        closeProjectSwitcher();
-    }
-
+    if (!switcher.contains(event.target)) closeProjectSwitcher();
 });
-
-
-/* -----------------------------------------------------
-   ESC CLOSE
------------------------------------------------------ */
 
 document.addEventListener("keydown", function (event) {
-
-    if (event.key === "Escape") {
-        closeProjectSwitcher();
-    }
-
+    if (event.key === "Escape") closeProjectSwitcher();
 });
+
 async function renderProjectCard(uid, projectId) {
     try {
         const projectRef = window.firebaseDoc(window.firebaseDB, "users", uid, "projects", projectId);
@@ -1110,76 +846,48 @@ async function renderProjectCard(uid, projectId) {
         const card = document.createElement("div");
         card.className = "group cursor-pointer rounded-2xl border border-slate-800 bg-slate-900 hover:border-violet-500 hover:bg-slate-800 transition p-5";
         card.innerHTML = `<div class="flex items-center justify-between"><div class="text-3xl">📁</div><span class="text-slate-500 group-hover:text-violet-400">→</span></div><h3 class="mt-5 text-lg font-semibold truncate">${escapeHTML(project.name)}</h3><p class="text-xs text-slate-500 mt-2">Project</p>`;
-        card.onclick = () => { currentProjectId = projectId; openProjectInEditor(project); };
+        card.onclick = () => { 
+            saveFiles();
+            currentProjectId = projectId; 
+            window.currentProjectId = projectId;
+            openProjectInEditor(project); 
+        };
         projectsList.appendChild(card);
     } catch (error) { console.error("Project card error:", error); }
 }
 
 function openProjectInEditor(project) {
-
     if (!project) return;
-
     hideProjectsPage();
 
     window.currentProject = project;
-
-    currentProjectId =
-        project.id ||
-        window.currentProjectId ||
-        null;
-
+    currentProjectId = project.id || window.currentProjectId || "local_default_project";
     window.currentProjectId = currentProjectId;
+    localStorage.setItem("js-code-output-active-project-id", currentProjectId);
 
-    updateCurrentProjectName(
-        project.name || "Untitled Project"
-    );
-
-    /*
-       Load cloud project files into editor
-    */
+    updateCurrentProjectName(project.name || "Untitled Project");
 
     if (project.files && typeof project.files === "object") {
-
         files = { ...project.files };
-
-        if (!files["index.html"]) {
-            files["index.html"] = "";
-        }
-
+        window.files = files;
+        if (!files["index.html"]) files["index.html"] = "";
         activeFile = "index.html";
-
+        window.activeFile = activeFile;
         saveFiles();
-
         renderFileExplorer();
 
         setTimeout(function () {
-
             if (editor) {
-                editor.setOption(
-                    "mode",
-                    getCodeMirrorMode(activeFile)
-                );
-
-                editor.setValue(
-                    files[activeFile] || ""
-                );
-
+                editor.setOption("mode", getCodeMirrorMode(activeFile));
+                editor.setValue(files[activeFile] || "");
                 editor.clearHistory();
-
                 refreshEditor();
             }
-
             updatePreview();
-
         }, 50);
     }
-
-    console.log(
-        "Opening project:",
-        project.name,
-        currentProjectId
-    );
 }
+
 function escapeHTML(text) {
     return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
@@ -1210,19 +918,38 @@ function getCodeMirrorMode(fileName) {
 function isWebFile(fileName) { return ["html", "htm", "css", "js"].includes(getExtension(fileName)); }
 function isBinaryFile(fileName) { return ["png", "jpg", "zip", "pdf"].includes(getExtension(fileName)); }
 
+// FIXED: Project-Specific File System Initialization
 function initializeFileSystem() {
-    const saved = localStorage.getItem("js-code-output-files");
+    currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
+    window.currentProjectId = currentProjectId;
+
+    const saved = localStorage.getItem(`js-code-output-files_${currentProjectId}`);
     if (saved) {
         try { files = JSON.parse(saved); } catch { files = structuredClone(defaultFiles); }
-    } else { files = structuredClone(defaultFiles); }
+    } else { 
+        files = structuredClone(defaultFiles); 
+    }
+    window.files = files;
     if (!files["index.html"]) files["index.html"] = defaultFiles["index.html"];
-    activeFile = localStorage.getItem("js-code-output-active-file") || "index.html";
+    activeFile = localStorage.getItem(`js-code-output-active-file_${currentProjectId}`) || "index.html";
     if (!files[activeFile]) activeFile = "index.html";
+    window.activeFile = activeFile;
     saveFiles();
 }
 
+// FIXED: Project-Specific Local Storage Saver
 function saveFiles() {
-    try { localStorage.setItem("js-code-output-files", JSON.stringify(files)); localStorage.setItem("js-code-output-active-file", activeFile); } catch (error) { console.warn("Could not save files:", error); }
+    try { 
+        const pId = window.currentProjectId || currentProjectId || "local_default_project";
+        if (editor && activeFile) {
+            files[activeFile] = editor.getValue();
+        }
+        localStorage.setItem(`js-code-output-files_${pId}`, JSON.stringify(files)); 
+        localStorage.setItem(`js-code-output-active-file_${pId}`, activeFile);
+        localStorage.setItem("js-code-output-active-project-id", pId);
+    } catch (error) { 
+        console.warn("Could not save files:", error); 
+    }
 }
 
 function renderFileExplorer() {
@@ -1270,6 +997,7 @@ function openFile(fileName) {
     if (!Object.prototype.hasOwnProperty.call(files, fileName)) return;
     if (editor) files[activeFile] = editor.getValue();
     activeFile = fileName;
+    window.activeFile = activeFile;
     saveFiles();
     editor.setOption("mode", getCodeMirrorMode(fileName));
     editor.setValue(files[fileName] || "");
@@ -1294,7 +1022,7 @@ function renameFile(oldName) {
     const name = newName.trim();
     if (!name || /[\\/:*?"<>|]/.test(name) || (name !== oldName && files[name] !== undefined)) { showToast("Invalid name or file exists."); return; }
     files[name] = files[oldName]; delete files[oldName];
-    if (activeFile === oldName) activeFile = name;
+    if (activeFile === oldName) { activeFile = name; window.activeFile = name; }
     saveFiles(); renderFileExplorer(); openFile(name); showToast(`Renamed to ${name}.`);
 }
 
@@ -1302,7 +1030,7 @@ function deleteFile(fileName) {
     if (fileName === "index.html") { showToast("index.html cannot be deleted."); return; }
     if (!confirm(`Delete "${fileName}"?`)) return;
     delete files[fileName];
-    if (activeFile === fileName) activeFile = "index.html";
+    if (activeFile === fileName) { activeFile = "index.html"; window.activeFile = activeFile; }
     saveFiles(); renderFileExplorer(); openFile(activeFile); showToast(`${fileName} deleted.`);
 }
 
@@ -1336,6 +1064,7 @@ window.addEventListener("DOMContentLoaded", function () {
         value: "", mode: getCodeMirrorMode(activeFile), theme: "dracula",
         lineNumbers: true, autoCloseTags: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4, tabSize: 4
     });
+    window.editor = editor;
     window.editorHTML = editor; window.editorCSS = editor; window.editorJS = editor;
     editor.setValue(files[activeFile] || "");
     renderFileExplorer();
@@ -1546,6 +1275,7 @@ window.startBuilding = startBuilding; window.openStartLogin = openStartLogin; wi
 window.continueWithGoogle = continueWithGoogle; window.firebaseLogout = firebaseLogout;
 window.showCreateProject = showCreateProject; window.closeCreateProject = closeCreateProject;
 window.createProject = createProject; window.loadProjects = loadProjects;
+window.saveFiles = saveFiles; window.renderFileExplorer = renderFileExplorer; window.updateCurrentProjectName = updateCurrentProjectName;
 
 setInterval(function () {
     if (editor && activeFile) { files[activeFile] = editor.getValue(); saveFiles(); }
