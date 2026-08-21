@@ -425,64 +425,99 @@ window.firebaseDB =
             };
 
 
+
         /* =================================================
-           Auth State
-        ================================================= */
+   AUTH STATE
+================================================= */
 
-        onAuthStateChanged(
-            auth,
-            async function (user) {
+onAuthStateChanged(
+    auth,
+    async function (user) {
 
-                window.currentUser =
-                    user || null;
+        /* ---------------------------------------------
+           STORE CURRENT USER
+        ---------------------------------------------- */
 
+        window.currentUser =
+            user || null;
 
-                if (user) {
-
-                    console.log(
-                        "👤 Signed in:",
-                        user.displayName
-                    );
-
-
-                    window.updateUserUI?.(
-                        user
-                    );
+        window.firebaseCurrentUser =
+            user || null;
 
 
-                    /*
-                       Editor may not be initialized
-                       immediately when Firebase responds.
-                    */
+        /* ---------------------------------------------
+           USER SIGNED IN
+        ---------------------------------------------- */
 
-                    const loadWhenReady =
-                        async function () {
+        if (user) {
 
-                            if (
-                                window.editorHTML &&
-                                window.editorCSS &&
-                                window.editorJS
-                            ) {
-
-                                await window.loadProjectDraft();
-
-                            }
-
-                        };
+            console.log(
+                "👤 Signed in:",
+                user.displayName ||
+                user.email
+            );
 
 
-                    loadWhenReady();
+            /* -----------------------------------------
+               UPDATE USER UI
+            ------------------------------------------ */
 
-                } else {
+            window.updateUserUI?.(
+                user
+            );
 
-                    window.updateUserUI?.(
-                        null
-                    );
 
-                }
+            /* -----------------------------------------
+               UPDATE PROJECTS PAGE USER NAME
+            ------------------------------------------ */
+
+            const projectsUserName =
+                document.getElementById(
+                    "projectsUserName"
+                );
+
+            if (projectsUserName) {
+
+                projectsUserName.textContent =
+                    user.displayName ||
+                    user.email ||
+                    "Developer";
 
             }
-        );
+
+
+            /* -----------------------------------------
+               SHOW PROJECTS PAGE
+               
+               IMPORTANT:
+               DO NOT loadProjectDraft() here.
+               User must select a project first.
+            ------------------------------------------ */
+
+            showProjectsPage();
+
+
+        } else {
+
+            /* -----------------------------------------
+               USER SIGNED OUT
+            ------------------------------------------ */
+
+            window.currentUser =
+                null;
+
+            window.firebaseCurrentUser =
+                null;
+
+
+            window.updateUserUI?.(
+                null
+            );
+
+        }
+
+    }
+);
 
 
         console.log(
