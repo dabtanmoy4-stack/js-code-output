@@ -3408,11 +3408,19 @@ async function continueWithGoogle() {
             .add("hidden");
 
 
-        /* ---------------------------------------------
-           SHOW PROJECTS PAGE
-        --------------------------------------------- */
+      
 
-        showProjectsPage();
+        /* ---------------------------------------------
+        SHOW PROJECTS PAGE
+        --------------------------------------------- */ 
+        const projectsPage =
+            document.getElementById("projectsPage");
+        if (projectsPage) {
+            projectsPage.classList.remove("hidden");
+            if (typeof loadProjects === "function") {
+                await loadProjects();
+            }
+        }
 
 
         /* ---------------------------------------------
@@ -7149,11 +7157,20 @@ async function continueWithGoogle() {
             .add("hidden");
 
 
-        /* ---------------------------------------------
-           SHOW PROJECTS PAGE
-        --------------------------------------------- */
+     
+        
 
-        showProjectsPage();
+        /* ---------------------------------------------  
+        SHOW PROJECTS PAGE
+        --------------------------------------------- */ 
+        const projectsPage =    
+            document.getElementById("projectsPage");
+        if (projectsPage) {     
+            projectsPage.classList.remove("hidden");
+            if (typeof loadProjects === "function") {
+                await loadProjects();     
+            }  
+        }
 
 
         /* ---------------------------------------------
