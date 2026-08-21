@@ -584,9 +584,31 @@ async function createProject() {
     try {
         const projectRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", projectId);
         await window.firebaseSetDoc(projectRef, projectData);
-        if (window.firebaseUpdateDoc && window.firebaseArrayUnion) {
-            const userRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
-            await window.firebaseUpdateDoc(userRef, { projectIds: window.firebaseArrayUnion(projectId) });
+        /* ---------------------------------------------
+           UPDATE USER PROJECT INDEX
+        ---------------------------------------------- */
+
+        if (
+            window.firebaseSetDoc &&
+            window.firebaseArrayUnion
+        ) {
+
+            const userRef =
+                window.firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid
+                );
+
+            // updateDoc এর পরিবর্তে setDoc এবং { merge: true } ব্যবহার করা হলো
+            await window.firebaseSetDoc(
+                userRef,
+                {
+                    projectIds: window.firebaseArrayUnion(projectId)
+                },
+                { merge: true }
+            );
+
         }
         currentProjectId = projectId;
         window.currentProjectId = projectId;
