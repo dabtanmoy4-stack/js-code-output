@@ -222,18 +222,28 @@ window.firebaseDB =
    Google Login
 ================================================= */
 
-        window.googleSignIn =
-            async function () {
+      window.googleSignIn = async function () {
 
-                const result =
-                    await signInWithPopup(
-                        auth,
-                        googleProvider
-                    );
+    try {
 
-                return result.user;
+        const result = await signInWithPopup(
+            auth,
+            googleProvider
+        );
 
-            };
+        return result.user;
+
+    } catch (error) {
+
+        console.error(
+            "Google Sign-In failed:",
+            error
+        );
+
+        throw error;
+    }
+
+};
 
 
         /* =================================================
