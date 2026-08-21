@@ -53,17 +53,12 @@
 
         const app = initializeApp(firebaseConfig);
         let analytics = null;
-        try {
-            analytics = getAnalytics(app);
-        } catch (error) {
-            console.warn("Firebase Analytics unavailable:", error);
-        }
+        try { analytics = getAnalytics(app); } catch (error) { console.warn("Firebase Analytics unavailable:", error); }
 
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        // Firebase globally accessible
         window.firebaseDoc = doc;
         window.firebaseSetDoc = setDoc;
         window.firebaseGetDoc = getDoc;
@@ -79,12 +74,12 @@
             return signInWithPopup(auth, googleProvider);
         };
 
-        // Fixed Save Draft for current project
+        // FIXED: Robust Save Draft for the currently active project
         window.saveProjectDraft = async function () {
             const user = auth.currentUser;
             if (!user) return false;
             const pId = window.currentProjectId;
-            if (!pId) return false;
+            if (!pId || pId === "local_default_project") return false;
             
             if (window.editor && window.activeFile) {
                 window.files[window.activeFile] = window.editor.getValue();
@@ -94,6 +89,9 @@
                 const projectRef = doc(db, "users", user.uid, "projects", pId);
                 await setDoc(projectRef, {
                     files: window.files,
+                    html: window.files["index.html"] || "",
+                    css: window.files["style.css"] || "",
+                    js: window.files["script.js"] || "",
                     updatedAt: serverTimestamp()
                 }, { merge: true });
                 console.log("☁️ Cloud draft saved for project:", pId);
@@ -104,27 +102,20 @@
             }
         };
 
-        // Fixed Load Draft for current project
+        // FIXED: Robust Load Draft
         window.loadProjectDraft = async function () {
             const user = auth.currentUser;
             if (!user) return false;
             const pId = window.currentProjectId;
-            if (!pId) return false;
+            if (!pId || pId === "local_default_project") return false;
 
             try {
                 const projectRef = doc(db, "users", user.uid, "projects", pId);
                 const snapshot = await getDoc(projectRef);
                 if (!snapshot.exists()) return false;
-                const data = snapshot.data();
-                if (data.files && typeof data.files === "object") {
-                    window.files = { ...data.files };
-                    window.saveFiles();
-                    window.renderFileExplorer();
-                    if (window.editor) {
-                        window.editor.setValue(window.files[window.activeFile] || "");
-                    }
-                    if (typeof window.updatePreview === "function") window.updatePreview();
-                }
+                
+                // Use openProjectInEditor to parse the data safely
+                window.openProjectInEditor(snapshot.data());
                 console.log("☁️ Cloud draft loaded for project:", pId);
                 return true;
             } catch (error) {
@@ -133,7 +124,6 @@
             }
         };
 
-        // AUTH STATE
         onAuthStateChanged(auth, async function (user) {
             window.currentUser = user || null;
             window.firebaseCurrentUser = user || null;
@@ -163,10 +153,7 @@
     <!-- Tailwind & Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: { extend: { colors: { brand: { 50: "#eef2ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca", 900: "#312e81" } } } }
-        };
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { brand: { 50: "#eef2ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca", 900: "#312e81" } } } } };
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
@@ -493,7 +480,6 @@
 </div>
 
 <!-- MODALS -->
-<!-- Download Modal -->
 <div id="downloadModal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden">
     <div class="w-[92%] max-w-sm bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl">
         <div class="flex items-center justify-between mb-4">
@@ -506,7 +492,6 @@
     </div>
 </div>
 
-<!-- Libraries Modal -->
 <div id="librariesModal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden">
     <div class="w-[92%] max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-5">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
@@ -643,6 +628,7 @@ function closeCreateProject() {
     modal.classList.remove("flex");
 }
 
+// FIXED: Create Project now synchronously saves the outgoing project before switching
 async function createProject() {
     const input = document.getElementById("newProjectName");
     const projectName = input.value.trim();
@@ -650,6 +636,12 @@ async function createProject() {
     const user = window.firebaseCurrentUser;
     if (!user) { alert("Please sign in first."); return; }
     if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) { alert("Firebase is not ready. Please try again."); return; }
+    
+    // Save outgoing project to cloud before creating a new one
+    if (editor && activeFile) window.files[activeFile] = editor.getValue();
+    saveFiles();
+    if (window.saveProjectDraft) await window.saveProjectDraft();
+    
     const projectId = "project_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
     
     const projectFiles = {
@@ -662,7 +654,10 @@ async function createProject() {
         id: projectId, name: projectName, ownerId: user.uid, ownerName: user.displayName || "Developer", ownerEmail: user.email || "",
         createdAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date(),
         updatedAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date(),
-        files: projectFiles
+        files: projectFiles,
+        html: projectFiles["index.html"],
+        css: projectFiles["style.css"],
+        js: projectFiles["script.js"]
     };
 
     try {
@@ -801,13 +796,7 @@ async function loadHeaderProjects() {
 
                 item.onclick = function (event) {
                     event.stopPropagation();
-                    saveFiles(); // Save current project before switching
-                    currentProjectId = projectId;
-                    window.currentProjectId = projectId;
-                    openProjectInEditor(project);
-                    updateCurrentProjectName(project.name);
-                    closeProjectSwitcher();
-                    showToast(`"${project.name}" selected.`);
+                    window.switchProject(projectId);
                 };
                 container.appendChild(item);
             } catch (projectError) {
@@ -818,6 +807,50 @@ async function loadHeaderProjects() {
         console.error("Could not load header projects:", error);
         container.innerHTML = `<div class="px-3 py-5 text-center text-xs text-rose-400">Failed to load projects.</div>`;
     }
+}
+
+// FIXED: Dedicated Project Switching Function
+window.switchProject = async function(targetProjectId) {
+    if (targetProjectId === window.currentProjectId) return;
+    
+    const user = window.firebaseCurrentUser;
+    const oldProjectId = window.currentProjectId;
+    
+    // 1. Force Save Current Project's Code Before Switching
+    if (editor && activeFile) window.files[activeFile] = editor.getValue();
+    saveFiles();
+    
+    if (user && oldProjectId && oldProjectId !== "local_default_project") {
+        try {
+            const oldRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", oldProjectId);
+            await window.firebaseSetDoc(oldRef, {
+                files: window.files,
+                html: window.files["index.html"] || "",
+                css: window.files["style.css"] || "",
+                js: window.files["script.js"] || "",
+                updatedAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date()
+            }, { merge: true });
+        } catch(e) { console.error("Failed saving old project", e); }
+    }
+    
+    // 2. Change Target ID & Load Database
+    window.currentProjectId = targetProjectId;
+    localStorage.setItem("js-code-output-active-project-id", targetProjectId);
+    
+    if (user) {
+        try {
+            const newRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", targetProjectId);
+            const snap = await window.firebaseGetDoc(newRef);
+            if (snap.exists()) {
+                openProjectInEditor(snap.data());
+                showToast("Project switched successfully.");
+            }
+        } catch(e) { console.error("Failed loading new project", e); }
+    } else {
+        initializeFileSystem();
+        openProjectInEditor({ name: "Local Project", id: targetProjectId, files: window.files });
+    }
+    closeProjectSwitcher();
 }
 
 function headerAddProject() {
@@ -846,16 +879,14 @@ async function renderProjectCard(uid, projectId) {
         const card = document.createElement("div");
         card.className = "group cursor-pointer rounded-2xl border border-slate-800 bg-slate-900 hover:border-violet-500 hover:bg-slate-800 transition p-5";
         card.innerHTML = `<div class="flex items-center justify-between"><div class="text-3xl">📁</div><span class="text-slate-500 group-hover:text-violet-400">→</span></div><h3 class="mt-5 text-lg font-semibold truncate">${escapeHTML(project.name)}</h3><p class="text-xs text-slate-500 mt-2">Project</p>`;
-        card.onclick = () => { 
-            saveFiles();
-            currentProjectId = projectId; 
-            window.currentProjectId = projectId;
-            openProjectInEditor(project); 
-        };
+        
+        card.onclick = () => { window.switchProject(projectId); };
+        
         projectsList.appendChild(card);
     } catch (error) { console.error("Project card error:", error); }
 }
 
+// FIXED: File Structure Parser to accommodate old & new format structures properly
 function openProjectInEditor(project) {
     if (!project) return;
     hideProjectsPage();
@@ -867,25 +898,42 @@ function openProjectInEditor(project) {
 
     updateCurrentProjectName(project.name || "Untitled Project");
 
-    if (project.files && typeof project.files === "object") {
-        files = { ...project.files };
-        window.files = files;
-        if (!files["index.html"]) files["index.html"] = "";
-        activeFile = "index.html";
-        window.activeFile = activeFile;
-        saveFiles();
-        renderFileExplorer();
-
-        setTimeout(function () {
-            if (editor) {
-                editor.setOption("mode", getCodeMirrorMode(activeFile));
-                editor.setValue(files[activeFile] || "");
-                editor.clearHistory();
-                refreshEditor();
-            }
-            updatePreview();
-        }, 50);
+    // Fix old format bug vs new format strings
+    let projectFiles = project.files;
+    if (!projectFiles) {
+        projectFiles = {
+            "index.html": project.html || "",
+            "style.css": project.css || "",
+            "script.js": project.js || ""
+        };
     }
+
+    for (let k in projectFiles) {
+        if (typeof projectFiles[k] === "object") {
+            projectFiles[k] = projectFiles[k].content || "";
+        }
+    }
+
+    files = { ...projectFiles };
+    if (Object.keys(files).length === 0) files = structuredClone(defaultFiles);
+    if (!files["index.html"]) files["index.html"] = "";
+    
+    window.files = files;
+    activeFile = "index.html";
+    window.activeFile = activeFile;
+    
+    saveFiles();
+    renderFileExplorer();
+
+    setTimeout(function () {
+        if (editor) {
+            editor.setOption("mode", getCodeMirrorMode(activeFile));
+            editor.setValue(files[activeFile] || "");
+            editor.clearHistory();
+            refreshEditor();
+        }
+        updatePreview();
+    }, 50);
 }
 
 function escapeHTML(text) {
@@ -918,7 +966,6 @@ function getCodeMirrorMode(fileName) {
 function isWebFile(fileName) { return ["html", "htm", "css", "js"].includes(getExtension(fileName)); }
 function isBinaryFile(fileName) { return ["png", "jpg", "zip", "pdf"].includes(getExtension(fileName)); }
 
-// FIXED: Project-Specific File System Initialization
 function initializeFileSystem() {
     currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
     window.currentProjectId = currentProjectId;
@@ -937,12 +984,12 @@ function initializeFileSystem() {
     saveFiles();
 }
 
-// FIXED: Project-Specific Local Storage Saver
 function saveFiles() {
     try { 
         const pId = window.currentProjectId || currentProjectId || "local_default_project";
         if (editor && activeFile) {
             files[activeFile] = editor.getValue();
+            window.files = files;
         }
         localStorage.setItem(`js-code-output-files_${pId}`, JSON.stringify(files)); 
         localStorage.setItem(`js-code-output-active-file_${pId}`, activeFile);
