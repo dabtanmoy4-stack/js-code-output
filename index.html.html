@@ -3371,12 +3371,69 @@ async function continueWithGoogle() {
 
     try {
 
-        const user =
-            await window.googleSignIn();
+        const user = await window.googleSignIn();
 
         if (!user) return;
 
+        window.currentUser = user;
+        window.firebaseCurrentUser = user;
 
+        // Hide Google login
+        document
+            .getElementById("startLoginScreen")
+            ?.classList.add("hidden");
+
+        // Hide Start Screen
+        document
+            .getElementById("startScreen")
+            ?.classList.add("hidden");
+
+        // Hide Welcome Screen completely
+        const welcomeScreen =
+            document.getElementById("welcomeScreen");
+
+        if (welcomeScreen) {
+            welcomeScreen.classList.add("hide");
+            welcomeScreen.style.display = "none";
+        }
+
+        // Show Projects Page
+        const projectsPage =
+            document.getElementById("projectsPage");
+
+        if (projectsPage) {
+
+            projectsPage.classList.remove("hidden");
+
+            if (typeof loadProjects === "function") {
+                await loadProjects();
+            }
+
+        }
+
+        showToast(
+            `Welcome, ${
+                user.displayName || "Developer"
+            }!`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Google Sign-In Error:",
+            error
+        );
+
+        showToast(
+            "Google Sign-In failed."
+        );
+
+    }
+
+}
+
+
+        
         /* ---------------------------------------------
            STORE CURRENT USER
         --------------------------------------------- */
@@ -7116,14 +7173,8 @@ function startWithoutLogin() {
 }
 
 
-async function continueWithGoogle() {
 
-    try {
-
-        const user =
-            await window.googleSignIn();
-
-        if (!user) return;
+    
 
 
         /* ---------------------------------------------
