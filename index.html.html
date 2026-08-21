@@ -102,13 +102,14 @@
         from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 
 
-        import {
-            getAuth,
-            GoogleAuthProvider,
-            signInWithPopup,
-            onAuthStateChanged
-        }
-        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
         import {
@@ -180,7 +181,7 @@
             getFirestore(app);
 
 
-        // Firebase globally accessible
+       // Firebase globally accessible
 window.firebaseDoc =
     doc;
 
@@ -198,6 +199,10 @@ window.firebaseAuth =
     auth;
 
 
+window.firebaseSignOut =
+    signOut;
+
+
 window.googleProvider =
     googleProvider;
 
@@ -206,9 +211,9 @@ window.firebaseDB =
     db;
 
 
-        /* =================================================
-           Google Login
-        ================================================= */
+/* =================================================
+   Google Login
+================================================= */
 
         window.googleSignIn =
             async function () {
@@ -3259,6 +3264,71 @@ if (projectsPage) {
 <script>
 
 "use strict";
+    /* =====================================================
+   FIREBASE LOGOUT
+====================================================== */
+
+async function firebaseLogout() {
+
+    try {
+
+        if (
+            window.firebaseAuth &&
+            window.firebaseSignOut
+        ) {
+
+            await window.firebaseSignOut(
+                window.firebaseAuth
+            );
+
+        }
+
+        /* Clear current user */
+
+        window.currentUser = null;
+
+        window.firebaseCurrentUser = null;
+
+        window.currentProject = null;
+
+        window.currentProjectId = null;
+
+
+        /* Hide Projects Page */
+
+        document
+            .getElementById("projectsPage")
+            ?.classList
+            .add("hidden");
+
+
+        /* Show Start Screen */
+
+        document
+            .getElementById("startScreen")
+            ?.classList
+            .remove("hidden");
+
+
+        showToast(
+            "Logged out successfully."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Logout failed:",
+            error
+        );
+
+        showToast(
+            "Logout failed."
+        );
+
+    }
+
+}
 
 /* =====================================================
    JS CODE OUTPUT
