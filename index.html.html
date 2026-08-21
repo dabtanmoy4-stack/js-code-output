@@ -24,8 +24,7 @@
           href="https://js-code-output.vercel.app/">
 
     <link rel="icon"
-          type="image/png"
-          href="/favicon.png">
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22%236366f1%22/><text x=%2232%22 y=%2242%22 text-anchor=%22middle%22 font-size=%2228%22 font-family=%22monospace%22 font-weight=%22900%22 fill=%22white%22>%26lt;/%26gt;</text></svg>">
 
     <meta name="theme-color"
           content="#020617">
@@ -117,6 +116,8 @@ from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
             doc,
             setDoc,
             getDoc,
+            updateDoc,
+            arrayUnion,
             serverTimestamp
         }
         from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
@@ -190,6 +191,12 @@ window.firebaseSetDoc =
 
 window.firebaseGetDoc =
     getDoc;
+
+window.firebaseUpdateDoc =
+    updateDoc;
+
+window.firebaseArrayUnion =
+    arrayUnion;
 
 window.firebaseServerTimestamp =
     serverTimestamp;
@@ -3434,82 +3441,7 @@ async function continueWithGoogle() {
 
 
         
-        /* ---------------------------------------------
-           STORE CURRENT USER
-        --------------------------------------------- */
-
-        window.currentUser =
-            user;
-
-        window.firebaseCurrentUser =
-            user;
-
-
-        /* ---------------------------------------------
-           HIDE GOOGLE LOGIN
-        --------------------------------------------- */
-
-        document
-            .getElementById("startLoginScreen")
-            ?.classList
-            .add("hidden");
-
-
-        /* ---------------------------------------------
-           HIDE START SCREEN
-        --------------------------------------------- */
-
-        document
-            .getElementById("startScreen")
-            ?.classList
-            .add("hidden");
-
-
-      
-
-        /* ---------------------------------------------
-        SHOW PROJECTS PAGE
-        --------------------------------------------- */ 
-        const projectsPage =
-            document.getElementById("projectsPage");
-        if (projectsPage) {
-            projectsPage.classList.remove("hidden");
-            if (typeof loadProjects === "function") {
-                await loadProjects();
-            }
-        }
-
-
-        /* ---------------------------------------------
-           WELCOME MESSAGE
-        --------------------------------------------- */
-
-        showToast(
-            `Welcome, ${
-                user.displayName ||
-                "Developer"
-            }!`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Google Sign-In Error:",
-            error
-        );
-
-
-        showToast(
-            "Google Sign-In failed."
-        );
-
-    }
-
-}
-
-
-/* -----------------------------------------------------
+        /* -----------------------------------------------------
    HIDE PROJECTS PAGE
 ------------------------------------------------------ */
 
@@ -7177,82 +7109,7 @@ function startWithoutLogin() {
     
 
 
-        /* ---------------------------------------------
-           STORE USER
-        --------------------------------------------- */
-
-        window.currentUser =
-            user;
-
-        window.firebaseCurrentUser =
-            user;
-
-
-        /* ---------------------------------------------
-           HIDE LOGIN SCREEN
-        --------------------------------------------- */
-
-        document
-            .getElementById("startLoginScreen")
-            ?.classList
-            .add("hidden");
-
-
-        /* ---------------------------------------------
-           HIDE START SCREEN
-        --------------------------------------------- */
-
-        document
-            .getElementById("startScreen")
-            ?.classList
-            .add("hidden");
-
-
-     
-        
-
-        /* ---------------------------------------------  
-        SHOW PROJECTS PAGE
-        --------------------------------------------- */ 
-        const projectsPage =    
-            document.getElementById("projectsPage");
-        if (projectsPage) {     
-            projectsPage.classList.remove("hidden");
-            if (typeof loadProjects === "function") {
-                await loadProjects();     
-            }  
-        }
-
-
-        /* ---------------------------------------------
-           SUCCESS MESSAGE
-        --------------------------------------------- */
-
-        showToast(
-            `Welcome, ${
-                user.displayName ||
-                "Developer"
-            }!`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Google Sign-In Error:",
-            error
-        );
-
-        showToast(
-            "Google Sign-In failed."
-        );
-
-    }
-
-}
-
-
-/* =====================================================
+        /* =====================================================
    USER UI
 ====================================================== */
 
@@ -7779,6 +7636,20 @@ window.addEventListener(
     }
 );
 
+
+/* =====================================================
+   GLOBAL INLINE HANDLER EXPORTS
+====================================================== */
+
+window.startBuilding = startBuilding;
+window.openStartLogin = openStartLogin;
+window.startWithoutLogin = startWithoutLogin;
+window.continueWithGoogle = continueWithGoogle;
+window.firebaseLogout = firebaseLogout;
+window.showCreateProject = showCreateProject;
+window.closeCreateProject = closeCreateProject;
+window.createProject = createProject;
+window.loadProjects = loadProjects;
 
 /* =====================================================
    INITIAL PROJECT
