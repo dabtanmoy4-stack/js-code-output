@@ -6968,29 +6968,50 @@ async function continueWithGoogle() {
         const user =
             await window.googleSignIn();
 
-
         if (!user) return;
 
 
+        /* ---------------------------------------------
+           STORE USER
+        --------------------------------------------- */
+
+        window.currentUser =
+            user;
+
+        window.firebaseCurrentUser =
+            user;
+
+
+        /* ---------------------------------------------
+           HIDE LOGIN SCREEN
+        --------------------------------------------- */
+
         document
-            .getElementById(
-                "startLoginScreen"
-            )
+            .getElementById("startLoginScreen")
             ?.classList
-            .add(
-                "hidden"
-            );
+            .add("hidden");
 
+
+        /* ---------------------------------------------
+           HIDE START SCREEN
+        --------------------------------------------- */
 
         document
-            .getElementById(
-                "startScreen"
-            )
+            .getElementById("startScreen")
             ?.classList
-            .add(
-                "hidden"
-            );
+            .add("hidden");
 
+
+        /* ---------------------------------------------
+           SHOW PROJECTS PAGE
+        --------------------------------------------- */
+
+        showProjectsPage();
+
+
+        /* ---------------------------------------------
+           SUCCESS MESSAGE
+        --------------------------------------------- */
 
         showToast(
             `Welcome, ${
@@ -6999,13 +7020,13 @@ async function continueWithGoogle() {
             }!`
         );
 
+
     } catch (error) {
 
         console.error(
             "Google Sign-In Error:",
             error
         );
-
 
         showToast(
             "Google Sign-In failed."
