@@ -3322,35 +3322,165 @@ async function createProject() {
     const projectName =
         input.value.trim();
 
+    /* -------------------------------------------------
+       VALIDATE PROJECT NAME
+    -------------------------------------------------- */
+
     if (!projectName) {
 
-        alert("Please enter a project name.");
+        alert(
+            "Please enter a project name."
+        );
 
         return;
     }
 
+
+    /* -------------------------------------------------
+       CHECK LOGIN
+    -------------------------------------------------- */
 
     const user =
         window.firebaseCurrentUser;
 
     if (!user) {
 
-        alert("Please sign in first.");
+        alert(
+            "Please sign in first."
+        );
 
         return;
     }
 
 
+    /* -------------------------------------------------
+       CHECK FIREBASE
+    -------------------------------------------------- */
+
+    if (
+        !window.firebaseDB ||
+        !window.firebaseDoc ||
+        !window.firebaseSetDoc
+    ) {
+
+        console.error(
+            "Firebase is not initialized."
+        );
+
+        alert(
+            "Firebase is not ready. Please try again."
+        );
+
+        return;
+    }
+
+
+    /* -------------------------------------------------
+       GENERATE UNIQUE PROJECT ID
+    -------------------------------------------------- */
+
     const projectId =
         "project_" +
-        Date.now();
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 8);
 
+
+    /* -------------------------------------------------
+       DEFAULT PROJECT FILES
+    -------------------------------------------------- */
+
+    const projectFiles = {
+
+        "index.html": {
+
+            language: "html",
+
+            content:
+`<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>${escapeHTML(projectName)}</title>
+
+</head>
+
+<body>
+
+    <h1>Hello World!</h1>
+
+    <p>
+        Welcome to ${escapeHTML(projectName)}
+    </p>
+
+</body>
+
+</html>`
+        },
+
+
+        "style.css": {
+
+            language: "css",
+
+            content:
+`body {
+
+    font-family: Arial, sans-serif;
+
+    margin: 0;
+
+    padding: 40px;
+
+}`
+        },
+
+
+        "script.js": {
+
+            language: "javascript",
+
+            content:
+`console.log(
+    "Hello from ${projectName}"
+);`
+        }
+
+    };
+
+
+    /* -------------------------------------------------
+       PROJECT DATA
+    -------------------------------------------------- */
 
     const projectData = {
 
-        id: projectId,
+        id:
+            projectId,
 
-        name: projectName,
+        name:
+            projectName,
+
+        ownerId:
+            user.uid,
+
+        ownerName:
+            user.displayName ||
+            "Developer",
+
+        ownerEmail:
+            user.email ||
+            "",
 
         createdAt:
             window.firebaseServerTimestamp
@@ -3362,73 +3492,129 @@ async function createProject() {
                 ? window.firebaseServerTimestamp()
                 : new Date(),
 
-        files: {
-
-            "index.html": {
-                language: "html",
-                content:
-`<!DOCTYPE html>
-<html>
-<head>
-    <title>${projectName}</title>
-</head>
-
-<body>
-
-    <h1>Hello World!</h1>
-
-</body>
-</html>`
-            },
-
-            "style.css": {
-                language: "css",
-                content:
-`body {
-    font-family: Arial, sans-serif;
-}`
-            },
-
-            "script.js": {
-                language: "javascript",
-                content:
-`console.log("Hello from ${projectName}");`
-            }
-
-        }
-
+        files:
+            projectFiles
     };
 
+
+    /* -------------------------------------------------
+       FIREBASE PROJECT REFERENCE
+    -------------------------------------------------- */
 
     try {
 
         const projectRef =
             window.firebaseDoc(
+
                 window.firebaseDB,
+
                 "users",
+
                 user.uid,
+
                 "projects",
+
                 projectId
+
             );
 
 
+        /* ---------------------------------------------
+           SAVE PROJECT
+        ---------------------------------------------- */
+
         await window.firebaseSetDoc(
+
             projectRef,
+
             projectData
+
         );
 
+
+        /* ---------------------------------------------
+           UPDATE USER PROJECT INDEX
+        ---------------------------------------------- */
+
+        if (
+            window.firebaseUpdateDoc &&
+            window.firebaseArrayUnion
+        ) {
+
+            const userRef =
+                window.firebaseDoc(
+
+                    window.firebaseDB,
+
+                    "users",
+
+                    user.uid
+
+                );
+
+
+            await window.firebaseUpdateDoc(
+
+                userRef,
+
+                {
+
+                    projectIds:
+                        window.firebaseArrayUnion(
+                            projectId
+                        )
+
+                }
+
+            );
+
+        }
+
+
+        /* ---------------------------------------------
+           SET CURRENT PROJECT
+        ---------------------------------------------- */
 
         currentProjectId =
             projectId;
 
+        window.currentProjectId =
+            projectId;
+
+
+        window.currentProject =
+            projectData;
+
+
+        /* ---------------------------------------------
+           CLOSE MODAL
+        ---------------------------------------------- */
 
         closeCreateProject();
 
 
-        /*
-         * এখানে তোমার existing Main Editor open হবে
-         */
-        openProjectInEditor(projectData);
+        /* ---------------------------------------------
+           OPEN PROJECT IN EDITOR
+        ---------------------------------------------- */
+
+        openProjectInEditor(
+            projectData
+        );
+
+
+        /* ---------------------------------------------
+           SUCCESS MESSAGE
+        ---------------------------------------------- */
+
+        showToast(
+            `Project "${projectName}" created successfully.`
+        );
+
+
+        console.log(
+            "Project created successfully:",
+            projectData
+        );
 
 
     } catch (error) {
@@ -3438,8 +3624,9 @@ async function createProject() {
             error
         );
 
+
         alert(
-            "Could not create project."
+            "Could not create project. Please try again."
         );
 
     }
