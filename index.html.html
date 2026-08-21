@@ -494,7 +494,22 @@ onAuthStateChanged(
                User must select a project first.
             ------------------------------------------ */
 
-            showProjectsPage();
+            const projectsPage =
+    document.getElementById("projectsPage");
+
+if (projectsPage) {
+
+    projectsPage.classList.remove(
+        "hidden"
+    );
+
+    if (typeof loadProjects === "function") {
+
+        await loadProjects();
+
+    }
+
+}
 
 
         } else {
