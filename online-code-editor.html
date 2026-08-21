@@ -348,6 +348,165 @@
 .cm-s-default .cm-number {
     color: #b5cea8;
 }
+        /* =========================
+   VS CODE ACTIVITY BAR
+========================= */
+
+.activity-bar {
+    width: 48px;
+    min-width: 48px;
+    background: #080b12;
+    border-right: 1px solid #263041;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.activity-icon {
+    width: 44px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 18px;
+    cursor: pointer;
+    position: relative;
+}
+
+.activity-icon:hover {
+    color: #e2e8f0;
+}
+
+.activity-icon.active {
+    color: white;
+}
+
+.activity-icon.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: #6366f1;
+}
+
+
+/* =========================
+   EXPLORER HEADER
+========================= */
+
+.explorer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 45px;
+    padding: 0 12px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.explorer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.explorer-action {
+    cursor: pointer;
+    color: #64748b;
+}
+
+.explorer-action:hover {
+    color: white;
+}
+
+
+/* =========================
+   FILE ITEM
+========================= */
+
+.file-item {
+    position: relative;
+}
+
+.file-item .file-actions {
+    display: none;
+    margin-left: auto;
+    gap: 7px;
+}
+
+.file-item:hover .file-actions {
+    display: flex;
+}
+
+.file-action {
+    color: #64748b;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.file-action:hover {
+    color: white;
+}
+
+
+/* =========================
+   BOTTOM STATUS BAR
+========================= */
+
+.status-bar {
+    height: 24px;
+    min-height: 24px;
+    background: #171717;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 18px;
+    font-size: 11px;
+    color: #cbd5e1;
+}
+
+.status-right {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+}
+
+
+/* =========================
+   EXPLORER RESIZE
+========================= */
+
+.explorer-wrapper {
+    display: flex;
+    width: 258px;
+    min-width: 258px;
+}
+
+.explorer {
+    width: 210px;
+    min-width: 210px;
+}
+
+@media (max-width: 768px) {
+
+    .activity-bar {
+        display: none;
+    }
+
+    .explorer-wrapper {
+        width: 55px;
+        min-width: 55px;
+    }
+
+    .explorer {
+        width: 55px;
+        min-width: 55px;
+    }
+}
     </style>
 </head>
 
@@ -547,112 +706,141 @@
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
 
-            <!-- VS CODE EDITOR -->
+          <!-- VS CODE EDITOR -->
 
-            <div class="vscode-editor">
+<div class="vscode-editor">
 
-                <aside class="explorer">
+    <!-- ACTIVITY BAR -->
 
-                    <div class="explorer-title">
-                        EXPLORER
-                    </div>
+    <div class="activity-bar">
 
-                    <div class="explorer-section">
+        <div
+            class="activity-icon active"
+            title="Explorer"
+        >
+            <i class="fa-regular fa-copy"></i>
+        </div>
 
-                        <div class="folder-name">
-                            <i class="fa-solid fa-chevron-down mr-1"></i>
-                            JS CODE OUTPUT
-                        </div>
+        <div
+            class="activity-icon"
+            title="Search"
+        >
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
 
-                        <div
-                            class="file-item active"
-                            data-file="html"
-                            onclick="switchFile('html')"
+        <div
+            class="activity-icon"
+            title="Settings"
+        >
+            <i class="fa-solid fa-gear"></i>
+        </div>
+
+    </div>
+
+
+    <!-- EXPLORER + CODE -->
+
+    <div class="explorer-wrapper">
+
+        <!-- EXPLORER -->
+
+        <aside class="explorer">
+
+            <div class="explorer-header">
+
+                <span>EXPLORER</span>
+
+                <div class="explorer-actions">
+
+                    <span
+                        class="explorer-action"
+                        onclick="createNewFile()"
+                        title="New File"
+                    >
+                        <i class="fa-solid fa-file-circle-plus"></i>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="explorer-section">
+
+                <div class="folder-name">
+                    <i class="fa-solid fa-chevron-down mr-1"></i>
+                    JS CODE OUTPUT
+                </div>
+
+
+                <div
+                    class="file-item active"
+                    data-file="html"
+                    onclick="switchFile('html')"
+                >
+
+                    <i class="fa-brands fa-html5 text-orange-400"></i>
+
+                    <span>index.html</span>
+
+                    <div class="file-actions">
+
+                        <span
+                            class="file-action"
+                            onclick="event.stopPropagation(); deleteFile('html')"
+                            title="Delete"
                         >
-                            <i class="fa-brands fa-html5 text-orange-400"></i>
-                            <span>index.html</span>
-                        </div>
-
-                        <div
-                            class="file-item"
-                            data-file="css"
-                            onclick="switchFile('css')"
-                        >
-                            <i class="fa-brands fa-css3-alt text-sky-400"></i>
-                            <span>style.css</span>
-                        </div>
-
-                        <div
-                            class="file-item"
-                            data-file="js"
-                            onclick="switchFile('js')"
-                        >
-                            <i class="fa-brands fa-js text-yellow-400"></i>
-                            <span>script.js</span>
-                        </div>
-
-                    </div>
-
-                </aside>
-
-
-                <div class="code-area">
-
-                    <div class="editor-tabs">
-
-                        <div
-                            id="tab-html"
-                            class="editor-tab active"
-                            onclick="switchFile('html')"
-                        >
-                            <i class="fa-brands fa-html5 text-orange-400"></i>
-                            index.html
-                        </div>
-
-                        <div
-                            id="tab-css"
-                            class="editor-tab"
-                            onclick="switchFile('css')"
-                        >
-                            <i class="fa-brands fa-css3-alt text-sky-400"></i>
-                            style.css
-                        </div>
-
-                        <div
-                            id="tab-js"
-                            class="editor-tab"
-                            onclick="switchFile('js')"
-                        >
-                            <i class="fa-brands fa-js text-yellow-400"></i>
-                            script.js
-                        </div>
-
-                    </div>
-
-
-                    <textarea id="codeEditor"></textarea>
-
-
-                    <div class="bottom-panel">
-
-                        <span>
-                            <i class="fa-solid fa-circle-exclamation mr-1"></i>
-                            Problems
+                            <i class="fa-solid fa-trash"></i>
                         </span>
 
-                        <span>
-                            <i class="fa-solid fa-terminal mr-1"></i>
-                            Output
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="file-item"
+                    data-file="css"
+                    onclick="switchFile('css')"
+                >
+
+                    <i class="fa-brands fa-css3-alt text-sky-400"></i>
+
+                    <span>style.css</span>
+
+                    <div class="file-actions">
+
+                        <span
+                            class="file-action"
+                            onclick="event.stopPropagation(); deleteFile('css')"
+                            title="Delete"
+                        >
+                            <i class="fa-solid fa-trash"></i>
                         </span>
 
-                        <span>
-                            <i class="fa-solid fa-code mr-1"></i>
-                            Console
-                        </span>
+                    </div>
 
-                        <span class="ml-auto">
-                            <i class="fa-solid fa-check mr-1 text-emerald-400"></i>
-                            Auto Save
+                </div>
+
+
+                <div
+                    class="file-item"
+                    data-file="js"
+                    onclick="switchFile('js')"
+                >
+
+                    <i class="fa-brands fa-js text-yellow-400"></i>
+
+                    <span>script.js</span>
+
+                    <div class="file-actions">
+
+                        <span
+                            class="file-action"
+                            onclick="event.stopPropagation(); deleteFile('js')"
+                            title="Delete"
+                        >
+                            <i class="fa-solid fa-trash"></i>
                         </span>
 
                     </div>
@@ -661,6 +849,130 @@
 
             </div>
 
+        </aside>
+
+
+        <!-- CODE AREA -->
+
+        <div class="code-area">
+
+            <!-- TABS -->
+
+            <div class="editor-tabs">
+
+                <div
+                    id="tab-html"
+                    class="editor-tab active"
+                    onclick="switchFile('html')"
+                >
+
+                    <i class="fa-brands fa-html5 text-orange-400"></i>
+
+                    index.html
+
+                </div>
+
+
+                <div
+                    id="tab-css"
+                    class="editor-tab"
+                    onclick="switchFile('css')"
+                >
+
+                    <i class="fa-brands fa-css3-alt text-sky-400"></i>
+
+                    style.css
+
+                </div>
+
+
+                <div
+                    id="tab-js"
+                    class="editor-tab"
+                    onclick="switchFile('js')"
+                >
+
+                    <i class="fa-brands fa-js text-yellow-400"></i>
+
+                    script.js
+
+                </div>
+
+            </div>
+
+
+            <!-- CODEMIRROR -->
+
+            <textarea id="codeEditor"></textarea>
+
+
+            <!-- BOTTOM PANEL -->
+
+            <div class="bottom-panel">
+
+                <span>
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>
+                    Problems
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-terminal mr-1"></i>
+                    Output
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-code mr-1"></i>
+                    Console
+                </span>
+
+                <span class="ml-auto">
+
+                    <i class="fa-solid fa-check text-emerald-400 mr-1"></i>
+
+                    Auto Save
+
+                </span>
+
+            </div>
+
+
+            <!-- STATUS BAR -->
+
+            <div class="status-bar">
+
+                <span>
+                    <i class="fa-solid fa-code-branch mr-1"></i>
+                    main
+                </span>
+
+                <span>
+                    UTF-8
+                </span>
+
+                <span>
+                    Spaces: 4
+                </span>
+
+                <div class="status-right">
+
+                    <span>
+                        <i class="fa-solid fa-check text-emerald-400 mr-1"></i>
+                        Saved
+                    </span>
+
+                    <span id="languageStatus">
+                        HTML
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- LIVE OUTPUT -->
 
@@ -986,7 +1298,40 @@ button:hover {
 }`
 
 };
+/* =========================
+   DELETE FILE
+========================= */
 
+function deleteFile(file) {
+
+    if (file === "html") {
+        alert("index.html cannot be deleted.");
+        return;
+    }
+
+    if (file === "css") {
+        files.css = "";
+    }
+
+    if (file === "js") {
+        files.js = "";
+    }
+
+    if (currentFile === file) {
+
+        if (file === "css") {
+            switchFile("html");
+        }
+
+        else if (file === "js") {
+            switchFile("html");
+        }
+
+    }
+
+    updatePreview();
+
+}
 
 /* =========================
    CREATE CODEMIRROR
@@ -1085,7 +1430,12 @@ function switchFile(file) {
         .getElementById(`tab-${file}`)
         .classList.add("active");
 
-
+document.getElementById("languageStatus").textContent =
+    file === "html"
+        ? "HTML"
+        : file === "css"
+        ? "CSS"
+        : "JavaScript";
     editor.focus();
 
 }
@@ -1102,7 +1452,17 @@ function saveCurrentFile() {
     updatePreview();
 
 }
+function createNewFile() {
 
+    const fileName = prompt("Enter file name:");
+
+    if (!fileName) return;
+
+    alert(
+        "New file system will be added in the next step."
+    );
+
+}
 
 /* =========================
    AUTO UPDATE
