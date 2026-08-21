@@ -180,16 +180,30 @@
             getFirestore(app);
 
 
-        window.firebaseAuth =
-            auth;
+        // Firebase globally accessible
+window.firebaseDoc =
+    doc;
+
+window.firebaseSetDoc =
+    setDoc;
+
+window.firebaseGetDoc =
+    getDoc;
+
+window.firebaseServerTimestamp =
+    serverTimestamp;
 
 
-        window.googleProvider =
-            googleProvider;
+window.firebaseAuth =
+    auth;
 
 
-        window.firebaseDB =
-            db;
+window.googleProvider =
+    googleProvider;
+
+
+window.firebaseDB =
+    db;
 
 
         /* =================================================
@@ -1479,6 +1493,40 @@
 
         }
 
+        .explorer-file {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 5px;
+    color: #94a3b8;
+    font-size: 12px;
+    text-align: left;
+    transition: .15s;
+    cursor: pointer;
+}
+
+.explorer-file:hover {
+    background: #1e293b;
+    color: white;
+}
+
+.explorer-file.active {
+    background: rgba(99,102,241,.16);
+    color: #a5b4fc;
+}
+
+.active-file-tab {
+    color: #a5b4fc !important;
+    background: #0f172a !important;
+    border-top: 2px solid #6366f1 !important;
+}
+
+#fileExplorer {
+    scrollbar-width: thin;
+}
     </style>
 
 </head>
@@ -2000,48 +2048,11 @@
                 </div>
 
 
-                <div class="mt-2 space-y-1">
+            <div
+    id="fileExplorer"
+    class="mt-2 space-y-0.5 overflow-y-auto flex-1 min-h-0">
 
-
-                    <button
-                        id="explorer-html"
-                        onclick="openExplorerFile('html')"
-                        class="explorer-file active">
-
-                        <i class="fa-brands fa-html5
-                                  text-orange-500"></i>
-
-                        index.html
-
-                    </button>
-
-
-                    <button
-                        id="explorer-css"
-                        onclick="openExplorerFile('css')"
-                        class="explorer-file">
-
-                        <i class="fa-brands fa-css3-alt
-                                  text-blue-400"></i>
-
-                        style.css
-
-                    </button>
-
-
-                    <button
-                        id="explorer-js"
-                        onclick="openExplorerFile('js')"
-                        class="explorer-file">
-
-                        <i class="fa-brands fa-js
-                                  text-yellow-400"></i>
-
-                        script.js
-
-                    </button>
-
-                </div>
+</div>
 
             </div>
 
@@ -2092,12 +2103,12 @@
 
         <!-- Hidden Upload Input -->
 
-        <input
-            type="file"
-            id="fileUpload"
-            accept=".html,.htm,.css,.js"
-            hidden
-            onchange="handleFileUpload(event)">
+      <input
+    type="file"
+    id="fileUpload"
+    multiple
+    hidden
+    onchange="handleFileUpload(event)">
 
 
         <!-- =================================================
@@ -3026,40 +3037,40 @@
 
 "use strict";
 
-
 /* =====================================================
-   GLOBAL EDITORS
+   JS CODE OUTPUT
+   VS CODE STYLE MULTI FILE SYSTEM
 ====================================================== */
 
-let editorHTML = null;
-let editorCSS = null;
-let editorJS = null;
 
-window.editorHTML = null;
-window.editorCSS = null;
-window.editorJS = null;
+/* =====================================================
+   GLOBAL STATE
+====================================================== */
 
+let files = {};
+
+let activeFile = "index.html";
 
 let activeTab = "html";
 
+let currentScreenSize = "full";
+
 let debounceTimer = null;
+
+let cloudSaveTimer = null;
 
 let consoleCount = 0;
 
-let currentScreenSize = "full";
+let editor = null;
 
 
 /* =====================================================
-   TEMPLATES
+   DEFAULT PROJECT
 ====================================================== */
 
-const templates = {
+const defaultFiles = {
 
-
-    saas: {
-
-        html: `
-
+    "index.html": `
 <div class="min-h-screen bg-slate-950 text-white
             flex items-center justify-center p-6">
 
@@ -3069,880 +3080,409 @@ const templates = {
                 rounded-3xl
                 p-6 shadow-2xl">
 
-        <div class="flex items-center
-                    justify-between mb-6">
+        <div class="text-center">
 
-            <div>
-
-                <p class="text-xs text-slate-500">
-                    Welcome back 👋
-                </p>
-
-                <h2 class="text-xl font-bold">
-                    Alex Morgan
-                </h2>
-
+            <div class="text-4xl mb-4">
+                🚀
             </div>
 
-            <div class="w-11 h-11
-                        rounded-full
-                        bg-gradient-to-tr
-                        from-indigo-500
-                        to-purple-500
-                        flex items-center
-                        justify-center
-                        font-bold">
+            <h1 class="text-3xl font-black">
+                JS CODE OUTPUT
+            </h1>
 
-                AM
+            <p class="text-slate-400 mt-3">
+                Your first multi-file project.
+            </p>
 
-            </div>
-
-        </div>
-
-
-        <div class="bg-gradient-to-r
-                    from-indigo-600
-                    to-purple-600
-                    rounded-2xl
-                    p-5 mb-5">
-
-            <span class="text-xs
-                         bg-white/20
-                         px-2 py-1
-                         rounded-full">
-
-                Daily Goal
-
-            </span>
-
-            <h3 class="text-2xl
-                       font-extrabold mt-3">
-
-                8,420
-
-                <span class="text-sm
-                             font-normal
-                             text-indigo-200">
-
-                    / 10,000 steps
-
-                </span>
-
-            </h3>
-
-            <div class="w-full
-                        bg-black/20
-                        rounded-full
-                        h-2 mt-3">
-
-                <div class="bg-white
-                            h-2 rounded-full"
-                     style="width:84%">
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="grid
-                    grid-cols-2
-                    gap-3 mb-5">
-
-            <div class="bg-slate-800
-                        p-4 rounded-xl">
-
-                <div class="text-lg
-                            font-bold">
-
-                    540 kcal
-
-                </div>
-
-                <div class="text-xs
-                            text-slate-400">
-
-                    Calories
-
-                </div>
-
-            </div>
-
-
-            <div class="bg-slate-800
-                        p-4 rounded-xl">
-
-                <div class="text-lg
-                            font-bold">
-
-                    118 bpm
-
-                </div>
-
-                <div class="text-xs
-                            text-slate-400">
-
-                    Heart Rate
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <button id="workoutBtn"
-                class="w-full
-                       py-3
-                       rounded-xl
-                       bg-gradient-to-r
-                       from-emerald-500
-                       to-teal-500
+            <button
+                id="helloBtn"
+                class="mt-6 px-5 py-3 rounded-xl
+                       bg-indigo-600 hover:bg-indigo-500
                        font-bold">
 
-            Start Workout
+                Click Me
 
-        </button>
+            </button>
 
-    </div>
-
-</div>
-
-`,
-
-        css: `
-
-#workoutBtn {
-
-    animation:
-        pulseGlow 2s infinite;
-
-}
-
-@keyframes pulseGlow {
-
-    0%,100% {
-
-        box-shadow:
-            0 0 10px
-            rgba(16,185,129,.2);
-
-    }
-
-    50% {
-
-        box-shadow:
-            0 0 30px
-            rgba(16,185,129,.7);
-
-    }
-
-}
-
-`,
-
-        js: `
-
-const btn =
-    document.getElementById("workoutBtn");
-
-btn.addEventListener("click", () => {
-
-    console.log(
-        "Workout started!"
-    );
-
-    alert(
-        "🚀 Workout session started!"
-    );
-
-});
-
-`
-
-    },
-
-
-    game: {
-
-        html: `
-
-<div class="min-h-screen
-            bg-slate-950
-            text-white
-            flex flex-col
-            items-center
-            justify-center p-4">
-
-    <h1 class="text-2xl
-               font-black
-               text-amber-400
-               mb-2">
-
-        ARCADE PADDLE
-
-    </h1>
-
-    <p class="text-xs
-              text-slate-500
-              mb-4">
-
-        Move your mouse to control the paddle.
-
-    </p>
-
-
-    <canvas
-        id="gameCanvas"
-        width="480"
-        height="320"
-        class="bg-slate-900
-               border-2
-               border-amber-500/40
-               rounded-xl
-               max-w-full">
-    </canvas>
-
-
-    <div class="mt-4
-                font-mono
-                text-xs">
-
-        SCORE:
-
-        <span id="scoreText"
-              class="text-amber-400">
-
-            0
-
-        </span>
+        </div>
 
     </div>
-
 </div>
-
 `,
 
-        css: `
-
-canvas {
-
-    box-shadow:
-        0 0 30px
-        rgba(245,158,11,.15);
-
-}
-
-`,
-
-        js: `
-
-const canvas =
-    document.getElementById("gameCanvas");
-
-const ctx =
-    canvas.getContext("2d");
-
-const scoreText =
-    document.getElementById("scoreText");
-
-
-let x =
-    canvas.width / 2;
-
-let y =
-    canvas.height - 30;
-
-let dx = 3;
-let dy = -3;
-
-let radius = 8;
-
-let paddleWidth = 75;
-let paddleHeight = 10;
-
-let paddleX =
-    (canvas.width - paddleWidth) / 2;
-
-let score = 0;
-
-
-canvas.addEventListener(
-    "mousemove",
-    event => {
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-        const relativeX =
-            event.clientX -
-            rect.left;
-
-        paddleX =
-            relativeX -
-            paddleWidth / 2;
-
-    }
-);
-
-
-function drawBall() {
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "#f59e0b";
-
-    ctx.fill();
-
-    ctx.closePath();
-
-}
-
-
-function drawPaddle() {
-
-    ctx.fillStyle =
-        "#6366f1";
-
-    ctx.fillRect(
-        paddleX,
-        canvas.height -
-            paddleHeight,
-        paddleWidth,
-        paddleHeight
-    );
-
-}
-
-
-function draw() {
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawBall();
-
-    drawPaddle();
-
-
-    if (
-        x + dx >
-        canvas.width - radius ||
-
-        x + dx <
-        radius
-    ) {
-
-        dx = -dx;
-
-    }
-
-
-    if (
-        y + dy <
-        radius
-    ) {
-
-        dy = -dy;
-
-    }
-
-
-    else if (
-        y + dy >
-        canvas.height - radius
-    ) {
-
-        if (
-            x >
-                paddleX &&
-
-            x <
-                paddleX +
-                paddleWidth
-        ) {
-
-            dy = -dy;
-
-            score += 10;
-
-            scoreText.innerText =
-                score;
-
-            console.log(
-                "Score:",
-                score
-            );
-
-        }
-
-        else {
-
-            console.log(
-                "Game Over:",
-                score
-            );
-
-            x =
-                canvas.width / 2;
-
-            y =
-                canvas.height - 30;
-
-            dx = 3;
-
-            dy = -3;
-
-            score = 0;
-
-            scoreText.innerText =
-                score;
-
-        }
-
-    }
-
-
-    x += dx;
-    y += dy;
-
-
-    requestAnimationFrame(
-        draw
-    );
-
-}
-
-
-draw();
-
-`
-
-    },
-
-
-    three: {
-
-        html: `
-
-<div id="threeContainer"
-     class="w-full h-screen
-            bg-slate-950
-            relative">
-
-    <div class="absolute
-                top-4 left-4
-                z-10
-                bg-slate-900/80
-                p-3 rounded-xl
-                border border-slate-700">
-
-        <h2 class="font-bold text-white">
-
-            Three.js Visualizer
-
-        </h2>
-
-        <p class="text-xs
-                  text-slate-500">
-
-            Animated 3D object
-
-        </p>
-
-    </div>
-
-</div>
-
-`,
-
-        css: `
-
+    "style.css": `
 body {
-
     margin: 0;
-
-    overflow: hidden;
-
+    font-family: Arial, sans-serif;
 }
 
-`,
-
-        js: `
-
-if (typeof THREE === "undefined") {
-
-    console.error(
-        "Enable Three.js from Libraries."
-    );
-
-} else {
-
-    const container =
-        document.getElementById(
-            "threeContainer"
-        );
-
-
-    const scene =
-        new THREE.Scene();
-
-
-    const camera =
-        new THREE.PerspectiveCamera(
-            75,
-            container.clientWidth /
-            container.clientHeight,
-            .1,
-            1000
-        );
-
-
-    const renderer =
-        new THREE.WebGLRenderer({
-            antialias: true
-        });
-
-
-    renderer.setSize(
-        container.clientWidth,
-        container.clientHeight
-    );
-
-
-    container.appendChild(
-        renderer.domElement
-    );
-
-
-    const geometry =
-        new THREE.IcosahedronGeometry(
-            2,
-            2
-        );
-
-
-    const material =
-        new THREE.MeshBasicMaterial({
-            color: 0x6366f1,
-            wireframe: true
-        });
-
-
-    const sphere =
-        new THREE.Mesh(
-            geometry,
-            material
-        );
-
-
-    scene.add(sphere);
-
-
-    camera.position.z = 5;
-
-
-    function animate() {
-
-        requestAnimationFrame(
-            animate
-        );
-
-        sphere.rotation.x += .008;
-
-        sphere.rotation.y += .01;
-
-        renderer.render(
-            scene,
-            camera
-        );
-
-    }
-
-
-    animate();
-
+#helloBtn {
+    transition: .2s;
 }
 
-`
-
-    },
-
-
-    glass: {
-
-        html: `
-
-<div class="min-h-screen
-            bg-gradient-to-tr
-            from-slate-950
-            via-indigo-950
-            to-slate-900
-            flex items-center
-            justify-center p-6">
-
-    <div class="w-full max-w-md
-                rounded-3xl
-                bg-white/10
-                backdrop-blur-xl
-                border border-white/20
-                p-7
-                shadow-2xl">
-
-        <div class="flex
-                    justify-between
-                    items-center">
-
-            <span class="text-xs
-                         tracking-widest
-                         text-slate-300">
-
-                JS PLATINUM
-
-            </span>
-
-            <i class="fa-brands
-                      fa-cc-visa
-                      text-3xl">
-
-            </i>
-
-        </div>
-
-
-        <div class="mt-10">
-
-            <div class="w-12 h-9
-                        bg-gradient-to-r
-                        from-amber-300
-                        to-amber-500
-                        rounded-lg
-                        mb-5">
-
-            </div>
-
-
-            <div class="text-lg
-                        font-mono
-                        tracking-widest">
-
-                4532 •••• •••• 8892
-
-            </div>
-
-        </div>
-
-
-        <div class="mt-10
-                    flex justify-between">
-
-            <div>
-
-                <p class="text-[9px]
-                          text-slate-400">
-
-                    CARD HOLDER
-
-                </p>
-
-                <p class="font-bold">
-
-                    JS USER
-
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p class="text-[9px]
-                          text-slate-400">
-
-                    EXPIRES
-
-                </p>
-
-                <p class="font-bold">
-
-                    12/28
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
+#helloBtn:hover {
+    transform: translateY(-2px);
+}
 `,
 
-        css: ``,
+    "script.js": `
+const button =
+    document.getElementById("helloBtn");
 
-        js: `
+if (button) {
 
-console.log(
-    "Glass UI loaded successfully."
-);
+    button.addEventListener("click", () => {
 
+        console.log("Hello from script.js!");
+
+        alert("🚀 JS CODE OUTPUT is working!");
+
+    });
+
+}
 `
-
-    }
 
 };
 
 
 /* =====================================================
-   START SCREEN
+   FILE ICON SYSTEM
 ====================================================== */
 
-function startBuilding() {
+function getFileIcon(fileName) {
 
-    const welcome =
-        document.getElementById(
-            "welcomeScreen"
+    const ext =
+        getExtension(fileName);
+
+
+    const icons = {
+
+        html:
+            '<i class="fa-brands fa-html5 text-orange-500"></i>',
+
+        htm:
+            '<i class="fa-brands fa-html5 text-orange-500"></i>',
+
+        css:
+            '<i class="fa-brands fa-css3-alt text-blue-400"></i>',
+
+        scss:
+            '<i class="fa-brands fa-sass text-pink-400"></i>',
+
+        sass:
+            '<i class="fa-brands fa-sass text-pink-400"></i>',
+
+        js:
+            '<i class="fa-brands fa-js text-yellow-400"></i>',
+
+        jsx:
+            '<i class="fa-brands fa-react text-cyan-400"></i>',
+
+        ts:
+            '<span class="text-blue-400 font-bold">TS</span>',
+
+        tsx:
+            '<span class="text-cyan-400 font-bold">TSX</span>',
+
+        json:
+            '<i class="fa-solid fa-code text-yellow-300"></i>',
+
+        xml:
+            '<i class="fa-solid fa-code text-orange-400"></i>',
+
+        svg:
+            '<i class="fa-solid fa-bezier-curve text-orange-400"></i>',
+
+        md:
+            '<i class="fa-brands fa-markdown text-slate-300"></i>',
+
+        txt:
+            '<i class="fa-solid fa-file-lines text-slate-400"></i>',
+
+        py:
+            '<i class="fa-brands fa-python text-blue-400"></i>',
+
+        java:
+            '<i class="fa-brands fa-java text-red-400"></i>',
+
+        php:
+            '<i class="fa-brands fa-php text-indigo-400"></i>',
+
+        sql:
+            '<i class="fa-solid fa-database text-emerald-400"></i>',
+
+        cpp:
+            '<span class="text-blue-400 font-bold">C++</span>',
+
+        c:
+            '<span class="text-blue-400 font-bold">C</span>',
+
+        h:
+            '<span class="text-blue-300 font-bold">H</span>',
+
+        cs:
+            '<span class="text-purple-400 font-bold">C#</span>',
+
+        sh:
+            '<i class="fa-solid fa-terminal text-green-400"></i>',
+
+        bash:
+            '<i class="fa-solid fa-terminal text-green-400"></i>',
+
+        yml:
+            '<i class="fa-solid fa-file-code text-red-400"></i>',
+
+        yaml:
+            '<i class="fa-solid fa-file-code text-red-400"></i>',
+
+        env:
+            '<i class="fa-solid fa-lock text-yellow-400"></i>'
+
+    };
+
+
+    return icons[ext] ||
+        '<i class="fa-solid fa-file text-slate-500"></i>';
+
+}
+
+
+/* =====================================================
+   EXTENSION
+====================================================== */
+
+function getExtension(fileName) {
+
+    if (!fileName.includes(".")) {
+
+        return "";
+
+    }
+
+    return fileName
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+}
+
+
+/* =====================================================
+   FILE LANGUAGE
+====================================================== */
+
+function getCodeMirrorMode(fileName) {
+
+    const ext =
+        getExtension(fileName);
+
+
+    const modes = {
+
+        html: "htmlmixed",
+
+        htm: "htmlmixed",
+
+        css: "css",
+
+        scss: "css",
+
+        sass: "css",
+
+        js: "javascript",
+
+        jsx: "javascript",
+
+        ts: "javascript",
+
+        tsx: "javascript",
+
+        json: {
+            name: "javascript",
+            json: true
+        },
+
+        xml: "xml",
+
+        svg: "xml",
+
+        md: "markdown",
+
+        txt: "text/plain",
+
+        py: "python",
+
+        java: "text/x-java",
+
+        php: "application/x-httpd-php",
+
+        sql: "text/x-sql",
+
+        cpp: "text/x-c++src",
+
+        c: "text/x-csrc",
+
+        h: "text/x-csrc",
+
+        cs: "text/x-csharp",
+
+        sh: "shell",
+
+        bash: "shell",
+
+        yml: "yaml",
+
+        yaml: "yaml"
+
+    };
+
+
+    return modes[ext] || "text/plain";
+
+}
+
+
+/* =====================================================
+   FILE TYPE
+====================================================== */
+
+function isWebFile(fileName) {
+
+    const ext =
+        getExtension(fileName);
+
+
+    return [
+
+        "html",
+        "htm",
+        "css",
+        "js"
+
+    ].includes(ext);
+
+}
+
+
+function isBinaryFile(fileName) {
+
+    const ext =
+        getExtension(fileName);
+
+
+    return [
+
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "webp",
+        "ico",
+        "bmp",
+        "mp3",
+        "wav",
+        "mp4",
+        "webm",
+        "avi",
+        "mov",
+        "zip",
+        "rar",
+        "7z",
+        "pdf",
+        "exe",
+        "dll",
+        "bin"
+
+    ].includes(ext);
+
+}
+
+
+/* =====================================================
+   INITIAL FILE SYSTEM
+====================================================== */
+
+function initializeFileSystem() {
+
+    const saved =
+        localStorage.getItem(
+            "js-code-output-files"
         );
 
 
-    welcome.classList.add(
-        "hide"
-    );
+    if (saved) {
 
+        try {
 
-    setTimeout(() => {
+            files =
+                JSON.parse(saved);
 
-        welcome.style.display =
-            "none";
+        } catch {
 
-        const start =
-            document.getElementById(
-                "startScreen"
-            );
-
-        if (start) {
-
-            start.classList.remove(
-                "hidden"
-            );
+            files =
+                structuredClone(defaultFiles);
 
         }
 
-    }, 700);
+    } else {
+
+        files =
+            structuredClone(defaultFiles);
+
+    }
+
+
+    if (!files["index.html"]) {
+
+        files["index.html"] =
+            defaultFiles["index.html"];
+
+    }
+
+
+    activeFile =
+        localStorage.getItem(
+            "js-code-output-active-file"
+        ) || "index.html";
+
+
+    if (!files[activeFile]) {
+
+        activeFile =
+            "index.html";
+
+    }
+
+
+    saveFiles();
 
 }
 
 
-function openStartLogin() {
+/* =====================================================
+   SAVE FILE SYSTEM
+====================================================== */
 
-    document
-        .getElementById(
-            "startLoginScreen"
-        )
-        .classList.remove(
-            "hidden"
-        );
-
-}
-
-
-function startWithoutLogin() {
-
-    document
-        .getElementById(
-            "startLoginScreen"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "startScreen"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-}
-
-
-async function continueWithGoogle() {
+function saveFiles() {
 
     try {
 
-        const user =
-            await window.googleSignIn();
-
-
-        if (!user) return;
-
-
-        document
-            .getElementById(
-                "startLoginScreen"
-            )
-            .classList.add(
-                "hidden"
-            );
-
-
-        document
-            .getElementById(
-                "startScreen"
-            )
-            .classList.add(
-                "hidden"
-            );
-
-
-        showToast(
-            `Welcome, ${user.displayName || "Developer"}!`
+        localStorage.setItem(
+            "js-code-output-files",
+            JSON.stringify(files)
         );
 
+        localStorage.setItem(
+            "js-code-output-active-file",
+            activeFile
+        );
 
     } catch (error) {
 
-        console.error(
-            "Google Sign-In Error:",
+        console.warn(
+            "Could not save files:",
             error
         );
-
-
-        if (
-            error.code ===
-            "auth/popup-closed-by-user"
-        ) {
-
-            showToast(
-                "Google Sign-In cancelled."
-            );
-
-        }
-
-        else {
-
-            showToast(
-                "Google Sign-In failed."
-            );
-
-        }
 
     }
 
@@ -3950,128 +3490,854 @@ async function continueWithGoogle() {
 
 
 /* =====================================================
-   USER UI
+   RENDER EXPLORER
 ====================================================== */
 
-window.updateUserUI =
-    function (user) {
+function renderFileExplorer() {
 
-        if (!user) return;
-
-        console.log(
-            "Logged in as:",
-            user.displayName
+    const explorer =
+        document.getElementById(
+            "fileExplorer"
         );
 
-    };
+
+    if (!explorer) return;
+
+
+    explorer.innerHTML = "";
+
+
+    const fileNames =
+        Object.keys(files)
+            .sort((a, b) => {
+
+                if (
+                    a === "index.html"
+                ) return -1;
+
+                if (
+                    b === "index.html"
+                ) return 1;
+
+                return a.localeCompare(b);
+
+            });
+
+
+    fileNames.forEach(
+        function (fileName) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "explorer-file " +
+                (
+                    fileName === activeFile
+                        ? "active"
+                        : ""
+                );
+
+
+            item.dataset.file =
+                fileName;
+
+
+            item.innerHTML = `
+
+                <span class="flex items-center gap-2 min-w-0 flex-1">
+
+                    ${getFileIcon(fileName)}
+
+                    <span class="truncate">
+                        ${escapeHTML(fileName)}
+                    </span>
+
+                </span>
+
+                <span class="file-actions hidden gap-1">
+
+                    <button
+                        type="button"
+                        title="Rename"
+                        class="rename-file-btn
+                               text-slate-500
+                               hover:text-white">
+
+                        <i class="fa-solid fa-pen text-[9px]"></i>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        title="Delete"
+                        class="delete-file-btn
+                               text-slate-500
+                               hover:text-rose-400">
+
+                        <i class="fa-solid fa-trash text-[9px]"></i>
+
+                    </button>
+
+                </span>
+
+            `;
+
+
+            item.addEventListener(
+                "click",
+                function () {
+
+                    openFile(fileName);
+
+                }
+            );
+
+
+            const renameButton =
+                item.querySelector(
+                    ".rename-file-btn"
+                );
+
+
+            renameButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    renameFile(
+                        fileName
+                    );
+
+                }
+            );
+
+
+            const deleteButton =
+                item.querySelector(
+                    ".delete-file-btn"
+                );
+
+
+            deleteButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    deleteFile(
+                        fileName
+                    );
+
+                }
+            );
+
+
+            item.addEventListener(
+                "mouseenter",
+                function () {
+
+                    item.querySelector(
+                        ".file-actions"
+                    )
+                    ?.classList
+                    .remove("hidden");
+
+                    item.querySelector(
+                        ".file-actions"
+                    )
+                    ?.classList
+                    .add("flex");
+
+                }
+            );
+
+
+            item.addEventListener(
+                "mouseleave",
+                function () {
+
+                    item.querySelector(
+                        ".file-actions"
+                    )
+                    ?.classList
+                    .add("hidden");
+
+                    item.querySelector(
+                        ".file-actions"
+                    )
+                    ?.classList
+                    .remove("flex");
+
+                }
+            );
+
+
+            explorer.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    renderEditorTabs();
+
+}
 
 
 /* =====================================================
-   INITIALIZE EDITORS
+   ESCAPE HTML
+====================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =====================================================
+   EDITOR TABS
+====================================================== */
+
+function renderEditorTabs() {
+
+    const tabsContainer =
+        document.querySelector(
+            "#editorTabs > div:first-child"
+        );
+
+
+    if (!tabsContainer) return;
+
+
+    tabsContainer.innerHTML = "";
+
+
+    Object.keys(files)
+        .forEach(
+            function (fileName) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.className =
+                    "editor-tab";
+
+
+                if (
+                    fileName === activeFile
+                ) {
+
+                    button.classList.add(
+                        "active-file-tab"
+                    );
+
+                }
+
+
+                button.innerHTML = `
+
+                    ${getFileIcon(fileName)}
+
+                    <span class="ml-1">
+                        ${escapeHTML(fileName)}
+                    </span>
+
+                    ${
+                        fileName !== "index.html"
+                            ? `
+                            <span
+                                class="close-tab ml-2
+                                       text-slate-600
+                                       hover:text-white">
+                                ×
+                            </span>
+                            `
+                            : ""
+                    }
+
+                `;
+
+
+                button.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (
+                            event.target.closest(
+                                ".close-tab"
+                            )
+                        ) {
+
+                            event.stopPropagation();
+
+                            closeFileTab(
+                                fileName
+                            );
+
+                            return;
+
+                        }
+
+
+                        openFile(
+                            fileName
+                        );
+
+                    }
+                );
+
+
+                tabsContainer.appendChild(
+                    button
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   OPEN FILE
+====================================================== */
+
+function openFile(fileName) {
+
+    if (
+        !Object.prototype.hasOwnProperty
+            .call(files, fileName)
+    ) {
+
+        return;
+
+    }
+
+
+    if (editor) {
+
+        files[activeFile] =
+            editor.getValue();
+
+    }
+
+
+    activeFile =
+        fileName;
+
+
+    saveFiles();
+
+
+    editor.setOption(
+        "mode",
+        getCodeMirrorMode(
+            fileName
+        )
+    );
+
+
+    editor.setValue(
+        files[fileName] || ""
+    );
+
+
+    editor.clearHistory();
+
+
+    renderFileExplorer();
+
+    refreshEditor();
+
+
+    if (
+        isWebFile(fileName)
+    ) {
+
+        updatePreview();
+
+    }
+
+
+    showToast(
+        `${fileName} opened.`
+    );
+
+}
+
+
+/* =====================================================
+   CREATE NEW FILE
+====================================================== */
+
+function createNewFile() {
+
+    const fileName =
+        prompt(
+            "Enter file name:\nExample: app.js, data.json, README.md"
+        );
+
+
+    if (!fileName) return;
+
+
+    const name =
+        fileName.trim();
+
+
+    if (!name) {
+
+        showToast(
+            "Please enter a valid file name."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        /[\\/:*?"<>|]/.test(name)
+    ) {
+
+        showToast(
+            "Invalid characters in file name."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        Object.prototype.hasOwnProperty
+            .call(files, name)
+    ) {
+
+        showToast(
+            "A file with this name already exists."
+        );
+
+        return;
+
+    }
+
+
+    files[name] = "";
+
+
+    saveFiles();
+
+
+    renderFileExplorer();
+
+
+    openFile(
+        name
+    );
+
+
+    showToast(
+        `${name} created.`
+    );
+
+}
+
+
+/* =====================================================
+   RENAME FILE
+====================================================== */
+
+function renameFile(
+    oldName
+) {
+
+    const newName =
+        prompt(
+            "Enter new file name:",
+            oldName
+        );
+
+
+    if (!newName) return;
+
+
+    const name =
+        newName.trim();
+
+
+    if (!name) return;
+
+
+    if (
+        /[\\/:*?"<>|]/.test(name)
+    ) {
+
+        showToast(
+            "Invalid characters in file name."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        name !== oldName &&
+        files[name] !== undefined
+    ) {
+
+        showToast(
+            "That file already exists."
+        );
+
+        return;
+
+    }
+
+
+    files[name] =
+        files[oldName];
+
+
+    delete files[oldName];
+
+
+    if (
+        activeFile === oldName
+    ) {
+
+        activeFile =
+            name;
+
+    }
+
+
+    saveFiles();
+
+    renderFileExplorer();
+
+    openFile(
+        name
+    );
+
+
+    showToast(
+        `Renamed to ${name}.`
+    );
+
+}
+
+
+/* =====================================================
+   DELETE FILE
+====================================================== */
+
+function deleteFile(
+    fileName
+) {
+
+    if (
+        fileName === "index.html"
+    ) {
+
+        showToast(
+            "index.html cannot be deleted."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Delete "${fileName}"?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    delete files[fileName];
+
+
+    if (
+        activeFile === fileName
+    ) {
+
+        activeFile =
+            "index.html";
+
+    }
+
+
+    saveFiles();
+
+    renderFileExplorer();
+
+    openFile(
+        activeFile
+    );
+
+
+    showToast(
+        `${fileName} deleted.`
+    );
+
+}
+
+
+/* =====================================================
+   CLOSE TAB
+====================================================== */
+
+function closeFileTab(
+    fileName
+) {
+
+    if (
+        fileName === "index.html"
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        fileName === activeFile
+    ) {
+
+        openFile(
+            "index.html"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   UPLOAD FILES
+====================================================== */
+
+function handleFileUpload(
+    event
+) {
+
+    const selectedFiles =
+        Array.from(
+            event.target.files || []
+        );
+
+
+    if (
+        selectedFiles.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    let loaded =
+        0;
+
+
+    selectedFiles.forEach(
+        function (file) {
+
+            const name =
+                file.name;
+
+
+            if (
+                isBinaryFile(name)
+            ) {
+
+                showToast(
+                    `${name} is a binary file and cannot be edited as text.`
+                );
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (e) {
+
+                    files[name] =
+                        e.target.result || "";
+
+
+                    loaded++;
+
+
+                    saveFiles();
+
+                    renderFileExplorer();
+
+
+                    openFile(
+                        name
+                    );
+
+
+                    if (
+                        loaded ===
+                        selectedFiles.length
+                    ) {
+
+                        showToast(
+                            `${loaded} file(s) uploaded.`
+                        );
+
+                    }
+
+                };
+
+
+            reader.onerror =
+                function () {
+
+                    showToast(
+                        `Could not read ${name}.`
+                    );
+
+                };
+
+
+            reader.readAsText(
+                file
+            );
+
+        }
+    );
+
+
+    event.target.value =
+        "";
+
+}
+
+
+/* =====================================================
+   EDITOR INITIALIZATION
 ====================================================== */
 
 window.addEventListener(
     "DOMContentLoaded",
     function () {
 
+        initializeFileSystem();
 
-        editorHTML =
-            CodeMirror.fromTextArea(
+
+        editor =
+            CodeMirror(
                 document.getElementById(
-                    "code-html"
+                    "wrapper-html"
                 ),
                 {
 
-                    mode: "htmlmixed",
+                    value: "",
 
-                    theme: "dracula",
+                    mode:
+                        getCodeMirrorMode(
+                            activeFile
+                        ),
 
-                    lineNumbers: true,
+                    theme:
+                        "dracula",
 
-                    autoCloseTags: true,
+                    lineNumbers:
+                        true,
 
-                    autoCloseBrackets: true,
+                    autoCloseTags:
+                        true,
 
-                    lineWrapping: true
+                    autoCloseBrackets:
+                        true,
 
-                }
-            );
+                    lineWrapping:
+                        true,
 
+                    indentUnit:
+                        4,
 
-        editorCSS =
-            CodeMirror.fromTextArea(
-                document.getElementById(
-                    "code-css"
-                ),
-                {
-
-                    mode: "css",
-
-                    theme: "dracula",
-
-                    lineNumbers: true,
-
-                    autoCloseBrackets: true,
-
-                    lineWrapping: true
-
-                }
-            );
-
-
-        editorJS =
-            CodeMirror.fromTextArea(
-                document.getElementById(
-                    "code-js"
-                ),
-                {
-
-                    mode: "javascript",
-
-                    theme: "dracula",
-
-                    lineNumbers: true,
-
-                    autoCloseBrackets: true,
-
-                    lineWrapping: true
+                    tabSize:
+                        4
 
                 }
             );
 
 
         window.editorHTML =
-            editorHTML;
+            editor;
+
 
         window.editorCSS =
-            editorCSS;
+            editor;
+
 
         window.editorJS =
-            editorJS;
+            editor;
 
 
-        /* Load default */
-
-        loadTemplate(
-            "saas",
-            false
+        editor.setValue(
+            files[activeFile] || ""
         );
 
 
-        /* Code changes */
+        renderFileExplorer();
 
-        const onChange =
+
+        editor.on(
+            "change",
             function () {
 
+                if (!activeFile) return;
+
+
+                files[activeFile] =
+                    editor.getValue();
+
+
+                saveFiles();
+
+
                 const auto =
-                    document
-                        .getElementById(
-                            "autoRunToggle"
-                        )
-                        .checked;
+                    document.getElementById(
+                        "autoRunToggle"
+                    );
 
 
-                if (auto) {
+                if (
+                    auto &&
+                    auto.checked &&
+                    isWebFile(activeFile)
+                ) {
 
                     clearTimeout(
                         debounceTimer
@@ -4086,24 +4352,7 @@ window.addEventListener(
 
                 }
 
-            };
-
-
-        editorHTML.on(
-            "change",
-            onChange
-        );
-
-
-        editorCSS.on(
-            "change",
-            onChange
-        );
-
-
-        editorJS.on(
-            "change",
-            onChange
+            }
         );
 
 
@@ -4113,17 +4362,15 @@ window.addEventListener(
         );
 
 
-        /* Try loading Firebase draft */
-
         setTimeout(
-            async function () {
+            function () {
 
                 if (
                     window.currentUser &&
                     window.loadProjectDraft
                 ) {
 
-                    await window.loadProjectDraft();
+                    window.loadProjectDraft();
 
                 }
 
@@ -4136,187 +4383,74 @@ window.addEventListener(
 
 
 /* =====================================================
-   SWITCH TAB
+   REFRESH EDITOR
 ====================================================== */
 
-function switchTab(tab) {
+function refreshEditor() {
 
-    activeTab =
-        tab;
-
-
-    ["html", "css", "js"]
-        .forEach(
-            function (type) {
-
-                const tabButton =
-                    document.getElementById(
-                        `tab-${type}`
-                    );
-
-
-                const wrapper =
-                    document.getElementById(
-                        `wrapper-${type}`
-                    );
-
-
-                tabButton.className =
-                    "editor-tab";
-
-
-                wrapper.classList.remove(
-                    "active"
-                );
-
-
-                if (type === tab) {
-
-                    tabButton.classList.add(
-                        `active-${type}`
-                    );
-
-
-                    wrapper.classList.add(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
+    if (!editor) return;
 
 
     setTimeout(
         function () {
 
-            if (tab === "html") {
-
-                editorHTML.refresh();
-
-            }
-
-            if (tab === "css") {
-
-                editorCSS.refresh();
-
-            }
-
-            if (tab === "js") {
-
-                editorJS.refresh();
-
-            }
+            editor.refresh();
 
         },
         30
     );
 
-
-    updateExplorerState(
-        tab
-    );
-
 }
 
 
 /* =====================================================
-   EXPLORER
+   OLD TAB COMPATIBILITY
 ====================================================== */
 
-function openExplorerFile(
-    file
+function switchTab(
+    type
 ) {
 
-    switchTab(
-        file
-    );
+    const map = {
 
-}
+        html: "index.html",
 
+        css: "style.css",
 
-function updateExplorerState(
-    active
-) {
+        js: "script.js"
 
-    ["html", "css", "js"]
-        .forEach(
-            function (type) {
-
-                const item =
-                    document.getElementById(
-                        `explorer-${type}`
-                    );
+    };
 
 
-                if (!item) return;
-
-
-                item.classList.toggle(
-                    "active",
-                    type === active
-                );
-
-            }
-        );
-
-}
-
-
-/* =====================================================
-   LOAD TEMPLATE
-====================================================== */
-
-function loadTemplate(
-    key,
-    notify = true
-) {
-
-    const template =
-        templates[key];
-
-
-    if (!template) return;
+    const file =
+        map[type];
 
 
     if (
-        key === "three"
+        file &&
+        files[file] !== undefined
     ) {
 
-        document
-            .getElementById(
-                "lib-three"
-            )
-            .checked = true;
-
-    }
-
-
-    editorHTML.setValue(
-        template.html
-    );
-
-
-    editorCSS.setValue(
-        template.css
-    );
-
-
-    editorJS.setValue(
-        template.js
-    );
-
-
-    updatePreview();
-
-
-    if (notify) {
-
-        showToast(
-            `${key.toUpperCase()} template loaded.`
+        openFile(
+            file
         );
 
     }
+
+}
+
+
+/* =====================================================
+   EXPLORER COMPATIBILITY
+====================================================== */
+
+function openExplorerFile(
+    type
+) {
+
+    switchTab(
+        type
+    );
 
 }
 
@@ -4328,61 +4462,57 @@ function loadTemplate(
 window.updatePreview =
     function () {
 
+        if (!editor) return;
+
+
         if (
-            !editorHTML ||
-            !editorCSS ||
-            !editorJS
+            files[activeFile] !==
+            undefined
         ) {
 
-            return;
+            files[activeFile] =
+                editor.getValue();
 
         }
 
 
         const html =
-            editorHTML.getValue();
+            files["index.html"] ||
+            "";
 
 
         const css =
-            editorCSS.getValue();
+            files["style.css"] ||
+            "";
 
 
         const js =
-            editorJS.getValue();
+            files["script.js"] ||
+            "";
 
-
-        /* Libraries */
 
         const useTailwind =
-            document
-                .getElementById(
-                    "lib-tailwind"
-                )
-                .checked;
+            document.getElementById(
+                "lib-tailwind"
+            )?.checked;
 
 
         const useFA =
-            document
-                .getElementById(
-                    "lib-fontawesome"
-                )
-                .checked;
+            document.getElementById(
+                "lib-fontawesome"
+            )?.checked;
 
 
         const useThree =
-            document
-                .getElementById(
-                    "lib-three"
-                )
-                .checked;
+            document.getElementById(
+                "lib-three"
+            )?.checked;
 
 
         const useChart =
-            document
-                .getElementById(
-                    "lib-chart"
-                )
-                .checked;
+            document.getElementById(
+                "lib-chart"
+            )?.checked;
 
 
         const tailwind =
@@ -4413,8 +4543,6 @@ window.updatePreview =
                 : "";
 
 
-        /* Console bridge */
-
         const consoleBridge = `
 
 <script>
@@ -4431,48 +4559,41 @@ window.updatePreview =
         console.warn;
 
 
-    function send(
-        level,
-        args
-    ){
+    function send(level,args){
 
         let message = "";
 
         try {
 
             message =
-                Array
-                .from(args)
-                .map(
-                    value => {
+                Array.from(args)
+                .map(value => {
 
-                        if (
-                            typeof value ===
-                            "object"
-                        ) {
+                    if (
+                        typeof value === "object"
+                    ) {
 
-                            try {
+                        try {
 
-                                return JSON.stringify(
-                                    value
-                                );
+                            return JSON.stringify(
+                                value
+                            );
 
-                            } catch {
+                        } catch {
 
-                                return String(
-                                    value
-                                );
-
-                            }
+                            return String(
+                                value
+                            );
 
                         }
 
-                        return String(
-                            value
-                        );
-
                     }
-                )
+
+                    return String(
+                        value
+                    );
+
+                })
                 .join(" ");
 
         } catch {
@@ -4483,21 +4604,18 @@ window.updatePreview =
         }
 
 
-        window.parent.postMessage(
-            {
+        window.parent.postMessage({
 
-                type:
-                    "JS_CODE_OUTPUT_CONSOLE",
+            type:
+                "JS_CODE_OUTPUT_CONSOLE",
 
-                level:
-                    level,
+            level:
+                level,
 
-                message:
-                    message
+            message:
+                message
 
-            },
-            "*"
-        );
+        },"*");
 
     }
 
@@ -4571,7 +4689,6 @@ window.updatePreview =
 
         };
 
-
 })();
 
 <\/script>
@@ -4611,11 +4728,9 @@ ${css}
 
 </head>
 
-
-<body class="bg-white">
+<body>
 
 ${html}
-
 
 <script>
 
@@ -4635,7 +4750,6 @@ console.error(
 
 <\/script>
 
-
 </body>
 
 </html>
@@ -4649,26 +4763,21 @@ console.error(
             );
 
 
-        iframe.srcdoc =
-            fullDocument;
+        if (iframe) {
+
+            iframe.srcdoc =
+                fullDocument;
+
+        }
 
 
-        /* Save current values */
-
-        window.editorHTMLValue =
-            html;
-
-        window.editorCSSValue =
-            css;
-
-        window.editorJSValue =
-            js;
+        saveFiles();
 
     };
 
 
 /* =====================================================
-   IFRAME CONSOLE
+   CONSOLE
 ====================================================== */
 
 window.addEventListener(
@@ -4695,10 +4804,6 @@ window.addEventListener(
 );
 
 
-/* =====================================================
-   CONSOLE
-====================================================== */
-
 function appendConsoleLog(
     level,
     message
@@ -4716,16 +4821,22 @@ function appendConsoleLog(
         );
 
 
+    if (!container) return;
+
+
     consoleCount++;
 
 
-    badge.innerText =
-        consoleCount;
+    if (badge) {
 
+        badge.innerText =
+            consoleCount;
 
-    badge.classList.remove(
-        "hidden"
-    );
+        badge.classList.remove(
+            "hidden"
+        );
+
+    }
 
 
     const item =
@@ -4777,17 +4888,24 @@ function toggleConsole() {
 
 function clearConsole() {
 
-    document
-        .getElementById(
+    const logs =
+        document.getElementById(
             "consoleLogs"
-        )
-        .innerHTML =
-        `<div class="text-slate-600">
-            // Console cleared.
-        </div>`;
+        );
 
 
-    consoleCount = 0;
+    if (logs) {
+
+        logs.innerHTML =
+            `<div class="text-slate-600">
+                // Console cleared.
+            </div>`;
+
+    }
+
+
+    consoleCount =
+        0;
 
 
     const badge =
@@ -4796,13 +4914,16 @@ function clearConsole() {
         );
 
 
-    badge.innerText =
-        "0";
+    if (badge) {
 
+        badge.innerText =
+            "0";
 
-    badge.classList.add(
-        "hidden"
-    );
+        badge.classList.add(
+            "hidden"
+        );
+
+    }
 
 }
 
@@ -4835,16 +4956,25 @@ function setScreenSize(
                     );
 
 
-                btn.classList.toggle(
-                    "active",
-                    type === size
-                );
+                if (btn) {
+
+                    btn.classList.toggle(
+                        "active",
+                        type === size
+                    );
+
+                }
 
             }
         );
 
 
-    if (size === "full") {
+    if (!iframe) return;
+
+
+    if (
+        size === "full"
+    ) {
 
         iframe.style.width =
             "100%";
@@ -4858,7 +4988,9 @@ function setScreenSize(
     }
 
 
-    if (size === "tablet") {
+    if (
+        size === "tablet"
+    ) {
 
         iframe.style.width =
             "768px";
@@ -4872,7 +5004,9 @@ function setScreenSize(
     }
 
 
-    if (size === "mobile") {
+    if (
+        size === "mobile"
+    ) {
 
         iframe.style.width =
             "375px";
@@ -4906,7 +5040,7 @@ function toggleLibraries() {
 
 
 /* =====================================================
-   DOWNLOAD MENU
+   DOWNLOAD
 ====================================================== */
 
 function openDownloadMenu() {
@@ -4945,15 +5079,15 @@ function downloadHTMLFile() {
 
 
     const html =
-        editorHTML.getValue();
+        files["index.html"] || "";
 
 
     const css =
-        editorCSS.getValue();
+        files["style.css"] || "";
 
 
     const js =
-        editorJS.getValue();
+        files["script.js"] || "";
 
 
     const documentText = `
@@ -4985,18 +5119,15 @@ ${css}
 
 </head>
 
-
 <body>
 
 ${html}
-
 
 <script>
 
 ${js}
 
 <\/script>
-
 
 </body>
 
@@ -5005,49 +5136,10 @@ ${js}
 `;
 
 
-    const blob =
-        new Blob(
-            [documentText],
-            {
-                type:
-                    "text/html"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const a =
-        document.createElement(
-            "a"
-        );
-
-
-    a.href =
-        url;
-
-
-    a.download =
-        "jscodeoutput_project.html";
-
-
-    document.body.appendChild(
-        a
-    );
-
-
-    a.click();
-
-
-    a.remove();
-
-
-    URL.revokeObjectURL(
-        url
+    downloadBlob(
+        documentText,
+        "jscodeoutput_project.html",
+        "text/html"
     );
 
 
@@ -5081,78 +5173,29 @@ async function downloadZIPProject() {
     }
 
 
-    const html =
-        editorHTML.getValue();
+    if (editor) {
 
+        files[activeFile] =
+            editor.getValue();
 
-    const css =
-        editorCSS.getValue();
-
-
-    const js =
-        editorJS.getValue();
+    }
 
 
     const zip =
         new JSZip();
 
 
-    const indexHTML = `
+    Object.entries(files)
+        .forEach(
+            function ([fileName, content]) {
 
-<!DOCTYPE html>
+                zip.file(
+                    fileName,
+                    content
+                );
 
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0">
-
-<title>JS CODE OUTPUT Project</title>
-
-<script src="https://cdn.tailwindcss.com"><\/script>
-
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<link rel="stylesheet"
-      href="style.css">
-
-</head>
-
-
-<body>
-
-${html}
-
-<script src="script.js"><\/script>
-
-</body>
-
-</html>
-
-`;
-
-
-    zip.file(
-        "index.html",
-        indexHTML
-    );
-
-
-    zip.file(
-        "style.css",
-        css
-    );
-
-
-    zip.file(
-        "script.js",
-        js
-    );
+            }
+        );
 
 
     const blob =
@@ -5198,33 +5241,97 @@ ${html}
 
 
     showToast(
-        "ZIP project downloaded!"
+        "Complete project ZIP downloaded!"
     );
 
 }
 
 
 /* =====================================================
-   COPY
+   GENERIC DOWNLOAD
+====================================================== */
+
+function downloadBlob(
+    content,
+    fileName,
+    type
+) {
+
+    const blob =
+        new Blob(
+            [content],
+            {
+                type:
+                    type
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href =
+        url;
+
+
+    a.download =
+        fileName;
+
+
+    document.body.appendChild(
+        a
+    );
+
+
+    a.click();
+
+
+    a.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+/* =====================================================
+   COPY ALL FILES
 ====================================================== */
 
 async function copyCode() {
 
+    if (editor) {
+
+        files[activeFile] =
+            editor.getValue();
+
+    }
+
+
     const combined =
+        Object.entries(files)
+            .map(
+                ([name, content]) =>
+`/* =====================================================
+   ${name}
+===================================================== */
 
-`<!-- ================= HTML ================= -->
+${content}
 
-${editorHTML.getValue()}
-
-
-<!-- ================= CSS ================= -->
-
-${editorCSS.getValue()}
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
-${editorJS.getValue()}`;
+`
+            )
+            .join("\n");
 
 
     try {
@@ -5264,7 +5371,7 @@ ${editorJS.getValue()}`;
 
 
     showToast(
-        "All code copied!"
+        "All project files copied!"
     );
 
 }
@@ -5278,7 +5385,7 @@ function clearEditors() {
 
     if (
         !confirm(
-            "Clear HTML, CSS and JavaScript?"
+            "Clear the current file?"
         )
     ) {
 
@@ -5287,19 +5394,19 @@ function clearEditors() {
     }
 
 
-    editorHTML.setValue(
+    if (!editor) return;
+
+
+    editor.setValue(
         ""
     );
 
 
-    editorCSS.setValue(
-        ""
-    );
+    files[activeFile] =
+        "";
 
 
-    editorJS.setValue(
-        ""
-    );
+    saveFiles();
 
 
     clearConsole();
@@ -5309,182 +5416,552 @@ function clearEditors() {
 
 
     showToast(
-        "Editors cleared."
+        `${activeFile} cleared.`
     );
 
 }
 
 
 /* =====================================================
-   FILE UPLOAD
+   TEMPLATES
 ====================================================== */
 
-function handleFileUpload(
-    event
+function loadTemplate(
+    key,
+    notify = true
 ) {
 
-    const file =
-        event.target.files[0];
+    const template =
+        templates[key];
 
 
-    if (!file) return;
+    if (!template) return;
 
 
-    const name =
-        file.name.toLowerCase();
+    files["index.html"] =
+        template.html;
 
 
-    const reader =
-        new FileReader();
+    files["style.css"] =
+        template.css;
 
 
-    reader.onload =
-        function (e) {
-
-            const content =
-                e.target.result;
+    files["script.js"] =
+        template.js;
 
 
-            if (
-                name.endsWith(
-                    ".html"
-                ) ||
-                name.endsWith(
-                    ".htm"
-                )
-            ) {
+    if (
+        key === "three"
+    ) {
 
-                editorHTML.setValue(
-                    content
-                );
-
-                switchTab(
-                    "html"
-                );
-
-                showToast(
-                    `${file.name} loaded.`
-                );
-
-            }
-
-
-            else if (
-                name.endsWith(
-                    ".css"
-                )
-            ) {
-
-                editorCSS.setValue(
-                    content
-                );
-
-                switchTab(
-                    "css"
-                );
-
-                showToast(
-                    `${file.name} loaded.`
-                );
-
-            }
-
-
-            else if (
-                name.endsWith(
-                    ".js"
-                )
-            ) {
-
-                editorJS.setValue(
-                    content
-                );
-
-                switchTab(
-                    "js"
-                );
-
-                showToast(
-                    `${file.name} loaded.`
-                );
-
-            }
-
-
-            else {
-
-                showToast(
-                    "Only HTML, CSS and JS files are supported."
-                );
-
-                return;
-
-            }
-
-
-            updatePreview();
-
-        };
-
-
-    reader.onerror =
-        function () {
-
-            showToast(
-                "Unable to read file."
+        const three =
+            document.getElementById(
+                "lib-three"
             );
 
-        };
+
+        if (three) {
+
+            three.checked =
+                true;
+
+        }
+
+    }
 
 
-    reader.readAsText(
-        file
+    activeFile =
+        "index.html";
+
+
+    saveFiles();
+
+
+    renderFileExplorer();
+
+
+    openFile(
+        "index.html"
     );
 
 
-    event.target.value =
-        "";
+    updatePreview();
+
+
+    if (notify) {
+
+        showToast(
+            `${key.toUpperCase()} template loaded.`
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   NEW FILE
+   DEFAULT TEMPLATES
 ====================================================== */
 
-function createNewFile() {
-    const fileName = prompt("Enter file name:");
+const templates = {
 
-    if (!fileName) return;
+    saas: {
 
-    const name = fileName.trim();
+        html: `
+<div class="min-h-screen bg-slate-950 text-white
+            flex items-center justify-center p-6">
 
-    if (!name) {
-        alert("Please enter a valid file name.");
-        return;
-    }
+    <div class="w-full max-w-sm bg-slate-900
+                border border-slate-800
+                rounded-3xl p-6 shadow-2xl">
 
-    // Prevent invalid Windows filename characters
-    if (/[\\/:*?"<>|]/.test(name)) {
-        alert("Invalid characters in file name.");
-        return;
-    }
+        <h1 class="text-2xl font-black">
+            🚀 JS CODE OUTPUT
+        </h1>
 
-    if (files[name]) {
-        alert("A file with this name already exists.");
-        return;
-    }
+        <p class="text-slate-400 mt-2">
+            Multi-file web project.
+        </p>
 
-    // Create empty file
-    files[name] = "";
+        <button id="workoutBtn"
+                class="mt-6 w-full py-3
+                       rounded-xl
+                       bg-indigo-600
+                       font-bold">
 
-    // Save and refresh explorer
-    saveFiles();
-    renderFileExplorer();
+            Start Building
 
-    // Open newly created file
-    openFile(name);
+        </button>
+
+    </div>
+
+</div>
+`,
+
+        css: `
+#workoutBtn {
+
+    transition: .25s;
+
 }
+
+#workoutBtn:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px
+        rgba(99,102,241,.4);
+
+}
+`,
+
+        js: `
+const btn =
+    document.getElementById(
+        "workoutBtn"
+    );
+
+if (btn) {
+
+    btn.addEventListener(
+        "click",
+        () => {
+
+            console.log(
+                "Project is working!"
+            );
+
+            alert(
+                "🚀 Hello from JS CODE OUTPUT!"
+            );
+
+        }
+    );
+
+}
+`
+
+    },
+
+
+    game: {
+
+        html: `
+<div class="min-h-screen bg-slate-950
+            text-white flex flex-col
+            items-center justify-center p-4">
+
+    <h1 class="text-2xl font-black
+               text-amber-400 mb-4">
+
+        ARCADE PADDLE
+
+    </h1>
+
+    <canvas id="gameCanvas"
+            width="480"
+            height="320"
+            class="bg-slate-900
+                   border border-amber-500/40
+                   rounded-xl max-w-full">
+    </canvas>
+
+    <div class="mt-4 font-mono">
+
+        SCORE:
+        <span id="scoreText"
+              class="text-amber-400">
+            0
+        </span>
+
+    </div>
+
+</div>
+`,
+
+        css: `
+canvas {
+
+    box-shadow:
+        0 0 30px
+        rgba(245,158,11,.15);
+
+}
+`,
+
+        js: `
+const canvas =
+    document.getElementById(
+        "gameCanvas"
+    );
+
+const ctx =
+    canvas.getContext("2d");
+
+const scoreText =
+    document.getElementById(
+        "scoreText"
+    );
+
+let x =
+    canvas.width / 2;
+
+let y =
+    canvas.height - 30;
+
+let dx = 3;
+
+let dy = -3;
+
+let radius = 8;
+
+let paddleWidth = 75;
+
+let paddleHeight = 10;
+
+let paddleX =
+    (canvas.width - paddleWidth) / 2;
+
+let score = 0;
+
+
+canvas.addEventListener(
+    "mousemove",
+    event => {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        paddleX =
+            event.clientX -
+            rect.left -
+            paddleWidth / 2;
+
+    }
+);
+
+
+function draw() {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#f59e0b";
+
+    ctx.fill();
+
+    ctx.closePath();
+
+
+    ctx.fillStyle =
+        "#6366f1";
+
+    ctx.fillRect(
+        paddleX,
+        canvas.height -
+            paddleHeight,
+        paddleWidth,
+        paddleHeight
+    );
+
+
+    if (
+        x + dx >
+        canvas.width - radius ||
+        x + dx <
+        radius
+    ) {
+
+        dx =
+            -dx;
+
+    }
+
+
+    if (
+        y + dy <
+        radius
+    ) {
+
+        dy =
+            -dy;
+
+    }
+
+
+    else if (
+        y + dy >
+        canvas.height - radius
+    ) {
+
+        if (
+            x >
+                paddleX &&
+            x <
+                paddleX +
+                paddleWidth
+        ) {
+
+            dy =
+                -dy;
+
+            score +=
+                10;
+
+            scoreText.innerText =
+                score;
+
+        }
+
+        else {
+
+            x =
+                canvas.width / 2;
+
+            y =
+                canvas.height - 30;
+
+            score =
+                0;
+
+            scoreText.innerText =
+                score;
+
+        }
+
+    }
+
+
+    x += dx;
+
+    y += dy;
+
+
+    requestAnimationFrame(
+        draw
+    );
+
+}
+
+
+draw();
+`
+
+    },
+
+
+    three: {
+
+        html: `
+<div id="threeContainer"
+     class="w-full h-screen
+            bg-slate-950">
+</div>
+`,
+
+        css: `
+body {
+
+    margin: 0;
+
+    overflow: hidden;
+
+}
+`,
+
+        js: `
+if (typeof THREE === "undefined") {
+
+    console.error(
+        "Enable Three.js from Libraries."
+    );
+
+} else {
+
+    const container =
+        document.getElementById(
+            "threeContainer"
+        );
+
+    const scene =
+        new THREE.Scene();
+
+    const camera =
+        new THREE.PerspectiveCamera(
+            75,
+            container.clientWidth /
+            container.clientHeight,
+            .1,
+            1000
+        );
+
+    const renderer =
+        new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+    renderer.setSize(
+        container.clientWidth,
+        container.clientHeight
+    );
+
+    container.appendChild(
+        renderer.domElement
+    );
+
+    const geometry =
+        new THREE.IcosahedronGeometry(
+            2,
+            2
+        );
+
+    const material =
+        new THREE.MeshBasicMaterial({
+            color: 0x6366f1,
+            wireframe: true
+        });
+
+    const sphere =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    scene.add(
+        sphere
+    );
+
+    camera.position.z =
+        5;
+
+    function animate() {
+
+        requestAnimationFrame(
+            animate
+        );
+
+        sphere.rotation.x +=
+            .008;
+
+        sphere.rotation.y +=
+            .01;
+
+        renderer.render(
+            scene,
+            camera
+        );
+
+    }
+
+    animate();
+
+}
+`
+
+    },
+
+
+    glass: {
+
+        html: `
+<div class="min-h-screen
+            bg-gradient-to-tr
+            from-slate-950
+            via-indigo-950
+            to-slate-900
+            flex items-center
+            justify-center p-6">
+
+    <div class="w-full max-w-md
+                rounded-3xl
+                bg-white/10
+                backdrop-blur-xl
+                border border-white/20
+                p-7 shadow-2xl">
+
+        <h2 class="text-2xl
+                   font-black">
+            JS PLATINUM
+        </h2>
+
+        <p class="mt-4
+                  text-slate-300">
+            Glass UI Component
+        </p>
+
+    </div>
+
+</div>
+`,
+
+        css: ``,
+
+        js: `
+console.log(
+    "Glass UI loaded successfully."
+);
+`
+
+    }
+
+};
 
 
 /* =====================================================
@@ -5505,6 +5982,9 @@ function showToast(
         document.getElementById(
             "toastMsg"
         );
+
+
+    if (!toast || !text) return;
 
 
     text.innerText =
@@ -5541,12 +6021,471 @@ function showToast(
 
 
 /* =====================================================
-   AUTO SAVE CLOUD DRAFT
+   GOOGLE LOGIN
 ====================================================== */
 
-let cloudSaveTimer =
+function startBuilding() {
+
+    const welcome =
+        document.getElementById(
+            "welcomeScreen"
+        );
+
+
+    welcome.classList.add(
+        "hide"
+    );
+
+
+    setTimeout(
+        function () {
+
+            welcome.style.display =
+                "none";
+
+
+            document
+                .getElementById(
+                    "startScreen"
+                )
+                ?.classList
+                .remove(
+                    "hidden"
+                );
+
+        },
+        700
+    );
+
+}
+
+
+function openStartLogin() {
+
+    document
+        .getElementById(
+            "startLoginScreen"
+        )
+        ?.classList
+        .remove(
+            "hidden"
+        );
+
+}
+
+
+function startWithoutLogin() {
+
+    document
+        .getElementById(
+            "startLoginScreen"
+        )
+        ?.classList
+        .add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "startScreen"
+        )
+        ?.classList
+        .add(
+            "hidden"
+        );
+
+}
+
+
+async function continueWithGoogle() {
+
+    try {
+
+        const user =
+            await window.googleSignIn();
+
+
+        if (!user) return;
+
+
+        document
+            .getElementById(
+                "startLoginScreen"
+            )
+            ?.classList
+            .add(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "startScreen"
+            )
+            ?.classList
+            .add(
+                "hidden"
+            );
+
+
+        showToast(
+            `Welcome, ${
+                user.displayName ||
+                "Developer"
+            }!`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Google Sign-In Error:",
+            error
+        );
+
+
+        showToast(
+            "Google Sign-In failed."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   USER UI
+====================================================== */
+
+window.updateUserUI =
+    function (user) {
+
+        if (!user) return;
+
+        console.log(
+            "Logged in as:",
+            user.displayName
+        );
+
+    };
+
+
+/* =====================================================
+   FIREBASE MULTI-FILE CLOUD SAVE
+====================================================== */
+
+window.getProjectFiles =
+    function () {
+
+        if (editor) {
+
+            files[activeFile] =
+                editor.getValue();
+
+        }
+
+
+        return {
+            ...files
+        };
+
+    };
+
+
+window.setProjectFiles =
+    function (cloudFiles) {
+
+        if (
+            !cloudFiles ||
+            typeof cloudFiles !==
+            "object"
+        ) {
+
+            return;
+
+        }
+
+
+        files =
+            {
+                ...cloudFiles
+            };
+
+
+        if (
+            !files["index.html"]
+        ) {
+
+            files["index.html"] =
+                "";
+
+        }
+
+
+        activeFile =
+            "index.html";
+
+
+        saveFiles();
+
+        renderFileExplorer();
+
+        openFile(
+            activeFile
+        );
+
+        updatePreview();
+
+    };
+
+
+/* =====================================================
+   CLOUD SAVE OVERRIDE
+====================================================== */
+
+window.saveProjectDraft =
+    async function () {
+
+        const user =
+            window.firebaseAuth
+                ?.currentUser;
+
+
+        if (!user) {
+
+            return false;
+
+        }
+
+
+        try {
+
+            if (editor) {
+
+                files[activeFile] =
+                    editor.getValue();
+
+            }
+
+
+            const projectRef =
+                window.firebaseDB &&
+                window.firebaseDB;
+
+
+            if (!projectRef) {
+
+                return false;
+
+            }
+
+
+            const ref =
+                firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid,
+                    "projects",
+                    "main"
+                );
+
+
+            await firebaseSetDoc(
+                ref,
+                {
+
+                    files:
+                        {
+                            ...files
+                        },
+
+                    html:
+                        files["index.html"] ||
+                        "",
+
+                    css:
+                        files["style.css"] ||
+                        "",
+
+                    js:
+                        files["script.js"] ||
+                        "",
+
+                    updatedAt:
+                        firebaseServerTimestamp()
+
+                },
+                {
+                    merge: true
+                }
+            );
+
+
+            console.log(
+                "☁️ Multi-file cloud draft saved."
+            );
+
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "Cloud save failed:",
+                error
+            );
+
+
+            return false;
+
+        }
+
+    };
+
+
+/* =====================================================
+   FIREBASE FUNCTIONS
+====================================================== */
+
+let firebaseDoc =
     null;
 
+let firebaseSetDoc =
+    null;
+
+let firebaseServerTimestamp =
+    null;
+
+
+/* =====================================================
+   LOAD CLOUD DRAFT
+====================================================== */
+
+window.loadProjectDraft =
+    async function () {
+
+        const user =
+            window.firebaseAuth
+                ?.currentUser;
+
+
+        if (!user) {
+
+            return false;
+
+        }
+
+
+        try {
+
+            const ref =
+                firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid,
+                    "projects",
+                    "main"
+                );
+
+
+            const snapshot =
+                await firebaseGetDoc(
+                    ref
+                );
+
+
+            if (
+                !snapshot.exists()
+            ) {
+
+                return false;
+
+            }
+
+
+            const data =
+                snapshot.data();
+
+
+            if (
+                data.files &&
+                typeof data.files ===
+                "object"
+            ) {
+
+                files =
+                    {
+                        ...data.files
+                    };
+
+            } else {
+
+                files = {
+
+                    "index.html":
+                        data.html || "",
+
+                    "style.css":
+                        data.css || "",
+
+                    "script.js":
+                        data.js || ""
+
+                };
+
+            }
+
+
+            if (
+                !files["index.html"]
+            ) {
+
+                files["index.html"] =
+                    "";
+
+            }
+
+
+            activeFile =
+                "index.html";
+
+
+            saveFiles();
+
+            renderFileExplorer();
+
+            openFile(
+                activeFile
+            );
+
+            updatePreview();
+
+
+            console.log(
+                "☁️ Multi-file cloud draft loaded."
+            );
+
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "Cloud draft load failed:",
+                error
+            );
+
+
+            return false;
+
+        }
+
+    };
+
+
+/* =====================================================
+   AUTO SAVE
+====================================================== */
 
 function scheduleCloudSave() {
 
@@ -5569,17 +6508,7 @@ function scheduleCloudSave() {
         setTimeout(
             async function () {
 
-                const saved =
-                    await window.saveProjectDraft();
-
-
-                if (saved) {
-
-                    console.log(
-                        "☁️ Auto-saved."
-                    );
-
-                }
+                await window.saveProjectDraft();
 
             },
             1500
@@ -5588,29 +6517,64 @@ function scheduleCloudSave() {
 }
 
 
-/* Add cloud saving to editor changes */
+/* =====================================================
+   KEYBOARD SHORTCUTS
+====================================================== */
 
-setInterval(
-    function () {
+document.addEventListener(
+    "keydown",
+    function (event) {
 
         if (
-            window.currentUser &&
-            editorHTML &&
-            editorCSS &&
-            editorJS
+            (event.ctrlKey ||
+             event.metaKey) &&
+            event.key.toLowerCase() ===
+            "s"
         ) {
+
+            event.preventDefault();
+
+
+            if (editor) {
+
+                files[activeFile] =
+                    editor.getValue();
+
+            }
+
+
+            saveFiles();
+
 
             scheduleCloudSave();
 
+
+            showToast(
+                "Project saved."
+            );
+
         }
 
-    },
-    5000
+
+        if (
+            (event.ctrlKey ||
+             event.metaKey) &&
+            event.key.toLowerCase() ===
+            "n"
+        ) {
+
+            event.preventDefault();
+
+            createNewFile();
+
+        }
+
+    }
 );
 
 
 /* =====================================================
-   ESC CLOSE MODALS
+   ESC MODALS
 ====================================================== */
 
 document.addEventListener(
@@ -5626,7 +6590,8 @@ document.addEventListener(
                 .getElementById(
                     "downloadModal"
                 )
-                .classList.add(
+                ?.classList
+                .add(
                     "hidden"
                 );
 
@@ -5635,7 +6600,8 @@ document.addEventListener(
                 .getElementById(
                     "librariesModal"
                 )
-                .classList.add(
+                ?.classList
+                .add(
                     "hidden"
                 );
 
@@ -5644,13 +6610,107 @@ document.addEventListener(
                 .getElementById(
                     "startLoginScreen"
                 )
-                .classList.add(
+                ?.classList
+                .add(
                     "hidden"
                 );
 
         }
 
     }
+);
+
+
+/* =====================================================
+   FIREBASE MODULE BRIDGE
+====================================================== */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        setTimeout(
+            function () {
+
+                /*
+                 Firebase module variables are exposed
+                 by the Firebase initialization block.
+                */
+
+                if (
+                    window.firebaseDoc
+                ) {
+
+                    firebaseDoc =
+                        window.firebaseDoc;
+
+                }
+
+                if (
+                    window.firebaseSetDoc
+                ) {
+
+                    firebaseSetDoc =
+                        window.firebaseSetDoc;
+
+                }
+
+                if (
+                    window.firebaseGetDoc
+                ) {
+
+                    firebaseGetDoc =
+                        window.firebaseGetDoc;
+
+                }
+
+                if (
+                    window.firebaseServerTimestamp
+                ) {
+
+                    firebaseServerTimestamp =
+                        window.firebaseServerTimestamp;
+
+                }
+
+            },
+            100
+        );
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL PROJECT
+====================================================== */
+
+setInterval(
+    function () {
+
+        if (
+            editor &&
+            activeFile
+        ) {
+
+            files[activeFile] =
+                editor.getValue();
+
+            saveFiles();
+
+        }
+
+
+        if (
+            window.currentUser
+        ) {
+
+            scheduleCloudSave();
+
+        }
+
+    },
+    5000
 );
 
 </script>
