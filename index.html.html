@@ -103,10 +103,11 @@
 
 import {
     getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
+GoogleAuthProvider,
+signInWithRedirect,
+getRedirectResult,
+signOut,
+onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
@@ -219,32 +220,31 @@ window.firebaseDB =
 
 
 /* =================================================
-   Google Login
+   GOOGLE REDIRECT RESULT
 ================================================= */
 
-      window.googleSignIn = async function () {
+getRedirectResult(auth)
+    .then(function (result) {
 
-    try {
+        if (!result || !result.user) {
+            return;
+        }
 
-        const result = await signInWithPopup(
-            auth,
-            googleProvider
+        console.log(
+            "Google redirect login successful:",
+            result.user.displayName ||
+            result.user.email
         );
 
-        return result.user;
-
-    } catch (error) {
+    })
+    .catch(function (error) {
 
         console.error(
-            "Google Sign-In failed:",
+            "Google redirect login failed:",
             error
         );
 
-        throw error;
-    }
-
-};
-
+    });
 
         /* =================================================
            Save Draft
@@ -3388,63 +3388,18 @@ async function continueWithGoogle() {
 
     try {
 
-        const user = await window.googleSignIn();
-
-        if (!user) return;
-
-        window.currentUser = user;
-        window.firebaseCurrentUser = user;
-
-        // Hide Google login
-        document
-            .getElementById("startLoginScreen")
-            ?.classList.add("hidden");
-
-        // Hide Start Screen
-        document
-            .getElementById("startScreen")
-            ?.classList.add("hidden");
-
-        // Hide Welcome Screen completely
-        const welcomeScreen =
-            document.getElementById("welcomeScreen");
-
-        if (welcomeScreen) {
-            welcomeScreen.classList.add("hide");
-            welcomeScreen.style.display = "none";
-        }
-
-        // Show Projects Page
-        const projectsPage =
-            document.getElementById("projectsPage");
-
-        if (projectsPage) {
-
-            projectsPage.classList.remove("hidden");
-
-            if (typeof loadProjects === "function") {
-                await loadProjects();
-            }
-
-        }
-
-        showToast(
-            `Welcome, ${
-                user.displayName || "Developer"
-            }!`
-        );
+        await window.googleSignIn();
 
     } catch (error) {
 
         console.error(
-            "Google Sign-In Error:",
+            "Google login failed:",
             error
         );
 
         showToast(
-            "Google Sign-In failed."
+            "Google sign-in failed. Please try again."
         );
-
     }
 
 }
