@@ -5453,106 +5453,37 @@ function handleFileUpload(
 ====================================================== */
 
 function createNewFile() {
-
-    const fileName =
-        prompt(
-            "Enter file name:\nExample: app.js"
-        );
-
+    const fileName = prompt("Enter file name:");
 
     if (!fileName) return;
 
+    const name = fileName.trim();
 
-    const name =
-        fileName
-            .trim()
-            .toLowerCase();
-
-
-    if (
-        !name.endsWith(".html") &&
-        !name.endsWith(".htm") &&
-        !name.endsWith(".css") &&
-        !name.endsWith(".js")
-    ) {
-
-        showToast(
-            "Only HTML, CSS and JS are supported."
-        );
-
+    if (!name) {
+        alert("Please enter a valid file name.");
         return;
-
     }
 
-
-    if (
-        name.endsWith(".html") ||
-        name.endsWith(".htm")
-    ) {
-
-        editorHTML.setValue(
-`<!-- ${fileName} -->
-
-<div>
-
-    <h1>Hello World</h1>
-
-</div>`
-        );
-
-
-        switchTab(
-            "html"
-        );
-
+    // Prevent invalid Windows filename characters
+    if (/[\\/:*?"<>|]/.test(name)) {
+        alert("Invalid characters in file name.");
+        return;
     }
 
-
-    else if (
-        name.endsWith(".css")
-    ) {
-
-        editorCSS.setValue(
-`/* ${fileName} */
-
-body {
-
-}
-`
-        );
-
-
-        switchTab(
-            "css"
-        );
-
+    if (files[name]) {
+        alert("A file with this name already exists.");
+        return;
     }
 
+    // Create empty file
+    files[name] = "";
 
-    else {
+    // Save and refresh explorer
+    saveFiles();
+    renderFileExplorer();
 
-        editorJS.setValue(
-`// ${fileName}
-
-console.log("Hello from JavaScript");
-`
-        );
-
-
-        switchTab(
-            "js"
-        );
-
-    }
-
-
-    updatePreview();
-
-
-    showToast(
-        `${fileName} created.`
-    );
-
+    // Open newly created file
+    openFile(name);
 }
 
 
