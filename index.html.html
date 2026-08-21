@@ -882,7 +882,8 @@ window.googleSignIn = async function () {
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         
         <!-- LEFT PANEL: CODE EDITORS -->
-        <div id="editorPanel" class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col border-r border-slate-800 bg-slate-900/90">
+        <div id="editorPanel"
+           class="flex-1 min-w-0 h-full flex flex-col border-r border-slate-800 bg-slate-900/90"
             <!-- Code Tab Bar -->
             <div class="flex items-center justify-between bg-slate-950 px-2 pt-2 border-b border-slate-800">
                 <div class="flex space-x-1">
@@ -952,13 +953,12 @@ window.googleSignIn = async function () {
             </div>
         </div>
 
-        <!-- RESIZER BAR (Visual divider) -->
-        <div class="hidden md:flex w-1 bg-slate-800 hover:bg-indigo-500 cursor-col-resize transition-colors items-center justify-center">
-            <div class="w-0.5 h-8 bg-slate-600 rounded"></div>
-        </div>
+        
+        
 
         <!-- RIGHT PANEL: LIVE DESIGN PREVIEW -->
-        <div id="previewPanel" class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col bg-slate-950 relative">
+        <div id="previewPanel" 
+            class="flex-1 min-w-0 h-full flex flex-col bg-slate-950 relative"
             
             <!-- Preview Controls Bar -->
             <div class="h-10 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between">
@@ -1018,7 +1018,147 @@ window.googleSignIn = async function () {
 
         </div>
     </div>
+<!-- =========================================
+     VS CODE STYLE EXPLORER
+     ========================================= -->
 
+<div id="vsExplorer"
+     class="w-56 shrink-0 bg-[#0b0f14] border-r border-slate-800
+            flex flex-col text-sm">
+
+    <!-- Explorer Header -->
+    <div class="h-10 px-3 flex items-center justify-between
+                border-b border-slate-800 bg-[#11161d]">
+
+        <span class="text-xs font-semibold text-slate-300 tracking-wider">
+            EXPLORER
+        </span>
+
+        <div class="flex items-center gap-2">
+
+            <button
+                onclick="createNewFile()"
+                title="New File"
+                class="text-slate-500 hover:text-white transition">
+                <i class="fa-solid fa-file-circle-plus"></i>
+            </button>
+
+            <button
+                onclick="document.getElementById('fileUpload').click()"
+                title="Upload File"
+                class="text-slate-500 hover:text-white transition">
+                <i class="fa-solid fa-upload"></i>
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- Project -->
+    <div class="px-3 py-3">
+
+        <div class="flex items-center gap-2 text-xs
+                    font-bold text-slate-400 uppercase">
+
+            <i class="fa-solid fa-chevron-down text-[9px]"></i>
+
+            <i class="fa-solid fa-folder text-yellow-500"></i>
+
+            <span>PROJECT</span>
+
+        </div>
+
+
+        <!-- Files -->
+        <div class="mt-2 space-y-1">
+
+            <!-- HTML -->
+            <button
+                id="explorer-html"
+                onclick="openExplorerFile('html')"
+                class="w-full flex items-center gap-2 px-2 py-1.5
+                       rounded text-left
+                       bg-indigo-500/10 text-indigo-300
+                       hover:bg-indigo-500/20 transition">
+
+                <i class="fa-brands fa-html5 text-orange-500"></i>
+
+                <span>index.html</span>
+
+            </button>
+
+
+            <!-- CSS -->
+            <button
+                id="explorer-css"
+                onclick="openExplorerFile('css')"
+                class="w-full flex items-center gap-2 px-2 py-1.5
+                       rounded text-left
+                       text-slate-400
+                       hover:bg-slate-800 transition">
+
+                <i class="fa-brands fa-css3-alt text-blue-400"></i>
+
+                <span>style.css</span>
+
+            </button>
+
+
+            <!-- JavaScript -->
+            <button
+                id="explorer-js"
+                onclick="openExplorerFile('js')"
+                class="w-full flex items-center gap-2 px-2 py-1.5
+                       rounded text-left
+                       text-slate-400
+                       hover:bg-slate-800 transition">
+
+                <i class="fa-brands fa-js text-yellow-400"></i>
+
+                <span>script.js</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Bottom Tools -->
+    <div class="mt-auto border-t border-slate-800 p-3 space-y-2">
+
+        <button
+            onclick="createNewFile()"
+            class="w-full flex items-center gap-2 px-3 py-2
+                   rounded-lg bg-slate-800
+                   hover:bg-indigo-600
+                   text-slate-300 hover:text-white
+                   transition text-xs">
+
+            <i class="fa-solid fa-plus"></i>
+
+            <span>New File</span>
+
+        </button>
+
+
+        <button
+            onclick="document.getElementById('fileUpload').click()"
+            class="w-full flex items-center gap-2 px-3 py-2
+                   rounded-lg bg-slate-800
+                   hover:bg-indigo-600
+                   text-slate-300 hover:text-white
+                   transition text-xs">
+
+            <i class="fa-solid fa-folder-open"></i>
+
+            <span>Upload File</span>
+
+        </button>
+
+    </div>
+
+</div>
     <!-- LIBRARIES / CDNS SELECTION MODAL -->
     <!-- =========================================
      DOWNLOAD PROJECT MODAL
@@ -1631,6 +1771,127 @@ function handleFileUpload(event) {
 
     // Allow same file to be uploaded again
     event.target.value = '';
+}
+        // =========================================
+// VS CODE STYLE EXPLORER
+// =========================================
+
+function openExplorerFile(file) {
+
+    // Switch existing CodeMirror tab
+    switchTab(file);
+
+    // Update explorer active state
+    ['html', 'css', 'js'].forEach(type => {
+
+        const item = document.getElementById(
+            `explorer-${type}`
+        );
+
+        if (!item) return;
+
+        if (type === file) {
+
+            item.classList.add(
+                'bg-indigo-500/10',
+                'text-indigo-300'
+            );
+
+            item.classList.remove(
+                'text-slate-400'
+            );
+
+        } else {
+
+            item.classList.remove(
+                'bg-indigo-500/10',
+                'text-indigo-300'
+            );
+
+            item.classList.add(
+                'text-slate-400'
+            );
+        }
+    });
+}
+
+
+// =========================================
+// CREATE NEW FILE
+// =========================================
+
+function createNewFile() {
+
+    const fileName = prompt(
+        "Enter file name:\nExample: app.js"
+    );
+
+    if (!fileName) return;
+
+    const name = fileName.trim().toLowerCase();
+
+    if (
+        !name.endsWith('.html') &&
+        !name.endsWith('.htm') &&
+        !name.endsWith('.css') &&
+        !name.endsWith('.js')
+    ) {
+
+        showToast(
+            'Only HTML, CSS and JavaScript files are supported.'
+        );
+
+        return;
+    }
+
+    // HTML
+    if (
+        name.endsWith('.html') ||
+        name.endsWith('.htm')
+    ) {
+
+        editorHTML.setValue(
+`<!-- ${fileName} -->
+
+<div>
+    
+</div>`
+        );
+
+        openExplorerFile('html');
+
+    }
+
+    // CSS
+    else if (name.endsWith('.css')) {
+
+        editorCSS.setValue(
+`/* ${fileName} */
+
+`
+        );
+
+        openExplorerFile('css');
+
+    }
+
+    // JavaScript
+    else if (name.endsWith('.js')) {
+
+        editorJS.setValue(
+`// ${fileName}
+
+`
+        );
+
+        openExplorerFile('js');
+    }
+
+    updatePreview();
+
+    showToast(
+        `Created ${fileName}`
+    );
 }
         function switchTab(tab) {
             activeTab = tab;
