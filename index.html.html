@@ -3284,16 +3284,80 @@ let currentProjectId = null;
    SHOW PROJECTS PAGE
 ------------------------------------------------------ */
 
-function showProjectsPage() {
+async function continueWithGoogle() {
 
-    const projectsPage =
-        document.getElementById("projectsPage");
+    try {
 
-    if (!projectsPage) return;
+        const user =
+            await window.googleSignIn();
 
-    projectsPage.classList.remove("hidden");
+        if (!user) return;
 
-    loadProjects();
+
+        /* ---------------------------------------------
+           STORE CURRENT USER
+        --------------------------------------------- */
+
+        window.currentUser =
+            user;
+
+        window.firebaseCurrentUser =
+            user;
+
+
+        /* ---------------------------------------------
+           HIDE GOOGLE LOGIN
+        --------------------------------------------- */
+
+        document
+            .getElementById("startLoginScreen")
+            ?.classList
+            .add("hidden");
+
+
+        /* ---------------------------------------------
+           HIDE START SCREEN
+        --------------------------------------------- */
+
+        document
+            .getElementById("startScreen")
+            ?.classList
+            .add("hidden");
+
+
+        /* ---------------------------------------------
+           SHOW PROJECTS PAGE
+        --------------------------------------------- */
+
+        showProjectsPage();
+
+
+        /* ---------------------------------------------
+           WELCOME MESSAGE
+        --------------------------------------------- */
+
+        showToast(
+            `Welcome, ${
+                user.displayName ||
+                "Developer"
+            }!`
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Google Sign-In Error:",
+            error
+        );
+
+
+        showToast(
+            "Google Sign-In failed."
+        );
+
+    }
+
 }
 
 
