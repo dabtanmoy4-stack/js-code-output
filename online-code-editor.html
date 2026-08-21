@@ -59,18 +59,7 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
-<!-- CodeMirror -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closetag.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -100,198 +89,27 @@
             color: #e2e8f0;
             font-family: Arial, Helvetica, sans-serif;
         }
-/* =========================
-   VS CODE STYLE EDITOR
-========================= */
 
-.vscode-editor {
-    display: flex;
-    width: 100%;
-    height: 650px;
-    overflow: hidden;
-    background: #0b0f19;
-    border: 1px solid #263041;
-    border-radius: 14px;
-}
+        .editor {
+            width: 100%;
+            min-height: 230px;
+            resize: vertical;
+            background: #020617;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            outline: none;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            tab-size: 2;
+        }
 
-/* Explorer */
-
-.explorer {
-    width: 210px;
-    min-width: 210px;
-    background: #0a0e16;
-    border-right: 1px solid #263041;
-    color: #cbd5e1;
-}
-
-.explorer-title {
-    height: 45px;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    color: #94a3b8;
-}
-
-.explorer-section {
-    padding: 8px;
-}
-
-.folder-name {
-    padding: 7px 8px;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.file-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-.file-item:hover {
-    background: #151c29;
-}
-
-.file-item.active {
-    background: #1d2939;
-    color: white;
-}
-
-/* Editor area */
-
-.code-area {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.editor-tabs {
-    height: 45px;
-    display: flex;
-    background: #0d121c;
-    border-bottom: 1px solid #263041;
-    overflow-x: auto;
-}
-
-.editor-tab {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 16px;
-    border-right: 1px solid #263041;
-    color: #94a3b8;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.editor-tab.active {
-    background: #111827;
-    color: white;
-    border-top: 2px solid #6366f1;
-}
-
-.tab-close {
-    color: #64748b;
-    cursor: pointer;
-}
-
-.tab-close:hover {
-    color: white;
-}
-
-/* CodeMirror */
-
-.CodeMirror {
-    flex: 1;
-    height: 100%;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    background: #0b0f19;
-}
-
-.CodeMirror-gutters {
-    background: #0b0f19;
-    border-right: 1px solid #1e293b;
-}
-
-.CodeMirror-linenumber {
-    color: #475569;
-}
-
-.CodeMirror-cursor {
-    border-left: 2px solid #818cf8;
-}
-
-/* Bottom panel */
-
-.bottom-panel {
-    height: 38px;
-    min-height: 38px;
-    background: #0a0e16;
-    border-top: 1px solid #263041;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 0 15px;
-    color: #94a3b8;
-    font-size: 12px;
-}
-
-.bottom-panel span {
-    cursor: pointer;
-}
-
-.bottom-panel span:hover {
-    color: white;
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-
-    .explorer {
-        width: 55px;
-        min-width: 55px;
-    }
-
-    .explorer-title {
-        justify-content: center;
-        padding: 0;
-        font-size: 0;
-    }
-
-    .explorer-title::after {
-        content: "☰";
-        font-size: 16px;
-    }
-
-    .folder-name {
-        display: none;
-    }
-
-    .file-item {
-        justify-content: center;
-        padding: 10px 4px;
-    }
-
-    .file-item span {
-        display: none;
-    }
-
-    .vscode-editor {
-        height: 550px;
-    }
-}
+        .editor:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+        }
 
         .output-frame {
             width: 100%;
@@ -312,201 +130,6 @@
             background-clip: text;
             color: transparent;
         }
-        .CodeMirror {
-    background: #0b0f19 !important;
-    color: #d4d4d4;
-}
-
-.CodeMirror-selected {
-    background: #264f78 !important;
-}
-
-.CodeMirror-cursor {
-    border-left: 2px solid #ffffff;
-}
-
-.cm-s-default .cm-keyword {
-    color: #c586c0;
-}
-
-.cm-s-default .cm-tag {
-    color: #569cd6;
-}
-
-.cm-s-default .cm-attribute {
-    color: #9cdcfe;
-}
-
-.cm-s-default .cm-string {
-    color: #ce9178;
-}
-
-.cm-s-default .cm-comment {
-    color: #6a9955;
-}
-
-.cm-s-default .cm-number {
-    color: #b5cea8;
-}
-        /* =========================
-   VS CODE ACTIVITY BAR
-========================= */
-
-.activity-bar {
-    width: 48px;
-    min-width: 48px;
-    background: #080b12;
-    border-right: 1px solid #263041;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-}
-
-.activity-icon {
-    width: 44px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    font-size: 18px;
-    cursor: pointer;
-    position: relative;
-}
-
-.activity-icon:hover {
-    color: #e2e8f0;
-}
-
-.activity-icon.active {
-    color: white;
-}
-
-.activity-icon.active::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: #6366f1;
-}
-
-
-/* =========================
-   EXPLORER HEADER
-========================= */
-
-.explorer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 45px;
-    padding: 0 12px;
-    color: #94a3b8;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.explorer-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.explorer-action {
-    cursor: pointer;
-    color: #64748b;
-}
-
-.explorer-action:hover {
-    color: white;
-}
-
-
-/* =========================
-   FILE ITEM
-========================= */
-
-.file-item {
-    position: relative;
-}
-
-.file-item .file-actions {
-    display: none;
-    margin-left: auto;
-    gap: 7px;
-}
-
-.file-item:hover .file-actions {
-    display: flex;
-}
-
-.file-action {
-    color: #64748b;
-    cursor: pointer;
-    font-size: 11px;
-}
-
-.file-action:hover {
-    color: white;
-}
-
-
-/* =========================
-   BOTTOM STATUS BAR
-========================= */
-
-.status-bar {
-    height: 24px;
-    min-height: 24px;
-    background: #171717;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    gap: 18px;
-    font-size: 11px;
-    color: #cbd5e1;
-}
-
-.status-right {
-    margin-left: auto;
-    display: flex;
-    gap: 15px;
-}
-
-
-/* =========================
-   EXPLORER RESIZE
-========================= */
-
-.explorer-wrapper {
-    display: flex;
-    width: 258px;
-    min-width: 258px;
-}
-
-.explorer {
-    width: 210px;
-    min-width: 210px;
-}
-
-@media (max-width: 768px) {
-
-    .activity-bar {
-        display: none;
-    }
-
-    .explorer-wrapper {
-        width: 55px;
-        min-width: 55px;
-    }
-
-    .explorer {
-        width: 55px;
-        min-width: 55px;
-    }
-}
     </style>
 </head>
 
@@ -688,334 +311,173 @@
              LIVE EDITOR
         ========================== -->
 
-       <section id="editor" class="px-5 py-12">
+        <section id="editor" class="px-5 py-12">
 
-    <div class="max-w-7xl mx-auto">
+            <div class="max-w-7xl mx-auto">
 
-        <div class="mb-6">
-
-            <h2 class="text-2xl md:text-3xl font-bold text-white">
-                VS Code Style Online Editor
-            </h2>
-
-            <p class="text-slate-400 mt-2">
-                Write HTML, CSS and JavaScript with automatic live preview.
-            </p>
-
-        </div>
-
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-
-          <!-- VS CODE EDITOR -->
-
-<div class="vscode-editor">
-
-    <!-- ACTIVITY BAR -->
-
-    <div class="activity-bar">
-
-        <div
-            class="activity-icon active"
-            title="Explorer"
-        >
-            <i class="fa-regular fa-copy"></i>
-        </div>
-
-        <div
-            class="activity-icon"
-            title="Search"
-        >
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-
-        <div
-            class="activity-icon"
-            title="Settings"
-        >
-            <i class="fa-solid fa-gear"></i>
-        </div>
-
-    </div>
-
-
-    <!-- EXPLORER + CODE -->
-
-    <div class="explorer-wrapper">
-
-        <!-- EXPLORER -->
-
-        <aside class="explorer">
-
-            <div class="explorer-header">
-
-                <span>EXPLORER</span>
-
-                <div class="explorer-actions">
-
-                    <span
-                        class="explorer-action"
-                        onclick="createNewFile()"
-                        title="New File"
-                    >
-                        <i class="fa-solid fa-file-circle-plus"></i>
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="explorer-section">
-
-                <div class="folder-name">
-                    <i class="fa-solid fa-chevron-down mr-1"></i>
-                    JS CODE OUTPUT
-                </div>
-
-
-                <div
-                    class="file-item active"
-                    data-file="html"
-                    onclick="switchFile('html')"
-                >
-
-                    <i class="fa-brands fa-html5 text-orange-400"></i>
-
-                    <span>index.html</span>
-
-                    <div class="file-actions">
-
-                        <span
-                            class="file-action"
-                            onclick="event.stopPropagation(); deleteFile('html')"
-                            title="Delete"
-                        >
-                            <i class="fa-solid fa-trash"></i>
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="file-item"
-                    data-file="css"
-                    onclick="switchFile('css')"
-                >
-
-                    <i class="fa-brands fa-css3-alt text-sky-400"></i>
-
-                    <span>style.css</span>
-
-                    <div class="file-actions">
-
-                        <span
-                            class="file-action"
-                            onclick="event.stopPropagation(); deleteFile('css')"
-                            title="Delete"
-                        >
-                            <i class="fa-solid fa-trash"></i>
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="file-item"
-                    data-file="js"
-                    onclick="switchFile('js')"
-                >
-
-                    <i class="fa-brands fa-js text-yellow-400"></i>
-
-                    <span>script.js</span>
-
-                    <div class="file-actions">
-
-                        <span
-                            class="file-action"
-                            onclick="event.stopPropagation(); deleteFile('js')"
-                            title="Delete"
-                        >
-                            <i class="fa-solid fa-trash"></i>
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </aside>
-
-
-        <!-- CODE AREA -->
-
-        <div class="code-area">
-
-            <!-- TABS -->
-
-            <div class="editor-tabs">
-
-                <div
-                    id="tab-html"
-                    class="editor-tab active"
-                    onclick="switchFile('html')"
-                >
-
-                    <i class="fa-brands fa-html5 text-orange-400"></i>
-
-                    index.html
-
-                </div>
-
-
-                <div
-                    id="tab-css"
-                    class="editor-tab"
-                    onclick="switchFile('css')"
-                >
-
-                    <i class="fa-brands fa-css3-alt text-sky-400"></i>
-
-                    style.css
-
-                </div>
-
-
-                <div
-                    id="tab-js"
-                    class="editor-tab"
-                    onclick="switchFile('js')"
-                >
-
-                    <i class="fa-brands fa-js text-yellow-400"></i>
-
-                    script.js
-
-                </div>
-
-            </div>
-
-
-            <!-- CODEMIRROR -->
-
-            <textarea id="codeEditor"></textarea>
-
-
-            <!-- BOTTOM PANEL -->
-
-            <div class="bottom-panel">
-
-                <span>
-                    <i class="fa-solid fa-circle-exclamation mr-1"></i>
-                    Problems
-                </span>
-
-                <span>
-                    <i class="fa-solid fa-terminal mr-1"></i>
-                    Output
-                </span>
-
-                <span>
-                    <i class="fa-solid fa-code mr-1"></i>
-                    Console
-                </span>
-
-                <span class="ml-auto">
-
-                    <i class="fa-solid fa-check text-emerald-400 mr-1"></i>
-
-                    Auto Save
-
-                </span>
-
-            </div>
-
-
-            <!-- STATUS BAR -->
-
-            <div class="status-bar">
-
-                <span>
-                    <i class="fa-solid fa-code-branch mr-1"></i>
-                    main
-                </span>
-
-                <span>
-                    UTF-8
-                </span>
-
-                <span>
-                    Spaces: 4
-                </span>
-
-                <div class="status-right">
-
-                    <span>
-                        <i class="fa-solid fa-check text-emerald-400 mr-1"></i>
-                        Saved
-                    </span>
-
-                    <span id="languageStatus">
-                        HTML
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-            <!-- LIVE OUTPUT -->
-
-            <div>
-
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
                     <div>
 
-                        <h3 class="text-lg font-bold text-white">
-                            Live Output
-                        </h3>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white">
+                            Try the Online Code Editor
+                        </h2>
 
-                        <p class="text-sm text-slate-500">
-                            Preview updates automatically as you edit.
+                        <p class="text-slate-400 mt-2">
+                            Write code and see the live output instantly.
                         </p>
 
                     </div>
 
-                    <div class="flex items-center gap-2 text-xs text-emerald-400">
 
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <button
+                        onclick="runCode()"
+                        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition"
+                    >
+                        <i class="fa-solid fa-play mr-2"></i>
+                        Run Code
+                    </button>
 
-                        LIVE
+                </div>
+
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                    <!-- CODE SIDE -->
+
+                    <div class="space-y-5">
+
+                        <div>
+
+                            <div class="flex items-center justify-between mb-2">
+
+                                <label class="text-sm font-semibold text-orange-400">
+                                    <i class="fa-brands fa-html5 mr-2"></i>
+                                    HTML
+                                </label>
+
+                            </div>
+
+                            <textarea
+                                id="htmlCode"
+                                class="editor"
+                                spellcheck="false"
+                            ><div class="hello">
+    <h1>Hello from JS CODE OUTPUT</h1>
+    <p>Write code and see the result instantly.</p>
+    <button onclick="showMessage()">Click Me</button>
+</div></textarea>
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="block text-sm font-semibold text-sky-400 mb-2">
+                                <i class="fa-brands fa-css3-alt mr-2"></i>
+                                CSS
+                            </label>
+
+                            <textarea
+                                id="cssCode"
+                                class="editor"
+                                spellcheck="false"
+                            >body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    text-align: center;
+}
+
+.hello {
+    padding: 30px;
+    border-radius: 20px;
+    background: #eef2ff;
+}
+
+h1 {
+    color: #4f46e5;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4338ca;
+}</textarea>
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="block text-sm font-semibold text-yellow-400 mb-2">
+                                <i class="fa-brands fa-js mr-2"></i>
+                                JavaScript
+                            </label>
+
+                            <textarea
+                                id="jsCode"
+                                class="editor"
+                                spellcheck="false"
+                            >function showMessage() {
+    alert("Your JavaScript is working!");
+}</textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OUTPUT SIDE -->
+
+                    <div>
+
+                        <div class="flex items-center justify-between mb-3">
+
+                            <div>
+
+                                <h3 class="text-lg font-bold text-white">
+                                    Live Output
+                                </h3>
+
+                                <p class="text-sm text-slate-500">
+                                    Your code preview appears here.
+                                </p>
+
+                            </div>
+
+                            <div class="flex items-center gap-2 text-xs text-emerald-400">
+
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+
+                                LIVE
+
+                            </div>
+
+                        </div>
+
+
+                        <iframe
+                            id="output"
+                            class="output-frame"
+                            title="Live code output preview"
+                            sandbox="allow-scripts"
+                        ></iframe>
 
                     </div>
 
                 </div>
 
-                <iframe
-                    id="output"
-                    class="output-frame"
-                    title="Live code output preview"
-                    sandbox="allow-scripts"
-                ></iframe>
-
             </div>
 
-        </div>
+        </section>
 
-    </div>
-
-</section>
 
         <!-- =========================
              SEO CONTENT
@@ -1252,244 +714,22 @@
          EDITOR SCRIPT
     ========================== -->
 
- <script>
+    <script>
 
-let currentFile = "html";
+        const htmlCode = document.getElementById("htmlCode");
+        const cssCode = document.getElementById("cssCode");
+        const jsCode = document.getElementById("jsCode");
+        const output = document.getElementById("output");
 
-const files = {
 
-    html: `<div class="hello">
-    <h1>Hello from JS CODE OUTPUT</h1>
-    <p>Write code and see the result instantly.</p>
-    <button onclick="showMessage()">Click Me</button>
-</div>`,
+        function runCode() {
 
-    css: `body {
-    font-family: Arial, sans-serif;
-    padding: 40px;
-    text-align: center;
-}
+            const html = htmlCode.value;
+            const css = cssCode.value;
+            const js = jsCode.value;
 
-.hello {
-    padding: 30px;
-    border-radius: 20px;
-    background: #eef2ff;
-}
 
-h1 {
-    color: #4f46e5;
-}
-
-button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    background: #4f46e5;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #4338ca;
-}`,
-
-    js: `function showMessage() {
-    alert("Your JavaScript is working!");
-}`
-
-};
-/* =========================
-   DELETE FILE
-========================= */
-
-function deleteFile(file) {
-
-    if (file === "html") {
-        alert("index.html cannot be deleted.");
-        return;
-    }
-
-    if (file === "css") {
-        files.css = "";
-    }
-
-    if (file === "js") {
-        files.js = "";
-    }
-
-    if (currentFile === file) {
-
-        if (file === "css") {
-            switchFile("html");
-        }
-
-        else if (file === "js") {
-            switchFile("html");
-        }
-
-    }
-
-    updatePreview();
-
-}
-
-/* =========================
-   CREATE CODEMIRROR
-========================= */
-
-const editor = CodeMirror.fromTextArea(
-    document.getElementById("codeEditor"),
-    {
-        lineNumbers: true,
-        mode: "text/html",
-        theme: "default",
-
-        autoCloseBrackets: true,
-        autoCloseTags: true,
-
-        matchBrackets: true,
-
-        indentUnit: 4,
-        tabSize: 4,
-
-        lineWrapping: false,
-
-        extraKeys: {
-            "Ctrl-S": function(cm) {
-                saveCurrentFile();
-            },
-
-            "Cmd-S": function(cm) {
-                saveCurrentFile();
-            }
-        }
-    }
-);
-
-
-/* =========================
-   SWITCH FILE
-========================= */
-
-function switchFile(file) {
-
-    // Save current editor
-    files[currentFile] = editor.getValue();
-
-    currentFile = file;
-
-    // Load selected file
-    editor.setValue(files[file]);
-
-    // Change syntax highlighting
-
-    if (file === "html") {
-
-        editor.setOption("mode", "text/html");
-
-    }
-
-    else if (file === "css") {
-
-        editor.setOption("mode", "css");
-
-    }
-
-    else if (file === "js") {
-
-        editor.setOption("mode", "javascript");
-
-    }
-
-
-    // Update explorer
-
-    document.querySelectorAll(".file-item").forEach(item => {
-
-        item.classList.remove("active");
-
-    });
-
-    const activeFile =
-        document.querySelector(`[data-file="${file}"]`);
-
-    if (activeFile) {
-        activeFile.classList.add("active");
-    }
-
-
-    // Update tabs
-
-    document.querySelectorAll(".editor-tab").forEach(tab => {
-
-        tab.classList.remove("active");
-
-    });
-
-    document
-        .getElementById(`tab-${file}`)
-        .classList.add("active");
-
-document.getElementById("languageStatus").textContent =
-    file === "html"
-        ? "HTML"
-        : file === "css"
-        ? "CSS"
-        : "JavaScript";
-    editor.focus();
-
-}
-
-
-/* =========================
-   SAVE CURRENT FILE
-========================= */
-
-function saveCurrentFile() {
-
-    files[currentFile] = editor.getValue();
-
-    updatePreview();
-
-}
-function createNewFile() {
-
-    const fileName = prompt("Enter file name:");
-
-    if (!fileName) return;
-
-    alert(
-        "New file system will be added in the next step."
-    );
-
-}
-
-/* =========================
-   AUTO UPDATE
-========================= */
-
-editor.on("change", function() {
-
-    files[currentFile] = editor.getValue();
-
-    updatePreview();
-
-});
-
-
-/* =========================
-   LIVE PREVIEW
-========================= */
-
-function updatePreview() {
-
-    const html = files.html;
-    const css = files.css;
-    const js = files.js;
-
-
-    const documentContent = `
-
+            const documentContent = `
 <!DOCTYPE html>
 
 <html>
@@ -1498,8 +738,7 @@ function updatePreview() {
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
@@ -1522,71 +761,85 @@ ${js.replace(/<\/script>/gi, "<\\/script>")}
 </body>
 
 </html>
-
 `;
 
 
-    document.getElementById("output").srcdoc =
-        documentContent;
+            output.srcdoc = documentContent;
 
-}
+        }
 
 
-/* =========================
-   INITIAL LOAD
-========================= */
+        /*
+         * Run automatically when the page loads.
+         */
 
-editor.setValue(files.html);
+        runCode();
 
-updatePreview();
 
-editor.focus();
+        /*
+         * Ctrl + Enter = Run Code
+         */
 
-</script>
+        document.addEventListener("keydown", function(event) {
+
+            if (
+                (event.ctrlKey || event.metaKey) &&
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                runCode();
+
+            }
+
+        });
+
+    </script>
 
 
     <!-- FAQ Structured Data -->
 
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "Can I write HTML, CSS and JavaScript online?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. JS CODE OUTPUT provides separate areas for HTML, CSS and JavaScript so you can write and preview web code directly in your browser."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Can I see my code output instantly?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Run your code and the live output preview will display the resulting webpage."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Do I need to install software?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "No. The editor works in a modern web browser, allowing you to write and preview code online."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Is JS CODE OUTPUT free?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The online editor is designed to provide a free browser-based environment for experimenting with HTML, CSS and JavaScript."
-                }
-            }
-        ]
-    }
-    </script>
-
-</body>
+        "@context": "https://schema.org", 
+        "@type": "FAQPage", 
+        "mainEntity": [ 
+            { 
+                "@type": "Question", 
+                "name": "Can I write HTML, CSS and JavaScript online?", 
+                "acceptedAnswer": { 
+                    "@type": "Answer", 
+                    "text": "Yes. JS CODE OUTPUT provides separate areas for HTML, CSS and JavaScript so you can write and preview web code directly in your browser." 
+                } 
+            }, 
+            { 
+                "@type": "Question", 
+                "name": "Can I see my code output instantly?", 
+                "acceptedAnswer": { 
+                    "@type": "Answer", 
+                    "text": "Yes. Run your code and the live output preview will display the resulting webpage." 
+                } 
+            }, 
+            { 
+                "@type": "Question", 
+                "name": "Do I need to install software?", 
+                "acceptedAnswer": { 
+                    "@type": "Answer", 
+                    "text": "No. The editor works in a modern web browser, allowing you to write and preview code online." 
+                } 
+            }, 
+            { 
+                "@type": "Question", 
+                "name": "Is JS CODE OUTPUT free?", 
+                "acceptedAnswer": { 
+                    "@type": "Answer", 
+                    "text": "The online editor is designed to provide a free browser-based environment for experimenting with HTML, CSS and JavaScript." 
+                } 
+            } 
+        ] 
+    } 
+    </script> 
+ 
+</body> 
 </html>
