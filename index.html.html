@@ -1052,85 +1052,43 @@ footer {
 
        <div id="editorPanel"
      class="flex-1 min-w-0 h-full flex flex-col border-r border-slate-800 bg-slate-900/90">
-            <!-- Code Tab Bar -->
-        <!-- Code Tab Bar -->
-            <div class="flex items-center justify-between bg-slate-950 px-2 pt-2 border-b border-slate-800">
-                <div class="flex space-x-1">
-                    <button id="tab-html" onclick="switchTab('html')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 text-orange-400 border-t-2 border-orange-500 flex items-center space-x-2">
-                        <i class="fa-brands fa-html5 text-sm"></i>
-                        <span>HTML</span>
-                    </button>
-                    <button id="tab-css" onclick="switchTab('css')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-sky-400 border-t-2 border-transparent flex items-center space-x-2 transition">
-                        <i class="fa-brands fa-css3-alt text-sm"></i>
-                        <span>CSS</span>
-                    </button>
-                    <button id="tab-js" onclick="switchTab('js')" class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-yellow-400 border-t-2 border-transparent flex items-center space-x-2 transition">
-                        <i class="fa-brands fa-js text-sm"></i>
-                        <span>JavaScript</span>
-                    </button>
-                    <!-- Upload File -->
-<div class="ml-2 pl-2 border-l border-slate-800">
+         <!-- Code Tab Bar -->
+<div class="flex items-center justify-between bg-slate-950 px-2 pt-2 border-b border-slate-800">
 
-    <input
-        type="file"
-        id="fileUpload"
-        accept=".html,.htm,.css,.js"
-        class="hidden"
-        onchange="handleFileUpload(event)"
-    >
-           <!-- Editor Header -->
-<div class="h-10 flex items-center justify-between bg-slate-950 px-3 border-b border-slate-800">
+    <div class="flex space-x-1">
 
-    <div class="flex items-center gap-2 text-xs text-slate-400">
-        <i class="fa-solid fa-code text-indigo-400"></i>
-        <span id="currentFileName">index.html</span>
+        <button id="tab-html"
+            onclick="switchTab('html')"
+            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 text-orange-400 border-t-2 border-orange-500 flex items-center space-x-2">
+            <i class="fa-brands fa-html5 text-sm"></i>
+            <span>HTML</span>
+        </button>
+
+        <button id="tab-css"
+            onclick="switchTab('css')"
+            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-sky-400 border-t-2 border-transparent flex items-center space-x-2 transition">
+            <i class="fa-brands fa-css3-alt text-sm"></i>
+            <span>CSS</span>
+        </button>
+
+        <button id="tab-js"
+            onclick="switchTab('js')"
+            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-yellow-400 border-t-2 border-transparent flex items-center space-x-2 transition">
+            <i class="fa-brands fa-js text-sm"></i>
+            <span>JavaScript</span>
+        </button>
+
     </div>
 
+    <!-- Clear Editor -->
     <button
-        onclick="document.getElementById('fileUpload').click()"
-        class="px-3 py-2 text-xs font-semibold rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition flex items-center space-x-2"
-        title="Upload HTML, CSS or JavaScript file"
         onclick="clearEditors()"
         class="text-xs text-slate-500 hover:text-rose-400 px-2 py-1 rounded transition"
-        title="Clear Current File"
-    >
-        <i class="fa-solid fa-folder-open"></i>
-        <span>Upload File</span>
+        title="Clear All Editors">
         <i class="fa-solid fa-trash-can"></i>
     </button>
 
 </div>
-                <!-- Clean Editor Button -->
-                <button onclick="clearEditors()" class="text-xs text-slate-500 hover:text-rose-400 px-2 py-1 rounded transition" title="Clear All Editors">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-
-            <!-- CodeMirror Containers -->
-            <div class="flex-1 relative overflow-hidden bg-slate-900">
-                <div id="wrapper-html" class="absolute inset-0">
-                    <textarea id="code-html"></textarea>
-                </div>
-                <div id="wrapper-css" class="absolute inset-0 hidden">
-                    <textarea id="code-css"></textarea>
-                </div>
-                <div id="wrapper-js" class="absolute inset-0 hidden">
-                    <textarea id="code-js"></textarea>
-                </div>
-            </div>
-
-            <!-- Editor Footer Info -->
-            <div class="h-7 bg-slate-950 border-t border-slate-800 px-3 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                <div class="flex items-center space-x-3">
-                    <span id="activeLanguageLabel" class="text-indigo-400 uppercase font-bold">HTML Mode</span>
-                    <span>UTF-8</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-slate-400">Ready</span>
-                </div>
-            </div>
-        </div>
 
         
         
