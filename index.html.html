@@ -1,749 +1,1584 @@
 <!DOCTYPE html>
-<html lang="bn" class="dark">
+<html lang="en" class="dark">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Search Console Verification -->
-    <meta name="google-site-verification" content="enSOuykXDVMhPtF_jj_asrRiEBkkkaRsDrz6T3amUgE">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737041538621289"
-     crossorigin="anonymous"></script>
+    <!-- =====================================================
+         SEO
+    ====================================================== -->
 
-    
-    <!-- SEO -->
     <title>JS CODE OUTPUT - Free Online Code Editor & Web Builder</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    
-<meta name="description" content="JS CODE OUTPUT is a free online code editor with instant live code output. Write HTML, CSS and JavaScript, run your code online, and see your result instantly in the browser. Build and preview web projects without installing software.">
 
-    <meta name="robots" content="index, follow">
+    <meta name="description"
+          content="JS CODE OUTPUT is a free online code editor and web builder. Write HTML, CSS and JavaScript, run your code instantly and see live output directly in your browser.">
 
-    <link rel="canonical" href="https://js-code-output.vercel.app/">
+    <meta name="robots"
+          content="index, follow">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="JS CODE OUTPUT - Free Online Code Editor & Web Builder">
-    <meta property="og:description" content="Write HTML, CSS and JavaScript and run your code live with JS CODE OUTPUT.">
-    <meta property="og:url" content="https://js-code-output.vercel.app/">
-    <meta property="og:type" content="website">
+    <link rel="canonical"
+          href="https://js-code-output.vercel.app/">
 
-    <!-- Theme -->
-    <meta name="theme-color" content="#0f172a">
+    <link rel="icon"
+          type="image/png"
+          href="/favicon.png">
 
-    <!-- Website structured data -->
+    <meta name="theme-color"
+          content="#020617">
+
+
+    <!-- Google Search Console -->
+
+    <meta name="google-site-verification"
+          content="enSOuykXDVMhPtF_jj_asrRiEBkkkaRsDrz6T3amUgE">
+
+
+    <!-- =====================================================
+         Open Graph
+    ====================================================== -->
+
+    <meta property="og:title"
+          content="JS CODE OUTPUT - Free Online Code Editor">
+
+    <meta property="og:description"
+          content="Write HTML, CSS and JavaScript and instantly preview your project online.">
+
+    <meta property="og:url"
+          content="https://js-code-output.vercel.app/">
+
+    <meta property="og:type"
+          content="website">
+
+
+    <!-- =====================================================
+         Google AdSense
+    ====================================================== -->
+
+    <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737041538621289"
+            crossorigin="anonymous">
+    </script>
+
+
+    <!-- =====================================================
+         Structured Data
+    ====================================================== -->
+
     <script type="application/ld+json">
+
     {
         "@context": "https://schema.org",
-        "@type": "WebSite",
+        "@type": "WebApplication",
         "name": "JS CODE OUTPUT",
         "alternateName": "JS Code Output",
-        "url": "https://js-code-output.vercel.app/"
+        "url": "https://js-code-output.vercel.app/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web Browser",
+        "description": "Free online HTML CSS JavaScript code editor and web builder."
     }
+
     </script>
+
+
+    <!-- =====================================================
+         Firebase
+    ====================================================== -->
 
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    const firebaseConfig = {
-        apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
-        authDomain: "js-code-output.firebaseapp.com",
-        projectId: "js-code-output",
-        storageBucket: "js-code-output.firebasestorage.app",
-        messagingSenderId: "600350018167",
-        appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
-        measurementId: "G-L47M0E9V96"
-    };
-import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc,
-    deleteDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-    const app = initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(app);
+        import {
+            initializeApp
+        }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-// Firebase Authentication
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const db = getFirestore(app);
-        window.saveProjectDraft = async function () {
 
-    const user = auth.currentUser;
+        import {
+            getAnalytics
+        }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 
-    if (!user) {
-        return false;
-    }
 
-    try {
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            onAuthStateChanged
+        }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-        const projectRef = doc(
-            db,
-            "users",
-            user.uid,
-            "projects",
-            "main"
-        );
 
-        await setDoc(projectRef, {
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc,
+            serverTimestamp
+        }
+        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-            html: window.editorHTMLValue || "",
-            css: window.editorCSSValue || "",
-            js: window.editorJSValue || "",
 
-            updatedAt: serverTimestamp()
+        const firebaseConfig = {
 
-        }, { merge: true });
+            apiKey:
+                "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
 
-        console.log("☁️ Project draft saved!");
+            authDomain:
+                "js-code-output.firebaseapp.com",
 
-        return true;
+            projectId:
+                "js-code-output",
 
-    } catch (error) {
+            storageBucket:
+                "js-code-output.firebasestorage.app",
 
-        console.error(
-            "❌ Draft save failed:",
-            error
-        );
+            messagingSenderId:
+                "600350018167",
 
-        return false;
-    }
-};
-        
-console.log("🔥 Firebase connected successfully!");
-        window.firebaseAuth = auth;
-window.googleProvider = googleProvider;
+            appId:
+                "1:600350018167:web:3ceaa5a5e0d1050504d472",
 
-window.googleSignIn = async function () {
+            measurementId:
+                "G-L47M0E9V96"
 
-    try {
+        };
 
-        const result = await signInWithPopup(
+
+        const app =
+            initializeApp(firebaseConfig);
+
+
+        let analytics = null;
+
+        try {
+
+            analytics =
+                getAnalytics(app);
+
+        } catch (error) {
+
+            console.warn(
+                "Firebase Analytics unavailable:",
+                error
+            );
+
+        }
+
+
+        const auth =
+            getAuth(app);
+
+
+        const googleProvider =
+            new GoogleAuthProvider();
+
+
+        const db =
+            getFirestore(app);
+
+
+        window.firebaseAuth =
+            auth;
+
+
+        window.googleProvider =
+            googleProvider;
+
+
+        window.firebaseDB =
+            db;
+
+
+        /* =================================================
+           Google Login
+        ================================================= */
+
+        window.googleSignIn =
+            async function () {
+
+                const result =
+                    await signInWithPopup(
+                        auth,
+                        googleProvider
+                    );
+
+                return result.user;
+
+            };
+
+
+        /* =================================================
+           Save Draft
+        ================================================= */
+
+        window.saveProjectDraft =
+            async function () {
+
+                const user =
+                    auth.currentUser;
+
+
+                if (!user) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    !window.editorHTML ||
+                    !window.editorCSS ||
+                    !window.editorJS
+                ) {
+
+                    return false;
+
+                }
+
+
+                try {
+
+                    const projectRef =
+                        doc(
+                            db,
+                            "users",
+                            user.uid,
+                            "projects",
+                            "main"
+                        );
+
+
+                    await setDoc(
+                        projectRef,
+                        {
+
+                            html:
+                                window.editorHTML.getValue(),
+
+                            css:
+                                window.editorCSS.getValue(),
+
+                            js:
+                                window.editorJS.getValue(),
+
+                            updatedAt:
+                                serverTimestamp()
+
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+
+                    console.log(
+                        "☁️ Cloud draft saved."
+                    );
+
+
+                    return true;
+
+                } catch (error) {
+
+                    console.error(
+                        "Cloud draft save failed:",
+                        error
+                    );
+
+
+                    return false;
+
+                }
+
+            };
+
+
+        /* =================================================
+           Load Draft
+        ================================================= */
+
+        window.loadProjectDraft =
+            async function () {
+
+                const user =
+                    auth.currentUser;
+
+
+                if (!user) {
+
+                    return false;
+
+                }
+
+
+                try {
+
+                    const projectRef =
+                        doc(
+                            db,
+                            "users",
+                            user.uid,
+                            "projects",
+                            "main"
+                        );
+
+
+                    const snapshot =
+                        await getDoc(
+                            projectRef
+                        );
+
+
+                    if (!snapshot.exists()) {
+
+                        return false;
+
+                    }
+
+
+                    const data =
+                        snapshot.data();
+
+
+                    if (
+                        window.editorHTML &&
+                        typeof data.html === "string"
+                    ) {
+
+                        window.editorHTML.setValue(
+                            data.html
+                        );
+
+                    }
+
+
+                    if (
+                        window.editorCSS &&
+                        typeof data.css === "string"
+                    ) {
+
+                        window.editorCSS.setValue(
+                            data.css
+                        );
+
+                    }
+
+
+                    if (
+                        window.editorJS &&
+                        typeof data.js === "string"
+                    ) {
+
+                        window.editorJS.setValue(
+                            data.js
+                        );
+
+                    }
+
+
+                    if (
+                        typeof window.updatePreview ===
+                        "function"
+                    ) {
+
+                        window.updatePreview();
+
+                    }
+
+
+                    console.log(
+                        "☁️ Cloud draft loaded."
+                    );
+
+
+                    return true;
+
+                } catch (error) {
+
+                    console.error(
+                        "Cloud draft load failed:",
+                        error
+                    );
+
+
+                    return false;
+
+                }
+
+            };
+
+
+        /* =================================================
+           Auth State
+        ================================================= */
+
+        onAuthStateChanged(
             auth,
-            googleProvider
+            async function (user) {
+
+                window.currentUser =
+                    user || null;
+
+
+                if (user) {
+
+                    console.log(
+                        "👤 Signed in:",
+                        user.displayName
+                    );
+
+
+                    window.updateUserUI?.(
+                        user
+                    );
+
+
+                    /*
+                       Editor may not be initialized
+                       immediately when Firebase responds.
+                    */
+
+                    const loadWhenReady =
+                        async function () {
+
+                            if (
+                                window.editorHTML &&
+                                window.editorCSS &&
+                                window.editorJS
+                            ) {
+
+                                await window.loadProjectDraft();
+
+                            }
+
+                        };
+
+
+                    loadWhenReady();
+
+                } else {
+
+                    window.updateUserUI?.(
+                        null
+                    );
+
+                }
+
+            }
         );
 
-        const user = result.user;
 
         console.log(
-            "✅ Google Sign-In successful:",
-            user.displayName
+            "🔥 Firebase connected successfully!"
         );
 
-        return user;
-
-    } catch (error) {
-
-        console.error(
-            "❌ Google Sign-In error:",
-            error
-        );
-
-        throw error;
-
-    }
-
-};
-</script>
-
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
-                        },
-                        darkbg: '#0f172a',
-                        darkcard: '#1e293b',
-                    }
-                }
-            }
-        }
     </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CodeMirror Editor Styles -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
-    
-    <!-- CodeMirror Scripts -->
+
+
+    <!-- =====================================================
+         Tailwind
+    ====================================================== -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        brand: {
+
+                            50: "#eef2ff",
+                            500: "#6366f1",
+                            600: "#4f46e5",
+                            700: "#4338ca",
+                            900: "#312e81"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <!-- CodeMirror -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
 
+
+    <!-- JSZip -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
     <style>
-        .CodeMirror {
-            height: 100% !important;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-size: 14px;
-            border-radius: 0 0 0.5rem 0.5rem;
+
+        html,
+        body {
+
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+
         }
-        /* Custom Scrollbars */
+
+
+        body {
+
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            background:
+                #020617;
+
+        }
+
+
+        * {
+
+            box-sizing: border-box;
+
+        }
+
+
+        button {
+
+            user-select: none;
+
+        }
+
+
+        /* =================================================
+           CodeMirror
+        ================================================= */
+
+        .CodeMirror {
+
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100% !important;
+
+            font-family:
+                "Fira Code",
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+        }
+
+
+        .editor-wrapper {
+
+            position: relative;
+
+            flex: 1;
+
+            min-height: 0;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =================================================
+           Welcome Screen
+        ================================================= */
+
+        #welcomeScreen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 9999;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+            background:
+
+                radial-gradient(
+                    circle at 20% 20%,
+                    rgba(99,102,241,.18),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 80% 30%,
+                    rgba(168,85,247,.18),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 50% 90%,
+                    rgba(236,72,153,.12),
+                    transparent 35%
+                ),
+
+                #020617;
+
+            transition:
+
+                opacity .7s ease,
+                visibility .7s ease;
+
+        }
+
+
+        #welcomeScreen.hide {
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            pointer-events: none;
+
+        }
+
+
+        .welcome-grid {
+
+            position: absolute;
+
+            inset: -50%;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(99,102,241,.07) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(99,102,241,.07) 1px,
+                    transparent 1px
+                );
+
+            background-size: 60px 60px;
+
+            transform:
+                perspective(500px)
+                rotateX(60deg);
+
+            animation:
+                gridMove 12s linear infinite;
+
+        }
+
+
+        @keyframes gridMove {
+
+            from {
+
+                transform:
+                    perspective(500px)
+                    rotateX(60deg)
+                    translateY(0);
+
+            }
+
+            to {
+
+                transform:
+                    perspective(500px)
+                    rotateX(60deg)
+                    translateY(60px);
+
+            }
+
+        }
+
+
+        .welcome-orb {
+
+            position: absolute;
+
+            border-radius: 999px;
+
+            filter: blur(2px);
+
+            opacity: .6;
+
+            animation:
+                orbFloat 7s ease-in-out infinite;
+
+        }
+
+
+        .welcome-orb.one {
+
+            width: 180px;
+            height: 180px;
+
+            background:
+                rgba(99,102,241,.25);
+
+            top: 10%;
+            left: 8%;
+
+        }
+
+
+        .welcome-orb.two {
+
+            width: 130px;
+            height: 130px;
+
+            background:
+                rgba(168,85,247,.25);
+
+            bottom: 12%;
+            right: 10%;
+
+            animation-delay:
+                -2s;
+
+        }
+
+
+        .welcome-orb.three {
+
+            width: 90px;
+            height: 90px;
+
+            background:
+                rgba(236,72,153,.25);
+
+            top: 25%;
+            right: 20%;
+
+            animation-delay:
+                -4s;
+
+        }
+
+
+        @keyframes orbFloat {
+
+            0%,
+            100% {
+
+                transform:
+                    translate(0,0)
+                    scale(1);
+
+            }
+
+            50% {
+
+                transform:
+                    translate(30px,-35px)
+                    scale(1.15);
+
+            }
+
+        }
+
+
+        .welcome-content {
+
+            position: relative;
+
+            z-index: 5;
+
+            text-align: center;
+
+            width: min(850px, 92%);
+
+            animation:
+                welcomeAppear 1s ease forwards;
+
+        }
+
+
+        @keyframes welcomeAppear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(30px)
+                    scale(.96);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+
+            }
+
+        }
+
+
+        .welcome-logo {
+
+            width: 82px;
+            height: 82px;
+
+            margin:
+                0 auto 25px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6,
+                    #ec4899
+                );
+
+            box-shadow:
+                0 0 30px
+                rgba(99,102,241,.45);
+
+            animation:
+                logoPulse 3s ease-in-out infinite;
+
+        }
+
+
+        .welcome-logo span {
+
+            color: white;
+
+            font-family: monospace;
+
+            font-size: 27px;
+
+            font-weight: 900;
+
+        }
+
+
+        @keyframes logoPulse {
+
+            0%,
+            100% {
+
+                transform: scale(1);
+
+            }
+
+            50% {
+
+                transform: scale(1.06);
+
+            }
+
+        }
+
+
+        .welcome-title {
+
+            font-size:
+                clamp(40px, 7vw, 78px);
+
+            line-height: 1;
+
+            font-weight: 900;
+
+            letter-spacing: -3px;
+
+            margin: 0 0 18px;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #818cf8,
+                    #c084fc,
+                    #f472b6,
+                    #818cf8
+                );
+
+            background-size:
+                300% auto;
+
+            background-clip: text;
+
+            -webkit-background-clip: text;
+
+            color: transparent;
+
+            animation:
+                gradientText 5s linear infinite;
+
+        }
+
+
+        @keyframes gradientText {
+
+            to {
+
+                background-position:
+                    300% center;
+
+            }
+
+        }
+
+
+        .welcome-subtitle {
+
+            color: #cbd5e1;
+
+            font-size:
+                clamp(16px, 2vw, 21px);
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .welcome-description {
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            max-width: 600px;
+
+            margin:
+                0 auto 35px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .start-building-btn {
+
+            border: 0;
+
+            cursor: pointer;
+
+            padding:
+                15px 32px;
+
+            border-radius: 14px;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #6366f1,
+                    #8b5cf6,
+                    #ec4899
+                );
+
+            box-shadow:
+                0 10px 35px
+                rgba(99,102,241,.35);
+
+            transition:
+                .25s ease;
+
+        }
+
+
+        .start-building-btn:hover {
+
+            transform:
+                translateY(-3px)
+                scale(1.03);
+
+        }
+
+
+        .start-building-btn:active {
+
+            transform:
+                scale(.97);
+
+        }
+
+
+        .welcome-bottom {
+
+            margin-top: 28px;
+
+            font-size: 11px;
+
+            color: #475569;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        /* =================================================
+           Main App
+        ================================================= */
+
+        #app {
+
+            height: 100vh;
+
+            min-height: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        /* =================================================
+           Header
+        ================================================= */
+
+        #topHeader {
+
+            flex: 0 0 56px;
+
+            height: 56px;
+
+        }
+
+
+        /* =================================================
+           Workspace
+        ================================================= */
+
+        #workspace {
+
+            flex: 1 1 auto;
+
+            min-height: 0;
+
+            display: flex;
+
+            overflow: hidden;
+
+        }
+
+
+        #explorer {
+
+            flex:
+                0 0 224px;
+
+            min-width: 180px;
+
+            background:
+                #0b0f14;
+
+            border-right:
+                1px solid #1e293b;
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-height: 0;
+
+        }
+
+
+        #mainArea {
+
+            flex: 1;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            display: flex;
+
+            overflow: hidden;
+
+        }
+
+
+        #editorPanel {
+
+            flex:
+                1 1 50%;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            border-right:
+                1px solid #1e293b;
+
+        }
+
+
+        #previewPanel {
+
+            flex:
+                1 1 50%;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        /* =================================================
+           Editor Tabs
+        ================================================= */
+
+        #editorTabs {
+
+            flex:
+                0 0 42px;
+
+            height: 42px;
+
+        }
+
+
+        /* =================================================
+           Editor Content
+        ================================================= */
+
+        #editorContent {
+
+            position: relative;
+
+            flex: 1;
+
+            min-height: 0;
+
+            overflow: hidden;
+
+        }
+
+
+        .code-pane {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: none;
+
+        }
+
+
+        .code-pane.active {
+
+            display: block;
+
+        }
+
+
+        /* =================================================
+           Preview
+        ================================================= */
+
+        #previewToolbar {
+
+            flex:
+                0 0 42px;
+
+            height: 42px;
+
+        }
+
+
+        #iframeContainer {
+
+            flex: 1;
+
+            min-height: 0;
+
+            width: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: auto;
+
+            background:
+                #020617;
+
+        }
+
+
+        #outputIframe {
+
+            display: block;
+
+            width: 100%;
+
+            height: 100%;
+
+            border: 0;
+
+            background: white;
+
+            transition:
+                width .3s ease,
+                height .3s ease;
+
+        }
+
+
+        /* =================================================
+           Console
+        ================================================= */
+
+        #consoleDrawer {
+
+            flex:
+                0 0 190px;
+
+            height: 190px;
+
+            display: none;
+
+            flex-direction: column;
+
+        }
+
+
+        #consoleDrawer.open {
+
+            display: flex;
+
+        }
+
+
+        #consoleLogs {
+
+            flex: 1;
+
+            min-height: 0;
+
+            overflow-y: auto;
+
+        }
+
+
+        /* =================================================
+           Footer
+        ================================================= */
+
+        #appFooter {
+
+            flex:
+                0 0 48px;
+
+            min-height: 48px;
+
+        }
+
+
+        /* =================================================
+           Mobile
+        ================================================= */
+
+        @media (max-width: 900px) {
+
+            #explorer {
+
+                display: none;
+
+            }
+
+
+            #mainArea {
+
+                flex-direction: column;
+
+            }
+
+
+            #editorPanel {
+
+                flex:
+                    1 1 50%;
+
+                border-right: 0;
+
+                border-bottom:
+                    1px solid #1e293b;
+
+            }
+
+
+            #previewPanel {
+
+                flex:
+                    1 1 50%;
+
+            }
+
+
+            #topHeader {
+
+                padding-left: 10px;
+                padding-right: 10px;
+
+            }
+
+        }
+
+
+        @media (max-width: 640px) {
+
+            #appFooter {
+
+                height: 44px;
+
+                min-height: 44px;
+
+                flex-basis: 44px;
+
+            }
+
+
+            #appFooter .footer-links {
+
+                display: none;
+
+            }
+
+
+            #appFooter p {
+
+                margin: 0;
+
+            }
+
+
+            .welcome-title {
+
+                letter-spacing:
+                    -2px;
+
+            }
+
+        }
+
+
+        /* =================================================
+           Scrollbars
+        ================================================= */
+
         ::-webkit-scrollbar {
+
             width: 6px;
             height: 6px;
+
         }
+
+
         ::-webkit-scrollbar-track {
-            background: #0f172a;
+
+            background:
+                #0f172a;
+
         }
+
+
         ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
+
+            background:
+                #334155;
+
+            border-radius: 4px;
+
         }
+
+
         ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+
+            background:
+                #475569;
+
         }
-        .glow-effect {
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-        }
-       /* =========================================
-   JS CODE OUTPUT - WELCOME SCREEN
-   ========================================= */
 
-#welcomeScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(99,102,241,0.18), transparent 30%),
-        radial-gradient(circle at 80% 30%, rgba(168,85,247,0.18), transparent 30%),
-        radial-gradient(circle at 50% 90%, rgba(236,72,153,0.12), transparent 35%),
-        #020617;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    transition:
-        opacity 0.7s ease,
-        visibility 0.7s ease;
-}
-
-#welcomeScreen.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-/* Animated Background Grid */
-
-.welcome-grid {
-    position: absolute;
-    inset: -50%;
-    background-image:
-        linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px);
-    background-size: 60px 60px;
-    transform: perspective(500px) rotateX(60deg);
-    animation: gridMove 12s linear infinite;
-}
-
-@keyframes gridMove {
-    from {
-        transform: perspective(500px) rotateX(60deg) translateY(0);
-    }
-    to {
-        transform: perspective(500px) rotateX(60deg) translateY(60px);
-    }
-}
-
-/* Floating glowing orbs */
-
-.welcome-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    opacity: 0.6;
-    animation: orbFloat 7s ease-in-out infinite;
-}
-
-.welcome-orb.one {
-    width: 180px;
-    height: 180px;
-    background: rgba(99,102,241,0.25);
-    top: 10%;
-    left: 8%;
-}
-
-.welcome-orb.two {
-    width: 130px;
-    height: 130px;
-    background: rgba(168,85,247,0.25);
-    bottom: 12%;
-    right: 10%;
-    animation-delay: -2s;
-}
-
-.welcome-orb.three {
-    width: 90px;
-    height: 90px;
-    background: rgba(236,72,153,0.25);
-    top: 25%;
-    right: 20%;
-    animation-delay: -4s;
-}
-
-@keyframes orbFloat {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    50% {
-        transform: translate(30px, -35px) scale(1.15);
-    }
-}
-
-/* Floating code symbols */
-
-.code-symbol {
-    position: absolute;
-    color: rgba(129,140,248,0.25);
-    font-family: monospace;
-    font-weight: bold;
-    pointer-events: none;
-    animation: symbolFloat linear infinite;
-}
-
-.code-symbol.s1 {
-    left: 8%;
-    top: 30%;
-    font-size: 34px;
-    animation-duration: 8s;
-}
-
-.code-symbol.s2 {
-    right: 10%;
-    top: 18%;
-    font-size: 28px;
-    animation-duration: 10s;
-    animation-delay: -2s;
-}
-
-.code-symbol.s3 {
-    left: 15%;
-    bottom: 15%;
-    font-size: 25px;
-    animation-duration: 9s;
-    animation-delay: -4s;
-}
-
-.code-symbol.s4 {
-    right: 18%;
-    bottom: 20%;
-    font-size: 40px;
-    animation-duration: 11s;
-    animation-delay: -5s;
-}
-
-@keyframes symbolFloat {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.2;
-    }
-
-    50% {
-        transform: translateY(-30px) rotate(8deg);
-        opacity: 0.55;
-    }
-}
-
-/* Main Welcome Content */
-
-.welcome-content {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding: 30px;
-    max-width: 850px;
-    animation: welcomeAppear 1s ease forwards;
-}
-
-@keyframes welcomeAppear {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.96);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Logo */
-
-.welcome-logo {
-    width: 82px;
-    height: 82px;
-    margin: 0 auto 25px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 24px;
-
-    background:
-        linear-gradient(135deg,
-        #6366f1,
-        #8b5cf6,
-        #ec4899);
-
-    box-shadow:
-        0 0 30px rgba(99,102,241,0.45),
-        0 0 80px rgba(168,85,247,0.15);
-
-    animation: logoPulse 3s ease-in-out infinite;
-}
-
-.welcome-logo span {
-    color: white;
-    font-family: monospace;
-    font-size: 27px;
-    font-weight: 900;
-}
-
-@keyframes logoPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow:
-            0 0 30px rgba(99,102,241,0.45);
-    }
-
-    50% {
-        transform: scale(1.06);
-        box-shadow:
-            0 0 45px rgba(99,102,241,0.7);
-    }
-}
-
-/* Title */
-
-.welcome-title {
-    font-size: clamp(38px, 7vw, 78px);
-    line-height: 1;
-    font-weight: 900;
-    letter-spacing: -3px;
-    margin-bottom: 18px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #818cf8,
-            #c084fc,
-            #f472b6,
-            #818cf8
-        );
-
-    background-size: 300% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-
-    animation: gradientText 5s linear infinite;
-}
-
-@keyframes gradientText {
-    to {
-        background-position: 300% center;
-    }
-}
-
-.welcome-subtitle {
-    color: #cbd5e1;
-    font-size: clamp(16px, 2vw, 21px);
-    margin-bottom: 12px;
-}
-
-.welcome-description {
-    color: #64748b;
-    font-size: 14px;
-    max-width: 600px;
-    margin: 0 auto 35px;
-    line-height: 1.7;
-}
-
-/* Start Button */
-
-.start-building-btn {
-    position: relative;
-    overflow: hidden;
-
-    border: none;
-    cursor: pointer;
-
-    padding: 15px 32px;
-
-    border-radius: 14px;
-
-    color: white;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #6366f1,
-            #8b5cf6,
-            #ec4899
-        );
-
-    box-shadow:
-        0 10px 35px rgba(99,102,241,0.35);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-}
-
-.start-building-btn:hover {
-    transform: translateY(-3px) scale(1.03);
-
-    box-shadow:
-        0 15px 45px rgba(139,92,246,0.55);
-}
-
-.start-building-btn:active {
-    transform: scale(0.97);
-}
-
-/* Button shine */
-
-.start-building-btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-
-    width: 60%;
-    height: 100%;
-
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,0.35),
-        transparent
-    );
-
-    transform: skewX(-20deg);
-
-    animation: buttonShine 3s infinite;
-}
-
-@keyframes buttonShine {
-    0% {
-        left: -100%;
-    }
-
-    45%, 100% {
-        left: 140%;
-    }
-}
-
-/* Bottom text */
-
-.welcome-bottom {
-    margin-top: 28px;
-    font-size: 11px;
-    color: #475569;
-    letter-spacing: 1px;
-}
-
-/* Mobile */
-
-@media (max-width: 640px) {
-
-    .welcome-content {
-        padding: 20px;
-    }
-
-    .welcome-title {
-        letter-spacing: -2px;
-    }
-
-    .welcome-logo {
-        width: 70px;
-        height: 70px;
-        border-radius: 20px;
-    }
-
-    .welcome-description {
-        font-size: 13px;
-    }
-
-    .start-building-btn {
-        width: 100%;
-        max-width: 280px;
-    }
-} 
-   /* =========================================
-   FIX: EDITOR + LIVE PREVIEW HEIGHT
-   ========================================= */
-
-html,
-body {
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    min-height: 100vh;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* Main workspace */
-body > .flex-1.flex.flex-col {
-    min-height: 0;
-    height: auto;
-}
-
-/* Editor + Preview row */
-#editorPanel,
-#previewPanel {
-    min-height: 0;
-    height: 100%;
-}
-
-/* CodeMirror area */
-#editorPanel > .flex-1 {
-    min-height: 0;
-}
-
-/* Live preview iframe area */
-#iframeContainer {
-    min-height: 0;
-}
-
-/* Footer */
-footer {
-    flex-shrink: 0;
-    margin-top: 0 !important;
-}
     </style>
+
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col select-none">
-<!-- =========================================
-     JS CODE OUTPUT - WELCOME SCREEN
-     ========================================= -->
+
+
+<body class="bg-slate-950 text-slate-100 font-sans">
+
+
+<!-- =====================================================
+     WELCOME SCREEN
+====================================================== -->
 
 <div id="welcomeScreen">
 
-    <!-- Animated Grid -->
     <div class="welcome-grid"></div>
 
-    <!-- Glowing Orbs -->
     <div class="welcome-orb one"></div>
     <div class="welcome-orb two"></div>
     <div class="welcome-orb three"></div>
 
-    <!-- Floating Code Symbols -->
-    <div class="code-symbol s1">&lt;/&gt;</div>
-    <div class="code-symbol s2">{ }</div>
-    <div class="code-symbol s3">&lt;div&gt;</div>
-    <div class="code-symbol s4">JS</div>
 
-    <!-- Main Content -->
     <div class="welcome-content">
 
-        <!-- Logo -->
         <div class="welcome-logo">
+
             <span>&lt;/&gt;</span>
+
         </div>
 
-        <!-- Title -->
+
         <h1 class="welcome-title">
+
             START BUILDING
+
         </h1>
 
+
         <div class="welcome-subtitle">
+
             Build. Create. Experiment.
+
         </div>
 
+
         <p class="welcome-description">
-            Write HTML, CSS & JavaScript and instantly turn your ideas
-            into interactive live websites.
+
+            Write HTML, CSS & JavaScript and instantly
+            turn your ideas into interactive live websites.
+
         </p>
 
-        <!-- Start Button -->
+
         <button
             class="start-building-btn"
-            onclick="startBuilding()"
-        >
-            🚀 START BUILDING
-            <span style="margin-left:6px;">→</span>
+            onclick="startBuilding()">
+
+            🚀 START BUILDING →
+
         </button>
 
+
         <div class="welcome-bottom">
-            FREE ONLINE CODE EDITOR • HTML • CSS • JAVASCRIPT
+
+            FREE ONLINE CODE EDITOR
+            • HTML • CSS • JAVASCRIPT
+
         </div>
 
     </div>
 
 </div>
-<!-- START / WELCOME SCREEN -->
+
+
+<!-- =====================================================
+     START LOGIN SCREEN
+====================================================== -->
+
 <div id="startScreen"
-     class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center overflow-hidden">
+     class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center hidden">
 
-    <!-- Animated Background -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="w-[92%] max-w-md text-center">
 
-        <div class="absolute w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl
-                    -top-20 -left-20 animate-pulse"></div>
-
-        <div class="absolute w-80 h-80 bg-purple-600/20 rounded-full blur-3xl
-                    -bottom-20 -right-20 animate-pulse"></div>
-
-        <div class="absolute w-64 h-64 bg-pink-600/10 rounded-full blur-3xl
-                    top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
-
-    </div>
-
-
-    <!-- Start Card -->
-    <div class="relative z-10 w-[92%] max-w-md text-center">
-
-        <!-- Logo -->
         <div class="mx-auto mb-6 w-20 h-20 rounded-3xl
-                    bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500
+                    bg-gradient-to-tr from-indigo-500
+                    via-purple-500 to-pink-500
                     flex items-center justify-center
-                    shadow-2xl shadow-indigo-500/30">
+                    shadow-2xl">
 
             <span class="text-white text-3xl font-black font-mono">
+
                 &lt;/&gt;
+
             </span>
 
         </div>
 
 
-        <!-- Title -->
-        <h1 class="text-4xl sm:text-5xl font-black tracking-tight
-                   bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
+        <h1 class="text-4xl sm:text-5xl font-black
+                   bg-gradient-to-r from-indigo-400
+                   via-purple-400 to-pink-400
                    bg-clip-text text-transparent">
 
             JS CODE OUTPUT
@@ -751,21 +1586,21 @@ footer {
         </h1>
 
 
-        <p class="mt-4 text-slate-400 text-sm sm:text-base">
+        <p class="mt-4 text-slate-400">
+
             Build websites, experiments and crazy projects
             with live HTML, CSS & JavaScript.
+
         </p>
 
 
-        <!-- Start Button -->
         <button
             onclick="openStartLogin()"
             class="mt-8 w-full py-4 rounded-2xl
-                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                   hover:scale-[1.02] active:scale-95
-                   text-white font-bold text-base
-                   shadow-xl shadow-indigo-500/20
-                   transition-all duration-300">
+                   bg-gradient-to-r from-indigo-500
+                   via-purple-500 to-pink-500
+                   text-white font-bold shadow-xl
+                   transition hover:scale-[1.02]">
 
             <i class="fa-solid fa-rocket mr-2"></i>
 
@@ -773,26 +1608,29 @@ footer {
 
         </button>
 
-
-        <p class="mt-4 text-[11px] text-slate-600">
-            Free online code editor • No installation required
-        </p>
-
     </div>
 
 </div>
 
 
-<!-- GOOGLE LOGIN SCREEN -->
+<!-- =====================================================
+     GOOGLE LOGIN MODAL
+====================================================== -->
+
 <div id="startLoginScreen"
-     class="fixed inset-0 z-[110] bg-slate-950/95 backdrop-blur-xl
+     class="fixed inset-0 z-[110]
+            bg-slate-950/95 backdrop-blur-xl
             flex items-center justify-center hidden">
 
     <div class="w-[92%] max-w-sm
-                bg-slate-900 border border-slate-800
-                rounded-3xl p-7 shadow-2xl text-center">
+                bg-slate-900
+                border border-slate-800
+                rounded-3xl
+                p-7
+                shadow-2xl
+                text-center">
 
-        <!-- Icon -->
+
         <div class="mx-auto mb-5 w-16 h-16 rounded-2xl
                     bg-indigo-500/10
                     border border-indigo-500/20
@@ -804,42 +1642,47 @@ footer {
         </div>
 
 
-        <h2 class="text-2xl font-bold text-white">
+        <h2 class="text-2xl font-bold">
+
             Start Building
+
         </h2>
 
 
-        <p class="mt-2 text-sm text-slate-400 leading-relaxed">
+        <p class="mt-2 text-sm text-slate-400">
+
             Sign in with Google to save your projects
             and continue them later.
+
         </p>
 
 
-        <!-- Google Button -->
         <button
             onclick="continueWithGoogle()"
             class="mt-7 w-full py-3.5 rounded-xl
                    bg-white hover:bg-slate-100
                    text-slate-900 font-semibold
                    flex items-center justify-center gap-3
-                   transition active:scale-95">
+                   transition">
 
-            <span class="font-bold text-lg">G</span>
+            <span class="font-bold text-lg">
+
+                G
+
+            </span>
 
             Continue with Google
 
         </button>
 
 
-        <!-- Maybe Later -->
         <button
             onclick="startWithoutLogin()"
             class="mt-4 w-full py-3 rounded-xl
                    bg-slate-800 hover:bg-slate-700
                    border border-slate-700
                    text-slate-300
-                   text-sm font-medium
-                   transition">
+                   text-sm">
 
             Maybe Later
 
@@ -847,1409 +1690,3464 @@ footer {
 
 
         <p class="mt-5 text-[10px] text-slate-600">
-            You can sign in later when you want to save
-            your project to the cloud.
+
+            You can sign in later when you want to
+            save your project to the cloud.
+
         </p>
 
     </div>
 
 </div>
-<!-- END WELCOME SCREEN -->
-    <!-- TOP NAVIGATION HEADER -->
-    <header class="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between z-20">
-        <!-- Logo & Branding -->
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <i class="fa-solid font-bold text-white text-lg font-mono">&lt;/&gt;</i>
+
+
+<!-- =====================================================
+     MAIN APP
+====================================================== -->
+
+<div id="app">
+
+
+    <!-- =================================================
+         HEADER
+    ================================================== -->
+
+    <header id="topHeader"
+            class="bg-slate-900
+                   border-b border-slate-800
+                   px-4
+                   flex items-center
+                   justify-between
+                   shrink-0">
+
+
+        <!-- Brand -->
+
+        <div class="flex items-center gap-3 min-w-0">
+
+            <div class="w-9 h-9 shrink-0 rounded-xl
+                        bg-gradient-to-tr
+                        from-indigo-500
+                        via-purple-500
+                        to-pink-500
+                        flex items-center justify-center">
+
+                <span class="font-black font-mono text-white">
+
+                    &lt;/&gt;
+
+                </span>
+
             </div>
-            <div>
-                <h1 class="font-extrabold text-base tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent uppercase">
+
+
+            <div class="min-w-0">
+
+                <h1 class="font-extrabold text-sm
+                           tracking-wider
+                           bg-gradient-to-r
+                           from-indigo-400
+                           via-purple-400
+                           to-pink-400
+                           bg-clip-text
+                           text-transparent">
+
                     JS CODE OUTPUT
+
                 </h1>
-                <p class="text-[10px] text-slate-400 font-medium tracking-wide">Real-time Live Design & App Workbench</p>
-            </div>
-        </div>
 
-        <!-- Center Controls: Presets / Templates -->
-        <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 p-1 rounded-lg border border-slate-700/50">
-            <span class="text-xs text-slate-400 pl-2 font-medium"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-1"></i> Templates:</span>
-            <button onclick="loadTemplate('saas')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
-                🚀 Mobile App UI
-            </button>
-            <button onclick="loadTemplate('game')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
-                🎮 Arcade Game
-            </button>
-            <button onclick="loadTemplate('three')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
-                🌐 3D Canvas
-            </button>
-            <button onclick="loadTemplate('glass')" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-700/60 hover:bg-indigo-600 text-slate-200 hover:text-white transition">
-                💎 Glass UI Card
-            </button>
-        </div>
+                <p class="hidden sm:block
+                          text-[9px]
+                          text-slate-500">
 
-        <!-- Action Tools: Run, Clear, Export, Fullscreen -->
-        <div class="flex items-center space-x-2">
-            <!-- Auto Run Toggle -->
-            <label class="hidden sm:flex items-center cursor-pointer mr-2 space-x-2 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
-                <input type="checkbox" id="autoRunToggle" checked class="sr-only peer">
-                <div class="w-7 h-4 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 relative"></div>
-                <span class="text-xs text-slate-300 font-medium">Auto Sync</span>
-            </label>
+                    Real-time Live Code Workbench
 
-            <!-- Manual Run Button -->
-            <button onclick="updatePreview()" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium text-xs rounded-lg shadow-md hover:shadow-emerald-500/20 flex items-center space-x-1.5 transition active:scale-95">
-                <i class="fa-solid fa-play"></i>
-                <span>Run Code</span>
-            </button>
+                </p>
 
-            <!-- Library Injector Dropdown -->
-            <div class="relative inline-block text-left">
-                <button onclick="toggleLibsModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-xs rounded-lg flex items-center space-x-1.5 transition">
-                    <i class="fa-solid fa-cube text-indigo-400"></i>
-                    <span>Libraries</span>
-                </button>
             </div>
 
-            <!-- Export Code -->
-           <button onclick="openDownloadMenu()" title="Download Project" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
-    <i class="fa-solid fa-download"></i>
-</button>
-
-            <!-- Copy Code -->
-            <button onclick="copyCode()" title="Copy Combined Code" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition">
-                <i class="fa-solid fa-copy"></i>
-            </button>
         </div>
-    </header>
 
-    <!-- MAIN WORKSPACE CONTAINER -->
-<div class="flex-1 min-h-0 flex flex-col overflow-hidden relative">
-       <div class="flex-1 min-h-0 flex flex-row overflow-hidden relative">
 
-    <!-- =========================================
-         VS CODE STYLE EXPLORER
-         ========================================= -->
+        <!-- Templates -->
 
-    <div id="vsExplorer"
-         class="w-56 shrink-0 bg-[#0b0f14] border-r border-slate-800
-                flex flex-col text-sm">
+        <div class="hidden xl:flex
+                    items-center gap-1
+                    bg-slate-800
+                    p-1 rounded-lg
+                    border border-slate-700">
 
-        <!-- Explorer Header -->
-        <div class="h-10 px-3 flex items-center justify-between
-                    border-b border-slate-800 bg-[#11161d]">
+            <span class="px-2 text-[10px]
+                         text-slate-500">
 
-            <span class="text-xs font-semibold text-slate-300 tracking-wider">
-                EXPLORER
+                Templates
+
             </span>
 
-            <div class="flex items-center gap-2">
+
+            <button
+                onclick="loadTemplate('saas')"
+                class="px-2 py-1 text-[10px]
+                       rounded hover:bg-indigo-600">
+
+                🚀 App UI
+
+            </button>
+
+
+            <button
+                onclick="loadTemplate('game')"
+                class="px-2 py-1 text-[10px]
+                       rounded hover:bg-indigo-600">
+
+                🎮 Game
+
+            </button>
+
+
+            <button
+                onclick="loadTemplate('three')"
+                class="px-2 py-1 text-[10px]
+                       rounded hover:bg-indigo-600">
+
+                🌐 3D
+
+            </button>
+
+
+            <button
+                onclick="loadTemplate('glass')"
+                class="px-2 py-1 text-[10px]
+                       rounded hover:bg-indigo-600">
+
+                💎 Glass
+
+            </button>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="flex items-center gap-1.5">
+
+
+            <label class="hidden lg:flex
+                          items-center gap-2
+                          bg-slate-800
+                          border border-slate-700
+                          rounded-lg
+                          px-2 py-1">
+
+                <input
+                    id="autoRunToggle"
+                    type="checkbox"
+                    checked
+                    class="accent-emerald-500">
+
+                <span class="text-[10px]">
+
+                    Auto Sync
+
+                </span>
+
+            </label>
+
+
+            <button
+                onclick="updatePreview()"
+                class="px-3 py-1.5
+                       rounded-lg
+                       bg-gradient-to-r
+                       from-emerald-500
+                       to-teal-600
+                       text-white
+                       text-xs
+                       font-semibold">
+
+                <i class="fa-solid fa-play mr-1"></i>
+
+                <span class="hidden sm:inline">
+
+                    Run
+
+                </span>
+
+            </button>
+
+
+            <button
+                onclick="toggleLibraries()"
+                class="px-2.5 py-1.5
+                       rounded-lg
+                       bg-slate-800
+                       border border-slate-700
+                       text-xs">
+
+                <i class="fa-solid fa-cubes
+                          text-indigo-400"></i>
+
+                <span class="hidden sm:inline">
+
+                    Libraries
+
+                </span>
+
+            </button>
+
+
+            <button
+                onclick="openDownloadMenu()"
+                title="Download"
+                class="p-2
+                       rounded-lg
+                       bg-slate-800
+                       border border-slate-700">
+
+                <i class="fa-solid fa-download"></i>
+
+            </button>
+
+
+            <button
+                onclick="copyCode()"
+                title="Copy"
+                class="p-2
+                       rounded-lg
+                       bg-slate-800
+                       border border-slate-700">
+
+                <i class="fa-solid fa-copy"></i>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         WORKSPACE
+    ================================================== -->
+
+    <main id="workspace">
+
+
+        <!-- =================================================
+             EXPLORER
+        ================================================== -->
+
+        <aside id="explorer">
+
+
+            <div class="h-10 px-3
+                        flex items-center
+                        justify-between
+                        border-b border-slate-800
+                        bg-[#11161d]">
+
+                <span class="text-xs font-semibold
+                             tracking-wider">
+
+                    EXPLORER
+
+                </span>
+
+
+                <div class="flex gap-2">
+
+                    <button
+                        onclick="createNewFile()"
+                        title="New File"
+                        class="text-slate-500
+                               hover:text-white">
+
+                        <i class="fa-solid
+                                  fa-file-circle-plus"></i>
+
+                    </button>
+
+
+                    <button
+                        onclick="document.getElementById('fileUpload').click()"
+                        title="Upload"
+                        class="text-slate-500
+                               hover:text-white">
+
+                        <i class="fa-solid fa-upload"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="p-3">
+
+                <div class="flex items-center gap-2
+                            text-xs font-bold
+                            text-slate-400">
+
+                    <i class="fa-solid fa-chevron-down
+                              text-[9px]"></i>
+
+                    <i class="fa-solid fa-folder
+                              text-yellow-500"></i>
+
+                    PROJECT
+
+                </div>
+
+
+                <div class="mt-2 space-y-1">
+
+
+                    <button
+                        id="explorer-html"
+                        onclick="openExplorerFile('html')"
+                        class="explorer-file active">
+
+                        <i class="fa-brands fa-html5
+                                  text-orange-500"></i>
+
+                        index.html
+
+                    </button>
+
+
+                    <button
+                        id="explorer-css"
+                        onclick="openExplorerFile('css')"
+                        class="explorer-file">
+
+                        <i class="fa-brands fa-css3-alt
+                                  text-blue-400"></i>
+
+                        style.css
+
+                    </button>
+
+
+                    <button
+                        id="explorer-js"
+                        onclick="openExplorerFile('js')"
+                        class="explorer-file">
+
+                        <i class="fa-brands fa-js
+                                  text-yellow-400"></i>
+
+                        script.js
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-auto
+                        border-t border-slate-800
+                        p-3 space-y-2">
+
 
                 <button
                     onclick="createNewFile()"
-                    title="New File"
-                    class="text-slate-500 hover:text-white transition">
-                    <i class="fa-solid fa-file-circle-plus"></i>
+                    class="w-full
+                           flex items-center gap-2
+                           px-3 py-2
+                           rounded-lg
+                           bg-slate-800
+                           hover:bg-indigo-600
+                           text-xs">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    New File
+
                 </button>
+
 
                 <button
                     onclick="document.getElementById('fileUpload').click()"
-                    title="Upload File"
-                    class="text-slate-500 hover:text-white transition">
-                    <i class="fa-solid fa-upload"></i>
-                </button>
+                    class="w-full
+                           flex items-center gap-2
+                           px-3 py-2
+                           rounded-lg
+                           bg-slate-800
+                           hover:bg-indigo-600
+                           text-xs">
 
-            </div>
-        </div>
+                    <i class="fa-solid fa-folder-open"></i>
 
-        <!-- Project -->
-        <div class="px-3 py-3">
-
-            <div class="flex items-center gap-2 text-xs
-                        font-bold text-slate-400 uppercase">
-
-                <i class="fa-solid fa-chevron-down text-[9px]"></i>
-                <i class="fa-solid fa-folder text-yellow-500"></i>
-
-                <span>PROJECT</span>
-
-            </div>
-
-            <div class="mt-2 space-y-1">
-
-                <button
-                    id="explorer-html"
-                    onclick="openExplorerFile('html')"
-                    class="w-full flex items-center gap-2 px-2 py-1.5
-                           rounded text-left
-                           bg-indigo-500/10 text-indigo-300
-                           hover:bg-indigo-500/20 transition">
-
-                    <i class="fa-brands fa-html5 text-orange-500"></i>
-                    <span>index.html</span>
-
-                </button>
-
-                <button
-                    id="explorer-css"
-                    onclick="openExplorerFile('css')"
-                    class="w-full flex items-center gap-2 px-2 py-1.5
-                           rounded text-left text-slate-400
-                           hover:bg-slate-800 transition">
-
-                    <i class="fa-brands fa-css3-alt text-blue-400"></i>
-                    <span>style.css</span>
-
-                </button>
-
-                <button
-                    id="explorer-js"
-                    onclick="openExplorerFile('js')"
-                    class="w-full flex items-center gap-2 px-2 py-1.5
-                           rounded text-left text-slate-400
-                           hover:bg-slate-800 transition">
-
-                    <i class="fa-brands fa-js text-yellow-400"></i>
-                    <span>script.js</span>
+                    Upload File
 
                 </button>
 
             </div>
+
+
+        </aside>
+
+
+        <!-- Hidden Upload Input -->
+
+        <input
+            type="file"
+            id="fileUpload"
+            accept=".html,.htm,.css,.js"
+            hidden
+            onchange="handleFileUpload(event)">
+
+
+        <!-- =================================================
+             EDITOR + PREVIEW
+        ================================================== -->
+
+        <div id="mainArea">
+
+
+            <!-- =================================================
+                 EDITOR
+            ================================================== -->
+
+            <section id="editorPanel">
+
+
+                <!-- Tabs -->
+
+                <div id="editorTabs"
+                     class="flex items-center
+                            justify-between
+                            bg-slate-950
+                            border-b border-slate-800
+                            px-2 pt-1">
+
+
+                    <div class="flex gap-1">
+
+
+                        <button
+                            id="tab-html"
+                            onclick="switchTab('html')"
+                            class="editor-tab active-html">
+
+                            <i class="fa-brands fa-html5"></i>
+
+                            HTML
+
+                        </button>
+
+
+                        <button
+                            id="tab-css"
+                            onclick="switchTab('css')"
+                            class="editor-tab">
+
+                            <i class="fa-brands fa-css3-alt"></i>
+
+                            CSS
+
+                        </button>
+
+
+                        <button
+                            id="tab-js"
+                            onclick="switchTab('js')"
+                            class="editor-tab">
+
+                            <i class="fa-brands fa-js"></i>
+
+                            JS
+
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        onclick="clearEditors()"
+                        title="Clear Editors"
+                        class="text-slate-500
+                               hover:text-rose-400
+                               px-2">
+
+                        <i class="fa-solid fa-trash-can"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- Editors -->
+
+                <div id="editorContent">
+
+
+                    <div
+                        id="wrapper-html"
+                        class="code-pane active">
+
+                        <textarea
+                            id="code-html"></textarea>
+
+                    </div>
+
+
+                    <div
+                        id="wrapper-css"
+                        class="code-pane">
+
+                        <textarea
+                            id="code-css"></textarea>
+
+                    </div>
+
+
+                    <div
+                        id="wrapper-js"
+                        class="code-pane">
+
+                        <textarea
+                            id="code-js"></textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PREVIEW
+            ================================================== -->
+
+            <section id="previewPanel">
+
+
+                <!-- Preview Toolbar -->
+
+                <div id="previewToolbar"
+                     class="bg-slate-900
+                            border-b border-slate-800
+                            px-3
+                            flex items-center
+                            justify-between">
+
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-2.5 h-2.5
+                                     rounded-full
+                                     bg-rose-500"></span>
+
+                        <span class="w-2.5 h-2.5
+                                     rounded-full
+                                     bg-amber-500"></span>
+
+                        <span class="w-2.5 h-2.5
+                                     rounded-full
+                                     bg-emerald-500"></span>
+
+                        <span class="hidden sm:inline
+                                     text-[10px]
+                                     text-slate-400
+                                     ml-1">
+
+                            LIVE OUTPUT
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Device -->
+
+                    <div class="flex items-center
+                                bg-slate-950
+                                rounded-md
+                                border border-slate-800
+                                p-0.5">
+
+
+                        <button
+                            id="screen-full"
+                            onclick="setScreenSize('full')"
+                            class="screen-btn active">
+
+                            <i class="fa-solid fa-desktop"></i>
+
+                        </button>
+
+
+                        <button
+                            id="screen-tablet"
+                            onclick="setScreenSize('tablet')"
+                            class="screen-btn">
+
+                            <i class="fa-solid fa-tablet-screen-button"></i>
+
+                        </button>
+
+
+                        <button
+                            id="screen-mobile"
+                            onclick="setScreenSize('mobile')"
+                            class="screen-btn">
+
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="flex items-center gap-2">
+
+
+                        <button
+                            onclick="toggleConsole()"
+                            class="px-2 py-1
+                                   rounded
+                                   bg-slate-800
+                                   border border-slate-700
+                                   text-[10px]">
+
+                            <i class="fa-solid fa-terminal
+                                      text-amber-400"></i>
+
+                            Console
+
+                            <span
+                                id="consoleBadge"
+                                class="hidden ml-1
+                                       bg-amber-500
+                                       text-black
+                                       px-1 rounded">
+
+                                0
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            onclick="updatePreview()"
+                            class="text-slate-400
+                                   hover:text-white">
+
+                            <i class="fa-solid fa-rotate-right"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Iframe -->
+
+                <div id="iframeContainer">
+
+                    <iframe
+                        id="outputIframe"
+                        sandbox="allow-scripts allow-modals allow-same-origin allow-forms">
+                    </iframe>
+
+                </div>
+
+
+                <!-- Console -->
+
+                <div id="consoleDrawer">
+
+                    <div class="h-8
+                                shrink-0
+                                bg-slate-950
+                                border-t border-slate-800
+                                px-3
+                                flex items-center
+                                justify-between
+                                text-xs">
+
+                        <span>
+
+                            <i class="fa-solid fa-terminal
+                                      text-amber-400 mr-1"></i>
+
+                            Console Output
+
+                        </span>
+
+
+                        <button
+                            onclick="clearConsole()"
+                            class="text-slate-500
+                                   hover:text-rose-400">
+
+                            Clear
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="consoleLogs"
+                        class="p-3
+                               bg-slate-950
+                               font-mono
+                               text-xs
+                               overflow-y-auto">
+
+                        <div class="text-slate-600">
+
+                            // Console output will appear here...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
         </div>
 
-        <!-- Bottom Tools -->
-        <div class="mt-auto border-t border-slate-800 p-3 space-y-2">
+    </main>
 
-            <button
-                onclick="createNewFile()"
-                class="w-full flex items-center gap-2 px-3 py-2
-                       rounded-lg bg-slate-800
-                       hover:bg-indigo-600
-                       text-slate-300 hover:text-white
-                       transition text-xs">
 
-                <i class="fa-solid fa-plus"></i>
-                <span>New File</span>
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
 
-            </button>
+    <footer id="appFooter"
+            class="shrink-0
+                   border-t border-slate-800
+                   bg-slate-950
+                   px-4
+                   flex items-center
+                   justify-center">
 
-            <button
-                onclick="document.getElementById('fileUpload').click()"
-                class="w-full flex items-center gap-2 px-3 py-2
-                       rounded-lg bg-slate-800
-                       hover:bg-indigo-600
-                       text-slate-300 hover:text-white
-                       transition text-xs">
+        <div class="flex flex-wrap
+                    items-center
+                    justify-center
+                    gap-x-5 gap-y-1
+                    text-xs">
 
-                <i class="fa-solid fa-folder-open"></i>
-                <span>Upload File</span>
 
-            </button>
+            <span class="text-slate-600">
+
+                © 2026 JS CODE OUTPUT
+
+            </span>
+
+
+            <div class="footer-links
+                        flex flex-wrap
+                        justify-center
+                        gap-5">
+
+
+                <a href="/about.html"
+                   class="text-slate-500
+                          hover:text-white">
+
+                    About
+
+                </a>
+
+
+                <a href="/contact.html"
+                   class="text-slate-500
+                          hover:text-white">
+
+                    Contact
+
+                </a>
+
+
+                <a href="/privacy.html"
+                   class="text-slate-500
+                          hover:text-white">
+
+                    Privacy
+
+                </a>
+
+
+                <a href="/terms.html"
+                   class="text-slate-500
+                          hover:text-white">
+
+                    Terms
+
+                </a>
+
+
+                <a href="/online-code-editor.html"
+                   class="text-indigo-400
+                          hover:text-indigo-300">
+
+                    Online Code Editor
+
+                </a>
+
+            </div>
 
         </div>
 
-    </div>
-
-
-       <div id="editorPanel"
-     class="flex-1 min-w-0 h-full flex flex-col border-r border-slate-800 bg-slate-900/90">
-         <!-- Code Tab Bar -->
-<div class="flex items-center justify-between bg-slate-950 px-2 pt-2 border-b border-slate-800">
-
-    <div class="flex space-x-1">
-
-        <button id="tab-html"
-            onclick="switchTab('html')"
-            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 text-orange-400 border-t-2 border-orange-500 flex items-center space-x-2">
-            <i class="fa-brands fa-html5 text-sm"></i>
-            <span>HTML</span>
-        </button>
-
-        <button id="tab-css"
-            onclick="switchTab('css')"
-            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-sky-400 border-t-2 border-transparent flex items-center space-x-2 transition">
-            <i class="fa-brands fa-css3-alt text-sm"></i>
-            <span>CSS</span>
-        </button>
-
-        <button id="tab-js"
-            onclick="switchTab('js')"
-            class="px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 hover:text-yellow-400 border-t-2 border-transparent flex items-center space-x-2 transition">
-            <i class="fa-brands fa-js text-sm"></i>
-            <span>JavaScript</span>
-        </button>
-
-    </div>
-
-    <!-- Clear Editor -->
-    <button
-        onclick="clearEditors()"
-        class="text-xs text-slate-500 hover:text-rose-400 px-2 py-1 rounded transition"
-        title="Clear All Editors">
-        <i class="fa-solid fa-trash-can"></i>
-    </button>
+    </footer>
 
 </div>
 
-        
-        
 
-        <!-- RIGHT PANEL: LIVE DESIGN PREVIEW -->
-        <div id="previewPanel" 
-            class="flex-1 min-w-0 h-full flex flex-col bg-slate-950 relative">
-            
-            <!-- Preview Controls Bar -->
-            <div class="h-10 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-xs font-semibold text-slate-400 ml-2">LIVE OUTPUT PREVIEW</span>
-                </div>
-
-                <!-- Responsive Device Screen Toggle -->
-                <div class="flex items-center space-x-1 bg-slate-950 p-0.5 rounded-md border border-slate-800">
-                    <button onclick="setScreenSize('full')" id="btn-screen-full" class="px-2 py-0.5 text-xs text-indigo-400 bg-slate-800 rounded font-medium transition" title="Full Width Screen">
-                        <i class="fa-solid fa-desktop"></i>
-                    </button>
-                    <button onclick="setScreenSize('tablet')" id="btn-screen-tablet" class="px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition" title="Tablet View (768px)">
-                        <i class="fa-solid fa-tablet-screen-button"></i>
-                    </button>
-                    <button onclick="setScreenSize('mobile')" id="btn-screen-mobile" class="px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition" title="Mobile View (375px)">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                    </button>
-                </div>
-
-                <!-- Console & Refresh Tools -->
-                <div class="flex items-center space-x-2">
-                    <button onclick="toggleConsole()" class="px-2 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 flex items-center space-x-1 transition">
-                        <i class="fa-solid fa-terminal text-amber-400"></i>
-                        <span>Console</span>
-                        <span id="consoleBadge" class="hidden bg-amber-500 text-slate-950 font-bold px-1.5 py-0.2 text-[10px] rounded-full">0</span>
-                    </button>
-                    <button onclick="updatePreview()" title="Refresh Frame" class="p-1 text-xs text-slate-400 hover:text-white transition">
-                        <i class="fa-solid fa-rotate-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Iframe Sandbox Canvas Wrapper -->
-            <div id="iframeContainer" class="flex-1 min-h-0 w-full bg-slate-950 flex items-center justify-center p-0 transition-all duration-300 overflow-hidden relative">
-                <iframe id="outputIframe" class="w-full h-full bg-white border-none shadow-2xl transition-all duration-300" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
-            </div>
-
-            <!-- LIVE CONSOLE DRAWER -->
-            <div id="consoleDrawer" class="h-44 shrink-0 bg-slate-900 border-t border-slate-800 flex flex-col hidden transition-all">
-                <div class="h-7 bg-slate-950 px-3 border-b border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
-                    <span class="flex items-center space-x-2">
-                        <i class="fa-solid fa-terminal text-amber-400"></i>
-                        <span class="font-bold text-slate-300">Console Output</span>
-                    </span>
-                    <button onclick="clearConsole()" class="text-[11px] text-slate-500 hover:text-rose-400 transition">
-                        <i class="fa-solid fa-ban mr-1"></i>Clear Logs
-                    </button>
-                </div>
-                <div id="consoleLogs" class="flex-1 p-3 overflow-y-auto font-mono text-xs space-y-1 bg-slate-950/80">
-                    <div class="text-slate-500 italic">// Console messages and runtime logs will appear here...</div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- =========================================
-     DOWNLOAD PROJECT MODAL
-     ========================================= -->
+<!-- =====================================================
+     DOWNLOAD MODAL
+====================================================== -->
 
 <div id="downloadModal"
-     class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+     class="fixed inset-0
+            z-[200]
+            bg-slate-950/80
+            backdrop-blur-sm
+            flex items-center
+            justify-center
+            hidden">
 
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-11/12 max-w-sm p-5 shadow-2xl">
 
-        <!-- Header -->
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+    <div class="w-[92%] max-w-sm
+                bg-slate-900
+                border border-slate-800
+                rounded-2xl
+                p-5
+                shadow-2xl">
+
+
+        <div class="flex items-center
+                    justify-between
+                    mb-4">
 
             <div>
-                <h3 class="font-bold text-slate-100 text-base">
+
+                <h3 class="font-bold">
+
                     Download Project
+
                 </h3>
 
-                <p class="text-xs text-slate-500 mt-1">
-                    Choose your preferred download format
+                <p class="text-xs text-slate-500">
+
+                    Choose a format
+
                 </p>
+
             </div>
+
 
             <button
                 onclick="closeDownloadMenu()"
-                class="text-slate-400 hover:text-white text-lg font-bold"
-            >
+                class="text-slate-500
+                       hover:text-white
+                       text-xl">
+
                 &times;
+
             </button>
 
         </div>
 
 
-        <!-- Single HTML -->
         <button
             onclick="downloadHTMLFile()"
-            class="w-full p-4 mb-3 rounded-xl bg-slate-800/70 border border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/10 transition flex items-center space-x-4 text-left"
-        >
+            class="w-full p-4 mb-3
+                   rounded-xl
+                   bg-slate-800
+                   border border-slate-700
+                   hover:border-indigo-500
+                   text-left">
 
-            <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center">
-                <i class="fa-brands fa-html5 text-xl"></i>
-            </div>
+            <i class="fa-brands fa-html5
+                      text-orange-400
+                      text-xl mr-3"></i>
 
-            <div>
-                <div class="text-sm font-bold text-slate-200">
-                    Download HTML File
-                </div>
+            <span class="font-semibold">
 
-                <div class="text-xs text-slate-500 mt-1">
-                    Download your complete project as one HTML file
-                </div>
+                Download HTML
+
+            </span>
+
+            <div class="text-xs
+                        text-slate-500
+                        ml-8">
+
+                Complete project in one HTML file
+
             </div>
 
         </button>
 
 
-        <!-- ZIP Project -->
         <button
             onclick="downloadZIPProject()"
-            class="w-full p-4 rounded-xl bg-slate-800/70 border border-slate-700 hover:border-purple-500 hover:bg-purple-500/10 transition flex items-center space-x-4 text-left"
-        >
+            class="w-full p-4
+                   rounded-xl
+                   bg-slate-800
+                   border border-slate-700
+                   hover:border-purple-500
+                   text-left">
 
-            <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
-                <i class="fa-solid fa-file-zipper text-xl"></i>
-            </div>
+            <i class="fa-solid fa-file-zipper
+                      text-purple-400
+                      text-xl mr-3"></i>
 
-            <div>
-                <div class="text-sm font-bold text-slate-200">
-                    Download ZIP Project
-                </div>
+            <span class="font-semibold">
 
-                <div class="text-xs text-slate-500 mt-1">
-                    Download HTML, CSS & JavaScript as separate files
-                </div>
+                Download ZIP
+
+            </span>
+
+            <div class="text-xs
+                        text-slate-500
+                        ml-8">
+
+                HTML + CSS + JavaScript
+
             </div>
 
         </button>
 
 
-        <!-- Close -->
         <button
             onclick="closeDownloadMenu()"
-            class="w-full mt-4 py-2 text-xs text-slate-500 hover:text-white transition"
-        >
+            class="w-full mt-4
+                   text-xs
+                   text-slate-500
+                   hover:text-white">
+
             Cancel
+
         </button>
 
     </div>
 
 </div>
-    <div id="libsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl w-11/12 max-w-md p-5 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-                <h3 class="font-bold text-slate-100 text-base flex items-center space-x-2">
-                    <i class="fa-solid fa-cubes text-indigo-400"></i>
-                    <span>Include Popular Libraries</span>
-                </h3>
-                <button onclick="toggleLibsModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
-            </div>
-            
-            <div class="space-y-3">
-                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-brands fa-css3-alt text-sky-400 text-xl"></i>
-                        <div>
-                            <div class="text-sm font-semibold text-slate-200">Tailwind CSS 3.x</div>
-                            <div class="text-xs text-slate-400">Utility-first CSS framework</div>
-                        </div>
-                    </div>
-                    <input type="checkbox" id="lib-tailwind" checked onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
-                </label>
 
-                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-icons text-pink-400 text-xl"></i>
-                        <div>
-                            <div class="text-sm font-semibold text-slate-200">Font Awesome 6.x</div>
-                            <div class="text-xs text-slate-400">Icons for apps & UI components</div>
-                        </div>
-                    </div>
-                    <input type="checkbox" id="lib-fontawesome" checked onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
-                </label>
 
-                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-cube text-emerald-400 text-xl"></i>
-                        <div>
-                            <div class="text-sm font-semibold text-slate-200">Three.js</div>
-                            <div class="text-xs text-slate-400">3D Graphics Library</div>
-                        </div>
-                    </div>
-                    <input type="checkbox" id="lib-three" onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
-                </label>
+<!-- =====================================================
+     LIBRARIES MODAL
+====================================================== -->
 
-                <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/60 border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-chart-pie text-amber-400 text-xl"></i>
-                        <div>
-                            <div class="text-sm font-semibold text-slate-200">Chart.js</div>
-                            <div class="text-xs text-slate-400">Charts & Data Visualization</div>
-                        </div>
-                    </div>
-                    <input type="checkbox" id="lib-chart" onchange="updatePreview()" class="w-4 h-4 accent-indigo-500">
-                </label>
-            </div>
+<div id="librariesModal"
+     class="fixed inset-0
+            z-[200]
+            bg-slate-950/80
+            backdrop-blur-sm
+            flex items-center
+            justify-center
+            hidden">
 
-            <div class="mt-5 pt-3 border-t border-slate-800 text-right">
-                <button onclick="toggleLibsModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition">
-                    Apply & Close
-                </button>
-            </div>
+
+    <div class="w-[92%] max-w-md
+                bg-slate-900
+                border border-slate-800
+                rounded-2xl
+                p-5">
+
+
+        <div class="flex items-center
+                    justify-between
+                    border-b border-slate-800
+                    pb-3 mb-4">
+
+            <h3 class="font-bold">
+
+                <i class="fa-solid fa-cubes
+                          text-indigo-400 mr-2"></i>
+
+                Libraries
+
+            </h3>
+
+
+            <button
+                onclick="toggleLibraries()"
+                class="text-xl
+                       text-slate-500">
+
+                &times;
+
+            </button>
+
         </div>
+
+
+        <div class="space-y-2">
+
+
+            <label class="library-option">
+
+                <span>
+
+                    <i class="fa-brands fa-css3-alt
+                              text-sky-400 mr-2"></i>
+
+                    Tailwind CSS
+
+                </span>
+
+                <input
+                    id="lib-tailwind"
+                    type="checkbox"
+                    checked
+                    onchange="updatePreview()">
+
+            </label>
+
+
+            <label class="library-option">
+
+                <span>
+
+                    <i class="fa-solid fa-icons
+                              text-pink-400 mr-2"></i>
+
+                    Font Awesome
+
+                </span>
+
+                <input
+                    id="lib-fontawesome"
+                    type="checkbox"
+                    checked
+                    onchange="updatePreview()">
+
+            </label>
+
+
+            <label class="library-option">
+
+                <span>
+
+                    <i class="fa-solid fa-cube
+                              text-emerald-400 mr-2"></i>
+
+                    Three.js
+
+                </span>
+
+                <input
+                    id="lib-three"
+                    type="checkbox"
+                    onchange="updatePreview()">
+
+            </label>
+
+
+            <label class="library-option">
+
+                <span>
+
+                    <i class="fa-solid fa-chart-pie
+                              text-amber-400 mr-2"></i>
+
+                    Chart.js
+
+                </span>
+
+                <input
+                    id="lib-chart"
+                    type="checkbox"
+                    onchange="updatePreview()">
+
+            </label>
+
+        </div>
+
+
+        <button
+            onclick="toggleLibraries()"
+            class="mt-5 w-full
+                   py-2
+                   rounded-lg
+                   bg-indigo-600
+                   hover:bg-indigo-700
+                   text-sm font-semibold">
+
+            Apply & Close
+
+        </button>
+
     </div>
 
-    <!-- TOAST NOTIFICATION MESSAGE BOX -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 border border-indigo-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 pointer-events-none">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-        <span id="toastMsg" class="text-xs font-medium">Notification message</span>
+</div>
+
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div id="toast"
+     class="fixed
+            bottom-16
+            right-5
+            z-[300]
+            bg-slate-800
+            border border-indigo-500
+            rounded-xl
+            px-4 py-3
+            shadow-2xl
+            opacity-0
+            translate-y-10
+            pointer-events-none
+            transition-all
+            flex items-center gap-3">
+
+    <i id="toastIcon"
+       class="fa-solid fa-circle-check
+              text-emerald-400"></i>
+
+    <span id="toastMsg"
+          class="text-xs">
+
+        Notification
+
+    </span>
+
+</div>
+
+
+<!-- =====================================================
+     EXTRA COMPONENT STYLES
+====================================================== -->
+
+<style>
+
+    .explorer-file {
+
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding:
+            7px 8px;
+
+        border-radius: 5px;
+
+        color: #94a3b8;
+
+        font-size: 12px;
+
+        text-align: left;
+
+        transition: .2s;
+
+    }
+
+
+    .explorer-file:hover {
+
+        background:
+            #1e293b;
+
+        color: white;
+
+    }
+
+
+    .explorer-file.active {
+
+        background:
+            rgba(99,102,241,.12);
+
+        color:
+            #a5b4fc;
+
+    }
+
+
+    .editor-tab {
+
+        height: 36px;
+
+        padding:
+            0 14px;
+
+        border-radius:
+            7px 7px 0 0;
+
+        color:
+            #64748b;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        transition: .2s;
+
+    }
+
+
+    .editor-tab:hover {
+
+        color: white;
+
+        background:
+            #0f172a;
+
+    }
+
+
+    .editor-tab.active-html {
+
+        color:
+            #fb923c;
+
+        background:
+            #0f172a;
+
+        border-top:
+            2px solid #f97316;
+
+    }
+
+
+    .editor-tab.active-css {
+
+        color:
+            #38bdf8;
+
+        background:
+            #0f172a;
+
+        border-top:
+            2px solid #0ea5e9;
+
+    }
+
+
+    .editor-tab.active-js {
+
+        color:
+            #facc15;
+
+        background:
+            #0f172a;
+
+        border-top:
+            2px solid #eab308;
+
+    }
+
+
+    .screen-btn {
+
+        padding:
+            3px 7px;
+
+        border-radius: 4px;
+
+        color:
+            #64748b;
+
+        font-size: 11px;
+
+    }
+
+
+    .screen-btn:hover {
+
+        color:
+            #a5b4fc;
+
+    }
+
+
+    .screen-btn.active {
+
+        color:
+            #a5b4fc;
+
+        background:
+            #1e293b;
+
+    }
+
+
+    .library-option {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding:
+            12px;
+
+        border-radius:
+            9px;
+
+        background:
+            rgba(30,41,59,.7);
+
+        border:
+            1px solid #334155;
+
+        cursor: pointer;
+
+        font-size: 12px;
+
+    }
+
+
+    .library-option:hover {
+
+        background:
+            #1e293b;
+
+    }
+
+
+</style>
+
+
+<!-- =====================================================
+     APPLICATION JAVASCRIPT
+====================================================== -->
+
+<script>
+
+"use strict";
+
+
+/* =====================================================
+   GLOBAL EDITORS
+====================================================== */
+
+let editorHTML = null;
+let editorCSS = null;
+let editorJS = null;
+
+window.editorHTML = null;
+window.editorCSS = null;
+window.editorJS = null;
+
+
+let activeTab = "html";
+
+let debounceTimer = null;
+
+let consoleCount = 0;
+
+let currentScreenSize = "full";
+
+
+/* =====================================================
+   TEMPLATES
+====================================================== */
+
+const templates = {
+
+
+    saas: {
+
+        html: `
+
+<div class="min-h-screen bg-slate-950 text-white
+            flex items-center justify-center p-6">
+
+    <div class="w-full max-w-sm
+                bg-slate-900
+                border border-slate-800
+                rounded-3xl
+                p-6 shadow-2xl">
+
+        <div class="flex items-center
+                    justify-between mb-6">
+
+            <div>
+
+                <p class="text-xs text-slate-500">
+                    Welcome back 👋
+                </p>
+
+                <h2 class="text-xl font-bold">
+                    Alex Morgan
+                </h2>
+
+            </div>
+
+            <div class="w-11 h-11
+                        rounded-full
+                        bg-gradient-to-tr
+                        from-indigo-500
+                        to-purple-500
+                        flex items-center
+                        justify-center
+                        font-bold">
+
+                AM
+
+            </div>
+
+        </div>
+
+
+        <div class="bg-gradient-to-r
+                    from-indigo-600
+                    to-purple-600
+                    rounded-2xl
+                    p-5 mb-5">
+
+            <span class="text-xs
+                         bg-white/20
+                         px-2 py-1
+                         rounded-full">
+
+                Daily Goal
+
+            </span>
+
+            <h3 class="text-2xl
+                       font-extrabold mt-3">
+
+                8,420
+
+                <span class="text-sm
+                             font-normal
+                             text-indigo-200">
+
+                    / 10,000 steps
+
+                </span>
+
+            </h3>
+
+            <div class="w-full
+                        bg-black/20
+                        rounded-full
+                        h-2 mt-3">
+
+                <div class="bg-white
+                            h-2 rounded-full"
+                     style="width:84%">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid
+                    grid-cols-2
+                    gap-3 mb-5">
+
+            <div class="bg-slate-800
+                        p-4 rounded-xl">
+
+                <div class="text-lg
+                            font-bold">
+
+                    540 kcal
+
+                </div>
+
+                <div class="text-xs
+                            text-slate-400">
+
+                    Calories
+
+                </div>
+
+            </div>
+
+
+            <div class="bg-slate-800
+                        p-4 rounded-xl">
+
+                <div class="text-lg
+                            font-bold">
+
+                    118 bpm
+
+                </div>
+
+                <div class="text-xs
+                            text-slate-400">
+
+                    Heart Rate
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button id="workoutBtn"
+                class="w-full
+                       py-3
+                       rounded-xl
+                       bg-gradient-to-r
+                       from-emerald-500
+                       to-teal-500
+                       font-bold">
+
+            Start Workout
+
+        </button>
+
     </div>
 
-    <script>
-       // =========================================
-// WELCOME SCREEN
-// =========================================
+</div>
+
+`,
+
+        css: `
+
+#workoutBtn {
+
+    animation:
+        pulseGlow 2s infinite;
+
+}
+
+@keyframes pulseGlow {
+
+    0%,100% {
+
+        box-shadow:
+            0 0 10px
+            rgba(16,185,129,.2);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 30px
+            rgba(16,185,129,.7);
+
+    }
+
+}
+
+`,
+
+        js: `
+
+const btn =
+    document.getElementById("workoutBtn");
+
+btn.addEventListener("click", () => {
+
+    console.log(
+        "Workout started!"
+    );
+
+    alert(
+        "🚀 Workout session started!"
+    );
+
+});
+
+`
+
+    },
+
+
+    game: {
+
+        html: `
+
+<div class="min-h-screen
+            bg-slate-950
+            text-white
+            flex flex-col
+            items-center
+            justify-center p-4">
+
+    <h1 class="text-2xl
+               font-black
+               text-amber-400
+               mb-2">
+
+        ARCADE PADDLE
+
+    </h1>
+
+    <p class="text-xs
+              text-slate-500
+              mb-4">
+
+        Move your mouse to control the paddle.
+
+    </p>
+
+
+    <canvas
+        id="gameCanvas"
+        width="480"
+        height="320"
+        class="bg-slate-900
+               border-2
+               border-amber-500/40
+               rounded-xl
+               max-w-full">
+    </canvas>
+
+
+    <div class="mt-4
+                font-mono
+                text-xs">
+
+        SCORE:
+
+        <span id="scoreText"
+              class="text-amber-400">
+
+            0
+
+        </span>
+
+    </div>
+
+</div>
+
+`,
+
+        css: `
+
+canvas {
+
+    box-shadow:
+        0 0 30px
+        rgba(245,158,11,.15);
+
+}
+
+`,
+
+        js: `
+
+const canvas =
+    document.getElementById("gameCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const scoreText =
+    document.getElementById("scoreText");
+
+
+let x =
+    canvas.width / 2;
+
+let y =
+    canvas.height - 30;
+
+let dx = 3;
+let dy = -3;
+
+let radius = 8;
+
+let paddleWidth = 75;
+let paddleHeight = 10;
+
+let paddleX =
+    (canvas.width - paddleWidth) / 2;
+
+let score = 0;
+
+
+canvas.addEventListener(
+    "mousemove",
+    event => {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        const relativeX =
+            event.clientX -
+            rect.left;
+
+        paddleX =
+            relativeX -
+            paddleWidth / 2;
+
+    }
+);
+
+
+function drawBall() {
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#f59e0b";
+
+    ctx.fill();
+
+    ctx.closePath();
+
+}
+
+
+function drawPaddle() {
+
+    ctx.fillStyle =
+        "#6366f1";
+
+    ctx.fillRect(
+        paddleX,
+        canvas.height -
+            paddleHeight,
+        paddleWidth,
+        paddleHeight
+    );
+
+}
+
+
+function draw() {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    drawBall();
+
+    drawPaddle();
+
+
+    if (
+        x + dx >
+        canvas.width - radius ||
+
+        x + dx <
+        radius
+    ) {
+
+        dx = -dx;
+
+    }
+
+
+    if (
+        y + dy <
+        radius
+    ) {
+
+        dy = -dy;
+
+    }
+
+
+    else if (
+        y + dy >
+        canvas.height - radius
+    ) {
+
+        if (
+            x >
+                paddleX &&
+
+            x <
+                paddleX +
+                paddleWidth
+        ) {
+
+            dy = -dy;
+
+            score += 10;
+
+            scoreText.innerText =
+                score;
+
+            console.log(
+                "Score:",
+                score
+            );
+
+        }
+
+        else {
+
+            console.log(
+                "Game Over:",
+                score
+            );
+
+            x =
+                canvas.width / 2;
+
+            y =
+                canvas.height - 30;
+
+            dx = 3;
+
+            dy = -3;
+
+            score = 0;
+
+            scoreText.innerText =
+                score;
+
+        }
+
+    }
+
+
+    x += dx;
+    y += dy;
+
+
+    requestAnimationFrame(
+        draw
+    );
+
+}
+
+
+draw();
+
+`
+
+    },
+
+
+    three: {
+
+        html: `
+
+<div id="threeContainer"
+     class="w-full h-screen
+            bg-slate-950
+            relative">
+
+    <div class="absolute
+                top-4 left-4
+                z-10
+                bg-slate-900/80
+                p-3 rounded-xl
+                border border-slate-700">
+
+        <h2 class="font-bold text-white">
+
+            Three.js Visualizer
+
+        </h2>
+
+        <p class="text-xs
+                  text-slate-500">
+
+            Animated 3D object
+
+        </p>
+
+    </div>
+
+</div>
+
+`,
+
+        css: `
+
+body {
+
+    margin: 0;
+
+    overflow: hidden;
+
+}
+
+`,
+
+        js: `
+
+if (typeof THREE === "undefined") {
+
+    console.error(
+        "Enable Three.js from Libraries."
+    );
+
+} else {
+
+    const container =
+        document.getElementById(
+            "threeContainer"
+        );
+
+
+    const scene =
+        new THREE.Scene();
+
+
+    const camera =
+        new THREE.PerspectiveCamera(
+            75,
+            container.clientWidth /
+            container.clientHeight,
+            .1,
+            1000
+        );
+
+
+    const renderer =
+        new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+
+    renderer.setSize(
+        container.clientWidth,
+        container.clientHeight
+    );
+
+
+    container.appendChild(
+        renderer.domElement
+    );
+
+
+    const geometry =
+        new THREE.IcosahedronGeometry(
+            2,
+            2
+        );
+
+
+    const material =
+        new THREE.MeshBasicMaterial({
+            color: 0x6366f1,
+            wireframe: true
+        });
+
+
+    const sphere =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    scene.add(sphere);
+
+
+    camera.position.z = 5;
+
+
+    function animate() {
+
+        requestAnimationFrame(
+            animate
+        );
+
+        sphere.rotation.x += .008;
+
+        sphere.rotation.y += .01;
+
+        renderer.render(
+            scene,
+            camera
+        );
+
+    }
+
+
+    animate();
+
+}
+
+`
+
+    },
+
+
+    glass: {
+
+        html: `
+
+<div class="min-h-screen
+            bg-gradient-to-tr
+            from-slate-950
+            via-indigo-950
+            to-slate-900
+            flex items-center
+            justify-center p-6">
+
+    <div class="w-full max-w-md
+                rounded-3xl
+                bg-white/10
+                backdrop-blur-xl
+                border border-white/20
+                p-7
+                shadow-2xl">
+
+        <div class="flex
+                    justify-between
+                    items-center">
+
+            <span class="text-xs
+                         tracking-widest
+                         text-slate-300">
+
+                JS PLATINUM
+
+            </span>
+
+            <i class="fa-brands
+                      fa-cc-visa
+                      text-3xl">
+
+            </i>
+
+        </div>
+
+
+        <div class="mt-10">
+
+            <div class="w-12 h-9
+                        bg-gradient-to-r
+                        from-amber-300
+                        to-amber-500
+                        rounded-lg
+                        mb-5">
+
+            </div>
+
+
+            <div class="text-lg
+                        font-mono
+                        tracking-widest">
+
+                4532 •••• •••• 8892
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-10
+                    flex justify-between">
+
+            <div>
+
+                <p class="text-[9px]
+                          text-slate-400">
+
+                    CARD HOLDER
+
+                </p>
+
+                <p class="font-bold">
+
+                    JS USER
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-[9px]
+                          text-slate-400">
+
+                    EXPIRES
+
+                </p>
+
+                <p class="font-bold">
+
+                    12/28
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+`,
+
+        css: ``,
+
+        js: `
+
+console.log(
+    "Glass UI loaded successfully."
+);
+
+`
+
+    }
+
+};
+
+
+/* =====================================================
+   START SCREEN
+====================================================== */
 
 function startBuilding() {
-    const welcomeScreen = document.getElementById('welcomeScreen');
 
-    if (!welcomeScreen) return;
+    const welcome =
+        document.getElementById(
+            "welcomeScreen"
+        );
 
-    welcomeScreen.classList.add('hide');
 
-    // Remove from screen after animation
+    welcome.classList.add(
+        "hide"
+    );
+
+
     setTimeout(() => {
-        welcomeScreen.style.display = 'none';
-    }, 750);
-} 
-        // =========================================
-// START SCREEN
-// =========================================
+
+        welcome.style.display =
+            "none";
+
+        const start =
+            document.getElementById(
+                "startScreen"
+            );
+
+        if (start) {
+
+            start.classList.remove(
+                "hidden"
+            );
+
+        }
+
+    }, 700);
+
+}
+
 
 function openStartLogin() {
 
     document
-        .getElementById('startLoginScreen')
-        .classList.remove('hidden');
+        .getElementById(
+            "startLoginScreen"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 }
 
-
-// Start without Google
 
 function startWithoutLogin() {
 
     document
-        .getElementById('startLoginScreen')
-        .classList.add('hidden');
+        .getElementById(
+            "startLoginScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
+
 
     document
-        .getElementById('startScreen')
-        .classList.add('hidden');
+        .getElementById(
+            "startScreen"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 }
 
-
-// Google button - Firebase will be connected in Step 2
 
 async function continueWithGoogle() {
 
     try {
 
-        const user = await window.googleSignIn();
+        const user =
+            await window.googleSignIn();
+
 
         if (!user) return;
 
-        console.log("👤 Logged in:", user.displayName);
 
-        // Close login screen
         document
-            .getElementById('startLoginScreen')
-            .classList.add('hidden');
+            .getElementById(
+                "startLoginScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
 
-        // Close welcome screen
+
         document
-            .getElementById('startScreen')
-            .classList.add('hidden');
+            .getElementById(
+                "startScreen"
+            )
+            .classList.add(
+                "hidden"
+            );
+
 
         showToast(
-            `Welcome, ${user.displayName}!`
+            `Welcome, ${user.displayName || "Developer"}!`
         );
+
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Google Sign-In Error:",
+            error
+        );
 
-        if (error.code === 'auth/popup-closed-by-user') {
 
-            showToast('Google Sign-In cancelled.');
-
-        } else {
+        if (
+            error.code ===
+            "auth/popup-closed-by-user"
+        ) {
 
             showToast(
-                'Google Sign-In failed. Please try again.'
+                "Google Sign-In cancelled."
             );
 
         }
 
-    }
-
-}
-        // Code Editors Initialization
-        let editorHTML, editorCSS, editorJS;
-        let activeTab = 'html';
-        let consoleCount = 0;
-
-        // Default Starter Templates
-        const templates = {
-            saas: {
-                html: `<!-- Modern Mobile Fitness App UI -->
-<div class="bg-slate-900 min-h-screen text-slate-100 p-4 flex justify-center items-center">
-  <div class="w-full max-w-sm bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl">
-    
-    <!-- Top Bar -->
-    <div class="flex justify-between items-center mb-6">
-      <div>
-        <p class="text-xs text-slate-400">Welcome back 👋</p>
-        <h2 class="text-xl font-bold text-white">Alex Morgan</h2>
-      </div>
-      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md">
-        AM
-      </div>
-    </div>
-
-    <!-- Main Goal Card -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-5 mb-6 text-white shadow-lg relative overflow-hidden">
-      <div class="relative z-10">
-        <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-medium">Daily Goal</span>
-        <h3 class="text-2xl font-extrabold mt-3 mb-1">8,420 <span class="text-sm font-normal text-indigo-200">/ 10,000 steps</span></h3>
-        <div class="w-full bg-black/20 rounded-full h-2 mt-3">
-          <div class="bg-white h-2 rounded-full" style="width: 84%"></div>
-        </div>
-      </div>
-      <i class="fa-solid fa-fire text-6xl absolute -right-2 -bottom-2 text-white/10"></i>
-    </div>
-
-    <!-- Quick Stats Grid -->
-    <div class="grid grid-cols-2 gap-3 mb-6">
-      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
-        <i class="fa-solid fa-bolt text-amber-400 text-lg mb-2"></i>
-        <div class="text-lg font-bold">540 kcal</div>
-        <div class="text-xs text-slate-400">Calories Burned</div>
-      </div>
-      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
-        <i class="fa-solid fa-heart-pulse text-rose-500 text-lg mb-2"></i>
-        <div class="text-lg font-bold">118 bpm</div>
-        <div class="text-xs text-slate-400">Avg Heart Rate</div>
-      </div>
-    </div>
-
-    <!-- Interactive Action Button -->
-    <button id="workoutBtn" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center space-x-2">
-      <i class="fa-solid fa-play"></i>
-      <span>Start Workout Now</span>
-    </button>
-  </div>
-</div>`,
-                css: `/* Custom CSS Animations */
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-  50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.8); }
-}
-
-#workoutBtn {
-  animation: pulseGlow 2s infinite;
-}`,
-                js: `// Interactive Button Event
-const btn = document.getElementById('workoutBtn');
-btn.addEventListener('click', () => {
-  console.log('Workout session initiated!');
-  alert('🚀 Workout Session Started! Keep Pushing Your Limits!');
-});`
-            },
-
-            game: {
-                html: `<!-- Canvas Mini Arcade Ping-Pong Game -->
-<div class="bg-slate-950 min-h-screen flex flex-col justify-center items-center p-4">
-  <div class="text-center mb-4">
-    <h1 class="text-2xl font-black text-amber-400 tracking-wide uppercase">Arcade Paddle Game</h1>
-    <p class="text-xs text-slate-400">Move your mouse inside the box to control the paddle!</p>
-  </div>
-
-  <canvas id="gameCanvas" width="480" height="320" class="bg-slate-900 border-2 border-amber-500/50 rounded-xl shadow-2xl cursor-none"></canvas>
-
-  <div class="mt-4 flex space-x-4 text-xs font-mono text-slate-300">
-    <div>SCORE: <span id="scoreText" class="text-amber-400 font-bold">0</span></div>
-  </div>
-</div>`,
-                css: `canvas {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
-}`,
-                js: `const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const scoreText = document.getElementById('scoreText');
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 3;
-let dy = -3;
-let ballRadius = 8;
-let paddleHeight = 10;
-let paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-let score = 0;
-
-canvas.addEventListener("mousemove", (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const relativeX = e.clientX - rect.left;
-  if(relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
-  }
-});
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#f59e0b";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#6366f1";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBall();
-  drawPaddle();
-
-  if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-  if(y + dy < ballRadius) {
-    dy = -dy;
-  } else if(y + dy > canvas.height - ballRadius) {
-    if(x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
-      score += 10;
-      scoreText.innerText = score;
-      console.log('Hit! Score:', score);
-    } else {
-      console.log('Game Over! Final Score:', score);
-      x = canvas.width / 2;
-      y = canvas.height - 30;
-      dx = 3;
-      dy = -3;
-      score = 0;
-      scoreText.innerText = score;
-    }
-  }
-
-  x += dx;
-  y += dy;
-  requestAnimationFrame(draw);
-}
-
-draw();`
-            },
-
-            three: {
-                html: `<!-- 3D Interactive Animated Sphere -->
-<div id="three-container" class="w-full h-screen bg-slate-950 relative overflow-hidden">
-  <div class="absolute top-4 left-4 z-10 bg-slate-900/80 backdrop-blur p-3 rounded-xl border border-slate-700">
-    <h2 class="text-sm font-bold text-white">Three.js 3D Visualizer</h2>
-    <p class="text-xs text-slate-400">Drag mouse to rotate canvas!</p>
-  </div>
-</div>`,
-                css: `body { margin: 0; overflow: hidden; }`,
-                js: `// Ensure Three.js is loaded
-if (typeof THREE !== 'undefined') {
-  const container = document.getElementById('three-container');
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
-
-  // Wireframe Geometry
-  const geometry = new THREE.IcosahedronGeometry(2, 2);
-  const material = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true });
-  const sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
-
-  camera.position.z = 5;
-
-  function animate() {
-    requestAnimationFrame(animate);
-    sphere.rotation.x += 0.008;
-    sphere.rotation.y += 0.01;
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  console.log('3D Interactive Mesh Rendered Successfully!');
-} else {
-  console.log('Please enable Three.js from the Libraries menu above!');
-}`
-            },
-
-            glass: {
-                html: `<!-- Modern Glassmorphism Credit Card -->
-<div class="min-h-screen bg-gradient-to-tr from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-6">
-  <div class="w-96 h-56 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-105 transition duration-500">
-    
-    <!-- Decorative Glow -->
-    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-500/30 rounded-full blur-2xl"></div>
-    <div class="absolute -left-10 -top-10 w-40 h-40 bg-indigo-500/30 rounded-full blur-2xl"></div>
-
-    <div class="flex justify-between items-center z-10">
-      <span class="text-xs font-mono tracking-widest text-slate-300 uppercase">JS Platinum Card</span>
-      <i class="fa-brands fa-cc-visa text-3xl text-white/80"></i>
-    </div>
-
-    <div class="z-10 my-4">
-      <div class="w-12 h-9 rounded-lg bg-gradient-to-r from-amber-300 to-amber-500 mb-4 opacity-90"></div>
-      <div class="text-xl font-mono tracking-widest text-white">4532 •••• •••• 8892</div>
-    </div>
-
-    <div class="flex justify-between items-end z-10 text-xs text-slate-300 font-mono">
-      <div>
-        <div class="text-[9px] uppercase text-slate-400">Card Holder</div>
-        <div class="font-bold text-white">SUBHAJIT ROY</div>
-      </div>
-      <div>
-        <div class="text-[9px] uppercase text-slate-400">Expires</div>
-        <div class="font-bold text-white">12/28</div>
-      </div>
-    </div>
-  </div>
-</div>`,
-                css: ``,
-                js: `console.log('Glassmorphism Card Rendered!');`
-            }
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            // Setup CodeMirror Editors
-            editorHTML = CodeMirror.fromTextArea(document.getElementById('code-html'), {
-                mode: 'htmlmixed',
-                theme: 'dracula',
-                lineNumbers: true,
-                autoCloseTags: true,
-                autoCloseBrackets: true,
-                lineWrapping: true
-            });
-
-            editorCSS = CodeMirror.fromTextArea(document.getElementById('code-css'), {
-                mode: 'css',
-                theme: 'dracula',
-                lineNumbers: true,
-                autoCloseBrackets: true,
-                lineWrapping: true
-            });
-
-            editorJS = CodeMirror.fromTextArea(document.getElementById('code-js'), {
-                mode: 'javascript',
-                theme: 'dracula',
-                lineNumbers: true,
-                autoCloseBrackets: true,
-                lineWrapping: true
-            });
-
-            // Set initial template
-            loadTemplate('saas');
-
-            // Auto-run on changes if enabled
-            const handleCodeChange = () => {
-                const autoRun = document.getElementById('autoRunToggle').checked;
-                if (autoRun) {
-                    debouncedUpdate();
-                }
-            };
-
-            editorHTML.on('change', handleCodeChange);
-            editorCSS.on('change', handleCodeChange);
-            editorJS.on('change', handleCodeChange);
-        });
-
-        // Debounce timer for smooth real-time compilation
-        let debounceTimer;
-        function debouncedUpdate() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(updatePreview, 400);
-        }
-// =========================================
-// FILE UPLOAD
-// =========================================
-
-function handleFileUpload(event) {
-
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    const fileName = file.name.toLowerCase();
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-        const content = e.target.result;
-
-        // HTML FILE
-        if (fileName.endsWith('.html') || fileName.endsWith('.htm')) {
-
-            editorHTML.setValue(content);
-            switchTab('html');
-
-            showToast(`HTML file "${file.name}" loaded successfully!`);
-
-        }
-
-        // CSS FILE
-        else if (fileName.endsWith('.css')) {
-
-            editorCSS.setValue(content);
-            switchTab('css');
-
-            showToast(`CSS file "${file.name}" loaded successfully!`);
-
-        }
-
-        // JAVASCRIPT FILE
-        else if (fileName.endsWith('.js')) {
-
-            editorJS.setValue(content);
-            switchTab('js');
-
-            showToast(`JavaScript file "${file.name}" loaded successfully!`);
-
-        }
-
-        // UNSUPPORTED FILE
         else {
 
-            showToast('Unsupported file! Upload HTML, CSS or JS.');
+            showToast(
+                "Google Sign-In failed."
+            );
 
-            return;
         }
 
-        // Update Live Preview
-        setTimeout(() => {
-            updatePreview();
-        }, 100);
+    }
 
-    };
-
-    reader.onerror = function() {
-
-        showToast('Unable to read this file.');
-
-    };
-
-    reader.readAsText(file);
-
-    // Allow same file to be uploaded again
-    event.target.value = '';
 }
-        // =========================================
-// VS CODE STYLE EXPLORER
-// =========================================
 
-function openExplorerFile(file) {
 
-    // Switch existing CodeMirror tab
-    switchTab(file);
+/* =====================================================
+   USER UI
+====================================================== */
 
-    // Update explorer active state
-    ['html', 'css', 'js'].forEach(type => {
+window.updateUserUI =
+    function (user) {
 
-        const item = document.getElementById(
-            `explorer-${type}`
+        if (!user) return;
+
+        console.log(
+            "Logged in as:",
+            user.displayName
         );
 
-        if (!item) return;
+    };
 
-        if (type === file) {
 
-            item.classList.add(
-                'bg-indigo-500/10',
-                'text-indigo-300'
+/* =====================================================
+   INITIALIZE EDITORS
+====================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        editorHTML =
+            CodeMirror.fromTextArea(
+                document.getElementById(
+                    "code-html"
+                ),
+                {
+
+                    mode: "htmlmixed",
+
+                    theme: "dracula",
+
+                    lineNumbers: true,
+
+                    autoCloseTags: true,
+
+                    autoCloseBrackets: true,
+
+                    lineWrapping: true
+
+                }
             );
 
-            item.classList.remove(
-                'text-slate-400'
+
+        editorCSS =
+            CodeMirror.fromTextArea(
+                document.getElementById(
+                    "code-css"
+                ),
+                {
+
+                    mode: "css",
+
+                    theme: "dracula",
+
+                    lineNumbers: true,
+
+                    autoCloseBrackets: true,
+
+                    lineWrapping: true
+
+                }
             );
 
-        } else {
 
-            item.classList.remove(
-                'bg-indigo-500/10',
-                'text-indigo-300'
+        editorJS =
+            CodeMirror.fromTextArea(
+                document.getElementById(
+                    "code-js"
+                ),
+                {
+
+                    mode: "javascript",
+
+                    theme: "dracula",
+
+                    lineNumbers: true,
+
+                    autoCloseBrackets: true,
+
+                    lineWrapping: true
+
+                }
             );
 
-            item.classList.add(
-                'text-slate-400'
-            );
-        }
-    });
-}
+
+        window.editorHTML =
+            editorHTML;
+
+        window.editorCSS =
+            editorCSS;
+
+        window.editorJS =
+            editorJS;
 
 
-// =========================================
-// CREATE NEW FILE
-// =========================================
+        /* Load default */
 
-function createNewFile() {
+        loadTemplate(
+            "saas",
+            false
+        );
 
-    const fileName = prompt(
-        "Enter file name:\nExample: app.js"
+
+        /* Code changes */
+
+        const onChange =
+            function () {
+
+                const auto =
+                    document
+                        .getElementById(
+                            "autoRunToggle"
+                        )
+                        .checked;
+
+
+                if (auto) {
+
+                    clearTimeout(
+                        debounceTimer
+                    );
+
+
+                    debounceTimer =
+                        setTimeout(
+                            updatePreview,
+                            350
+                        );
+
+                }
+
+            };
+
+
+        editorHTML.on(
+            "change",
+            onChange
+        );
+
+
+        editorCSS.on(
+            "change",
+            onChange
+        );
+
+
+        editorJS.on(
+            "change",
+            onChange
+        );
+
+
+        setTimeout(
+            updatePreview,
+            500
+        );
+
+
+        /* Try loading Firebase draft */
+
+        setTimeout(
+            async function () {
+
+                if (
+                    window.currentUser &&
+                    window.loadProjectDraft
+                ) {
+
+                    await window.loadProjectDraft();
+
+                }
+
+            },
+            1200
+        );
+
+    }
+);
+
+
+/* =====================================================
+   SWITCH TAB
+====================================================== */
+
+function switchTab(tab) {
+
+    activeTab =
+        tab;
+
+
+    ["html", "css", "js"]
+        .forEach(
+            function (type) {
+
+                const tabButton =
+                    document.getElementById(
+                        `tab-${type}`
+                    );
+
+
+                const wrapper =
+                    document.getElementById(
+                        `wrapper-${type}`
+                    );
+
+
+                tabButton.className =
+                    "editor-tab";
+
+
+                wrapper.classList.remove(
+                    "active"
+                );
+
+
+                if (type === tab) {
+
+                    tabButton.classList.add(
+                        `active-${type}`
+                    );
+
+
+                    wrapper.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+    setTimeout(
+        function () {
+
+            if (tab === "html") {
+
+                editorHTML.refresh();
+
+            }
+
+            if (tab === "css") {
+
+                editorCSS.refresh();
+
+            }
+
+            if (tab === "js") {
+
+                editorJS.refresh();
+
+            }
+
+        },
+        30
     );
 
-    if (!fileName) return;
 
-    const name = fileName.trim().toLowerCase();
+    updateExplorerState(
+        tab
+    );
+
+}
+
+
+/* =====================================================
+   EXPLORER
+====================================================== */
+
+function openExplorerFile(
+    file
+) {
+
+    switchTab(
+        file
+    );
+
+}
+
+
+function updateExplorerState(
+    active
+) {
+
+    ["html", "css", "js"]
+        .forEach(
+            function (type) {
+
+                const item =
+                    document.getElementById(
+                        `explorer-${type}`
+                    );
+
+
+                if (!item) return;
+
+
+                item.classList.toggle(
+                    "active",
+                    type === active
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   LOAD TEMPLATE
+====================================================== */
+
+function loadTemplate(
+    key,
+    notify = true
+) {
+
+    const template =
+        templates[key];
+
+
+    if (!template) return;
+
 
     if (
-        !name.endsWith('.html') &&
-        !name.endsWith('.htm') &&
-        !name.endsWith('.css') &&
-        !name.endsWith('.js')
+        key === "three"
     ) {
 
-        showToast(
-            'Only HTML, CSS and JavaScript files are supported.'
-        );
-
-        return;
-    }
-
-    // HTML
-    if (
-        name.endsWith('.html') ||
-        name.endsWith('.htm')
-    ) {
-
-        editorHTML.setValue(
-`<!-- ${fileName} -->
-
-<div>
-    
-</div>`
-        );
-
-        openExplorerFile('html');
+        document
+            .getElementById(
+                "lib-three"
+            )
+            .checked = true;
 
     }
 
-    // CSS
-    else if (name.endsWith('.css')) {
 
-        editorCSS.setValue(
-`/* ${fileName} */
+    editorHTML.setValue(
+        template.html
+    );
 
-`
-        );
 
-        openExplorerFile('css');
+    editorCSS.setValue(
+        template.css
+    );
 
-    }
 
-    // JavaScript
-    else if (name.endsWith('.js')) {
+    editorJS.setValue(
+        template.js
+    );
 
-        editorJS.setValue(
-`// ${fileName}
-
-`
-        );
-
-        openExplorerFile('js');
-    }
 
     updatePreview();
 
-    showToast(
-        `Created ${fileName}`
-    );
+
+    if (notify) {
+
+        showToast(
+            `${key.toUpperCase()} template loaded.`
+        );
+
+    }
+
 }
-        function switchTab(tab) {
-            activeTab = tab;
-            ['html', 'css', 'js'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                const wrapper = document.getElementById(`wrapper-${t}`);
-                if (t === tab) {
-                    btn.className = `px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-900 border-t-2 ${
-                        t === 'html' ? 'text-orange-400 border-orange-500' :
-                        t === 'css' ? 'text-sky-400 border-sky-500' : 'text-yellow-400 border-yellow-500'
-                    } flex items-center space-x-2`;
-                    wrapper.classList.remove('hidden');
-                } else {
-                    btn.className = 'px-4 py-2 text-xs font-semibold rounded-t-lg bg-slate-950 text-slate-400 border-t-2 border-transparent flex items-center space-x-2 transition';
-                    wrapper.classList.add('hidden');
-                }
-            });
 
-            document.getElementById('activeLanguageLabel').innerText = `${tab.toUpperCase()} MODE`;
 
-            // Refresh active editor instance for line wrapping recalculation
-            if (tab === 'html') editorHTML.refresh();
-            if (tab === 'css') editorCSS.refresh();
-            if (tab === 'js') editorJS.refresh();
+/* =====================================================
+   PREVIEW
+====================================================== */
+
+window.updatePreview =
+    function () {
+
+        if (
+            !editorHTML ||
+            !editorCSS ||
+            !editorJS
+        ) {
+
+            return;
+
         }
 
-        function updatePreview() {
-            window.editorHTMLValue = editorHTML.getValue();
-window.editorCSSValue = editorCSS.getValue();
-window.editorJSValue = editorJS.getValue();
-            const html = editorHTML.getValue();
-            const css = editorCSS.getValue();
-            const js = editorJS.getValue();
 
-            // Library CDN Inclusion
-            const useTailwind = document.getElementById('lib-tailwind').checked;
-            const useFA = document.getElementById('lib-fontawesome').checked;
-            const useThree = document.getElementById('lib-three').checked;
-            const useChart = document.getElementById('lib-chart').checked;
+        const html =
+            editorHTML.getValue();
 
-            const tailwindScript = useTailwind ? '<script src="https://cdn.tailwindcss.com"><\/script>' : '';
-            const faCss = useFA ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : '';
-            const threeScript = useThree ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : '';
-            const chartScript = useChart ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : '';
 
-            // Console Interceptor Snippet
-            const consoleInterceptor = `
-                <script>
-                    (function() {
-                        const originalLog = console.log;
-                        const originalError = console.error;
-                        const originalWarn = console.warn;
-                        
-                        function sendToParent(type, args) {
-                            const message = Array.from(args).map(a => 
-                                typeof a === 'object' ? JSON.stringify(a) : String(a)
-                            ).join(' ');
-                            window.parent.postMessage({ type: 'CONSOLE_LOG', level: type, msg: message }, '*');
+        const css =
+            editorCSS.getValue();
+
+
+        const js =
+            editorJS.getValue();
+
+
+        /* Libraries */
+
+        const useTailwind =
+            document
+                .getElementById(
+                    "lib-tailwind"
+                )
+                .checked;
+
+
+        const useFA =
+            document
+                .getElementById(
+                    "lib-fontawesome"
+                )
+                .checked;
+
+
+        const useThree =
+            document
+                .getElementById(
+                    "lib-three"
+                )
+                .checked;
+
+
+        const useChart =
+            document
+                .getElementById(
+                    "lib-chart"
+                )
+                .checked;
+
+
+        const tailwind =
+            useTailwind
+                ?
+`<script src="https://cdn.tailwindcss.com"><\/script>`
+                : "";
+
+
+        const fontAwesome =
+            useFA
+                ?
+`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">`
+                : "";
+
+
+        const three =
+            useThree
+                ?
+`<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>`
+                : "";
+
+
+        const chart =
+            useChart
+                ?
+`<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>`
+                : "";
+
+
+        /* Console bridge */
+
+        const consoleBridge = `
+
+<script>
+
+(function(){
+
+    const originalLog =
+        console.log;
+
+    const originalError =
+        console.error;
+
+    const originalWarn =
+        console.warn;
+
+
+    function send(
+        level,
+        args
+    ){
+
+        let message = "";
+
+        try {
+
+            message =
+                Array
+                .from(args)
+                .map(
+                    value => {
+
+                        if (
+                            typeof value ===
+                            "object"
+                        ) {
+
+                            try {
+
+                                return JSON.stringify(
+                                    value
+                                );
+
+                            } catch {
+
+                                return String(
+                                    value
+                                );
+
+                            }
+
                         }
 
-                        console.log = function(...args) {
-                            sendToParent('log', args);
-                            originalLog.apply(console, args);
-                        };
-                        console.error = function(...args) {
-                            sendToParent('error', args);
-                            originalError.apply(console, args);
-                        };
-                        console.warn = function(...args) {
-                            sendToParent('warn', args);
-                            originalWarn.apply(console, args);
-                        };
+                        return String(
+                            value
+                        );
 
-                        window.onerror = function(msg, url, lineNo, columnNo, error) {
-                            sendToParent('error', [\`Error: \${msg} (Line \${lineNo})\`]);
-                            return false;
-                        };
-                    })();
-                <\/script>
-            `;
+                    }
+                )
+                .join(" ");
 
-            const fullContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    ${tailwindScript}
-                    ${faCss}
-                    ${threeScript}
-                    ${chartScript}
-                    ${consoleInterceptor}
-                    <style>
-                        ${css}
-                    </style>
-                </head>
-                <body class="bg-white">
-                    ${html}
-                    <script>
-                        try {
-                            ${js}
-                        } catch (err) {
-                            console.error(err.message);
-                        }
-                    <\/script>
-                </body>
-                </html>
-            `;
+        } catch {
 
-            const iframe = document.getElementById('outputIframe');
-            iframe.srcdoc = fullContent;
+            message =
+                "Unable to serialize console message.";
+
         }
 
-        // Catch messages from Iframe Console
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'CONSOLE_LOG') {
-                appendConsoleLog(event.data.level, event.data.msg);
+
+        window.parent.postMessage(
+            {
+
+                type:
+                    "JS_CODE_OUTPUT_CONSOLE",
+
+                level:
+                    level,
+
+                message:
+                    message
+
+            },
+            "*"
+        );
+
+    }
+
+
+    console.log =
+        function(){
+
+            send(
+                "log",
+                arguments
+            );
+
+            originalLog.apply(
+                console,
+                arguments
+            );
+
+        };
+
+
+    console.warn =
+        function(){
+
+            send(
+                "warn",
+                arguments
+            );
+
+            originalWarn.apply(
+                console,
+                arguments
+            );
+
+        };
+
+
+    console.error =
+        function(){
+
+            send(
+                "error",
+                arguments
+            );
+
+            originalError.apply(
+                console,
+                arguments
+            );
+
+        };
+
+
+    window.onerror =
+        function(
+            message,
+            source,
+            line
+        ){
+
+            send(
+                "error",
+                [
+                    "Error:",
+                    message,
+                    "Line:",
+                    line
+                ]
+            );
+
+            return false;
+
+        };
+
+
+})();
+
+<\/script>
+
+`;
+
+
+        const fullDocument = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0">
+
+${tailwind}
+
+${fontAwesome}
+
+${three}
+
+${chart}
+
+${consoleBridge}
+
+<style>
+
+${css}
+
+</style>
+
+</head>
+
+
+<body class="bg-white">
+
+${html}
+
+
+<script>
+
+try {
+
+${js}
+
+}
+
+catch(error) {
+
+console.error(
+    error.message
+);
+
+}
+
+<\/script>
+
+
+</body>
+
+</html>
+
+`;
+
+
+        const iframe =
+            document.getElementById(
+                "outputIframe"
+            );
+
+
+        iframe.srcdoc =
+            fullDocument;
+
+
+        /* Save current values */
+
+        window.editorHTMLValue =
+            html;
+
+        window.editorCSSValue =
+            css;
+
+        window.editorJSValue =
+            js;
+
+    };
+
+
+/* =====================================================
+   IFRAME CONSOLE
+====================================================== */
+
+window.addEventListener(
+    "message",
+    function (event) {
+
+        if (
+            !event.data ||
+            event.data.type !==
+            "JS_CODE_OUTPUT_CONSOLE"
+        ) {
+
+            return;
+
+        }
+
+
+        appendConsoleLog(
+            event.data.level,
+            event.data.message
+        );
+
+    }
+);
+
+
+/* =====================================================
+   CONSOLE
+====================================================== */
+
+function appendConsoleLog(
+    level,
+    message
+) {
+
+    const container =
+        document.getElementById(
+            "consoleLogs"
+        );
+
+
+    const badge =
+        document.getElementById(
+            "consoleBadge"
+        );
+
+
+    consoleCount++;
+
+
+    badge.innerText =
+        consoleCount;
+
+
+    badge.classList.remove(
+        "hidden"
+    );
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "border-b border-slate-800/50 py-1 " +
+        (
+            level === "error"
+                ? "text-rose-400"
+                :
+            level === "warn"
+                ? "text-amber-400"
+                :
+                "text-slate-300"
+        );
+
+
+    item.textContent =
+        `[${level}] ${message}`;
+
+
+    container.appendChild(
+        item
+    );
+
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+function toggleConsole() {
+
+    document
+        .getElementById(
+            "consoleDrawer"
+        )
+        .classList.toggle(
+            "open"
+        );
+
+}
+
+
+function clearConsole() {
+
+    document
+        .getElementById(
+            "consoleLogs"
+        )
+        .innerHTML =
+        `<div class="text-slate-600">
+            // Console cleared.
+        </div>`;
+
+
+    consoleCount = 0;
+
+
+    const badge =
+        document.getElementById(
+            "consoleBadge"
+        );
+
+
+    badge.innerText =
+        "0";
+
+
+    badge.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =====================================================
+   SCREEN SIZE
+====================================================== */
+
+function setScreenSize(
+    size
+) {
+
+    currentScreenSize =
+        size;
+
+
+    const iframe =
+        document.getElementById(
+            "outputIframe"
+        );
+
+
+    ["full", "tablet", "mobile"]
+        .forEach(
+            function (type) {
+
+                const btn =
+                    document.getElementById(
+                        `screen-${type}`
+                    );
+
+
+                btn.classList.toggle(
+                    "active",
+                    type === size
+                );
+
             }
-        });
+        );
 
-        function appendConsoleLog(level, msg) {
-            const logsContainer = document.getElementById('consoleLogs');
-            const badge = document.getElementById('consoleBadge');
-            
-            consoleCount++;
-            badge.innerText = consoleCount;
-            badge.classList.remove('hidden');
 
-            const logItem = document.createElement('div');
-            logItem.className = `flex items-start space-x-2 border-b border-slate-800/40 pb-1 ${
-                level === 'error' ? 'text-rose-400' :
-                level === 'warn' ? 'text-amber-400' : 'text-slate-300'
-            }`;
+    if (size === "full") {
 
-            const icon = level === 'error' ? 'fa-circle-xmark' : level === 'warn' ? 'fa-triangle-exclamation' : 'fa-angle-right';
-            logItem.innerHTML = `<i class="fa-solid ${icon} mt-0.5 text-[10px]"></i><span>${msg}</span>`;
-            
-            logsContainer.appendChild(logItem);
-            logsContainer.scrollTop = logsContainer.scrollHeight;
-        }
+        iframe.style.width =
+            "100%";
 
-        function clearConsole() {
-            document.getElementById('consoleLogs').innerHTML = '<div class="text-slate-500 italic">// Console messages cleared.</div>';
-            consoleCount = 0;
-            const badge = document.getElementById('consoleBadge');
-            badge.innerText = '0';
-            badge.classList.add('hidden');
-        }
+        iframe.style.height =
+            "100%";
 
-        function toggleConsole() {
-            const drawer = document.getElementById('consoleDrawer');
-            drawer.classList.toggle('hidden');
-        }
+        iframe.style.borderRadius =
+            "0";
 
-        function loadTemplate(key) {
-            if (templates[key]) {
-                // Check if Three.js is required
-                if (key === 'three') {
-                    document.getElementById('lib-three').checked = true;
-                }
-                
-                editorHTML.setValue(templates[key].html);
-                editorCSS.setValue(templates[key].css);
-                editorJS.setValue(templates[key].js);
-                
-                updatePreview();
-                showToast(`Template "${key.toUpperCase()}" loaded successfully!`);
-            }
-        }
+    }
 
-        function clearEditors() {
-            editorHTML.setValue('');
-            editorCSS.setValue('');
-            editorJS.setValue('');
-            clearConsole();
-            updatePreview();
-            showToast('All editors cleared!');
-        }
 
-        function setScreenSize(size) {
-            const container = document.getElementById('iframeContainer');
-            const iframe = document.getElementById('outputIframe');
-            
-            ['full', 'tablet', 'mobile'].forEach(s => {
-                const btn = document.getElementById(`btn-screen-${s}`);
-                if (s === size) {
-                    btn.className = 'px-2 py-0.5 text-xs text-indigo-400 bg-slate-800 rounded font-medium transition';
-                } else {
-                    btn.className = 'px-2 py-0.5 text-xs text-slate-400 hover:text-indigo-400 rounded font-medium transition';
-                }
-            });
+    if (size === "tablet") {
 
-            if (size === 'full') {
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.classList.remove('rounded-2xl', 'border-4', 'border-slate-800');
-            } else if (size === 'tablet') {
-                iframe.style.width = '768px';
-                iframe.style.height = '95%';
-                iframe.classList.add('rounded-2xl', 'border-4', 'border-slate-800');
-            } else if (size === 'mobile') {
-                iframe.style.width = '375px';
-                iframe.style.height = '95%';
-                iframe.classList.add('rounded-2xl', 'border-4', 'border-slate-800');
-            }
-        }
+        iframe.style.width =
+            "768px";
 
-        function toggleLibsModal() {
-            const modal = document.getElementById('libsModal');
-            modal.classList.toggle('hidden');
-        }
-// =========================================
-// DOWNLOAD MENU
-// =========================================
+        iframe.style.height =
+            "95%";
+
+        iframe.style.borderRadius =
+            "18px";
+
+    }
+
+
+    if (size === "mobile") {
+
+        iframe.style.width =
+            "375px";
+
+        iframe.style.height =
+            "95%";
+
+        iframe.style.borderRadius =
+            "18px";
+
+    }
+
+}
+
+
+/* =====================================================
+   LIBRARIES
+====================================================== */
+
+function toggleLibraries() {
+
+    document
+        .getElementById(
+            "librariesModal"
+        )
+        .classList.toggle(
+            "hidden"
+        );
+
+}
+
+
+/* =====================================================
+   DOWNLOAD MENU
+====================================================== */
 
 function openDownloadMenu() {
-    document.getElementById('downloadModal').classList.remove('hidden');
+
+    document
+        .getElementById(
+            "downloadModal"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
 }
+
 
 function closeDownloadMenu() {
-    document.getElementById('downloadModal').classList.add('hidden');
+
+    document
+        .getElementById(
+            "downloadModal"
+        )
+        .classList.add(
+            "hidden"
+        );
+
 }
 
 
-// =========================================
-// DOWNLOAD SINGLE HTML FILE
-// =========================================
+/* =====================================================
+   DOWNLOAD HTML
+====================================================== */
 
 function downloadHTMLFile() {
 
     closeDownloadMenu();
 
-    const html = editorHTML.getValue();
-    const css = editorCSS.getValue();
-    const js = editorJS.getValue();
 
-    const fullHTML = `<!DOCTYPE html>
+    const html =
+        editorHTML.getValue();
+
+
+    const css =
+        editorCSS.getValue();
+
+
+    const js =
+        editorJS.getValue();
+
+
+    const documentText = `
+
+<!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>JS Code Output Export</title>
+<meta charset="UTF-8">
 
-    <script src="https://cdn.tailwindcss.com"><\/script>
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
+<title>JS CODE OUTPUT Project</title>
 
-    <style>
-        ${css}
-    </style>
+<script src="https://cdn.tailwindcss.com"><\/script>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+${css}
+
+</style>
 
 </head>
 
+
 <body>
 
-    ${html}
+${html}
 
-    <script>
-        ${js}
-    <\/script>
+
+<script>
+
+${js}
+
+<\/script>
+
 
 </body>
-</html>`;
 
-    const blob = new Blob(
-        [fullHTML],
-        { type: 'text/html' }
+</html>
+
+`;
+
+
+    const blob =
+        new Blob(
+            [documentText],
+            {
+                type:
+                    "text/html"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href =
+        url;
+
+
+    a.download =
+        "jscodeoutput_project.html";
+
+
+    document.body.appendChild(
+        a
     );
 
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-
-    a.href = url;
-    a.download = 'jscodeoutput_project.html';
-
-    document.body.appendChild(a);
 
     a.click();
 
-    document.body.removeChild(a);
 
-    URL.revokeObjectURL(url);
+    a.remove();
 
-    showToast('HTML project downloaded successfully!');
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    showToast(
+        "HTML project downloaded!"
+    );
+
 }
 
 
-// =========================================
-// DOWNLOAD ZIP PROJECT
-// =========================================
+/* =====================================================
+   DOWNLOAD ZIP
+====================================================== */
 
-function downloadZIPProject() {
+async function downloadZIPProject() {
 
     closeDownloadMenu();
 
-    if (typeof JSZip === 'undefined') {
 
-        showToast('ZIP library is not loaded. Please refresh the page.');
+    if (
+        typeof JSZip ===
+        "undefined"
+    ) {
+
+        showToast(
+            "ZIP library unavailable."
+        );
 
         return;
+
     }
 
-    const html = editorHTML.getValue();
-    const css = editorCSS.getValue();
-    const js = editorJS.getValue();
+
+    const html =
+        editorHTML.getValue();
 
 
-    // Create ZIP
-    const zip = new JSZip();
+    const css =
+        editorCSS.getValue();
 
 
-    // INDEX.HTML
-    const indexHTML = `<!DOCTYPE html>
+    const js =
+        editorJS.getValue();
+
+
+    const zip =
+        new JSZip();
+
+
+    const indexHTML = `
+
+<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0">
 
-    <title>JS Code Output Project</title>
+<title>JS CODE OUTPUT Project</title>
 
-    <script src="https://cdn.tailwindcss.com"><\/script>
+<script src="https://cdn.tailwindcss.com"><\/script>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+      href="style.css">
 
 </head>
 
+
 <body>
 
-    ${html}
+${html}
 
-    <script src="script.js"><\/script>
+<script src="script.js"><\/script>
 
 </body>
 
-</html>`;
+</html>
 
+`;
 
-    // Add files to ZIP
 
     zip.file(
         "index.html",
         indexHTML
     );
 
+
     zip.file(
         "style.css",
         css
     );
+
 
     zip.file(
         "script.js",
@@ -2257,96 +5155,575 @@ function downloadZIPProject() {
     );
 
 
-    // Generate ZIP
+    const blob =
+        await zip.generateAsync({
+            type: "blob"
+        });
 
-    zip.generateAsync({
-        type: "blob"
-    }).then(function(content) {
 
-        const url = URL.createObjectURL(content);
+    const url =
+        URL.createObjectURL(
+            blob
+        );
 
-        const a = document.createElement("a");
 
-        a.href = url;
+    const a =
+        document.createElement(
+            "a"
+        );
 
-        a.download = "jscodeoutput_project.zip";
 
-        document.body.appendChild(a);
+    a.href =
+        url;
 
-        a.click();
 
-        document.body.removeChild(a);
+    a.download =
+        "jscodeoutput_project.zip";
 
-        URL.revokeObjectURL(url);
 
-        showToast('ZIP project downloaded successfully!');
+    document.body.appendChild(
+        a
+    );
 
-    });
+
+    a.click();
+
+
+    a.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    showToast(
+        "ZIP project downloaded!"
+    );
+
 }
-        
 
-        function copyCode() {
-            const combined = `<!-- HTML -->\n${editorHTML.getValue()}\n\n/* CSS */\n${editorCSS.getValue()}\n\n// JS\n${editorJS.getValue()}`;
-            
-            const textarea = document.createElement('textarea');
-            textarea.value = combined;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
 
-            showToast('All code copied to clipboard!');
+/* =====================================================
+   COPY
+====================================================== */
+
+async function copyCode() {
+
+    const combined =
+
+`<!-- ================= HTML ================= -->
+
+${editorHTML.getValue()}
+
+
+<!-- ================= CSS ================= -->
+
+${editorCSS.getValue()}
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+${editorJS.getValue()}`;
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            combined
+        );
+
+    } catch {
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+
+        textarea.value =
+            combined;
+
+
+        document.body.appendChild(
+            textarea
+        );
+
+
+        textarea.select();
+
+
+        document.execCommand(
+            "copy"
+        );
+
+
+        textarea.remove();
+
+    }
+
+
+    showToast(
+        "All code copied!"
+    );
+
+}
+
+
+/* =====================================================
+   CLEAR
+====================================================== */
+
+function clearEditors() {
+
+    if (
+        !confirm(
+            "Clear HTML, CSS and JavaScript?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    editorHTML.setValue(
+        ""
+    );
+
+
+    editorCSS.setValue(
+        ""
+    );
+
+
+    editorJS.setValue(
+        ""
+    );
+
+
+    clearConsole();
+
+
+    updatePreview();
+
+
+    showToast(
+        "Editors cleared."
+    );
+
+}
+
+
+/* =====================================================
+   FILE UPLOAD
+====================================================== */
+
+function handleFileUpload(
+    event
+) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) return;
+
+
+    const name =
+        file.name.toLowerCase();
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function (e) {
+
+            const content =
+                e.target.result;
+
+
+            if (
+                name.endsWith(
+                    ".html"
+                ) ||
+                name.endsWith(
+                    ".htm"
+                )
+            ) {
+
+                editorHTML.setValue(
+                    content
+                );
+
+                switchTab(
+                    "html"
+                );
+
+                showToast(
+                    `${file.name} loaded.`
+                );
+
+            }
+
+
+            else if (
+                name.endsWith(
+                    ".css"
+                )
+            ) {
+
+                editorCSS.setValue(
+                    content
+                );
+
+                switchTab(
+                    "css"
+                );
+
+                showToast(
+                    `${file.name} loaded.`
+                );
+
+            }
+
+
+            else if (
+                name.endsWith(
+                    ".js"
+                )
+            ) {
+
+                editorJS.setValue(
+                    content
+                );
+
+                switchTab(
+                    "js"
+                );
+
+                showToast(
+                    `${file.name} loaded.`
+                );
+
+            }
+
+
+            else {
+
+                showToast(
+                    "Only HTML, CSS and JS files are supported."
+                );
+
+                return;
+
+            }
+
+
+            updatePreview();
+
+        };
+
+
+    reader.onerror =
+        function () {
+
+            showToast(
+                "Unable to read file."
+            );
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
+
+
+    event.target.value =
+        "";
+
+}
+
+
+/* =====================================================
+   NEW FILE
+====================================================== */
+
+function createNewFile() {
+
+    const fileName =
+        prompt(
+            "Enter file name:\nExample: app.js"
+        );
+
+
+    if (!fileName) return;
+
+
+    const name =
+        fileName
+            .trim()
+            .toLowerCase();
+
+
+    if (
+        !name.endsWith(".html") &&
+        !name.endsWith(".htm") &&
+        !name.endsWith(".css") &&
+        !name.endsWith(".js")
+    ) {
+
+        showToast(
+            "Only HTML, CSS and JS are supported."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        name.endsWith(".html") ||
+        name.endsWith(".htm")
+    ) {
+
+        editorHTML.setValue(
+`<!-- ${fileName} -->
+
+<div>
+
+    <h1>Hello World</h1>
+
+</div>`
+        );
+
+
+        switchTab(
+            "html"
+        );
+
+    }
+
+
+    else if (
+        name.endsWith(".css")
+    ) {
+
+        editorCSS.setValue(
+`/* ${fileName} */
+
+body {
+
+}
+`
+        );
+
+
+        switchTab(
+            "css"
+        );
+
+    }
+
+
+    else {
+
+        editorJS.setValue(
+`// ${fileName}
+
+console.log("Hello from JavaScript");
+`
+        );
+
+
+        switchTab(
+            "js"
+        );
+
+    }
+
+
+    updatePreview();
+
+
+    showToast(
+        `${fileName} created.`
+    );
+
+}
+
+
+/* =====================================================
+   TOAST
+====================================================== */
+
+function showToast(
+    message
+) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    const text =
+        document.getElementById(
+            "toastMsg"
+        );
+
+
+    text.innerText =
+        message;
+
+
+    toast.classList.remove(
+        "opacity-0",
+        "translate-y-10",
+        "pointer-events-none"
+    );
+
+
+    clearTimeout(
+        toast._timer
+    );
+
+
+    toast._timer =
+        setTimeout(
+            function () {
+
+                toast.classList.add(
+                    "opacity-0",
+                    "translate-y-10",
+                    "pointer-events-none"
+                );
+
+            },
+            3000
+        );
+
+}
+
+
+/* =====================================================
+   AUTO SAVE CLOUD DRAFT
+====================================================== */
+
+let cloudSaveTimer =
+    null;
+
+
+function scheduleCloudSave() {
+
+    if (
+        !window.currentUser ||
+        !window.saveProjectDraft
+    ) {
+
+        return;
+
+    }
+
+
+    clearTimeout(
+        cloudSaveTimer
+    );
+
+
+    cloudSaveTimer =
+        setTimeout(
+            async function () {
+
+                const saved =
+                    await window.saveProjectDraft();
+
+
+                if (saved) {
+
+                    console.log(
+                        "☁️ Auto-saved."
+                    );
+
+                }
+
+            },
+            1500
+        );
+
+}
+
+
+/* Add cloud saving to editor changes */
+
+setInterval(
+    function () {
+
+        if (
+            window.currentUser &&
+            editorHTML &&
+            editorCSS &&
+            editorJS
+        ) {
+
+            scheduleCloudSave();
+
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.innerText = msg;
-            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
-            
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
-            }, 3000);
+    },
+    5000
+);
+
+
+/* =====================================================
+   ESC CLOSE MODALS
+====================================================== */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            document
+                .getElementById(
+                    "downloadModal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+
+            document
+                .getElementById(
+                    "librariesModal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+
+            document
+                .getElementById(
+                    "startLoginScreen"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
         }
-    </script>
-    <!-- Footer -->
-<!-- Footer -->
-<footer class="w-full shrink-0 border-t border-slate-800 bg-slate-950/80">
-    <div class="max-w-6xl mx-auto px-6 py-3 text-center">
 
-        <p class="text-slate-500 text-xs mb-2">
-            © 2026 JS CODE OUTPUT. All rights reserved.
-        </p>
+    }
+);
 
-        <div class="flex flex-wrap justify-center gap-5 text-sm">
+</script>
 
-            <a href="/about.html"
-               class="text-slate-400 hover:text-white transition">
-                About Us
-            </a>
-
-            <a href="/contact.html"
-               class="text-slate-400 hover:text-white transition">
-                Contact Us
-            </a>
-
-            <a href="/privacy.html"
-               class="text-slate-400 hover:text-white transition">
-                Privacy Policy
-            </a>
-
-            <a href="/terms.html"
-               class="text-slate-400 hover:text-white transition">
-                Terms & Conditions
-            </a>
-
-            <a href="/online-code-editor.html"
-   class="text-slate-400 hover:text-white transition">
-    Online Code Editor
-</a>
-        </div>
-
-    </div>
-</footer>
 </body>
+
 </html>
