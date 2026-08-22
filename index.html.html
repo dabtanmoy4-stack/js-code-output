@@ -19,6 +19,13 @@
 <!-- CodeMirror Hint & Lint Addons (VS Code Style Suggestions & Error Marks) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
+  
+  <!-- CodeMirror Search & Replace Addons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/matchesonscrollbar.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/search.min.js"></script>
 
 <!-- Linters & Parser Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
@@ -177,7 +184,32 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
 .CodeMirror-hints { background:#181825!important;border:1px solid #313244!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
 .CodeMirror-hint-active { background:#313244!important;color:#89b4fa!important;border-radius:4px; }
-
+/* Search & Replace dialog style */
+.CodeMirror-dialog {
+  background: #181825 !important;
+  color: #cdd6f4 !important;
+  border-bottom: 1px solid #313244 !important;
+  font-family: "Fira Code", monospace;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+.CodeMirror-dialog input {
+  background: #11111b;
+  border: 1px solid #313244;
+  color: #cdd6f4;
+  border-radius: 4px;
+  padding: 2px 6px;
+  outline: none;
+}
+.CodeMirror-dialog button {
+  background: #313244;
+  color: #cdd6f4;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-left: 4px;
+}
+  
 @media(max-width:1000px){
   .hero{grid-template-columns:1fr;gap:35px}
   .hero-visual{max-width:760px;margin:auto}
@@ -202,6 +234,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
   .hero-meta{flex-wrap:wrap}
   .top-actions .hide-mobile{display:none!important}
 }
+  
 </style>
 </head>
 <body>
@@ -1318,6 +1351,14 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   renderFileExplorer();
+});
+  // Warn user before leaving or closing the tab
+window.addEventListener("beforeunload", function (e) {
+  // যদি ইউজার কোড এডিটরে কিছু টাইপ করে থাকে, তবেই ওয়ার্নিং দেখাবে
+  if (hasTypedInSession) {
+    e.preventDefault();
+    e.returnValue = ""; // এটি মডার্ন ব্রাউজারে পপ-আপ ট্রিগার করে
+  }
 });
 </script>
 </body>
