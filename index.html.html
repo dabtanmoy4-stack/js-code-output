@@ -16,16 +16,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 
-<!-- CodeMirror Hint & Lint Addons (VS Code Style Suggestions & Error Marks) -->
+<!-- CodeMirror Hint, Lint & Search Addons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
-  
-  <!-- CodeMirror Search & Replace Addons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/matchesonscrollbar.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/search.min.js"></script>
 
 <!-- Linters & Parser Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
@@ -50,6 +44,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/javascript-lint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/css-lint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/html-lint.min.js"></script>
+
+<!-- CodeMirror Search Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/search.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -137,6 +136,13 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .code-pane { position:absolute;inset:0; }
 .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#1e1e2e!important;color:#cdd6f4!important; }
 
+/* CodeMirror Dialog (Search) Styling */
+.CodeMirror-dialog { background:#181825!important; color:#cdd6f4!important; border-bottom:1px solid #313244!important; font-family:"Fira Code",monospace; font-size:12px; padding:8px 16px!important; }
+.CodeMirror-dialog input { background:#11111b; border:1px solid #313244; color:#cdd6f4; border-radius:4px; padding:4px 8px; outline:none; margin:0 5px; }
+.CodeMirror-dialog button { background:#313244; color:#cdd6f4; border:none; border-radius:4px; padding:4px 10px; margin-left:4px; cursor:pointer; font-size:11px; }
+.CodeMirror-dialog button:hover { background:#45475a; }
+.CodeMirror-search-hint { color:#a6adc8!important; font-size:10px; font-style:italic; }
+
 #iframeContainer { flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;background:#0d1527;position:relative; }
 #outputIframe { width:100%;height:100%;border:0;background:white;transition:.2s; }
 
@@ -184,32 +190,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
 .CodeMirror-hints { background:#181825!important;border:1px solid #313244!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
 .CodeMirror-hint-active { background:#313244!important;color:#89b4fa!important;border-radius:4px; }
-/* Search & Replace dialog style */
-.CodeMirror-dialog {
-  background: #181825 !important;
-  color: #cdd6f4 !important;
-  border-bottom: 1px solid #313244 !important;
-  font-family: "Fira Code", monospace;
-  font-size: 12px;
-  padding: 6px 12px;
-}
-.CodeMirror-dialog input {
-  background: #11111b;
-  border: 1px solid #313244;
-  color: #cdd6f4;
-  border-radius: 4px;
-  padding: 2px 6px;
-  outline: none;
-}
-.CodeMirror-dialog button {
-  background: #313244;
-  color: #cdd6f4;
-  border: none;
-  border-radius: 4px;
-  padding: 2px 8px;
-  margin-left: 4px;
-}
-  
+
 @media(max-width:1000px){
   .hero{grid-template-columns:1fr;gap:35px}
   .hero-visual{max-width:760px;margin:auto}
@@ -234,7 +215,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
   .hero-meta{flex-wrap:wrap}
   .top-actions .hide-mobile{display:none!important}
 }
-  
 </style>
 </head>
 <body>
@@ -563,9 +543,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> Run</button>
       <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> Libraries</button>
       <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
-      <!-- Added Workspace Account Button -->
       <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName">Guest</span></button>
-      <!-- Added Back to Home Button -->
       <button class="app-btn" onclick="backToHome()" title="Back to Home"><i class="fa-solid fa-house"></i> Home</button>
       <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
     </div>
@@ -596,13 +574,18 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <section class="editor-panel">
         <div class="editor-tabs">
           <div id="tabs" class="tabs"></div>
-          <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+          
+          <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
+          <div class="flex gap-1">
+            <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+          
         </div>
         <div class="editor-container-wrapper">
           <div class="editor-content">
             <div id="wrapper-editor" class="code-pane"></div>
           </div>
-          <!-- Terminal Removed to allow code editor full height -->
         </div>
       </section>
 
@@ -893,7 +876,6 @@ function openProjectsPage(){
   loadProjects();
 }
 
-// Added Logic for Back to Home functionality
 function backToHome() {
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.add("hidden");
@@ -1022,7 +1004,6 @@ function openEditorWorkspace(id, name, initialFiles=null){
   document.getElementById("currentProjectName").textContent = name || "Untitled Project";
   document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
 
-  // Set Workspace Account Name
   const u = window.firebaseCurrentUser || window.currentUser;
   const accountSpan = document.getElementById("workspaceAccountName");
   if(accountSpan) {
@@ -1089,7 +1070,6 @@ function openFile(n){
   if(editor){
     const m = getMode(n);
     editor.setOption("mode", m);
-    // Dynamic Linting Option based on mode
     editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
     editor.setValue(files[n] || "");
     editor.clearHistory();
@@ -1176,7 +1156,6 @@ function updatePreview(force=false){
   scheduleCloudSave();
 }
 
-// Fullscreen Output toggle
 function toggleFullScreenPreview() {
   const elem = document.getElementById("iframeContainer");
   if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
@@ -1202,7 +1181,6 @@ function toggleFullScreenPreview() {
   }
 }
 
-// Cloud Sync Timer
 function scheduleCloudSave(){
   const u = window.firebaseCurrentUser;
   const id = window.currentProjectId;
@@ -1213,7 +1191,6 @@ function scheduleCloudSave(){
   }, 1200);
 }
 
-// Downloads
 function openDownloadMenu(){ document.getElementById("downloadModal").classList.remove("hidden"); }
 function closeDownloadMenu(){ document.getElementById("downloadModal").classList.add("hidden"); }
 
@@ -1246,6 +1223,13 @@ function clearEditors(){
   if(!confirm("Clear active file?")) return;
   editor.setValue("");
   syncEditor();
+}
+
+// SEARCH FUNCTION TRIGERRED BY BUTTON
+function triggerSearch() {
+  if (editor) {
+    editor.execCommand("find");
+  }
 }
 
 function setScreenSize(s){
@@ -1308,7 +1292,15 @@ function showToast(msg){
   t._timer = setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-// Initialize CodeMirror with Auto-hint and Linting
+// BACK CONFIRMATION WARNING
+window.addEventListener("beforeunload", function (e) {
+  if (hasTypedInSession) {
+    e.preventDefault();
+    e.returnValue = ""; 
+  }
+});
+
+// Initialize CodeMirror
 window.addEventListener("DOMContentLoaded", () => {
   document.documentElement.classList.add("dark");
   loadLocalProjectFiles(currentProjectId);
@@ -1330,9 +1322,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   window.editor = editor;
 
-  // Real-time VS Code style IntelliSense autocomplete suggestion
   editor.on("inputRead", (cm, change) => {
-    // Trigger on typing any letter or character like . < $
     if (/^[a-zA-Z\.\<\$]$/.test(change.text[0])) {
       cm.showHint({ completeSingle: false });
     }
@@ -1351,14 +1341,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   renderFileExplorer();
-});
-  // Warn user before leaving or closing the tab
-window.addEventListener("beforeunload", function (e) {
-  // যদি ইউজার কোড এডিটরে কিছু টাইপ করে থাকে, তবেই ওয়ার্নিং দেখাবে
-  if (hasTypedInSession) {
-    e.preventDefault();
-    e.returnValue = ""; // এটি মডার্ন ব্রাউজারে পপ-আপ ট্রিগার করে
-  }
 });
 </script>
 </body>
