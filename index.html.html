@@ -21,10 +21,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
 
-<!-- Linters & Parser Scripts -->
+<!-- Linters & Parser Scripts (Updated HTMLHint to 0.9.13 to fix error) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/1.1.4/htmlhint.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.9.13/htmlhint.js"></script>
 
 <!-- CodeMirror Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
@@ -317,7 +317,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
         <article class="feature-card">
           <div class="feature-icon"><i class="fa-solid fa-folder-tree"></i></div>
           <h3>Isolated Projects</h3>
-          <p>Create separate projects and keep each project's files completely isolated in its own cloud document.</p>
+          <p>Create separate projects and keep each project's files completely isolated in its own cloud or local document.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
@@ -466,7 +466,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
     </div>
     <div class="flex items-center gap-4">
       <span id="projectsUserName" class="text-xs text-gray-400 font-medium"></span>
-      <button class="app-btn" onclick="firebaseLogout()">Sign Out</button>
+      <button class="app-btn hidden" id="signOutBtn" onclick="firebaseLogout()">Sign Out</button>
     </div>
   </header>
   <main class="projects-main">
@@ -690,8 +690,8 @@ window.googleSignIn = () => signInWithPopup(auth, provider);
 window.saveProjectDraft = async (idOverride=null) => {
   const user = auth.currentUser;
   const id = idOverride || window.currentProjectId;
-  if (!user || !id || id === "local_default_project") return false;
-  syncEditor();
+  if (!user || !id || id.startsWith("local_proj_")) return false; 
+  if (!window.isSwitchingProject) syncEditor();
   try {
     await setDoc(doc(db, "users", user.uid, "projects", id), {
       files: JSON.parse(JSON.stringify(window.files || {})),
@@ -715,6 +715,9 @@ onAuthStateChanged(auth, user => {
   window.firebaseCurrentUser = user || null;
   if (user) {
     localStorage.removeItem("js-code-output-skip-login");
+    document.getElementById("signOutBtn")?.classList.remove("hidden");
+  } else {
+    document.getElementById("signOutBtn")?.classList.add("hidden");
   }
   resolveAuth(user || null);
 });
@@ -726,10 +729,10 @@ onAuthStateChanged(auth, user => {
 let files = {};
 let activeFile = "index.html";
 let editor = null;
-let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
+let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "";
 let cloudSaveTimer = null, debounceTimer = null;
-let projectSwitchToken = 0;
 let hasTypedInSession = false;
+let isSwitchingProject = false; // CRITICAL FIX: Lock editor during load!
 
 const defaultTemplate = {
   "index.html": `<!DOCTYPE html>
@@ -788,6 +791,7 @@ document.getElementById("btn")?.addEventListener("click", () => {
 window.files = files;
 window.activeFile = activeFile;
 window.currentProjectId = currentProjectId;
+window.isSwitchingProject = false; 
 
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 function getExt(n){ return n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
@@ -801,15 +805,17 @@ function icon(n){
 }
 
 function syncEditor(){
-  if(editor && activeFile) {
+  if(editor && activeFile && !isSwitchingProject) {
     files[activeFile] = editor.getValue();
     window.files = files;
   }
 }
 
 function saveLocalProjectFiles(){
+  if(isSwitchingProject) return; 
   syncEditor();
-  const id = window.currentProjectId || "local_default_project";
+  const id = window.currentProjectId;
+  if (!id) return;
   localStorage.setItem("js_files_" + id, JSON.stringify(files));
   localStorage.setItem("js_active_file_" + id, activeFile);
   localStorage.setItem("js-code-output-active-project-id", id);
@@ -861,9 +867,21 @@ async function continueWithGoogle(){
   }
 }
 
+// START WITHOUT LOGIN (Creates Local Project)
 function startWithoutLogin(){
   document.getElementById("startLoginScreen").classList.add("hidden");
-  openEditorWorkspace("local_default_project", "Local Guest Project");
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  
+  if(localProjects.length === 0) {
+      const id = "local_proj_" + Date.now();
+      localProjects.push({id, name: "Guest Project " + 1});
+      localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
+      openEditorWorkspace(id, "Guest Project 1", structuredClone(defaultTemplate));
+  } else {
+      const lastId = localStorage.getItem("js-code-output-active-project-id") || localProjects[0].id;
+      const p = localProjects.find(x => x.id === lastId) || localProjects[0];
+      openEditorWorkspace(p.id, p.name);
+  }
 }
 
 function openProjectsPage(){
@@ -871,8 +889,24 @@ function openProjectsPage(){
   document.getElementById("startLoginScreen").classList.add("hidden");
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.remove("hidden");
+  
+  // Save current project before going to dashboard
+  if(window.currentProjectId) {
+    syncEditor();
+    let temp = isSwitchingProject;
+    isSwitchingProject = false;
+    saveLocalProjectFiles();
+    isSwitchingProject = temp;
+  }
+
   const u = window.firebaseCurrentUser || window.currentUser;
-  if(u) document.getElementById("projectsUserName").textContent = u.displayName || u.email || "Developer";
+  if(u) {
+    document.getElementById("projectsUserName").textContent = u.displayName || u.email || "Developer";
+    document.getElementById("signOutBtn").classList.remove("hidden");
+  } else {
+    document.getElementById("projectsUserName").textContent = "Guest Mode";
+    document.getElementById("signOutBtn").classList.add("hidden");
+  }
   loadProjects();
 }
 
@@ -884,7 +918,7 @@ function backToHome() {
 
 async function firebaseLogout(){
   await window.firebaseSignOut(window.firebaseAuth);
-  window.currentProjectId = "local_default_project";
+  window.currentProjectId = "";
   document.getElementById("projectsPage").classList.add("hidden");
   document.getElementById("app").classList.add("hidden");
   document.getElementById("landingPage").classList.remove("hidden");
@@ -903,83 +937,142 @@ async function createProject(){
   const name = document.getElementById("newProjectName").value.trim();
   const u = window.firebaseCurrentUser;
   if(!name) return alert("Please enter a project name.");
-  if(!u) return alert("Please sign in with Google.");
 
-  syncEditor();
-  if(window.currentProjectId && window.currentProjectId !== "local_default_project"){
-    await window.saveProjectDraft(window.currentProjectId);
+  // CRITICAL FIX: Save outgoing project before creating a new one!
+  isSwitchingProject = true;
+  window.isSwitchingProject = true;
+  
+  if (window.currentProjectId) {
+    let temp = isSwitchingProject;
+    isSwitchingProject = false;
+    syncEditor();
+    saveLocalProjectFiles();
+    isSwitchingProject = temp;
   }
 
-  const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
+    if(u) await window.saveProjectDraft(window.currentProjectId);
+  }
+
   const initialFiles = structuredClone(defaultTemplate);
 
-  try {
-    await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
-      id, name, ownerId: u.uid,
-      files: initialFiles,
-      html: initialFiles["index.html"],
-      css: initialFiles["style.css"],
-      js: initialFiles["script.js"],
-      createdAt: window.firebaseServerTimestamp(),
-      updatedAt: window.firebaseServerTimestamp()
-    });
-    await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
-      projectIds: window.firebaseArrayUnion(id)
-    }, {merge:true});
+  if (u) {
+    // Cloud Creation
+    const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+    try {
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
+        id, name, ownerId: u.uid,
+        files: initialFiles,
+        html: initialFiles["index.html"],
+        css: initialFiles["style.css"],
+        js: initialFiles["script.js"],
+        createdAt: window.firebaseServerTimestamp(),
+        updatedAt: window.firebaseServerTimestamp()
+      });
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
+        projectIds: window.firebaseArrayUnion(id)
+      }, {merge:true});
+
+      closeCreateProject();
+      openEditorWorkspace(id, name, initialFiles);
+      showToast("Cloud Project created.");
+    } catch(e) {
+      console.error(e);
+      alert("Could not create cloud project.");
+    }
+  } else {
+    // Local Creation (Guest Mode)
+    const id = "local_proj_" + Date.now();
+    let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+    localProjects.push({ id, name, updatedAt: Date.now() });
+    localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
 
     closeCreateProject();
     openEditorWorkspace(id, name, initialFiles);
-    showToast("Project created successfully.");
-  } catch(e) {
-    console.error(e);
-    alert("Could not create project.");
+    showToast("Local Project created.");
   }
+}
+
+function createProjectCardHTML(id, name, isCloud) {
+  const card = document.createElement("div");
+  card.className = "project-card";
+  card.innerHTML = `
+    <div>
+      <i class="fa-solid fa-${isCloud ? 'cloud' : 'folder'} text-blue-500 text-2xl mb-2"></i>
+      <h3 class="font-bold text-sm">${escapeHTML(name || "Untitled")}</h3>
+      <p class="text-[10px] text-gray-400">${isCloud ? 'Cloud Workspace' : 'Local Workspace'}</p>
+    </div>
+    <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
+  `;
+  card.onclick = () => switchProject(id, name);
+  return card;
 }
 
 async function loadProjects(){
-  const u = window.firebaseCurrentUser;
-  if(!u) return;
   const list = document.getElementById("projectsList");
   const empty = document.getElementById("noProjects");
-  list.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">Loading projects...</div>';
+  list.innerHTML = "";
 
-  try {
-    const userDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-    const ids = userDoc.exists() ? userDoc.data().projectIds || [] : [];
-    list.innerHTML = "";
-    if(!ids.length){
-      empty.classList.remove("hidden");
-      return;
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  let hasProjects = localProjects.length > 0;
+
+  // Render Local Projects First
+  localProjects.forEach(p => {
+    list.appendChild(createProjectCardHTML(p.id, p.name, false));
+  });
+
+  // Render Cloud Projects if logged in
+  const u = window.firebaseCurrentUser;
+  if(u) {
+    try {
+      const userDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
+      const ids = userDoc.exists() ? userDoc.data().projectIds || [] : [];
+      if(ids.length > 0) hasProjects = true;
+
+      for(const id of ids){
+        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
+        if(!pDoc.exists()) continue;
+        const d = pDoc.data();
+        list.appendChild(createProjectCardHTML(id, d.name, true));
+      }
+    } catch(e) {
+      console.error(e);
     }
-    empty.classList.add("hidden");
-    for(const id of ids){
-      const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-      if(!pDoc.exists()) continue;
-      const data = pDoc.data();
-      const card = document.createElement("div");
-      card.className = "project-card";
-      card.innerHTML = `
-        <div>
-          <i class="fa-solid fa-folder text-blue-500 text-2xl mb-2"></i>
-          <h3 class="font-bold text-sm">${escapeHTML(data.name || "Untitled")}</h3>
-          <p class="text-[10px] text-gray-400">Cloud Synchronized Workspace</p>
-        </div>
-        <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
-      `;
-      card.onclick = () => switchProject(id, data.name);
-      list.appendChild(card);
-    }
-    loadHeaderProjects();
-  } catch(e){
-    list.innerHTML = '<div class="col-span-full text-center text-red-400 py-8">Failed to load projects.</div>';
   }
+
+  if(!hasProjects) {
+    empty.classList.remove("hidden");
+  } else {
+    empty.classList.add("hidden");
+  }
+  
+  loadHeaderProjects();
 }
 
 async function switchProject(id, name){
-  syncEditor();
-  if(window.currentProjectId && window.currentProjectId !== "local_default_project"){
-    await window.saveProjectDraft(window.currentProjectId);
+  if(id === window.currentProjectId) return; // Ignore if clicking same project
+  
+  // CRITICAL FIX: Save Outgoing project!
+  isSwitchingProject = true;
+  window.isSwitchingProject = true;
+  
+  if (window.currentProjectId) {
+     let temp = isSwitchingProject;
+     isSwitchingProject = false;
+     syncEditor();
+     saveLocalProjectFiles(); // Force save to old ID before switching
+     isSwitchingProject = temp;
   }
+
+  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
+    if (window.firebaseCurrentUser) await window.saveProjectDraft(window.currentProjectId);
+  }
+
+  if(id.startsWith("local_proj_")) {
+    openEditorWorkspace(id, name);
+    return;
+  }
+
   const u = window.firebaseCurrentUser;
   if(u){
     const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
@@ -1017,15 +1110,20 @@ function openEditorWorkspace(id, name, initialFiles=null){
     loadLocalProjectFiles(id);
   }
 
-  saveLocalProjectFiles();
   renderFileExplorer();
-  openFile(activeFile);
+  openFile(activeFile); 
  
   if(!hasTypedInSession){
     document.getElementById("placeholderView").classList.remove("hidden");
   } else {
     updatePreview();
   }
+  
+  // Unlock editor now that switch is complete
+  setTimeout(() => {
+    isSwitchingProject = false;
+    window.isSwitchingProject = false;
+  }, 100);
 }
 
 function renderFileExplorer(){
@@ -1062,18 +1160,29 @@ function renderEditorTabs(){
 
 function openFile(n){
   if(files[n] === undefined) return;
-  syncEditor();
+  
+  // Only save if not currently in the middle of a project swap
+  if (!isSwitchingProject) {
+    syncEditor();
+    saveLocalProjectFiles();
+  }
+  
   activeFile = n;
   window.activeFile = n;
-  saveLocalProjectFiles();
 
   if(editor){
     const m = getMode(n);
     editor.setOption("mode", m);
     editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
+    
+    // Prevent false triggers on change
+    let oldLock = isSwitchingProject;
+    isSwitchingProject = true;
     editor.setValue(files[n] || "");
     editor.clearHistory();
-    editor.refresh();
+    isSwitchingProject = oldLock; 
+    
+    setTimeout(() => editor.refresh(), 10);
   }
   renderFileExplorer();
 }
@@ -1094,10 +1203,15 @@ function deleteFile(encoded){
   if(n === "index.html") return alert("index.html cannot be deleted.");
   if(!confirm(`Delete ${n}?`)) return;
   delete files[n];
-  if(activeFile === n) activeFile = "index.html";
+  if(activeFile === n) {
+    activeFile = "index.html";
+    let oldLock = isSwitchingProject;
+    isSwitchingProject = true; 
+    openFile(activeFile); 
+    isSwitchingProject = oldLock;
+  }
   saveLocalProjectFiles();
   renderFileExplorer();
-  openFile(activeFile);
 }
 
 function handleFileUpload(e){
@@ -1184,7 +1298,7 @@ function toggleFullScreenPreview() {
 function scheduleCloudSave(){
   const u = window.firebaseCurrentUser;
   const id = window.currentProjectId;
-  if(!u || !id || id === "local_default_project") return;
+  if(!u || !id || id.startsWith("local_proj_")) return;
   clearTimeout(cloudSaveTimer);
   cloudSaveTimer = setTimeout(() => {
     window.saveProjectDraft(id);
@@ -1260,27 +1374,39 @@ function headerAddProject(){
 
 async function loadHeaderProjects(){
   const el = document.getElementById("headerProjectsList");
-  const u = window.firebaseCurrentUser;
-  if(!el) return;
-  if(!u){
-    el.innerHTML = '<div class="p-3 text-xs text-gray-500">Sign in to sync projects</div>';
-    return;
-  }
-  const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-  const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
   el.innerHTML = "";
-  for(const id of ids){
-    const p = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-    if(!p.exists()) continue;
-    const d = p.data();
+  
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  localProjects.forEach(p => {
     const btn = document.createElement("button");
-    btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
-    btn.innerHTML = `<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>`;
+    btn.className = "header-project-item " + (p.id === window.currentProjectId ? "current" : "");
+    btn.innerHTML = `<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span>`;
     btn.onclick = () => {
       document.getElementById("projectSwitcherMenu").classList.add("hidden");
-      switchProject(id, d.name);
+      switchProject(p.id, p.name);
     };
     el.appendChild(btn);
+  });
+
+  const u = window.firebaseCurrentUser;
+  if(u){
+    try {
+      const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
+      const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
+      for(const id of ids){
+        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
+        if(!pDoc.exists()) continue;
+        const d = pDoc.data();
+        const btn = document.createElement("button");
+        btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
+        btn.innerHTML = `<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>`;
+        btn.onclick = () => {
+          document.getElementById("projectSwitcherMenu").classList.add("hidden");
+          switchProject(id, d.name);
+        };
+        el.appendChild(btn);
+      }
+    } catch(e) {}
   }
 }
 
@@ -1303,7 +1429,20 @@ window.addEventListener("beforeunload", function (e) {
 // Initialize CodeMirror
 window.addEventListener("DOMContentLoaded", () => {
   document.documentElement.classList.add("dark");
-  loadLocalProjectFiles(currentProjectId);
+  
+  let initialId = localStorage.getItem("js-code-output-active-project-id");
+  if(initialId && initialId.startsWith("local_proj_")) {
+      let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+      let p = localProjects.find(x => x.id === initialId);
+      if(p && document.getElementById("currentProjectName")) {
+          document.getElementById("currentProjectName").textContent = p.name;
+          document.getElementById("dropdownCurrentProject").textContent = p.name;
+      }
+  }
+
+  if (initialId) {
+      loadLocalProjectFiles(initialId);
+  }
 
   const wrapper = document.getElementById("wrapper-editor");
   editor = CodeMirror(wrapper, {
@@ -1328,10 +1467,14 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  editor.on("change", () => {
+  // CRITICAL FIX: Skip if editor is blocked (e.g. during file switch)
+  editor.on("change", (cm, changeObj) => {
+    if (isSwitchingProject) return; 
+    
     hasTypedInSession = true;
     syncEditor();
     saveLocalProjectFiles();
+    
     const auto = document.getElementById("autoRunToggle");
     if(auto?.checked){
       clearTimeout(debounceTimer);
