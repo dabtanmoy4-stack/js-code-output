@@ -130,15 +130,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .code-pane { position:absolute;inset:0; }
 .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#1e1e2e!important;color:#cdd6f4!important; }
 
-/* VS Code Style Terminal Panel */
-.terminal-drawer { height:180px;flex:0 0 180px;background:#11111b;color:#a6adc8;border-top:1px solid #313244;display:flex;flex-direction:column;position:relative; transition:height 0s; }
-.terminal-resizer { height:6px;cursor:ns-resize;background:transparent;position:absolute;top:-3px;left:0;right:0;z-index:10; }
-.terminal-resizer:hover { background:var(--brand); }
-.terminal-header { height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#181825;border-bottom:1px solid #313244;font-size:10px;font-weight:800;letter-spacing:.05em;color:#cdd6f4; }
-.terminal-body { flex:1;overflow:auto;padding:8px 12px;font:12px/1.6 "Fira Code",monospace; cursor:text; }
-.terminal-prompt-wrapper { display:flex; margin-top:2px; }
-.terminal-cmd-input { outline:none; flex:1; color:#cdd6f4; word-break: break-all; }
-
 #iframeContainer { flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;background:#0d1527;position:relative; }
 #outputIframe { width:100%;height:100%;border:0;background:white;transition:.2s; }
 
@@ -240,7 +231,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
     <div>
       <span class="eyebrow"><i class="fa-solid fa-bolt"></i> PROFESSIONAL WEB BUILDING, IN YOUR BROWSER</span>
       <h1>World-class code editor.<br><em>Live output.</em></h1>
-      <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, an integrated terminal, and live preview into one elegant browser experience.</p>
+      <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, and live preview into one elegant browser experience.</p>
       <div class="hero-cta">
         <button class="primary-btn" onclick="startBuilding()">🚀 Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
       </div>
@@ -316,11 +307,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
           <p>Create separate projects and keep each project's files completely isolated in its own cloud document.</p>
         </article>
         <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-terminal"></i></div>
-          <h3>Interactive Terminal</h3>
-          <p>A VS Code style draggable bottom terminal to execute JS commands, view logs, and debug in real-time.</p>
-        </article>
-        <article class="feature-card">
           <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
           <h3>Libraries on demand</h3>
           <p>Turn Tailwind CSS, Font Awesome, Three.js and Chart.js on or off for your project.</p>
@@ -343,7 +329,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
         <ul class="check-list">
           <li><i class="fa-solid fa-circle-check"></i><span>Desktop, tablet and mobile preview modes</span></li>
           <li><i class="fa-solid fa-circle-check"></i><span>Separate HTML, CSS, JS and custom files</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span>Draggable integrated terminal for debugging</span></li>
           <li><i class="fa-solid fa-circle-check"></i><span>Cloud auto-saving after Google sign-in</span></li>
         </ul>
         <button class="primary-btn mt-4" onclick="startBuilding()">Open the workspace →</button>
@@ -404,7 +389,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
         <div class="step">
           <div class="step-num">04 / SHIP</div>
           <h3>Preview & export</h3>
-          <p>Run the output, inspect the terminal console, and download the project as HTML or ZIP.</p>
+          <p>Run the output and download the project as HTML or ZIP.</p>
         </div>
       </div>
     </div>
@@ -545,7 +530,10 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> Run</button>
       <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> Libraries</button>
       <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
-      <button class="app-btn" onclick="openProjectsPage()" title="Projects Dashboard"><i class="fa-solid fa-grid-2"></i> Projects</button>
+      <!-- Added Workspace Account Button -->
+      <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName">Guest</span></button>
+      <!-- Added Back to Home Button -->
+      <button class="app-btn" onclick="backToHome()" title="Back to Home"><i class="fa-solid fa-house"></i> Home</button>
       <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
     </div>
   </header>
@@ -571,7 +559,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
     <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
 
     <div class="main-area">
-      <!-- Editor & Terminal Panel -->
+      <!-- Editor Panel -->
       <section class="editor-panel">
         <div class="editor-tabs">
           <div id="tabs" class="tabs"></div>
@@ -581,20 +569,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
           <div class="editor-content">
             <div id="wrapper-editor" class="code-pane"></div>
           </div>
-          <!-- VS Code Style Interactive Bottom Terminal -->
-          <div id="terminalDrawer" class="terminal-drawer">
-            <div class="terminal-resizer" id="terminalResizer"></div>
-            <div class="terminal-header">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-terminal text-blue-400"></i> TERMINAL / CONSOLE</span>
-              <div class="flex items-center gap-2">
-                <button onclick="clearTerminal()" class="hover:text-white" title="Clear"><i class="fa-solid fa-ban"></i></button>
-              </div>
-            </div>
-            <div id="terminalLogs" class="terminal-body" tabindex="0">
-              <div class="text-slate-500">// VS Code Style Terminal initialized. Type commands or JavaScript expressions (e.g. 'help', 'ls', '2+2').</div>
-              <!-- Prompt line gets injected here dynamically -->
-            </div>
-          </div>
+          <!-- Terminal Removed to allow code editor full height -->
         </div>
       </section>
 
@@ -885,6 +860,13 @@ function openProjectsPage(){
   loadProjects();
 }
 
+// Added Logic for Back to Home functionality
+function backToHome() {
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("projectsPage").classList.add("hidden");
+  document.getElementById("landingPage").classList.remove("hidden");
+}
+
 async function firebaseLogout(){
   await window.firebaseSignOut(window.firebaseAuth);
   window.currentProjectId = "local_default_project";
@@ -1007,6 +989,13 @@ function openEditorWorkspace(id, name, initialFiles=null){
   document.getElementById("currentProjectName").textContent = name || "Untitled Project";
   document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
 
+  // Set Workspace Account Name
+  const u = window.firebaseCurrentUser || window.currentUser;
+  const accountSpan = document.getElementById("workspaceAccountName");
+  if(accountSpan) {
+    accountSpan.textContent = u ? (u.displayName || u.email || "Developer") : "Guest";
+  }
+
   if(initialFiles){
     files = initialFiles;
     activeFile = "index.html";
@@ -1017,13 +1006,12 @@ function openEditorWorkspace(id, name, initialFiles=null){
   saveLocalProjectFiles();
   renderFileExplorer();
   openFile(activeFile);
-  
+ 
   if(!hasTypedInSession){
     document.getElementById("placeholderView").classList.remove("hidden");
   } else {
     updatePreview();
   }
-  createTerminalPrompt();
 }
 
 function renderFileExplorer(){
@@ -1137,28 +1125,12 @@ function updatePreview(force=false){
   const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
   const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
 
-  // Real-time terminal log forwarding bridge
-  const bridge = `<script>
-    (function(){
-      function send(type, args){
-        let msg = "";
-        try { msg = [...args].map(x => typeof x === "object" ? JSON.stringify(x) : String(x)).join(" "); } catch(e){ msg = String(e); }
-        window.parent.postMessage({ type:"LIVE_TERMINAL_LOG", level:type, text:msg }, "*");
-      }
-      ["log","warn","error","info"].forEach(l => {
-        const orig = console[l];
-        console[l] = function(){ send(l, arguments); orig.apply(console, arguments); };
-      });
-      window.onerror = function(msg, url, line){ send("error", ["Uncaught Error:", msg, "Line:", line]); };
-    })();
-  <\/script>`;
-
   document.getElementById("outputIframe").srcdoc = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  ${tw}${fa}${three}${chart}${bridge}
+  ${tw}${fa}${three}${chart}
   <style>${css}</style>
 </head>
 <body>
@@ -1196,134 +1168,6 @@ function toggleFullScreenPreview() {
     }
   }
 }
-
-// Terminal Emulation
-window.addEventListener("message", e => {
-  if(e.data?.type === "LIVE_TERMINAL_LOG"){
-    appendTerminalOutput(e.data.level, e.data.text);
-  }
-});
-
-function appendTerminalOutput(level, text){
-  const body = document.getElementById("terminalLogs");
-  if(!body) return;
-  const div = document.createElement("div");
-  div.className = "py-0.5 " + (level === "error" ? "text-red-400" : level === "warn" ? "text-yellow-400" : level === "info" ? "text-blue-400" : "text-slate-300");
-  div.textContent = `[${level}] ${text}`;
-  // Insert before the prompt line
-  const promptLine = body.querySelector('.terminal-prompt-wrapper');
-  if (promptLine) {
-    body.insertBefore(div, promptLine);
-  } else {
-    body.appendChild(div);
-  }
-  body.scrollTop = body.scrollHeight;
-}
-
-// VS Code Style Interactive Terminal Prompt
-function createTerminalPrompt() {
-  const body = document.getElementById("terminalLogs");
-  if(!body) return;
-  
-  // Remove existing active prompts if any
-  const existingPrompt = body.querySelector('.terminal-prompt-wrapper');
-  if(existingPrompt && existingPrompt.querySelector('.terminal-cmd-input').contentEditable === "true") {
-      return; // Already has an active prompt
-  }
-
-  const line = document.createElement("div");
-  line.className = "terminal-prompt-wrapper";
-  line.innerHTML = `<span class="text-blue-400 font-bold mr-2">&gt;</span><span contenteditable="true" class="terminal-cmd-input" spellcheck="false"></span>`;
-  body.appendChild(line);
-  
-  const input = line.querySelector('.terminal-cmd-input');
-  input.focus();
-
-  input.addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const cmd = this.innerText.trim();
-      this.contentEditable = "false"; // Lock it
-      this.classList.remove("terminal-cmd-input");
-      
-      if (cmd) {
-        processTerminalCommand(cmd);
-      } else {
-        createTerminalPrompt();
-      }
-    }
-  });
-  body.scrollTop = body.scrollHeight;
-}
-
-function processTerminalCommand(input){
-  if(input === "clear") {
-    clearTerminal();
-    return;
-  }
-  if(input === "run") {
-    updatePreview(true);
-    createTerminalPrompt();
-    return;
-  }
-  if(input === "ls") {
-    appendTerminalOutput("info", Object.keys(files).join("   "));
-    createTerminalPrompt();
-    return;
-  }
-  if(input === "help") {
-    appendTerminalOutput("info", "Available commands: clear, run, ls, help, or any JS expression (e.g. 5+10, alert('hi'))");
-    createTerminalPrompt();
-    return;
-  }
-
-  try {
-    const res = document.getElementById("outputIframe").contentWindow.eval(input);
-    appendTerminalOutput("log", res !== undefined ? String(res) : "undefined");
-  } catch(err){
-    appendTerminalOutput("error", err.message);
-  }
-  createTerminalPrompt();
-}
-
-function clearTerminal(){
-  document.getElementById("terminalLogs").innerHTML = '<div class="text-slate-500">// Terminal cleared.</div>';
-  createTerminalPrompt();
-}
-
-// Focus terminal when clicking inside the body
-document.addEventListener("DOMContentLoaded", () => {
-  const terminalBody = document.getElementById("terminalLogs");
-  terminalBody?.addEventListener("click", () => {
-    const activeInput = terminalBody.querySelector('.terminal-cmd-input');
-    if(activeInput) activeInput.focus();
-  });
-});
-
-// Draggable terminal resizer (All the way down to header)
-let isResizing = false;
-document.addEventListener("DOMContentLoaded", () => {
-  const resizer = document.getElementById("terminalResizer");
-  const drawer = document.getElementById("terminalDrawer");
-
-  resizer?.addEventListener("mousedown", (e) => {
-    isResizing = true;
-    document.body.style.cursor = "ns-resize";
-  });
-  document.addEventListener("mousemove", (e) => {
-    if(!isResizing) return;
-    const h = window.innerHeight - e.clientY;
-    if(h >= 32) { // 32 is header height
-      drawer.style.height = h + "px";
-    } else {
-      drawer.style.height = "32px";
-    }
-  });
-  document.addEventListener("mouseup", () => {
-    isResizing = false;
-    document.body.style.cursor = "default";
-  });
-});
 
 // Cloud Sync Timer
 function scheduleCloudSave(){
