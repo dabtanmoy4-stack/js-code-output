@@ -11,35 +11,36 @@
     <meta name="theme-color" content="#020617">
     <meta name="google-site-verification" content="enSOuykXDVMhPtF_jj_asrRiEBkkkaRsDrz6T3amUgE">
 
-    <!-- Open Graph -->
     <meta property="og:title" content="JS CODE OUTPUT - Free Online Code Editor">
     <meta property="og:description" content="Write HTML, CSS and JavaScript and instantly preview your project online.">
     <meta property="og:url" content="https://js-code-output.vercel.app/">
     <meta property="og:type" content="website">
 
-    <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737041538621289" crossorigin="anonymous"></script>
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "JS CODE OUTPUT",
-        "alternateName": "JS Code Output",
-        "url": "https://js-code-output.vercel.app/",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web Browser",
-        "description": "Free online HTML CSS JavaScript code editor and web builder."
+        "@context":"https://schema.org",
+        "@type":"WebApplication",
+        "name":"JS CODE OUTPUT",
+        "alternateName":"JS Code Output",
+        "url":"https://js-code-output.vercel.app/",
+        "applicationCategory":"DeveloperApplication",
+        "operatingSystem":"Web Browser",
+        "description":"Free online HTML CSS JavaScript code editor and web builder."
     }
     </script>
 
-    <!-- Firebase -->
+    <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+        import {
+            getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        import {
+            getFirestore, doc, setDoc, getDoc, arrayUnion, serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
@@ -52,113 +53,165 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        let analytics = null;
-        try { analytics = getAnalytics(app); } catch (error) { console.warn("Firebase Analytics unavailable:", error); }
+
+        try {
+            getAnalytics(app);
+        } catch (error) {
+            console.warn("Firebase Analytics unavailable:", error);
+        }
 
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
+        window.firebaseAuth = auth;
+        window.firebaseDB = db;
+        window.googleProvider = googleProvider;
         window.firebaseDoc = doc;
         window.firebaseSetDoc = setDoc;
         window.firebaseGetDoc = getDoc;
-        window.firebaseUpdateDoc = updateDoc;
         window.firebaseArrayUnion = arrayUnion;
         window.firebaseServerTimestamp = serverTimestamp;
-        window.firebaseAuth = auth;
         window.firebaseSignOut = signOut;
-        window.googleProvider = googleProvider;
-        window.firebaseDB = db;
 
-        window.googleSignIn = function() {
-            return signInWithPopup(auth, googleProvider);
-        };
+        window.googleSignIn = () => signInWithPopup(auth, googleProvider);
 
-        // FIXED: Robust Save Draft for the currently active project
-        window.saveProjectDraft = async function () {
+        /*
+         * CLOUD SAVE
+         * Important: every save/load uses the CURRENT project id.
+         * Nothing is stored in a common "main" project.
+         */
+        window.saveProjectDraft = async function(projectIdOverride = null) {
             const user = auth.currentUser;
-            if (!user) return false;
-            const pId = window.currentProjectId;
-            if (!pId || pId === "local_default_project") return false;
-            
-            if (window.editor && window.activeFile) {
+            const projectId = projectIdOverride || window.currentProjectId;
+
+            if (!user || !projectId || projectId === "local_default_project") return false;
+
+            if (window.editor && window.activeFile && window.files) {
                 window.files[window.activeFile] = window.editor.getValue();
             }
 
+            const snapshotFiles = JSON.parse(JSON.stringify(window.files || {}));
+
             try {
-                const projectRef = doc(db, "users", user.uid, "projects", pId);
+                const projectRef = doc(db, "users", user.uid, "projects", projectId);
                 await setDoc(projectRef, {
-                    files: window.files,
-                    html: window.files["index.html"] || "",
-                    css: window.files["style.css"] || "",
-                    js: window.files["script.js"] || "",
+                    files: snapshotFiles,
+                    html: snapshotFiles["index.html"] || "",
+                    css: snapshotFiles["style.css"] || "",
+                    js: snapshotFiles["script.js"] || "",
                     updatedAt: serverTimestamp()
                 }, { merge: true });
-                console.log("☁️ Cloud draft saved for project:", pId);
+
+                console.log("☁️ Saved project:", projectId);
                 return true;
             } catch (error) {
-                console.error("Cloud draft save failed:", error);
+                console.error("Cloud save failed:", error);
                 return false;
             }
         };
 
-        // FIXED: Robust Load Draft
-        window.loadProjectDraft = async function () {
+        window.loadProjectDraft = async function(projectIdOverride = null) {
             const user = auth.currentUser;
-            if (!user) return false;
-            const pId = window.currentProjectId;
-            if (!pId || pId === "local_default_project") return false;
+            const projectId = projectIdOverride || window.currentProjectId;
+
+            if (!user || !projectId || projectId === "local_default_project") return false;
 
             try {
-                const projectRef = doc(db, "users", user.uid, "projects", pId);
+                const projectRef = doc(db, "users", user.uid, "projects", projectId);
                 const snapshot = await getDoc(projectRef);
+
                 if (!snapshot.exists()) return false;
-                
-                // Use openProjectInEditor to parse the data safely
-                window.openProjectInEditor(snapshot.data());
-                console.log("☁️ Cloud draft loaded for project:", pId);
+
+                /*
+                 * Only apply the result if the user is STILL on the same project.
+                 * This prevents an old async request from overwriting another project.
+                 */
+                if (window.currentProjectId !== projectId) return false;
+
+                window.openProjectInEditor(snapshot.data(), {
+                    fromCloud: true,
+                    preserveProjectId: projectId
+                });
+
                 return true;
             } catch (error) {
-                console.error("Cloud draft load failed:", error);
+                console.error("Cloud load failed:", error);
                 return false;
             }
         };
 
-        onAuthStateChanged(auth, async function (user) {
+        /*
+         * SINGLE AUTH ROUTER
+         * Firebase can restore a previous Google session after page refresh.
+         * We therefore do NOT show the login/start screens again when a user
+         * is already authenticated.
+         */
+        onAuthStateChanged(auth, async function(user) {
             window.currentUser = user || null;
             window.firebaseCurrentUser = user || null;
-            
+
             if (user) {
                 console.log("👤 Signed in:", user.displayName || user.email);
+
                 window.updateUserUI?.(user);
-                if (window.currentProject) {
-                    window.updateCurrentProjectName(window.currentProject.name);
-                }
+
                 const projectsUserName = document.getElementById("projectsUserName");
-                if (projectsUserName) projectsUserName.textContent = user.displayName || user.email || "Developer";
-                
-                const projectsPage = document.getElementById("projectsPage");
-                if (projectsPage) {
-                    projectsPage.classList.remove("hidden");
-                    if (typeof loadProjects === "function") await loadProjects();
+                if (projectsUserName) {
+                    projectsUserName.textContent = user.displayName || user.email || "Developer";
                 }
+
+                // A logged-in user never needs to see either start/login screen.
+                document.getElementById("welcomeScreen")?.classList.add("hide");
+                document.getElementById("startScreen")?.classList.add("hidden");
+                document.getElementById("startLoginScreen")?.classList.add("hidden");
+
+                const projectsPage = document.getElementById("projectsPage");
+                if (projectsPage) projectsPage.classList.remove("hidden");
+
+                await window.loadProjects?.();
+                await window.loadHeaderProjects?.();
             } else {
+                console.log("👤 Signed out");
+
+                window.currentProject = null;
                 window.updateUserUI?.(null);
-                window.updateCurrentProjectName("Untitled Project");
+
+                document.getElementById("projectsPage")?.classList.add("hidden");
+                document.getElementById("startLoginScreen")?.classList.add("hidden");
+
+                // If user had chosen "Maybe Later", open the editor.
+                if (localStorage.getItem("js-code-output-skip-login") === "1") {
+                    document.getElementById("welcomeScreen")?.classList.add("hide");
+                    document.getElementById("startScreen")?.classList.add("hidden");
+                    document.getElementById("app")?.classList.remove("hidden");
+                }
             }
         });
+
         console.log("🔥 Firebase connected successfully!");
     </script>
 
-    <!-- Tailwind & Libraries -->
+    <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: "class", theme: { extend: { colors: { brand: { 50: "#eef2ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca", 900: "#312e81" } } } } };
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50:"#eef2ff",500:"#6366f1",600:"#4f46e5",
+                            700:"#4338ca",900:"#312e81"
+                        }
+                    }
+                }
+            }
+        };
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
@@ -169,68 +222,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
-        body { min-height: 100vh; overflow: hidden; background: #020617; }
-        * { box-sizing: border-box; }
-        button { user-select: none; }
-        .CodeMirror { position: absolute; inset: 0; width: 100%; height: 100% !important; font-family: "Fira Code", "Courier New", monospace; font-size: 14px; }
-        .editor-wrapper { position: relative; flex: 1; min-height: 0; overflow: hidden; }
-        #welcomeScreen { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 20% 20%, rgba(99,102,241,.18), transparent 30%), radial-gradient(circle at 80% 30%, rgba(168,85,247,.18), transparent 30%), radial-gradient(circle at 50% 90%, rgba(236,72,153,.12), transparent 35%), #020617; transition: opacity .7s ease, visibility .7s ease; }
-        #welcomeScreen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-        .welcome-grid { position: absolute; inset: -50%; background-image: linear-gradient(rgba(99,102,241,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,.07) 1px, transparent 1px); background-size: 60px 60px; transform: perspective(500px) rotateX(60deg); animation: gridMove 12s linear infinite; }
-        @keyframes gridMove { from { transform: perspective(500px) rotateX(60deg) translateY(0); } to { transform: perspective(500px) rotateX(60deg) translateY(60px); } }
-        .welcome-orb { position: absolute; border-radius: 999px; filter: blur(2px); opacity: .6; animation: orbFloat 7s ease-in-out infinite; }
-        .welcome-orb.one { width: 180px; height: 180px; background: rgba(99,102,241,.25); top: 10%; left: 8%; }
-        .welcome-orb.two { width: 130px; height: 130px; background: rgba(168,85,247,.25); bottom: 12%; right: 10%; animation-delay: -2s; }
-        .welcome-orb.three { width: 90px; height: 90px; background: rgba(236,72,153,.25); top: 25%; right: 20%; animation-delay: -4s; }
-        @keyframes orbFloat { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-35px) scale(1.15); } }
-        .welcome-content { position: relative; z-index: 5; text-align: center; width: min(850px, 92%); animation: welcomeAppear 1s ease forwards; }
-        @keyframes welcomeAppear { from { opacity: 0; transform: translateY(30px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .welcome-logo { width: 82px; height: 82px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; border-radius: 24px; background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899); box-shadow: 0 0 30px rgba(99,102,241,.45); animation: logoPulse 3s ease-in-out infinite; }
-        .welcome-logo span { color: white; font-family: monospace; font-size: 27px; font-weight: 900; }
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-        .welcome-title { font-size: clamp(40px, 7vw, 78px); line-height: 1; font-weight: 900; letter-spacing: -3px; margin: 0 0 18px; background: linear-gradient(90deg, #818cf8, #c084fc, #f472b6, #818cf8); background-size: 300% auto; background-clip: text; -webkit-background-clip: text; color: transparent; animation: gradientText 5s linear infinite; }
-        @keyframes gradientText { to { background-position: 300% center; } }
-        .welcome-subtitle { color: #cbd5e1; font-size: clamp(16px, 2vw, 21px); margin-bottom: 12px; }
-        .welcome-description { color: #64748b; font-size: 14px; max-width: 600px; margin: 0 auto 35px; line-height: 1.7; }
-        .start-building-btn { border: 0; cursor: pointer; padding: 15px 32px; border-radius: 14px; color: white; font-size: 15px; font-weight: 800; background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899); box-shadow: 0 10px 35px rgba(99,102,241,.35); transition: .25s ease; }
-        .start-building-btn:hover { transform: translateY(-3px) scale(1.03); }
-        .start-building-btn:active { transform: scale(.97); }
-        .welcome-bottom { margin-top: 28px; font-size: 11px; color: #475569; letter-spacing: 1px; }
-        #app { height: 100vh; min-height: 0; display: flex; flex-direction: column; }
-        #topHeader { flex: 0 0 56px; height: 56px; }
-        #workspace { flex: 1 1 auto; min-height: 0; display: flex; overflow: hidden; }
-        #explorer { flex: 0 0 224px; min-width: 180px; background: #0b0f14; border-right: 1px solid #1e293b; display: flex; flex-direction: column; min-height: 0; }
-        #mainArea { flex: 1; min-width: 0; min-height: 0; display: flex; overflow: hidden; }
-        #editorPanel { flex: 1 1 50%; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-right: 1px solid #1e293b; }
-        #previewPanel { flex: 1 1 50%; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
-        #editorTabs { flex: 0 0 42px; height: 42px; }
-        #editorContent { position: relative; flex: 1; min-height: 0; overflow: hidden; }
-        .code-pane { position: absolute; inset: 0; display: none; }
-        .code-pane.active { display: block; }
-        #previewToolbar { flex: 0 0 42px; height: 42px; }
-        #iframeContainer { flex: 1; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; overflow: auto; background: #020617; }
-        #outputIframe { display: block; width: 100%; height: 100%; border: 0; background: white; transition: width .3s ease, height .3s ease; }
-        #consoleDrawer { flex: 0 0 190px; height: 190px; display: none; flex-direction: column; }
-        #consoleDrawer.open { display: flex; }
-        #consoleLogs { flex: 1; min-height: 0; overflow-y: auto; }
-        #appFooter { flex: 0 0 48px; min-height: 48px; }
-        @media (max-width: 900px) { #explorer { display: none; } #mainArea { flex-direction: column; } #editorPanel { flex: 1 1 50%; border-right: 0; border-bottom: 1px solid #1e293b; } #previewPanel { flex: 1 1 50%; } #topHeader { padding-left: 10px; padding-right: 10px; } }
-        @media (max-width: 640px) { #appFooter { height: 44px; min-height: 44px; flex-basis: 44px; } #appFooter .footer-links { display: none; } #appFooter p { margin: 0; } .welcome-title { letter-spacing: -2px; } }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        .explorer-file { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 5px; color: #94a3b8; font-size: 12px; text-align: left; transition: .15s; cursor: pointer; }
-        .explorer-file:hover { background: #1e293b; color: white; }
-        .explorer-file.active { background: rgba(99,102,241,.16); color: #a5b4fc; }
-        .active-file-tab { color: #a5b4fc !important; background: #0f172a !important; border-top: 2px solid #6366f1 !important; }
-        #fileExplorer { scrollbar-width: thin; }
+        html,body{width:100%;height:100%;margin:0;padding:0}
+        body{min-height:100vh;overflow:hidden;background:#020617}
+        *{box-sizing:border-box}
+        button{user-select:none}
+        .CodeMirror{position:absolute;inset:0;width:100%;height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:14px}
+        .editor-wrapper{position:relative;flex:1;min-height:0;overflow:hidden}
+        #welcomeScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.18),transparent 30%),radial-gradient(circle at 80% 30%,rgba(168,85,247,.18),transparent 30%),radial-gradient(circle at 50% 90%,rgba(236,72,153,.12),transparent 35%),#020617;transition:opacity .7s ease,visibility .7s ease}
+        #welcomeScreen.hide{opacity:0;visibility:hidden;pointer-events:none}
+        .welcome-grid{position:absolute;inset:-50%;background-image:linear-gradient(rgba(99,102,241,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.07) 1px,transparent 1px);background-size:60px 60px;transform:perspective(500px) rotateX(60deg);animation:gridMove 12s linear infinite}
+        @keyframes gridMove{from{transform:perspective(500px) rotateX(60deg) translateY(0)}to{transform:perspective(500px) rotateX(60deg) translateY(60px)}}
+        .welcome-orb{position:absolute;border-radius:999px;filter:blur(2px);opacity:.6;animation:orbFloat 7s ease-in-out infinite}
+        .welcome-orb.one{width:180px;height:180px;background:rgba(99,102,241,.25);top:10%;left:8%}
+        .welcome-orb.two{width:130px;height:130px;background:rgba(168,85,247,.25);bottom:12%;right:10%;animation-delay:-2s}
+        .welcome-orb.three{width:90px;height:90px;background:rgba(236,72,153,.25);top:25%;right:20%;animation-delay:-4s}
+        @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-35px) scale(1.15)}}
+        .welcome-content{position:relative;z-index:5;text-align:center;width:min(850px,92%);animation:welcomeAppear 1s ease forwards}
+        @keyframes welcomeAppear{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .welcome-logo{width:82px;height:82px;margin:0 auto 25px;display:flex;align-items:center;justify-content:center;border-radius:24px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);box-shadow:0 0 30px rgba(99,102,241,.45);animation:logoPulse 3s ease-in-out infinite}
+        .welcome-logo span{color:white;font-family:monospace;font-size:27px;font-weight:900}
+        @keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+        .welcome-title{font-size:clamp(40px,7vw,78px);line-height:1;font-weight:900;letter-spacing:-3px;margin:0 0 18px;background:linear-gradient(90deg,#818cf8,#c084fc,#f472b6,#818cf8);background-size:300% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:gradientText 5s linear infinite}
+        @keyframes gradientText{to{background-position:300% center}}
+        .welcome-subtitle{color:#cbd5e1;font-size:clamp(16px,2vw,21px);margin-bottom:12px}
+        .welcome-description{color:#64748b;font-size:14px;max-width:600px;margin:0 auto 35px;line-height:1.7}
+        .start-building-btn{border:0;cursor:pointer;padding:15px 32px;border-radius:14px;color:white;font-size:15px;font-weight:800;background:linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899);box-shadow:0 10px 35px rgba(99,102,241,.35);transition:.25s ease}
+        .start-building-btn:hover{transform:translateY(-3px) scale(1.03)}
+        .start-building-btn:active{transform:scale(.97)}
+        .welcome-bottom{margin-top:28px;font-size:11px;color:#475569;letter-spacing:1px}
+
+        #app{height:100vh;min-height:0;display:flex;flex-direction:column}
+        #topHeader{flex:0 0 56px;height:56px}
+        #workspace{flex:1 1 auto;min-height:0;display:flex;overflow:hidden}
+        #explorer{flex:0 0 224px;min-width:180px;background:#0b0f14;border-right:1px solid #1e293b;display:flex;flex-direction:column;min-height:0}
+        #mainArea{flex:1;min-width:0;min-height:0;display:flex;overflow:hidden}
+        #editorPanel{flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column;border-right:1px solid #1e293b}
+        #previewPanel{flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column}
+        #editorTabs{flex:0 0 42px;height:42px}
+        #editorContent{position:relative;flex:1;min-height:0;overflow:hidden}
+        .code-pane{position:absolute;inset:0;display:none}
+        .code-pane.active{display:block}
+        #previewToolbar{flex:0 0 42px;height:42px}
+        #iframeContainer{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;background:#020617}
+        #outputIframe{display:block;width:100%;height:100%;border:0;background:white;transition:width .3s ease,height .3s ease}
+        #consoleDrawer{flex:0 0 190px;height:190px;display:none;flex-direction:column}
+        #consoleDrawer.open{display:flex}
+        #consoleLogs{flex:1;min-height:0;overflow-y:auto}
+        #appFooter{flex:0 0 48px;min-height:48px}
+
+        .header-project-item{width:100%;display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:8px;color:#cbd5e1;font-size:12px;text-align:left;transition:.15s ease}
+        .header-project-item:hover{background:#1e293b;color:white}
+        .header-project-item.current{background:rgba(99,102,241,.14);color:#a5b4fc}
+        .header-project-item .project-check{margin-left:auto;color:#818cf8}
+        #projectSwitcherMenu{transform-origin:top right;animation:projectMenuOpen .16s ease-out}
+        @keyframes projectMenuOpen{from{opacity:0;transform:translateY(-5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+        #headerProjectsList::-webkit-scrollbar{width:5px}
+        #headerProjectsList::-webkit-scrollbar-track{background:transparent}
+        #headerProjectsList::-webkit-scrollbar-thumb{background:#334155;border-radius:5px}
+
+        .editor-tab{height:36px;padding:0 14px;border-radius:7px 7px 0 0;color:#64748b;font-size:11px;font-weight:600;transition:.2s}
+        .editor-tab:hover{color:white;background:#0f172a}
+        .editor-tab.active-file-tab{color:#a5b4fc!important;background:#0f172a!important;border-top:2px solid #6366f1!important}
+        .screen-btn{padding:3px 7px;border-radius:4px;color:#64748b;font-size:11px}
+        .screen-btn:hover{color:#a5b4fc}
+        .screen-btn.active{color:#a5b4fc;background:#1e293b}
+        .library-option{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:9px;background:rgba(30,41,59,.7);border:1px solid #334155;cursor:pointer;font-size:12px}
+        .library-option:hover{background:#1e293b}
+        .explorer-file{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px;border-radius:5px;color:#94a3b8;font-size:12px;text-align:left;transition:.15s;cursor:pointer}
+        .explorer-file:hover{background:#1e293b;color:white}
+        .explorer-file.active{background:rgba(99,102,241,.16);color:#a5b4fc}
+        #fileExplorer{scrollbar-width:thin}
+
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:#0f172a}
+        ::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
+        ::-webkit-scrollbar-thumb:hover{background:#475569}
+
+        @media(max-width:900px){
+            #explorer{display:none}
+            #mainArea{flex-direction:column}
+            #editorPanel{flex:1 1 50%;border-right:0;border-bottom:1px solid #1e293b}
+            #previewPanel{flex:1 1 50%}
+            #topHeader{padding-left:10px;padding-right:10px}
+        }
+        @media(max-width:640px){
+            #appFooter{height:44px;min-height:44px;flex-basis:44px}
+            #appFooter .footer-links{display:none}
+            #appFooter p{margin:0}
+            .welcome-title{letter-spacing:-2px}
+            #currentProjectButton{max-width:145px;padding-left:8px;padding-right:8px}
+            #currentProjectName{max-width:85px}
+            #projectSwitcherMenu{position:fixed;top:60px;right:8px;width:min(300px,calc(100vw - 16px))}
+        }
     </style>
 </head>
+
 <body class="bg-slate-950 text-slate-100 font-sans">
 
-<!-- WELCOME SCREEN -->
+<!-- ONE AND ONLY ENTRY SCREEN -->
 <div id="welcomeScreen">
     <div class="welcome-grid"></div>
     <div class="welcome-orb one"></div>
@@ -246,21 +335,12 @@
     </div>
 </div>
 
-<!-- START LOGIN SCREEN -->
-<div id="startScreen" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center hidden">
-    <div class="w-[92%] max-w-md text-center">
-        <div class="mx-auto mb-6 w-20 h-20 rounded-3xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl">
-            <span class="text-white text-3xl font-black font-mono">&lt;/&gt;</span>
-        </div>
-        <h1 class="text-4xl sm:text-5xl font-black bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">JS CODE OUTPUT</h1>
-        <p class="mt-4 text-slate-400">Build websites, experiments and crazy projects with live HTML, CSS & JavaScript.</p>
-        <button onclick="openStartLogin()" class="mt-8 w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold shadow-xl transition hover:scale-[1.02]">
-            <i class="fa-solid fa-rocket mr-2"></i> START BUILDING
-        </button>
-    </div>
+<!-- Kept for compatibility, but no longer used as a second start page -->
+<div id="startScreen" class="hidden fixed inset-0 z-[100] bg-slate-950 items-center justify-center">
+    <div></div>
 </div>
 
-<!-- GOOGLE LOGIN MODAL -->
+<!-- GOOGLE LOGIN -->
 <div id="startLoginScreen" class="fixed inset-0 z-[110] bg-slate-950/95 backdrop-blur-xl flex items-center justify-center hidden">
     <div class="w-[92%] max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-7 shadow-2xl text-center">
         <div class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
@@ -268,35 +348,52 @@
         </div>
         <h2 class="text-2xl font-bold">Start Building</h2>
         <p class="mt-2 text-sm text-slate-400">Sign in with Google to save your projects and continue them later.</p>
-        <button onclick="continueWithGoogle()" class="mt-7 w-full py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold flex items-center justify-center gap-3 transition">
+
+        <button id="googleLoginButton" onclick="continueWithGoogle()" class="mt-7 w-full py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold flex items-center justify-center gap-3 transition">
             <span class="font-bold text-lg">G</span> Continue with Google
         </button>
+
         <button onclick="startWithoutLogin()" class="mt-4 w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-sm">
             Maybe Later
         </button>
+
+        <button onclick="closeStartLogin()" class="mt-4 text-xs text-slate-500 hover:text-white">
+            ← Back
+        </button>
+
         <p class="mt-5 text-[10px] text-slate-600">You can sign in later when you want to save your project to the cloud.</p>
     </div>
 </div>
 
-<!-- YOUR PROJECTS PAGE -->
+<!-- PROJECTS PAGE -->
 <div id="projectsPage" class="hidden fixed inset-0 z-[9999] bg-slate-950 text-white overflow-auto">
     <div class="min-h-full flex flex-col">
         <header class="h-16 px-6 flex items-center justify-between border-b border-slate-800 bg-slate-900">
-            <div><h1 class="text-xl font-bold">JS CODE OUTPUT</h1><p class="text-xs text-slate-400">Your Projects</p></div>
+            <div>
+                <h1 class="text-xl font-bold">JS CODE OUTPUT</h1>
+                <p class="text-xs text-slate-400">Your Projects</p>
+            </div>
             <div class="flex items-center gap-3">
                 <span id="projectsUserName" class="text-sm text-slate-300"></span>
                 <button onclick="firebaseLogout()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm">Sign Out</button>
             </div>
         </header>
+
         <main class="flex-1 w-full max-w-6xl mx-auto p-6">
-            <div class="mb-8"><h2 class="text-3xl font-bold">Your Projects</h2><p class="text-slate-400 mt-2">Open an existing project or create a new one.</p></div>
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold">Your Projects</h2>
+                <p class="text-slate-400 mt-2">Open an existing project or create a new one.</p>
+            </div>
+
             <div id="projectsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
             <div id="noProjects" class="hidden flex flex-col items-center justify-center text-center py-24">
                 <div class="text-6xl mb-5">📁</div>
                 <h3 class="text-2xl font-semibold">No Project Yet</h3>
                 <p class="text-slate-400 mt-2 mb-7">Create your first project to get started.</p>
                 <button onclick="showCreateProject()" class="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold transition">+ Add Project</button>
             </div>
+
             <div id="addProjectButton" class="mt-10 flex justify-center">
                 <button onclick="showCreateProject()" class="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold transition">+ Add Project</button>
             </div>
@@ -304,7 +401,7 @@
     </div>
 </div>
 
-<!-- CREATE PROJECT MODAL -->
+<!-- CREATE PROJECT -->
 <div id="createProjectModal" class="hidden fixed inset-0 z-[10000] bg-black/70 backdrop-blur-sm items-center justify-center p-4">
     <div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6">
         <div class="flex items-center justify-between mb-6">
@@ -321,8 +418,7 @@
 </div>
 
 <!-- MAIN APP -->
-<div id="app">
-    <!-- HEADER -->
+<div id="app" class="hidden">
     <header id="topHeader" class="bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3 min-w-0">
             <div class="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
@@ -333,6 +429,7 @@
                 <p class="hidden sm:block text-[9px] text-slate-500">Real-time Live Code Workbench</p>
             </div>
         </div>
+
         <div class="hidden xl:flex items-center gap-1 bg-slate-800 p-1 rounded-lg border border-slate-700">
             <span class="px-2 text-[10px] text-slate-500">Templates</span>
             <button onclick="loadTemplate('saas')" class="px-2 py-1 text-[10px] rounded hover:bg-indigo-600">🚀 App UI</button>
@@ -340,37 +437,26 @@
             <button onclick="loadTemplate('three')" class="px-2 py-1 text-[10px] rounded hover:bg-indigo-600">🌐 3D</button>
             <button onclick="loadTemplate('glass')" class="px-2 py-1 text-[10px] rounded hover:bg-indigo-600">💎 Glass</button>
         </div>
-        
-        <!-- CURRENT PROJECT SWITCHER -->
+
+        <!-- PROJECT SWITCHER -->
         <div id="projectSwitcher" class="relative">
-            <button
-                id="currentProjectButton"
-                onclick="toggleProjectSwitcher(event)"
-                class="flex items-center gap-2 max-w-[220px] px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-indigo-500 transition text-xs"
-                title="Switch Project"
-            >
+            <button id="currentProjectButton" onclick="toggleProjectSwitcher(event)" class="flex items-center gap-2 max-w-[220px] px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-indigo-500 transition text-xs" title="Switch Project">
                 <i class="fa-solid fa-folder-open text-indigo-400"></i>
-                <span id="currentProjectName" class="truncate max-w-[140px] text-slate-200 font-semibold">
-                    Untitled Project
-                </span>
+                <span id="currentProjectName" class="truncate max-w-[140px] text-slate-200 font-semibold">Untitled Project</span>
                 <i id="projectSwitcherArrow" class="fa-solid fa-chevron-down text-[9px] text-slate-500"></i>
             </button>
 
-            <!-- PROJECT DROPDOWN -->
             <div id="projectSwitcherMenu" class="hidden absolute right-0 top-full mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-[500]">
                 <div class="px-4 py-3 border-b border-slate-800">
                     <div class="text-[10px] uppercase tracking-wider text-slate-500">Current Project</div>
                     <div id="dropdownCurrentProject" class="mt-1 text-sm font-semibold text-white truncate">Untitled Project</div>
                 </div>
-
                 <div class="px-4 py-2 border-b border-slate-800">
                     <span class="text-[10px] uppercase tracking-wider text-slate-500">Your Projects</span>
                 </div>
-
                 <div id="headerProjectsList" class="max-h-64 overflow-y-auto p-2">
                     <div class="px-3 py-4 text-center text-xs text-slate-500">Sign in to view your projects.</div>
                 </div>
-
                 <div class="border-t border-slate-800 p-2">
                     <button onclick="headerAddProject()" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-xs font-semibold transition">
                         <i class="fa-solid fa-plus"></i> Add Project
@@ -395,7 +481,6 @@
         </div>
     </header>
 
-    <!-- WORKSPACE -->
     <main id="workspace">
         <aside id="explorer">
             <div class="h-10 px-3 flex items-center justify-between border-b border-slate-800 bg-[#11161d]">
@@ -416,17 +501,13 @@
                 <button onclick="document.getElementById('fileUpload').click()" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-indigo-600 text-xs"><i class="fa-solid fa-folder-open"></i> Upload File</button>
             </div>
         </aside>
-        
+
         <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
-        
+
         <div id="mainArea">
             <section id="editorPanel">
                 <div id="editorTabs" class="flex items-center justify-between bg-slate-950 border-b border-slate-800 px-2 pt-1">
-                    <div class="flex gap-1">
-                        <button id="tab-html" onclick="switchTab('html')" class="editor-tab active-html"><i class="fa-brands fa-html5"></i> HTML</button>
-                        <button id="tab-css" onclick="switchTab('css')" class="editor-tab"><i class="fa-brands fa-css3-alt"></i> CSS</button>
-                        <button id="tab-js" onclick="switchTab('js')" class="editor-tab"><i class="fa-brands fa-js"></i> JS</button>
-                    </div>
+                    <div class="flex gap-1"></div>
                     <button onclick="clearEditors()" title="Clear Editors" class="text-slate-500 hover:text-rose-400 px-2"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
                 <div id="editorContent">
@@ -435,11 +516,13 @@
                     <div id="wrapper-js" class="code-pane"><textarea id="code-js"></textarea></div>
                 </div>
             </section>
-            
+
             <section id="previewPanel">
                 <div id="previewToolbar" class="bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                         <span class="hidden sm:inline text-[10px] text-slate-400 ml-1">LIVE OUTPUT</span>
                     </div>
                     <div class="flex items-center bg-slate-950 rounded-md border border-slate-800 p-0.5">
@@ -452,7 +535,9 @@
                         <button onclick="updatePreview()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                 </div>
+
                 <div id="iframeContainer"><iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe></div>
+
                 <div id="consoleDrawer">
                     <div class="h-8 shrink-0 bg-slate-950 border-t border-slate-800 px-3 flex items-center justify-between text-xs">
                         <span><i class="fa-solid fa-terminal text-amber-400 mr-1"></i> Console Output</span>
@@ -464,7 +549,6 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
     <footer id="appFooter" class="shrink-0 border-t border-slate-800 bg-slate-950 px-4 flex items-center justify-center">
         <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs">
             <span class="text-slate-600">© 2026 JS CODE OUTPUT</span>
@@ -479,7 +563,7 @@
     </footer>
 </div>
 
-<!-- MODALS -->
+<!-- DOWNLOAD -->
 <div id="downloadModal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden">
     <div class="w-[92%] max-w-sm bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl">
         <div class="flex items-center justify-between mb-4">
@@ -492,6 +576,7 @@
     </div>
 </div>
 
+<!-- LIBRARIES -->
 <div id="librariesModal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden">
     <div class="w-[92%] max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-5">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
@@ -514,69 +599,12 @@
     <span id="toastMsg" class="text-xs">Notification</span>
 </div>
 
-<style>
-#projectSwitcherMenu {
-    transform-origin: top right;
-    animation: projectMenuOpen .16s ease-out;
-}
-
-@keyframes projectMenuOpen {
-    from { opacity: 0; transform: translateY(-5px) scale(.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.header-project-item {
-    width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 11px;
-    border-radius: 8px; color: #cbd5e1; font-size: 12px; text-align: left; transition: .15s ease;
-}
-
-.header-project-item:hover { background: #1e293b; color: white; }
-.header-project-item.current { background: rgba(99, 102, 241, .14); color: #a5b4fc; }
-.header-project-item .project-check { margin-left: auto; color: #818cf8; }
-
-#headerProjectsList::-webkit-scrollbar { width: 5px; }
-#headerProjectsList::-webkit-scrollbar-track { background: transparent; }
-#headerProjectsList::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
-
-@media (max-width: 640px) {
-    #currentProjectButton { max-width: 145px; padding-left: 8px; padding-right: 8px; }
-    #currentProjectName { max-width: 85px; }
-    #projectSwitcherMenu { position: fixed; top: 60px; right: 8px; width: min(300px, calc(100vw - 16px)); }
-}
-
-.editor-tab { height: 36px; padding: 0 14px; border-radius: 7px 7px 0 0; color: #64748b; font-size: 11px; font-weight: 600; transition: .2s; }
-.editor-tab:hover { color: white; background: #0f172a; }
-.editor-tab.active-html { color: #fb923c; background: #0f172a; border-top: 2px solid #f97316; }
-.editor-tab.active-css { color: #38bdf8; background: #0f172a; border-top: 2px solid #0ea5e9; }
-.editor-tab.active-js { color: #facc15; background: #0f172a; border-top: 2px solid #eab308; }
-.screen-btn { padding: 3px 7px; border-radius: 4px; color: #64748b; font-size: 11px; }
-.screen-btn:hover { color: #a5b4fc; }
-.screen-btn.active { color: #a5b4fc; background: #1e293b; }
-.library-option { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 9px; background: rgba(30,41,59,.7); border: 1px solid #334155; cursor: pointer; font-size: 12px; }
-.library-option:hover { background: #1e293b; }
-</style>
-
-<!-- APPLICATION JAVASCRIPT -->
 <script>
 "use strict";
 
-async function firebaseLogout() {
-    try {
-        if (window.firebaseAuth && window.firebaseSignOut) {
-            await window.firebaseSignOut(window.firebaseAuth);
-        }
-        window.currentUser = null;
-        window.firebaseCurrentUser = null;
-        window.currentProject = null;
-        window.currentProjectId = null;
-        document.getElementById("projectsPage")?.classList.add("hidden");
-        document.getElementById("startScreen")?.classList.remove("hidden");
-        showToast("Logged out successfully.");
-    } catch (error) {
-        console.error("Logout failed:", error);
-        showToast("Logout failed.");
-    }
-}
+/* =========================================================
+   GLOBAL STATE
+   ========================================================= */
 
 let files = {};
 let activeFile = "index.html";
@@ -586,74 +614,314 @@ let debounceTimer = null;
 let cloudSaveTimer = null;
 let consoleCount = 0;
 let editor = null;
-let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
+
+/*
+ * Project switching token.
+ * Every switch gets a new number. Old async Firestore requests are ignored
+ * if a newer switch has already happened.
+ */
+let projectSwitchToken = 0;
+
+let currentProjectId =
+    localStorage.getItem("js-code-output-active-project-id") ||
+    "local_default_project";
 
 window.files = files;
 window.activeFile = activeFile;
 window.currentProjectId = currentProjectId;
+window.currentProject = null;
 
-async function continueWithGoogle() {
-    try {
-        if (typeof window.googleSignIn === "function") {
-            await window.googleSignIn();
-            document.getElementById("startLoginScreen")?.classList.add("hidden");
-            document.getElementById("startScreen")?.classList.add("hidden");
-        } else {
-            showToast("Google Login is still loading...");
-        }
-    } catch (error) {
-        console.error("Google login failed:", error);
-        showToast("Google sign-in failed. Please try again.");
+/* =========================================================
+   DEFAULT FILES
+   ========================================================= */
+
+const defaultFiles = {
+    "index.html": `<div class="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6"><h1 class="text-3xl font-black">JS CODE OUTPUT</h1></div>`,
+    "style.css": `body { margin: 0; font-family: Arial, sans-serif; }`,
+    "script.js": `console.log("Hello from script.js!");`
+};
+
+/* =========================================================
+   AUTH / ENTRY FLOW
+   ========================================================= */
+
+/*
+ * IMPORTANT:
+ * There is now only ONE visible start screen.
+ *
+ * Flow:
+ * New user:
+ * Welcome -> Google login -> Projects
+ *
+ * Existing Google session:
+ * Firebase restores session -> Projects directly
+ *
+ * Maybe Later:
+ * Welcome -> editor
+ *
+ * No second start page and no second Google login screen after login.
+ */
+
+function startBuilding() {
+    const welcome = document.getElementById("welcomeScreen");
+    const user = window.firebaseCurrentUser || window.currentUser;
+
+    if (user) {
+        openProjectsPage();
+        return;
+    }
+
+    if (welcome) {
+        welcome.classList.add("hide");
+        setTimeout(() => {
+            welcome.style.display = "none";
+        }, 700);
+    }
+
+    openStartLogin();
+}
+
+function openStartLogin() {
+    const user = window.firebaseCurrentUser || window.currentUser;
+
+    if (user) {
+        openProjectsPage();
+        return;
+    }
+
+    document.getElementById("startLoginScreen")?.classList.remove("hidden");
+}
+
+function closeStartLogin() {
+    document.getElementById("startLoginScreen")?.classList.add("hidden");
+
+    const welcome = document.getElementById("welcomeScreen");
+    if (welcome) {
+        welcome.style.display = "flex";
+        requestAnimationFrame(() => welcome.classList.remove("hide"));
     }
 }
 
-function hideProjectsPage() {
-    const projectsPage = document.getElementById("projectsPage");
-    if (!projectsPage) return;
-    projectsPage.classList.add("hidden");
+async function continueWithGoogle() {
+    const button = document.getElementById("googleLoginButton");
+
+    if (window.firebaseCurrentUser || window.currentUser) {
+        // Already authenticated: NEVER show Google sign-in again.
+        document.getElementById("startLoginScreen")?.classList.add("hidden");
+        openProjectsPage();
+        return;
+    }
+
+    try {
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Signing in...`;
+        }
+
+        if (typeof window.googleSignIn !== "function") {
+            throw new Error("Google authentication is still loading.");
+        }
+
+        const result = await window.googleSignIn();
+
+        // Firebase onAuthStateChanged is the source of truth.
+        if (result?.user) {
+            localStorage.removeItem("js-code-output-skip-login");
+            document.getElementById("startLoginScreen")?.classList.add("hidden");
+            document.getElementById("welcomeScreen")?.classList.add("hide");
+            openProjectsPage();
+        }
+    } catch (error) {
+        console.error("Google login failed:", error);
+
+        let message = "Google sign-in failed. Please try again.";
+        if (error?.code === "auth/popup-closed-by-user") {
+            message = "Google sign-in was cancelled.";
+        } else if (error?.code === "auth/popup-blocked") {
+            message = "Your browser blocked the Google popup. Please allow popups and try again.";
+        }
+
+        showToast(message);
+    } finally {
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = `<span class="font-bold text-lg">G</span> Continue with Google`;
+        }
+    }
 }
+
+function startWithoutLogin() {
+    localStorage.setItem("js-code-output-skip-login", "1");
+
+    document.getElementById("startLoginScreen")?.classList.add("hidden");
+    document.getElementById("welcomeScreen")?.classList.add("hide");
+    document.getElementById("startScreen")?.classList.add("hidden");
+
+    openEditorForLocalUser();
+}
+
+function openProjectsPage() {
+    document.getElementById("welcomeScreen")?.classList.add("hide");
+    document.getElementById("startScreen")?.classList.add("hidden");
+    document.getElementById("startLoginScreen")?.classList.add("hidden");
+    document.getElementById("app")?.classList.add("hidden");
+
+    const projectsPage = document.getElementById("projectsPage");
+    if (projectsPage) projectsPage.classList.remove("hidden");
+
+    if (window.firebaseCurrentUser) {
+        const name = window.firebaseCurrentUser.displayName ||
+                     window.firebaseCurrentUser.email ||
+                     "Developer";
+        const nameEl = document.getElementById("projectsUserName");
+        if (nameEl) nameEl.textContent = name;
+    }
+
+    loadProjects();
+}
+
+function openEditorForLocalUser() {
+    document.getElementById("welcomeScreen")?.classList.add("hidden");
+    document.getElementById("startScreen")?.classList.add("hidden");
+    document.getElementById("startLoginScreen")?.classList.add("hidden");
+    document.getElementById("projectsPage")?.classList.add("hidden");
+    document.getElementById("app")?.classList.remove("hidden");
+
+    initializeFileSystem();
+    if (editor) {
+        renderFileExplorer();
+        openFile(activeFile);
+        updatePreview();
+    }
+}
+
+async function firebaseLogout() {
+    try {
+        if (window.firebaseAuth && window.firebaseSignOut) {
+            await window.firebaseSignOut(window.firebaseAuth);
+        }
+
+        // Clear active project only. Cloud projects remain untouched.
+        window.currentProject = null;
+        window.currentProjectId = "local_default_project";
+        currentProjectId = "local_default_project";
+        localStorage.removeItem("js-code-output-active-project-id");
+        localStorage.removeItem("js-code-output-skip-login");
+
+        document.getElementById("projectsPage")?.classList.add("hidden");
+        document.getElementById("app")?.classList.add("hidden");
+
+        const welcome = document.getElementById("welcomeScreen");
+        if (welcome) {
+            welcome.style.display = "flex";
+            welcome.classList.remove("hide");
+        }
+
+        showToast("Logged out successfully.");
+    } catch (error) {
+        console.error("Logout failed:", error);
+        showToast("Logout failed.");
+    }
+}
+
+/* =========================================================
+   PROJECT CREATION
+   ========================================================= */
 
 function showCreateProject() {
     const modal = document.getElementById("createProjectModal");
     const input = document.getElementById("newProjectName");
+
+    if (!modal || !input) return;
+
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     input.value = "";
+
     setTimeout(() => input.focus(), 100);
 }
 
 function closeCreateProject() {
     const modal = document.getElementById("createProjectModal");
+    if (!modal) return;
+
     modal.classList.add("hidden");
     modal.classList.remove("flex");
 }
 
-// FIXED: Create Project now synchronously saves the outgoing project before switching
 async function createProject() {
     const input = document.getElementById("newProjectName");
-    const projectName = input.value.trim();
-    if (!projectName) { alert("Please enter a project name."); return; }
+    const projectName = input?.value.trim();
+
+    if (!projectName) {
+        alert("Please enter a project name.");
+        return;
+    }
+
     const user = window.firebaseCurrentUser;
-    if (!user) { alert("Please sign in first."); return; }
-    if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) { alert("Firebase is not ready. Please try again."); return; }
-    
-    // Save outgoing project to cloud before creating a new one
-    if (editor && activeFile) window.files[activeFile] = editor.getValue();
+
+    if (!user) {
+        alert("Please sign in first.");
+        return;
+    }
+
+    if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) {
+        alert("Firebase is not ready. Please try again.");
+        return;
+    }
+
+    /*
+     * Save current project BEFORE creating another one.
+     * This save uses the exact outgoing project id.
+     */
+    const oldProjectId = window.currentProjectId;
+
+    if (editor && activeFile) {
+        files[activeFile] = editor.getValue();
+        window.files = files;
+    }
+
     saveFiles();
-    if (window.saveProjectDraft) await window.saveProjectDraft();
-    
-    const projectId = "project_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-    
+
+    if (oldProjectId && oldProjectId !== "local_default_project" && window.saveProjectDraft) {
+        await window.saveProjectDraft(oldProjectId);
+    }
+
+    const projectId =
+        "project_" +
+        Date.now() +
+        "_" +
+        Math.random().toString(36).substring(2, 10);
+
     const projectFiles = {
-        "index.html": `<!DOCTYPE html>\n<html lang="en">\n<head>\n    <title>${escapeHTML(projectName)}</title>\n</head>\n<body>\n    <h1>Hello World!</h1>\n</body>\n</html>`,
-        "style.css": `body { font-family: Arial, sans-serif; }`,
-        "script.js": `console.log("Hello from ${projectName}");`
+        "index.html": `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHTML(projectName)}</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p>Welcome to ${escapeHTML(projectName)}.</p>
+</body>
+</html>`,
+        "style.css": `body { font-family: Arial, sans-serif; margin: 0; padding: 40px; }`,
+        "script.js": `console.log("Hello from ${escapeHTML(projectName)}");`
     };
-    
+
     const projectData = {
-        id: projectId, name: projectName, ownerId: user.uid, ownerName: user.displayName || "Developer", ownerEmail: user.email || "",
-        createdAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date(),
-        updatedAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date(),
+        id: projectId,
+        name: projectName,
+        ownerId: user.uid,
+        ownerName: user.displayName || "Developer",
+        ownerEmail: user.email || "",
+        createdAt: window.firebaseServerTimestamp
+            ? window.firebaseServerTimestamp()
+            : new Date(),
+        updatedAt: window.firebaseServerTimestamp
+            ? window.firebaseServerTimestamp()
+            : new Date(),
         files: projectFiles,
         html: projectFiles["index.html"],
         css: projectFiles["style.css"],
@@ -661,21 +929,35 @@ async function createProject() {
     };
 
     try {
-        const projectRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", projectId);
+        const projectRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            user.uid,
+            "projects",
+            projectId
+        );
+
         await window.firebaseSetDoc(projectRef, projectData);
 
-        if (window.firebaseSetDoc && window.firebaseArrayUnion) {
-            const userRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
-            await window.firebaseSetDoc(userRef, { projectIds: window.firebaseArrayUnion(projectId) }, { merge: true });
-        }
-        
-        currentProjectId = projectId;
-        window.currentProjectId = projectId;
-        window.currentProject = projectData;
+        const userRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            user.uid
+        );
 
-        updateCurrentProjectName(projectName);
+        await window.firebaseSetDoc(
+            userRef,
+            { projectIds: window.firebaseArrayUnion(projectId) },
+            { merge: true }
+        );
+
         closeCreateProject();
-        openProjectInEditor(projectData);
+
+        // Switch to the newly-created project using the SAME loading pipeline.
+        await switchProject(projectId, { skipSave: true });
+
+        await loadProjects();
+        await loadHeaderProjects();
 
         showToast(`Project "${projectName}" created successfully.`);
     } catch (error) {
@@ -684,67 +966,159 @@ async function createProject() {
     }
 }
 
+/* =========================================================
+   PROJECT LIST
+   ========================================================= */
+
 async function loadProjects() {
     const user = window.firebaseCurrentUser;
     if (!user) return;
+
     const projectsList = document.getElementById("projectsList");
     const noProjects = document.getElementById("noProjects");
     const addProjectButton = document.getElementById("addProjectButton");
-    projectsList.innerHTML = `<div class="col-span-full text-center text-slate-400 py-10">Loading projects...</div>`;
-    
+
+    if (!projectsList || !noProjects || !addProjectButton) return;
+
+    projectsList.innerHTML =
+        `<div class="col-span-full text-center text-slate-400 py-10">
+            <i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading projects...
+        </div>`;
+
     try {
-        const projectsRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
-        const userSnap = await window.firebaseGetDoc(projectsRef);
-        let projectIds = [];
-        if (userSnap.exists()) projectIds = userSnap.data().projectIds || [];
+        const userRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            user.uid
+        );
+
+        const userSnap = await window.firebaseGetDoc(userRef);
+        const projectIds = userSnap.exists()
+            ? (userSnap.data().projectIds || [])
+            : [];
+
         projectsList.innerHTML = "";
-        
-        if (projectIds.length === 0) {
+
+        if (!projectIds.length) {
             noProjects.classList.remove("hidden");
             addProjectButton.classList.add("hidden");
             return;
         }
+
         noProjects.classList.add("hidden");
         addProjectButton.classList.remove("hidden");
+
         for (const projectId of projectIds) {
             await renderProjectCard(user.uid, projectId);
         }
+
+        await loadHeaderProjects();
     } catch (error) {
         console.error("Could not load projects:", error);
-        projectsList.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Failed to load projects.</div>`;
+        projectsList.innerHTML =
+            `<div class="col-span-full text-center text-red-400 py-10">
+                Failed to load projects.
+            </div>`;
     }
 }
 
+async function renderProjectCard(uid, projectId) {
+    try {
+        const projectRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            uid,
+            "projects",
+            projectId
+        );
+
+        const snapshot = await window.firebaseGetDoc(projectRef);
+        if (!snapshot.exists()) return;
+
+        const project = snapshot.data();
+        const projectsList = document.getElementById("projectsList");
+        if (!projectsList) return;
+
+        const card = document.createElement("div");
+        card.className =
+            "group cursor-pointer rounded-2xl border border-slate-800 bg-slate-900 hover:border-violet-500 hover:bg-slate-800 transition p-5";
+
+        card.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="text-3xl">📁</div>
+                <span class="text-slate-500 group-hover:text-violet-400">→</span>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold truncate">${escapeHTML(project.name || "Untitled Project")}</h3>
+            <p class="text-xs text-slate-500 mt-2">Project</p>
+        `;
+
+        card.onclick = () => switchProject(projectId);
+        projectsList.appendChild(card);
+    } catch (error) {
+        console.error("Project card error:", error);
+    }
+}
+
+/* =========================================================
+   HEADER PROJECT SWITCHER
+   ========================================================= */
+
 function toggleProjectSwitcher(event) {
     if (event) event.stopPropagation();
+
     const menu = document.getElementById("projectSwitcherMenu");
     const arrow = document.getElementById("projectSwitcherArrow");
+
     if (!menu) return;
+
     const willOpen = menu.classList.contains("hidden");
     menu.classList.toggle("hidden");
-    if (arrow) arrow.style.transform = willOpen ? "rotate(180deg)" : "rotate(0deg)";
+
+    if (arrow) {
+        arrow.style.transform = willOpen
+            ? "rotate(180deg)"
+            : "rotate(0deg)";
+    }
+
     if (willOpen) loadHeaderProjects();
 }
 
 function closeProjectSwitcher() {
     const menu = document.getElementById("projectSwitcherMenu");
     const arrow = document.getElementById("projectSwitcherArrow");
+
     if (menu) menu.classList.add("hidden");
     if (arrow) arrow.style.transform = "rotate(0deg)";
 }
 
 function updateCurrentProjectName(projectName) {
-    const name = projectName || window.currentProject?.name || "Untitled Project";
-    const currentName = document.getElementById("currentProjectName");
-    const dropdownName = document.getElementById("dropdownCurrentProject");
-    if (currentName) { currentName.textContent = name; currentName.title = name; }
-    if (dropdownName) { dropdownName.textContent = name; dropdownName.title = name; }
+    const name =
+        projectName ||
+        window.currentProject?.name ||
+        "Untitled Project";
+
+    const currentName =
+        document.getElementById("currentProjectName");
+
+    const dropdownName =
+        document.getElementById("dropdownCurrentProject");
+
+    if (currentName) {
+        currentName.textContent = name;
+        currentName.title = name;
+    }
+
+    if (dropdownName) {
+        dropdownName.textContent = name;
+        dropdownName.title = name;
+    }
 }
 
 async function loadHeaderProjects() {
     const container = document.getElementById("headerProjectsList");
-    if (!container) return;
     const user = window.firebaseCurrentUser;
+
+    if (!container) return;
 
     if (!user) {
         container.innerHTML = `
@@ -761,12 +1135,19 @@ async function loadHeaderProjects() {
         </div>`;
 
     try {
-        const userRef = window.firebaseDoc(window.firebaseDB, "users", user.uid);
+        const userRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            user.uid
+        );
+
         const userSnap = await window.firebaseGetDoc(userRef);
-        let projectIds = [];
-        if (userSnap.exists()) projectIds = userSnap.data().projectIds || [];
+        const projectIds = userSnap.exists()
+            ? (userSnap.data().projectIds || [])
+            : [];
 
         container.innerHTML = "";
+
         if (!projectIds.length) {
             container.innerHTML = `
                 <div class="px-3 py-6 text-center">
@@ -776,81 +1157,167 @@ async function loadHeaderProjects() {
             return;
         }
 
-        const currentId = window.currentProjectId || currentProjectId;
+        const currentId = window.currentProjectId;
 
         for (const projectId of projectIds) {
             try {
-                const projectRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", projectId);
+                const projectRef = window.firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid,
+                    "projects",
+                    projectId
+                );
+
                 const snapshot = await window.firebaseGetDoc(projectRef);
                 if (!snapshot.exists()) continue;
+
                 const project = snapshot.data();
 
                 const item = document.createElement("button");
                 item.type = "button";
-                item.className = "header-project-item" + (projectId === currentId ? " current" : "");
+                item.className =
+                    "header-project-item" +
+                    (projectId === currentId ? " current" : "");
+
                 item.innerHTML = `
                     <i class="fa-solid fa-folder text-indigo-400"></i>
                     <span class="truncate flex-1">${escapeHTML(project.name || "Untitled Project")}</span>
-                    ${projectId === currentId ? `<i class="fa-solid fa-check project-check"></i>` : ""}
+                    ${
+                        projectId === currentId
+                            ? `<i class="fa-solid fa-check project-check"></i>`
+                            : ""
+                    }
                 `;
 
-                item.onclick = function (event) {
+                item.onclick = function(event) {
                     event.stopPropagation();
-                    window.switchProject(projectId);
+                    switchProject(projectId);
                 };
+
                 container.appendChild(item);
             } catch (projectError) {
-                console.error("Header project load error:", projectError);
+                console.error("Header project error:", projectError);
             }
         }
     } catch (error) {
         console.error("Could not load header projects:", error);
-        container.innerHTML = `<div class="px-3 py-5 text-center text-xs text-rose-400">Failed to load projects.</div>`;
+        container.innerHTML =
+            `<div class="px-3 py-5 text-center text-xs text-rose-400">
+                Failed to load projects.
+            </div>`;
     }
 }
 
-// FIXED: Dedicated Project Switching Function
-window.switchProject = async function(targetProjectId) {
-    if (targetProjectId === window.currentProjectId) return;
-    
+async function switchProject(targetProjectId, options = {}) {
+    if (!targetProjectId) return;
+
     const user = window.firebaseCurrentUser;
+    if (!user) return;
+
+    if (targetProjectId === window.currentProjectId) {
+        // If already selected, simply open editor.
+        if (window.currentProject) {
+            openProjectInEditor(window.currentProject, {
+                preserveProjectId: targetProjectId
+            });
+        } else {
+            await loadProjectFromCloud(targetProjectId);
+        }
+        closeProjectSwitcher();
+        return;
+    }
+
+    const token = ++projectSwitchToken;
     const oldProjectId = window.currentProjectId;
-    
-    // 1. Force Save Current Project's Code Before Switching
-    if (editor && activeFile) window.files[activeFile] = editor.getValue();
-    saveFiles();
-    
-    if (user && oldProjectId && oldProjectId !== "local_default_project") {
-        try {
-            const oldRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", oldProjectId);
-            await window.firebaseSetDoc(oldRef, {
-                files: window.files,
-                html: window.files["index.html"] || "",
-                css: window.files["style.css"] || "",
-                js: window.files["script.js"] || "",
-                updatedAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : new Date()
-            }, { merge: true });
-        } catch(e) { console.error("Failed saving old project", e); }
+
+    /*
+     * Stop pending delayed saves from the previous project.
+     */
+    clearTimeout(cloudSaveTimer);
+
+    /*
+     * Save the outgoing project to ITS OWN document.
+     */
+    if (!options.skipSave &&
+        oldProjectId &&
+        oldProjectId !== "local_default_project") {
+
+        if (editor && activeFile) {
+            files[activeFile] = editor.getValue();
+            window.files = files;
+        }
+
+        saveFiles();
+
+        if (window.saveProjectDraft) {
+            await window.saveProjectDraft(oldProjectId);
+        }
+
+        if (token !== projectSwitchToken) return;
     }
-    
-    // 2. Change Target ID & Load Database
-    window.currentProjectId = targetProjectId;
-    localStorage.setItem("js-code-output-active-project-id", targetProjectId);
-    
-    if (user) {
-        try {
-            const newRef = window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", targetProjectId);
-            const snap = await window.firebaseGetDoc(newRef);
-            if (snap.exists()) {
-                openProjectInEditor(snap.data());
-                showToast("Project switched successfully.");
-            }
-        } catch(e) { console.error("Failed loading new project", e); }
-    } else {
-        initializeFileSystem();
-        openProjectInEditor({ name: "Local Project", id: targetProjectId, files: window.files });
-    }
+
     closeProjectSwitcher();
+
+    /*
+     * Set the new id BEFORE loading anything.
+     * This is critical for project isolation.
+     */
+    window.currentProjectId = targetProjectId;
+    currentProjectId = targetProjectId;
+    localStorage.setItem(
+        "js-code-output-active-project-id",
+        targetProjectId
+    );
+
+    /*
+     * Do not reuse the previous project's in-memory files.
+     */
+    files = {};
+    window.files = files;
+    window.currentProject = null;
+
+    await loadProjectFromCloud(targetProjectId, token);
+
+    if (token !== projectSwitchToken) return;
+
+    showToast("Project switched successfully.");
+}
+
+async function loadProjectFromCloud(projectId, token = projectSwitchToken) {
+    const user = window.firebaseCurrentUser;
+    if (!user || !projectId) return false;
+
+    try {
+        const projectRef = window.firebaseDoc(
+            window.firebaseDB,
+            "users",
+            user.uid,
+            "projects",
+            projectId
+        );
+
+        const snapshot = await window.firebaseGetDoc(projectRef);
+
+        if (token !== projectSwitchToken) return false;
+        if (window.currentProjectId !== projectId) return false;
+
+        if (!snapshot.exists()) {
+            console.error("Project does not exist:", projectId);
+            return false;
+        }
+
+        openProjectInEditor(snapshot.data(), {
+            fromCloud: true,
+            preserveProjectId: projectId
+        });
+
+        return true;
+    } catch (error) {
+        console.error("Failed loading project:", error);
+        showToast("Could not load this project.");
+        return false;
+    }
 }
 
 function headerAddProject() {
@@ -858,49 +1325,89 @@ function headerAddProject() {
     showCreateProject();
 }
 
-document.addEventListener("click", function (event) {
+document.addEventListener("click", function(event) {
     const switcher = document.getElementById("projectSwitcher");
     const menu = document.getElementById("projectSwitcherMenu");
+
     if (!switcher || !menu) return;
-    if (!switcher.contains(event.target)) closeProjectSwitcher();
+
+    if (!switcher.contains(event.target)) {
+        closeProjectSwitcher();
+    }
 });
 
-document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") closeProjectSwitcher();
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeProjectSwitcher();
+    }
 });
 
-async function renderProjectCard(uid, projectId) {
-    try {
-        const projectRef = window.firebaseDoc(window.firebaseDB, "users", uid, "projects", projectId);
-        const snapshot = await window.firebaseGetDoc(projectRef);
-        if (!snapshot.exists()) return;
-        const project = snapshot.data();
-        const projectsList = document.getElementById("projectsList");
-        const card = document.createElement("div");
-        card.className = "group cursor-pointer rounded-2xl border border-slate-800 bg-slate-900 hover:border-violet-500 hover:bg-slate-800 transition p-5";
-        card.innerHTML = `<div class="flex items-center justify-between"><div class="text-3xl">📁</div><span class="text-slate-500 group-hover:text-violet-400">→</span></div><h3 class="mt-5 text-lg font-semibold truncate">${escapeHTML(project.name)}</h3><p class="text-xs text-slate-500 mt-2">Project</p>`;
-        
-        card.onclick = () => { window.switchProject(projectId); };
-        
-        projectsList.appendChild(card);
-    } catch (error) { console.error("Project card error:", error); }
-}
+/* =========================================================
+   OPEN PROJECT IN EDITOR
+   ========================================================= */
 
-// FIXED: File Structure Parser to accommodate old & new format structures properly
-function openProjectInEditor(project) {
+function openProjectInEditor(project, options = {}) {
     if (!project) return;
-    hideProjectsPage();
+
+    const expectedId =
+        options.preserveProjectId ||
+        project.id ||
+        window.currentProjectId ||
+        "local_default_project";
+
+    /*
+     * Safety: never let an old project response change the current id.
+     */
+    if (
+        window.currentProjectId &&
+        expectedId !== "local_default_project" &&
+        window.currentProjectId !== expectedId
+    ) {
+        return;
+    }
+
+    document.getElementById("welcomeScreen")?.classList.add("hidden");
+    document.getElementById("startScreen")?.classList.add("hidden");
+    document.getElementById("startLoginScreen")?.classList.add("hidden");
+    document.getElementById("projectsPage")?.classList.add("hidden");
+    document.getElementById("app")?.classList.remove("hidden");
 
     window.currentProject = project;
-    currentProjectId = project.id || window.currentProjectId || "local_default_project";
-    window.currentProjectId = currentProjectId;
-    localStorage.setItem("js-code-output-active-project-id", currentProjectId);
 
-    updateCurrentProjectName(project.name || "Untitled Project");
+    currentProjectId = expectedId;
+    window.currentProjectId = expectedId;
 
-    // Fix old format bug vs new format strings
-    let projectFiles = project.files;
-    if (!projectFiles) {
+    localStorage.setItem(
+        "js-code-output-active-project-id",
+        expectedId
+    );
+
+    updateCurrentProjectName(
+        project.name || "Untitled Project"
+    );
+
+    /*
+     * ALWAYS construct a fresh object.
+     * Never mutate the Firestore object or previous project's files.
+     */
+    let projectFiles = {};
+
+    if (project.files && typeof project.files === "object") {
+        for (const [name, value] of Object.entries(project.files)) {
+            if (typeof value === "string") {
+                projectFiles[name] = value;
+            } else if (value && typeof value === "object") {
+                projectFiles[name] = String(value.content || "");
+            } else {
+                projectFiles[name] = "";
+            }
+        }
+    }
+
+    /*
+     * Backward compatibility with old project format.
+     */
+    if (!Object.keys(projectFiles).length) {
         projectFiles = {
             "index.html": project.html || "",
             "style.css": project.css || "",
@@ -908,48 +1415,63 @@ function openProjectInEditor(project) {
         };
     }
 
-    for (let k in projectFiles) {
-        if (typeof projectFiles[k] === "object") {
-            projectFiles[k] = projectFiles[k].content || "";
-        }
+    if (!Object.keys(projectFiles).length) {
+        projectFiles = structuredClone(defaultFiles);
     }
 
-    files = { ...projectFiles };
-    if (Object.keys(files).length === 0) files = structuredClone(defaultFiles);
-    if (!files["index.html"]) files["index.html"] = "";
-    
+    if (!Object.prototype.hasOwnProperty.call(projectFiles, "index.html")) {
+        projectFiles["index.html"] = "";
+    }
+
+    files = projectFiles;
     window.files = files;
+
     activeFile = "index.html";
     window.activeFile = activeFile;
-    
+
     saveFiles();
+
     renderFileExplorer();
 
-    setTimeout(function () {
-        if (editor) {
-            editor.setOption("mode", getCodeMirrorMode(activeFile));
-            editor.setValue(files[activeFile] || "");
-            editor.clearHistory();
-            refreshEditor();
+    if (editor) {
+        editor.setOption("mode", getCodeMirrorMode(activeFile));
+        editor.setValue(files[activeFile] || "");
+        editor.clearHistory();
+        refreshEditor();
+    }
+
+    setTimeout(() => {
+        if (window.currentProjectId === expectedId) {
+            updatePreview();
+            renderFileExplorer();
         }
-        updatePreview();
     }, 50);
 }
 
-function escapeHTML(text) {
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
+/* =========================================================
+   FILE SYSTEM
+   ========================================================= */
 
-const defaultFiles = {
-    "index.html": `<div class="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6"><h1 class="text-3xl font-black">JS CODE OUTPUT</h1></div>`,
-    "style.css": `body { margin: 0; font-family: Arial, sans-serif; }`,
-    "script.js": `console.log("Hello from script.js!");`
-};
+function escapeHTML(text) {
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
 
 function getFileIcon(fileName) {
     const ext = getExtension(fileName);
-    const icons = { html: '<i class="fa-brands fa-html5 text-orange-500"></i>', css: '<i class="fa-brands fa-css3-alt text-blue-400"></i>', js: '<i class="fa-brands fa-js text-yellow-400"></i>' };
-    return icons[ext] || '<i class="fa-solid fa-file text-slate-500"></i>';
+
+    const icons = {
+        html: '<i class="fa-brands fa-html5 text-orange-500"></i>',
+        css: '<i class="fa-brands fa-css3-alt text-blue-400"></i>',
+        js: '<i class="fa-brands fa-js text-yellow-400"></i>'
+    };
+
+    return icons[ext] ||
+        '<i class="fa-solid fa-file text-slate-500"></i>';
 }
 
 function getExtension(fileName) {
@@ -959,126 +1481,319 @@ function getExtension(fileName) {
 
 function getCodeMirrorMode(fileName) {
     const ext = getExtension(fileName);
-    const modes = { html: "htmlmixed", css: "css", js: "javascript" };
+
+    const modes = {
+        html: "htmlmixed",
+        htm: "htmlmixed",
+        css: "css",
+        js: "javascript",
+        mjs: "javascript"
+    };
+
     return modes[ext] || "text/plain";
 }
 
-function isWebFile(fileName) { return ["html", "htm", "css", "js"].includes(getExtension(fileName)); }
-function isBinaryFile(fileName) { return ["png", "jpg", "zip", "pdf"].includes(getExtension(fileName)); }
+function isWebFile(fileName) {
+    return ["html","htm","css","js","mjs"].includes(
+        getExtension(fileName)
+    );
+}
+
+function isBinaryFile(fileName) {
+    return [
+        "png","jpg","jpeg","gif","webp",
+        "zip","pdf","exe","mp4","mp3"
+    ].includes(getExtension(fileName));
+}
 
 function initializeFileSystem() {
-    currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "local_default_project";
+    currentProjectId =
+        localStorage.getItem("js-code-output-active-project-id") ||
+        "local_default_project";
+
     window.currentProjectId = currentProjectId;
 
-    const saved = localStorage.getItem(`js-code-output-files_${currentProjectId}`);
+    const saved = localStorage.getItem(
+        `js-code-output-files_${currentProjectId}`
+    );
+
     if (saved) {
-        try { files = JSON.parse(saved); } catch { files = structuredClone(defaultFiles); }
-    } else { 
-        files = structuredClone(defaultFiles); 
+        try {
+            files = JSON.parse(saved);
+        } catch {
+            files = structuredClone(defaultFiles);
+        }
+    } else {
+        files = structuredClone(defaultFiles);
     }
+
+    if (!files["index.html"]) {
+        files["index.html"] = defaultFiles["index.html"];
+    }
+
     window.files = files;
-    if (!files["index.html"]) files["index.html"] = defaultFiles["index.html"];
-    activeFile = localStorage.getItem(`js-code-output-active-file_${currentProjectId}`) || "index.html";
-    if (!files[activeFile]) activeFile = "index.html";
+
+    activeFile =
+        localStorage.getItem(
+            `js-code-output-active-file_${currentProjectId}`
+        ) || "index.html";
+
+    if (!files[activeFile]) {
+        activeFile = "index.html";
+    }
+
     window.activeFile = activeFile;
+
     saveFiles();
 }
 
 function saveFiles() {
-    try { 
-        const pId = window.currentProjectId || currentProjectId || "local_default_project";
+    try {
+        const pId =
+            window.currentProjectId ||
+            currentProjectId ||
+            "local_default_project";
+
         if (editor && activeFile) {
             files[activeFile] = editor.getValue();
-            window.files = files;
         }
-        localStorage.setItem(`js-code-output-files_${pId}`, JSON.stringify(files)); 
-        localStorage.setItem(`js-code-output-active-file_${pId}`, activeFile);
-        localStorage.setItem("js-code-output-active-project-id", pId);
-    } catch (error) { 
-        console.warn("Could not save files:", error); 
+
+        window.files = files;
+
+        /*
+         * Local cache is namespaced by project id.
+         * Therefore Project A and Project B cannot share this cache.
+         */
+        localStorage.setItem(
+            `js-code-output-files_${pId}`,
+            JSON.stringify(files)
+        );
+
+        localStorage.setItem(
+            `js-code-output-active-file_${pId}`,
+            activeFile
+        );
+
+        localStorage.setItem(
+            "js-code-output-active-project-id",
+            pId
+        );
+    } catch (error) {
+        console.warn("Could not save files:", error);
     }
 }
 
 function renderFileExplorer() {
     const explorer = document.getElementById("fileExplorer");
     if (!explorer) return;
+
     explorer.innerHTML = "";
-    const fileNames = Object.keys(files).sort((a, b) => {
+
+    const fileNames = Object.keys(files).sort((a,b) => {
         if (a === "index.html") return -1;
         if (b === "index.html") return 1;
         return a.localeCompare(b);
     });
-    
-    fileNames.forEach(function (fileName) {
+
+    fileNames.forEach(function(fileName) {
         const item = document.createElement("div");
-        item.className = "explorer-file " + (fileName === activeFile ? "active" : "");
+
+        item.className =
+            "explorer-file " +
+            (fileName === activeFile ? "active" : "");
+
         item.dataset.file = fileName;
-        item.innerHTML = `<span class="flex items-center gap-2 min-w-0 flex-1">${getFileIcon(fileName)}<span class="truncate">${escapeHTML(fileName)}</span></span><span class="file-actions hidden gap-1"><button type="button" class="rename-file-btn text-slate-500 hover:text-white"><i class="fa-solid fa-pen text-[9px]"></i></button><button type="button" class="delete-file-btn text-slate-500 hover:text-rose-400"><i class="fa-solid fa-trash text-[9px]"></i></button></span>`;
-        item.addEventListener("click", function () { openFile(fileName); });
-        item.querySelector(".rename-file-btn").addEventListener("click", function (e) { e.stopPropagation(); renameFile(fileName); });
-        item.querySelector(".delete-file-btn").addEventListener("click", function (e) { e.stopPropagation(); deleteFile(fileName); });
-        item.addEventListener("mouseenter", function () { item.querySelector(".file-actions")?.classList.remove("hidden"); item.querySelector(".file-actions")?.classList.add("flex"); });
-        item.addEventListener("mouseleave", function () { item.querySelector(".file-actions")?.classList.add("hidden"); item.querySelector(".file-actions")?.classList.remove("flex"); });
+
+        item.innerHTML = `
+            <span class="flex items-center gap-2 min-w-0 flex-1">
+                ${getFileIcon(fileName)}
+                <span class="truncate">${escapeHTML(fileName)}</span>
+            </span>
+            <span class="file-actions hidden gap-1">
+                <button type="button" class="rename-file-btn text-slate-500 hover:text-white">
+                    <i class="fa-solid fa-pen text-[9px]"></i>
+                </button>
+                <button type="button" class="delete-file-btn text-slate-500 hover:text-rose-400">
+                    <i class="fa-solid fa-trash text-[9px]"></i>
+                </button>
+            </span>
+        `;
+
+        item.addEventListener("click", () => openFile(fileName));
+
+        item.querySelector(".rename-file-btn")
+            ?.addEventListener("click", e => {
+                e.stopPropagation();
+                renameFile(fileName);
+            });
+
+        item.querySelector(".delete-file-btn")
+            ?.addEventListener("click", e => {
+                e.stopPropagation();
+                deleteFile(fileName);
+            });
+
+        item.addEventListener("mouseenter", () => {
+            item.querySelector(".file-actions")
+                ?.classList.remove("hidden");
+            item.querySelector(".file-actions")
+                ?.classList.add("flex");
+        });
+
+        item.addEventListener("mouseleave", () => {
+            item.querySelector(".file-actions")
+                ?.classList.add("hidden");
+            item.querySelector(".file-actions")
+                ?.classList.remove("flex");
+        });
+
         explorer.appendChild(item);
     });
+
     renderEditorTabs();
 }
 
 function renderEditorTabs() {
-    const tabsContainer = document.querySelector("#editorTabs > div:first-child");
+    const tabsContainer =
+        document.querySelector("#editorTabs > div:first-child");
+
     if (!tabsContainer) return;
+
     tabsContainer.innerHTML = "";
-    Object.keys(files).forEach(function (fileName) {
+
+    Object.keys(files).forEach(function(fileName) {
         const button = document.createElement("button");
-        button.className = "editor-tab" + (fileName === activeFile ? " active-file-tab" : "");
-        button.innerHTML = `${getFileIcon(fileName)}<span class="ml-1">${escapeHTML(fileName)}</span>${fileName !== "index.html" ? `<span class="close-tab ml-2 text-slate-600 hover:text-white">×</span>` : ""}`;
-        button.addEventListener("click", function (event) {
-            if (event.target.closest(".close-tab")) { event.stopPropagation(); closeFileTab(fileName); return; }
+
+        button.className =
+            "editor-tab" +
+            (fileName === activeFile ? " active-file-tab" : "");
+
+        button.innerHTML = `
+            ${getFileIcon(fileName)}
+            <span class="ml-1">${escapeHTML(fileName)}</span>
+            ${
+                fileName !== "index.html"
+                    ? `<span class="close-tab ml-2 text-slate-600 hover:text-white">×</span>`
+                    : ""
+            }
+        `;
+
+        button.addEventListener("click", function(event) {
+            if (event.target.closest(".close-tab")) {
+                event.stopPropagation();
+                closeFileTab(fileName);
+                return;
+            }
+
             openFile(fileName);
         });
+
         tabsContainer.appendChild(button);
     });
 }
 
 function openFile(fileName) {
     if (!Object.prototype.hasOwnProperty.call(files, fileName)) return;
-    if (editor) files[activeFile] = editor.getValue();
+
+    if (editor && activeFile) {
+        files[activeFile] = editor.getValue();
+    }
+
     activeFile = fileName;
     window.activeFile = activeFile;
+
     saveFiles();
-    editor.setOption("mode", getCodeMirrorMode(fileName));
-    editor.setValue(files[fileName] || "");
-    editor.clearHistory();
+
+    if (editor) {
+        editor.setOption("mode", getCodeMirrorMode(fileName));
+        editor.setValue(files[fileName] || "");
+        editor.clearHistory();
+    }
+
     renderFileExplorer();
     refreshEditor();
-    if (isWebFile(fileName)) updatePreview();
-    showToast(`${fileName} opened.`);
+
+    if (isWebFile(fileName)) {
+        updatePreview();
+    }
 }
 
 function createNewFile() {
-    const fileName = prompt("Enter file name:\nExample: app.js, data.json, README.md");
+    const fileName = prompt(
+        "Enter file name:\nExample: app.js, data.json, README.md"
+    );
+
     if (!fileName) return;
+
     const name = fileName.trim();
-    if (!name || /[\\/:*?"<>|]/.test(name) || Object.prototype.hasOwnProperty.call(files, name)) { showToast("Invalid name or file already exists."); return; }
-    files[name] = ""; saveFiles(); renderFileExplorer(); openFile(name); showToast(`${name} created.`);
+
+    if (
+        !name ||
+        /[\\/:*?"<>|]/.test(name) ||
+        Object.prototype.hasOwnProperty.call(files,name)
+    ) {
+        showToast("Invalid name or file already exists.");
+        return;
+    }
+
+    files[name] = "";
+    saveFiles();
+    renderFileExplorer();
+    openFile(name);
+
+    showToast(`${name} created.`);
 }
 
 function renameFile(oldName) {
     const newName = prompt("Enter new file name:", oldName);
     if (!newName) return;
+
     const name = newName.trim();
-    if (!name || /[\\/:*?"<>|]/.test(name) || (name !== oldName && files[name] !== undefined)) { showToast("Invalid name or file exists."); return; }
-    files[name] = files[oldName]; delete files[oldName];
-    if (activeFile === oldName) { activeFile = name; window.activeFile = name; }
-    saveFiles(); renderFileExplorer(); openFile(name); showToast(`Renamed to ${name}.`);
+
+    if (
+        !name ||
+        /[\\/:*?"<>|]/.test(name) ||
+        (name !== oldName && files[name] !== undefined)
+    ) {
+        showToast("Invalid name or file exists.");
+        return;
+    }
+
+    files[name] = files[oldName];
+    delete files[oldName];
+
+    if (activeFile === oldName) {
+        activeFile = name;
+        window.activeFile = name;
+    }
+
+    saveFiles();
+    renderFileExplorer();
+    openFile(name);
+
+    showToast(`Renamed to ${name}.`);
 }
 
 function deleteFile(fileName) {
-    if (fileName === "index.html") { showToast("index.html cannot be deleted."); return; }
+    if (fileName === "index.html") {
+        showToast("index.html cannot be deleted.");
+        return;
+    }
+
     if (!confirm(`Delete "${fileName}"?`)) return;
+
     delete files[fileName];
-    if (activeFile === fileName) { activeFile = "index.html"; window.activeFile = activeFile; }
-    saveFiles(); renderFileExplorer(); openFile(activeFile); showToast(`${fileName} deleted.`);
+
+    if (activeFile === fileName) {
+        activeFile = "index.html";
+        window.activeFile = activeFile;
+    }
+
+    saveFiles();
+    renderFileExplorer();
+    openFile(activeFile);
+
+    showToast(`${fileName} deleted.`);
 }
 
 function closeFileTab(fileName) {
@@ -1087,247 +1802,809 @@ function closeFileTab(fileName) {
 }
 
 function handleFileUpload(event) {
-    const selectedFiles = Array.from(event.target.files || []);
-    if (selectedFiles.length === 0) return;
+    const selectedFiles =
+        Array.from(event.target.files || []);
+
+    if (!selectedFiles.length) return;
+
     let loaded = 0;
-    selectedFiles.forEach(function (file) {
-        const name = file.name;
-        if (isBinaryFile(name)) { showToast(`${name} is binary and cannot be edited as text.`); return; }
+    let attempted = 0;
+
+    selectedFiles.forEach(function(file) {
+        attempted++;
+
+        if (isBinaryFile(file.name)) {
+            showToast(`${file.name} is binary and cannot be edited as text.`);
+            return;
+        }
+
         const reader = new FileReader();
-        reader.onload = function (e) {
-            files[name] = e.target.result || "";
-            loaded++; saveFiles(); renderFileExplorer(); openFile(name);
-            if (loaded === selectedFiles.length) showToast(`${loaded} file(s) uploaded.`);
+
+        reader.onload = function(e) {
+            files[file.name] = e.target.result || "";
+            loaded++;
+
+            saveFiles();
+            renderFileExplorer();
+            openFile(file.name);
+
+            if (loaded === attempted) {
+                showToast(`${loaded} file(s) uploaded.`);
+            }
         };
-        reader.onerror = function () { showToast(`Could not read ${name}.`); };
+
+        reader.onerror = function() {
+            showToast(`Could not read ${file.name}.`);
+        };
+
         reader.readAsText(file);
     });
+
     event.target.value = "";
 }
 
-window.addEventListener("DOMContentLoaded", function () {
+/* =========================================================
+   CODEMIRROR
+   ========================================================= */
+
+window.addEventListener("DOMContentLoaded", function() {
     initializeFileSystem();
-    editor = CodeMirror(document.getElementById("wrapper-html"), {
-        value: "", mode: getCodeMirrorMode(activeFile), theme: "dracula",
-        lineNumbers: true, autoCloseTags: true, autoCloseBrackets: true, lineWrapping: true, indentUnit: 4, tabSize: 4
+
+    const textarea = document.getElementById("code-html");
+
+    editor = CodeMirror(textarea.parentElement, {
+        value: "",
+        mode: getCodeMirrorMode(activeFile),
+        theme: "dracula",
+        lineNumbers: true,
+        autoCloseTags: true,
+        autoCloseBrackets: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        tabSize: 4
     });
+
     window.editor = editor;
-    window.editorHTML = editor; window.editorCSS = editor; window.editorJS = editor;
+    window.editorHTML = editor;
+    window.editorCSS = editor;
+    window.editorJS = editor;
+
     editor.setValue(files[activeFile] || "");
+
     renderFileExplorer();
-    editor.on("change", function () {
+
+    editor.on("change", function() {
         if (!activeFile) return;
+
         files[activeFile] = editor.getValue();
+        window.files = files;
+
         saveFiles();
-        const auto = document.getElementById("autoRunToggle");
-        if (auto && auto.checked && isWebFile(activeFile)) {
-            clearTimeout(debounceTimer); debounceTimer = setTimeout(updatePreview, 350);
+
+        const auto =
+            document.getElementById("autoRunToggle");
+
+        if (
+            auto &&
+            auto.checked &&
+            isWebFile(activeFile)
+        ) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(
+                updatePreview,
+                350
+            );
         }
+
+        scheduleCloudSave();
     });
+
     setTimeout(updatePreview, 500);
-    setTimeout(function () { if (window.currentUser && window.loadProjectDraft) window.loadProjectDraft(); }, 1200);
 });
 
-function refreshEditor() { if (!editor) return; setTimeout(function () { editor.refresh(); }, 30); }
+function refreshEditor() {
+    if (!editor) return;
 
-function switchTab(type) {
-    const map = { html: "index.html", css: "style.css", js: "script.js" };
-    const file = map[type];
-    if (file && files[file] !== undefined) openFile(file);
+    setTimeout(() => editor.refresh(), 30);
 }
 
-function openExplorerFile(type) { switchTab(type); }
+function switchTab(type) {
+    const map = {
+        html: "index.html",
+        css: "style.css",
+        js: "script.js"
+    };
 
-window.updatePreview = function () {
+    const file = map[type];
+
+    if (file && files[file] !== undefined) {
+        openFile(file);
+    }
+}
+
+function openExplorerFile(type) {
+    switchTab(type);
+}
+
+/* =========================================================
+   PREVIEW / CONSOLE
+   ========================================================= */
+
+window.updatePreview = function() {
     if (!editor) return;
-    if (files[activeFile] !== undefined) files[activeFile] = editor.getValue();
-    const html = files["index.html"] || ""; const css = files["style.css"] || ""; const js = files["script.js"] || "";
-    const tailwind = document.getElementById("lib-tailwind")?.checked ? `<script src="https://cdn.tailwindcss.com"><\/script>` : "";
-    const fontAwesome = document.getElementById("lib-fontawesome")?.checked ? `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">` : "";
-    const three = document.getElementById("lib-three")?.checked ? `<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>` : "";
-    const chart = document.getElementById("lib-chart")?.checked ? `<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>` : "";
-    
-    const consoleBridge = `<script>(function(){const originalLog=console.log;const originalError=console.error;const originalWarn=console.warn;function send(level,args){let message="";try{message=Array.from(args).map(value=>{if(typeof value==="object"){try{return JSON.stringify(value);}catch{return String(value);}}return String(value);}).join(" ");}catch{message="Unable to serialize console message.";}window.parent.postMessage({type:"JS_CODE_OUTPUT_CONSOLE",level:level,message:message},"*");}console.log=function(){send("log",arguments);originalLog.apply(console,arguments);};console.warn=function(){send("warn",arguments);originalWarn.apply(console,arguments);};console.error=function(){send("error",arguments);originalError.apply(console,arguments);};window.onerror=function(message,source,line){send("error",["Error:",message,"Line:",line]);return false;};})();<\/script>`;
-    
-    const fullDocument = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n${tailwind}\n${fontAwesome}\n${three}\n${chart}\n${consoleBridge}\n<style>\n${css}\n</style>\n</head>\n<body>\n${html}\n<script>\ntry {\n${js}\n} catch(error) {\nconsole.error(error.message);\n}\n<\/script>\n</body>\n</html>`;
-    const iframe = document.getElementById("outputIframe");
+
+    if (files[activeFile] !== undefined) {
+        files[activeFile] = editor.getValue();
+    }
+
+    const html = files["index.html"] || "";
+    const css = files["style.css"] || "";
+    const js = files["script.js"] || "";
+
+    const tailwind =
+        document.getElementById("lib-tailwind")?.checked
+            ? `<script src="https://cdn.tailwindcss.com"><\/script>`
+            : "";
+
+    const fontAwesome =
+        document.getElementById("lib-fontawesome")?.checked
+            ? `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">`
+            : "";
+
+    const three =
+        document.getElementById("lib-three")?.checked
+            ? `<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>`
+            : "";
+
+    const chart =
+        document.getElementById("lib-chart")?.checked
+            ? `<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>`
+            : "";
+
+    const consoleBridge = `
+<script>
+(function(){
+    const originalLog=console.log;
+    const originalError=console.error;
+    const originalWarn=console.warn;
+
+    function send(level,args){
+        let message="";
+        try{
+            message=Array.from(args).map(value=>{
+                if(typeof value==="object"){
+                    try{return JSON.stringify(value);}
+                    catch{return String(value);}
+                }
+                return String(value);
+            }).join(" ");
+        }catch{
+            message="Unable to serialize console message.";
+        }
+
+        window.parent.postMessage({
+            type:"JS_CODE_OUTPUT_CONSOLE",
+            level,
+            message
+        },"*");
+    }
+
+    console.log=function(){
+        send("log",arguments);
+        originalLog.apply(console,arguments);
+    };
+
+    console.warn=function(){
+        send("warn",arguments);
+        originalWarn.apply(console,arguments);
+    };
+
+    console.error=function(){
+        send("error",arguments);
+        originalError.apply(console,arguments);
+    };
+
+    window.onerror=function(message,source,line){
+        send("error",["Error:",message,"Line:",line]);
+        return false;
+    };
+})();
+<\/script>`;
+
+    const fullDocument = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+${tailwind}
+${fontAwesome}
+${three}
+${chart}
+${consoleBridge}
+<style>
+${css}
+</style>
+</head>
+<body>
+${html}
+<script>
+try {
+${js}
+} catch(error) {
+console.error(error.message);
+}
+<\/script>
+</body>
+</html>`;
+
+    const iframe =
+        document.getElementById("outputIframe");
+
     if (iframe) iframe.srcdoc = fullDocument;
+
     saveFiles();
 };
 
-window.addEventListener("message", function (event) {
-    if (!event.data || event.data.type !== "JS_CODE_OUTPUT_CONSOLE") return;
-    appendConsoleLog(event.data.level, event.data.message);
+window.addEventListener("message", function(event) {
+    if (
+        !event.data ||
+        event.data.type !== "JS_CODE_OUTPUT_CONSOLE"
+    ) return;
+
+    appendConsoleLog(
+        event.data.level,
+        event.data.message
+    );
 });
 
-function appendConsoleLog(level, message) {
-    const container = document.getElementById("consoleLogs");
-    const badge = document.getElementById("consoleBadge");
+function appendConsoleLog(level,message) {
+    const container =
+        document.getElementById("consoleLogs");
+
+    const badge =
+        document.getElementById("consoleBadge");
+
     if (!container) return;
+
     consoleCount++;
-    if (badge) { badge.innerText = consoleCount; badge.classList.remove("hidden"); }
+
+    if (badge) {
+        badge.innerText = consoleCount;
+        badge.classList.remove("hidden");
+    }
+
     const item = document.createElement("div");
-    item.className = "border-b border-slate-800/50 py-1 " + (level === "error" ? "text-rose-400" : level === "warn" ? "text-amber-400" : "text-slate-300");
-    item.textContent = `[${level}] ${message}`;
+
+    item.className =
+        "border-b border-slate-800/50 py-1 " +
+        (
+            level === "error"
+                ? "text-rose-400"
+                : level === "warn"
+                    ? "text-amber-400"
+                    : "text-slate-300"
+        );
+
+    item.textContent =
+        `[${level}] ${message}`;
+
     container.appendChild(item);
-    container.scrollTop = container.scrollHeight;
+    container.scrollTop =
+        container.scrollHeight;
 }
 
-function toggleConsole() { document.getElementById("consoleDrawer").classList.toggle("open"); }
+function toggleConsole() {
+    document
+        .getElementById("consoleDrawer")
+        ?.classList.toggle("open");
+}
 
 function clearConsole() {
-    const logs = document.getElementById("consoleLogs");
-    if (logs) logs.innerHTML = `<div class="text-slate-600">// Console cleared.</div>`;
+    const logs =
+        document.getElementById("consoleLogs");
+
+    if (logs) {
+        logs.innerHTML =
+            `<div class="text-slate-600">// Console cleared.</div>`;
+    }
+
     consoleCount = 0;
-    const badge = document.getElementById("consoleBadge");
-    if (badge) { badge.innerText = "0"; badge.classList.add("hidden"); }
+
+    const badge =
+        document.getElementById("consoleBadge");
+
+    if (badge) {
+        badge.innerText = "0";
+        badge.classList.add("hidden");
+    }
 }
 
 function setScreenSize(size) {
     currentScreenSize = size;
-    const iframe = document.getElementById("outputIframe");
-    ["full", "tablet", "mobile"].forEach(function (type) {
-        const btn = document.getElementById(`screen-${type}`);
-        if (btn) btn.classList.toggle("active", type === size);
+
+    const iframe =
+        document.getElementById("outputIframe");
+
+    ["full","tablet","mobile"].forEach(function(type) {
+        const btn =
+            document.getElementById(`screen-${type}`);
+
+        if (btn) {
+            btn.classList.toggle(
+                "active",
+                type === size
+            );
+        }
     });
+
     if (!iframe) return;
-    if (size === "full") { iframe.style.width = "100%"; iframe.style.height = "100%"; iframe.style.borderRadius = "0"; }
-    if (size === "tablet") { iframe.style.width = "768px"; iframe.style.height = "95%"; iframe.style.borderRadius = "18px"; }
-    if (size === "mobile") { iframe.style.width = "375px"; iframe.style.height = "95%"; iframe.style.borderRadius = "18px"; }
+
+    if (size === "full") {
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.borderRadius = "0";
+    }
+
+    if (size === "tablet") {
+        iframe.style.width = "768px";
+        iframe.style.height = "95%";
+        iframe.style.borderRadius = "18px";
+    }
+
+    if (size === "mobile") {
+        iframe.style.width = "375px";
+        iframe.style.height = "95%";
+        iframe.style.borderRadius = "18px";
+    }
 }
 
-function toggleLibraries() { document.getElementById("librariesModal").classList.toggle("hidden"); }
-function openDownloadMenu() { document.getElementById("downloadModal").classList.remove("hidden"); }
-function closeDownloadMenu() { document.getElementById("downloadModal").classList.add("hidden"); }
+/* =========================================================
+   MODALS / DOWNLOAD
+   ========================================================= */
+
+function toggleLibraries() {
+    document
+        .getElementById("librariesModal")
+        ?.classList.toggle("hidden");
+}
+
+function openDownloadMenu() {
+    document
+        .getElementById("downloadModal")
+        ?.classList.remove("hidden");
+}
+
+function closeDownloadMenu() {
+    document
+        .getElementById("downloadModal")
+        ?.classList.add("hidden");
+}
 
 function downloadHTMLFile() {
     closeDownloadMenu();
-    const html = files["index.html"] || ""; const css = files["style.css"] || ""; const js = files["script.js"] || "";
-    const documentText = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>JS CODE OUTPUT Project</title>\n<script src="https://cdn.tailwindcss.com"><\/script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\n<style>\n${css}\n</style>\n</head>\n<body>\n${html}\n<script>\n${js}\n<\/script>\n</body>\n</html>`;
-    downloadBlob(documentText, "jscodeoutput_project.html", "text/html");
+
+    const html = files["index.html"] || "";
+    const css = files["style.css"] || "";
+    const js = files["script.js"] || "";
+
+    const documentText = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS CODE OUTPUT Project</title>
+<script src="https://cdn.tailwindcss.com"><\/script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+${css}
+</style>
+</head>
+<body>
+${html}
+<script>
+${js}
+<\/script>
+</body>
+</html>`;
+
+    downloadBlob(
+        documentText,
+        "jscodeoutput_project.html",
+        "text/html"
+    );
+
     showToast("HTML project downloaded!");
 }
 
 async function downloadZIPProject() {
     closeDownloadMenu();
-    if (typeof JSZip === "undefined") { showToast("ZIP library unavailable."); return; }
-    if (editor) files[activeFile] = editor.getValue();
+
+    if (typeof JSZip === "undefined") {
+        showToast("ZIP library unavailable.");
+        return;
+    }
+
+    if (editor) {
+        files[activeFile] = editor.getValue();
+    }
+
     const zip = new JSZip();
-    Object.entries(files).forEach(function ([fileName, content]) { zip.file(fileName, content); });
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "jscodeoutput_project.zip";
-    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+
+    Object.entries(files).forEach(
+        ([fileName,content]) =>
+            zip.file(fileName,content)
+    );
+
+    const blob =
+        await zip.generateAsync({type:"blob"});
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = "jscodeoutput_project.zip";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
     showToast("Complete project ZIP downloaded!");
 }
 
-function downloadBlob(content, fileName, type) {
-    const blob = new Blob([content], { type: type });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = fileName;
-    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+function downloadBlob(content,fileName,type) {
+    const blob =
+        new Blob([content],{type});
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = fileName;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
 }
 
 async function copyCode() {
-    if (editor) files[activeFile] = editor.getValue();
-    const combined = Object.entries(files).map(([name, content]) => `/* === ${name} === */\n${content}\n`).join("\n");
-    try { await navigator.clipboard.writeText(combined); } 
-    catch {
-        const textarea = document.createElement("textarea"); textarea.value = combined;
-        document.body.appendChild(textarea); textarea.select(); document.execCommand("copy"); textarea.remove();
+    if (editor) {
+        files[activeFile] =
+            editor.getValue();
     }
+
+    const combined =
+        Object.entries(files)
+            .map(
+                ([name,content]) =>
+                    `/* === ${name} === */\n${content}\n`
+            )
+            .join("\n");
+
+    try {
+        await navigator.clipboard.writeText(
+            combined
+        );
+    } catch {
+        const textarea =
+            document.createElement("textarea");
+
+        textarea.value = combined;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+    }
+
     showToast("All project files copied!");
 }
 
 function clearEditors() {
     if (!confirm("Clear the current file?")) return;
     if (!editor) return;
-    editor.setValue(""); files[activeFile] = ""; saveFiles(); clearConsole(); updatePreview(); showToast(`${activeFile} cleared.`);
+
+    editor.setValue("");
+    files[activeFile] = "";
+
+    saveFiles();
+    clearConsole();
+    updatePreview();
+
+    showToast(`${activeFile} cleared.`);
 }
 
-function loadTemplate(key, notify = true) {
-    const template = templates[key]; if (!template) return;
-    files["index.html"] = template.html; files["style.css"] = template.css; files["script.js"] = template.js;
-    if (key === "three") { const three = document.getElementById("lib-three"); if (three) three.checked = true; }
-    activeFile = "index.html"; saveFiles(); renderFileExplorer(); openFile("index.html"); updatePreview();
-    if (notify) showToast(`${key.toUpperCase()} template loaded.`);
-}
+/* =========================================================
+   TEMPLATES
+   ========================================================= */
 
 const templates = {
-    saas: { html: `<div class="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6"><div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl"><h1 class="text-2xl font-black">🚀 JS CODE OUTPUT</h1><button id="workoutBtn" class="mt-6 w-full py-3 rounded-xl bg-indigo-600 font-bold">Start Building</button></div></div>`, css: `#workoutBtn { transition: .25s; } #workoutBtn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(99,102,241,.4); }`, js: `const btn = document.getElementById("workoutBtn"); if (btn) { btn.addEventListener("click", () => { alert("🚀 Hello from JS CODE OUTPUT!"); }); }` },
-    game: { html: `<h1>Game Canvas Loaded</h1>`, css: ``, js: `console.log("Game template placeholder");` },
-    three: { html: `<div id="threeContainer" class="w-full h-screen bg-slate-950"></div>`, css: `body { margin: 0; overflow: hidden; }`, js: `if (typeof THREE === "undefined") { console.error("Enable Three.js"); } else { console.log("Three.js logic goes here..."); }` },
-    glass: { html: `<div class="glass-box">Glass UI Loaded</div>`, css: ``, js: `console.log("Glass UI loaded");` }
+    saas: {
+        html: `<div class="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6"><div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl"><h1 class="text-2xl font-black">🚀 JS CODE OUTPUT</h1><button id="workoutBtn" class="mt-6 w-full py-3 rounded-xl bg-indigo-600 font-bold">Start Building</button></div></div>`,
+        css: `#workoutBtn { transition: .25s; } #workoutBtn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(99,102,241,.4); }`,
+        js: `const btn=document.getElementById("workoutBtn"); if(btn){btn.addEventListener("click",()=>alert("🚀 Hello from JS CODE OUTPUT!"));}`
+    },
+    game: {
+        html: `<h1>Game Canvas Loaded</h1>`,
+        css: ``,
+        js: `console.log("Game template placeholder");`
+    },
+    three: {
+        html: `<div id="threeContainer" class="w-full h-screen bg-slate-950"></div>`,
+        css: `body { margin: 0; overflow: hidden; }`,
+        js: `if(typeof THREE==="undefined"){console.error("Enable Three.js");}else{console.log("Three.js logic goes here...");}`
+    },
+    glass: {
+        html: `<div class="glass-box">Glass UI Loaded</div>`,
+        css: ``,
+        js: `console.log("Glass UI loaded");`
+    }
 };
 
+function loadTemplate(key,notify=true) {
+    const template =
+        templates[key];
+
+    if (!template) return;
+
+    files["index.html"] = template.html;
+    files["style.css"] = template.css;
+    files["script.js"] = template.js;
+
+    if (key === "three") {
+        const three =
+            document.getElementById("lib-three");
+
+        if (three) three.checked = true;
+    }
+
+    activeFile = "index.html";
+    window.activeFile = activeFile;
+
+    saveFiles();
+    renderFileExplorer();
+    openFile("index.html");
+    updatePreview();
+
+    if (notify) {
+        showToast(
+            `${key.toUpperCase()} template loaded.`
+        );
+    }
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
 function showToast(message) {
-    const toast = document.getElementById("toast");
-    const text = document.getElementById("toastMsg");
+    const toast =
+        document.getElementById("toast");
+
+    const text =
+        document.getElementById("toastMsg");
+
     if (!toast || !text) return;
+
     text.innerText = message;
-    toast.classList.remove("opacity-0", "translate-y-10", "pointer-events-none");
+
+    toast.classList.remove(
+        "opacity-0",
+        "translate-y-10",
+        "pointer-events-none"
+    );
+
     clearTimeout(toast._timer);
-    toast._timer = setTimeout(function () { toast.classList.add("opacity-0", "translate-y-10", "pointer-events-none"); }, 3000);
+
+    toast._timer =
+        setTimeout(function() {
+            toast.classList.add(
+                "opacity-0",
+                "translate-y-10",
+                "pointer-events-none"
+            );
+        },3000);
 }
 
-function startBuilding() {
-    const welcome = document.getElementById("welcomeScreen");
-    welcome.classList.add("hide");
-    setTimeout(function () { welcome.style.display = "none"; document.getElementById("startScreen")?.classList.remove("hidden"); }, 700);
-}
-
-function openStartLogin() { document.getElementById("startLoginScreen")?.classList.remove("hidden"); }
-function startWithoutLogin() { document.getElementById("startLoginScreen")?.classList.add("hidden"); document.getElementById("startScreen")?.classList.add("hidden"); }
-
-window.updateUserUI = function (user) { if (!user) return; console.log("Logged in as:", user.displayName); };
-window.getProjectFiles = function () { if (editor) files[activeFile] = editor.getValue(); return { ...files }; };
-window.setProjectFiles = function (cloudFiles) { if (!cloudFiles || typeof cloudFiles !== "object") return; files = { ...cloudFiles }; if (!files["index.html"]) files["index.html"] = ""; activeFile = "index.html"; saveFiles(); renderFileExplorer(); openFile(activeFile); updatePreview(); };
+/* =========================================================
+   CLOUD SAVE SCHEDULER
+   ========================================================= */
 
 function scheduleCloudSave() {
-    if (!window.currentUser || !window.saveProjectDraft) return;
+    const user =
+        window.firebaseCurrentUser;
+
+    const projectId =
+        window.currentProjectId;
+
+    if (
+        !user ||
+        !projectId ||
+        projectId === "local_default_project" ||
+        !window.saveProjectDraft
+    ) {
+        return;
+    }
+
     clearTimeout(cloudSaveTimer);
-    cloudSaveTimer = setTimeout(async function () { await window.saveProjectDraft(); }, 1500);
+
+    /*
+     * Capture the exact project id at scheduling time.
+     * A later project switch cannot make this save another project's data.
+     */
+    const scheduledProjectId = projectId;
+
+    cloudSaveTimer =
+        setTimeout(async function() {
+            if (
+                window.currentProjectId !==
+                scheduledProjectId
+            ) return;
+
+            await window.saveProjectDraft(
+                scheduledProjectId
+            );
+        },1500);
 }
 
-document.addEventListener("keydown", function (event) {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+/* =========================================================
+   KEYBOARD SHORTCUTS
+   ========================================================= */
+
+document.addEventListener("keydown",function(event) {
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "s"
+    ) {
         event.preventDefault();
-        if (editor) files[activeFile] = editor.getValue();
-        saveFiles(); scheduleCloudSave(); showToast("Project saved.");
+
+        if (editor) {
+            files[activeFile] =
+                editor.getValue();
+        }
+
+        saveFiles();
+        scheduleCloudSave();
+        showToast("Project saved.");
     }
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "n") { event.preventDefault(); createNewFile(); }
+
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "n"
+    ) {
+        event.preventDefault();
+        createNewFile();
+    }
 });
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keydown",function(event) {
     if (event.key === "Escape") {
-        document.getElementById("downloadModal")?.classList.add("hidden");
-        document.getElementById("librariesModal")?.classList.add("hidden");
-        document.getElementById("startLoginScreen")?.classList.add("hidden");
+        document.getElementById("downloadModal")
+            ?.classList.add("hidden");
+
+        document.getElementById("librariesModal")
+            ?.classList.add("hidden");
+
+        document.getElementById("startLoginScreen")
+            ?.classList.add("hidden");
+
+        closeProjectSwitcher();
     }
 });
 
-let firebaseDoc = null, firebaseSetDoc = null, firebaseGetDoc = null, firebaseServerTimestamp = null;
-window.addEventListener("load", function () {
-    setTimeout(function () {
-        if (window.firebaseDoc) firebaseDoc = window.firebaseDoc;
-        if (window.firebaseSetDoc) firebaseSetDoc = window.firebaseSetDoc;
-        if (window.firebaseGetDoc) firebaseGetDoc = window.firebaseGetDoc;
-        if (window.firebaseServerTimestamp) firebaseServerTimestamp = window.firebaseServerTimestamp;
-    }, 100);
+/* =========================================================
+   GLOBAL API / COMPATIBILITY
+   ========================================================= */
+
+window.startBuilding = startBuilding;
+window.openStartLogin = openStartLogin;
+window.closeStartLogin = closeStartLogin;
+window.startWithoutLogin = startWithoutLogin;
+window.continueWithGoogle = continueWithGoogle;
+window.firebaseLogout = firebaseLogout;
+
+window.showCreateProject = showCreateProject;
+window.closeCreateProject = closeCreateProject;
+window.createProject = createProject;
+window.loadProjects = loadProjects;
+window.loadHeaderProjects = loadHeaderProjects;
+
+window.switchProject = switchProject;
+window.openProjectInEditor = openProjectInEditor;
+window.saveFiles = saveFiles;
+window.renderFileExplorer = renderFileExplorer;
+window.updateCurrentProjectName = updateCurrentProjectName;
+window.getProjectFiles = function() {
+    if (editor) {
+        files[activeFile] =
+            editor.getValue();
+    }
+
+    return {...files};
+};
+
+window.setProjectFiles = function(cloudFiles) {
+    if (
+        !cloudFiles ||
+        typeof cloudFiles !== "object"
+    ) return;
+
+    files = {...cloudFiles};
+
+    if (!files["index.html"]) {
+        files["index.html"] = "";
+    }
+
+    window.files = files;
+
+    activeFile = "index.html";
+    window.activeFile = activeFile;
+
+    saveFiles();
+    renderFileExplorer();
+    openFile(activeFile);
+    updatePreview();
+};
+
+window.updateUserUI = function(user) {
+    if (!user) return;
+
+    console.log(
+        "Logged in as:",
+        user.displayName || user.email
+    );
+};
+
+/* =========================================================
+   PERIODIC SAFETY SAVE
+   ========================================================= */
+
+setInterval(function() {
+    if (editor && activeFile) {
+        files[activeFile] =
+            editor.getValue();
+
+        saveFiles();
+    }
+
+    if (
+        window.currentUser &&
+        window.currentProjectId &&
+        window.currentProjectId !== "local_default_project"
+    ) {
+        scheduleCloudSave();
+    }
+},5000);
+
+/* =========================================================
+   STARTUP ROUTER
+   =========================================================
+   Firebase's onAuthStateChanged is responsible for logged-in
+   users. This small delay handles the local "Maybe Later"
+   path without creating another visible start screen.
+   ========================================================= */
+
+window.addEventListener("load",function() {
+    setTimeout(function() {
+        if (window.firebaseCurrentUser) {
+            openProjectsPage();
+        } else if (
+            localStorage.getItem(
+                "js-code-output-skip-login"
+            ) === "1"
+        ) {
+            openEditorForLocalUser();
+        }
+    },1200);
 });
-
-window.startBuilding = startBuilding; window.openStartLogin = openStartLogin; window.startWithoutLogin = startWithoutLogin;
-window.continueWithGoogle = continueWithGoogle; window.firebaseLogout = firebaseLogout;
-window.showCreateProject = showCreateProject; window.closeCreateProject = closeCreateProject;
-window.createProject = createProject; window.loadProjects = loadProjects;
-window.saveFiles = saveFiles; window.renderFileExplorer = renderFileExplorer; window.updateCurrentProjectName = updateCurrentProjectName;
-
-setInterval(function () {
-    if (editor && activeFile) { files[activeFile] = editor.getValue(); saveFiles(); }
-    if (window.currentUser) scheduleCloudSave();
-}, 5000);
 </script>
 </body>
 </html>
