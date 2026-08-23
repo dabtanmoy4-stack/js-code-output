@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>Free Online JavaScript Editor & Playground | JS CODE OUTPUT</title>
+
+  <meta
+    name="description"
+    content="Write, edit and run JavaScript online with JS CODE OUTPUT's free JavaScript editor and playground. Test JavaScript code directly in your browser."
+  >
+
+  <meta
+    name="keywords"
+    content="online javascript editor, free javascript editor, javascript playground, run javascript online, javascript compiler online, write javascript online"
+  >
+
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link
+    rel="canonical"
+    href="https://js-code-output.vercel.app/javascript-editor.html"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/favicon.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="/logo.png"
+  >
+
+  <!-- Open Graph -->
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:title"
+    content="Free Online JavaScript Editor & Playground | JS CODE OUTPUT"
+  >
+
+  <meta
+    property="og:description"
+    content="Write, edit and run JavaScript online with JS CODE OUTPUT's free browser-based JavaScript editor."
+  >
+
+  <meta
+    property="og:url"
+    content="https://js-code-output.vercel.app/javascript-editor.html"
+  >
+
+  <meta
+    property="og:site_name"
+    content="JS CODE OUTPUT"
+  >
+
+  <meta
+    property="og:image"
+    content="https://js-code-output.vercel.app/logo.png"
+  >
+
+  <!-- Twitter -->
+
+  <meta
+    name="twitter:card"
+    content="summary"
+  >
+
+  <meta
+    name="twitter:title"
+    content="Free Online JavaScript Editor | JS CODE OUTPUT"
+  >
+
+  <meta
+    name="twitter:description"
+    content="Write and run JavaScript directly in your browser with JS CODE OUTPUT."
+  >
+
+  <meta
+    name="twitter:image"
+    content="https://js-code-output.vercel.app/logo.png"
+  >
+
+  <style>
+
+    :root {
+      --bg: #070912;
+      --bg2: #0d1220;
+      --card: rgba(17, 24, 39, .78);
+      --border: rgba(255,255,255,.10);
+
+      --text: #f8fafc;
+      --muted: #aab4c7;
+
+      --blue: #5b8cff;
+      --purple: #7c5cff;
+      --yellow: #f5d76e;
+      --green: #6ee7b7;
+
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 10% 5%,
+          rgba(91,140,255,.18),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 8%,
+          rgba(124,92,255,.17),
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          var(--bg),
+          var(--bg2)
+        );
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width:
+        min(
+          var(--max),
+          calc(100% - 32px)
+        );
+
+      margin: auto;
+    }
+
+    /* NAV */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+
+      background:
+        rgba(7,9,18,.82);
+
+      backdrop-filter:
+        blur(18px);
+
+      border-bottom:
+        1px solid var(--border);
+    }
+
+    .nav {
+      min-height: 72px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      font-weight: 850;
+
+      letter-spacing: -.03em;
+
+      white-space: nowrap;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 11px;
+
+      object-fit: contain;
+    }
+
+    .navlinks {
+      display: flex;
+
+      align-items: center;
+
+      gap: 20px;
+
+      color: var(--muted);
+
+      font-size: 14px;
+    }
+
+    .navlinks a {
+      transition:
+        color .2s ease;
+    }
+
+    .navlinks a:hover {
+      color: white;
+    }
+
+    .button {
+      min-height: 46px;
+
+      padding:
+        0 20px;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 12px;
+
+      border:
+        1px solid var(--border);
+
+      font-weight: 750;
+
+      transition:
+        transform .2s ease,
+        border-color .2s ease;
+    }
+
+    .button:hover {
+      transform:
+        translateY(-2px);
+
+      border-color:
+        rgba(255,255,255,.25);
+    }
+
+    .button.primary {
+      border: 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      box-shadow:
+        0 14px 38px
+        rgba(91,140,255,.22);
+    }
+
+    /* HERO */
+
+    .hero {
+      padding:
+        88px 0 70px;
+
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding:
+        7px 13px;
+
+      border-radius: 999px;
+
+      border:
+        1px solid
+        rgba(245,215,110,.25);
+
+      background:
+        rgba(245,215,110,.07);
+
+      color:
+        #f5d76e;
+
+      font-size: 13px;
+
+      font-weight: 750;
+    }
+
+    h1 {
+      max-width: 900px;
+
+      margin:
+        20px auto 18px;
+
+      font-size:
+        clamp(
+          42px,
+          7vw,
+          76px
+        );
+
+      line-height: 1.03;
+
+      letter-spacing:
+        -.055em;
+    }
+
+    .gradient {
+      background:
+        linear-gradient(
+          90deg,
+          #fff,
+          #a9c4ff 45%,
+          #cbbaff
+        );
+
+      -webkit-background-clip: text;
+
+      background-clip: text;
+
+      color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 750px;
+
+      margin:
+        0 auto 29px;
+
+      color:
+        var(--muted);
+
+      font-size:
+        clamp(
+          17px,
+          2.2vw,
+          20px
+        );
+    }
+
+    .actions {
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      flex-wrap: wrap;
+
+      gap: 12px;
+    }
+
+    /* EDITOR VISUAL */
+
+    .editor-demo {
+      max-width: 1080px;
+
+      margin:
+        38px auto 0;
+
+      padding: 1px;
+
+      border-radius: 23px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(91,140,255,.55),
+          rgba(124,92,255,.25),
+          rgba(245,215,110,.25)
+        );
+
+      box-shadow:
+        0 35px 100px
+        rgba(0,0,0,.42);
+    }
+
+    .editor-window {
+      overflow: hidden;
+
+      border-radius: 22px;
+
+      background:
+        #090e18;
+
+      border:
+        1px solid
+        rgba(255,255,255,.06);
+    }
+
+    .editor-top {
+      height: 50px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      padding:
+        0 16px;
+
+      border-bottom:
+        1px solid var(--border);
+
+      color:
+        #8f9bb0;
+
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+
+      border-radius: 50%;
+
+      background:
+        #4e596c;
+    }
+
+    .editor-title {
+      margin-left: 8px;
+    }
+
+    .editor-grid {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      min-height: 400px;
+    }
+
+    .code-panel {
+      padding: 25px;
+
+      text-align: left;
+
+      border-right:
+        1px solid var(--border);
+
+      overflow: auto;
+    }
+
+    .file-label {
+      color:
+        #8f9bb0;
+
+      font-size: 12px;
+
+      margin-bottom: 13px;
+
+      font-weight: 700;
+    }
+
+    pre {
+      margin: 0;
+
+      white-space: pre-wrap;
+
+      font:
+        14px/1.8
+        Consolas,
+        Monaco,
+        "Courier New",
+        monospace;
+
+      color:
+        #dce6f6;
+    }
+
+    .keyword {
+      color:
+        #c8a8ff;
+    }
+
+    .function {
+      color:
+        #7db3ff;
+    }
+
+    .string {
+      color:
+        #8fe3b6;
+    }
+
+    .comment {
+      color:
+        #69758a;
+    }
+
+    .number {
+      color:
+        #f5d76e;
+    }
+
+    .preview-panel {
+      padding: 22px;
+
+      background:
+        #eef2f7;
+
+      color:
+        #182033;
+    }
+
+    .preview-label {
+      color:
+        #667085;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      margin-bottom: 13px;
+    }
+
+    .preview {
+      min-height: 330px;
+
+      height:
+        calc(100% - 30px);
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 25px;
+
+      border-radius: 15px;
+
+      background:
+        white;
+
+      box-shadow:
+        0 16px 40px
+        rgba(0,0,0,.13);
+    }
+
+    .console {
+      width: min(
+        100%,
+        390px
+      );
+
+      padding: 22px;
+
+      border-radius: 16px;
+
+      background:
+        #111827;
+
+      color:
+        #d1d5db;
+
+      box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.18);
+    }
+
+    .console-title {
+      margin-bottom: 15px;
+
+      color:
+        #9ca3af;
+
+      font-size: 12px;
+
+      font-weight: 700;
+    }
+
+    .console-line {
+      margin:
+        8px 0;
+
+      font:
+        13px/1.6
+        Consolas,
+        monospace;
+    }
+
+    .console-green {
+      color:
+        #6ee7b7;
+    }
+
+    .console-blue {
+      color:
+        #93c5fd;
+    }
+
+    .console-yellow {
+      color:
+        #f5d76e;
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding:
+        78px 0;
+    }
+
+    .section-title {
+      max-width: 720px;
+
+      margin:
+        0 auto 42px;
+
+      text-align: center;
+    }
+
+    .section-title h2 {
+      margin:
+        0 0 11px;
+
+      font-size:
+        clamp(
+          31px,
+          5vw,
+          47px
+        );
+
+      line-height: 1.1;
+
+      letter-spacing:
+        -.045em;
+    }
+
+    .section-title p {
+      margin: 0;
+
+      color:
+        var(--muted);
+    }
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 18px;
+    }
+
+    .card {
+      padding: 26px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 18px;
+
+      background:
+        var(--card);
+
+      box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.16);
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+
+      place-items: center;
+
+      margin-bottom: 16px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(91,140,255,.12);
+
+      border:
+        1px solid
+        rgba(91,140,255,.15);
+
+      font-size: 19px;
+    }
+
+    .card h3 {
+      margin:
+        0 0 8px;
+
+      font-size: 19px;
+    }
+
+    .card p {
+      margin: 0;
+
+      color:
+        var(--muted);
+
+      font-size: 14px;
+    }
+
+    /* BENEFITS */
+
+    .benefits {
+      display: grid;
+
+      grid-template-columns:
+        1.05fr .95fr;
+
+      gap: 22px;
+    }
+
+    .large-card {
+      padding: 32px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 20px;
+
+      background:
+        radial-gradient(
+          circle at 90% 10%,
+          rgba(91,140,255,.12),
+          transparent 38%
+        ),
+        var(--card);
+    }
+
+    .large-card h3 {
+      margin:
+        0 0 13px;
+
+      font-size: 27px;
+
+      letter-spacing:
+        -.035em;
+    }
+
+    .large-card p {
+      color:
+        var(--muted);
+
+      margin:
+        0 0 18px;
+    }
+
+    .check-list {
+      padding: 0;
+
+      margin: 0;
+
+      list-style: none;
+    }
+
+    .check-list li {
+      display: flex;
+
+      gap: 10px;
+
+      padding:
+        8px 0;
+
+      color:
+        #d8e0ed;
+
+      font-size: 14px;
+    }
+
+    .check {
+      color:
+        var(--green);
+
+      font-weight: 900;
+    }
+
+    /* STEPS */
+
+    .steps {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 18px;
+    }
+
+    .step {
+      padding: 27px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255,255,255,.035);
+    }
+
+    .number {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+
+      place-items: center;
+
+      margin-bottom: 16px;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      font-size: 13px;
+
+      font-weight: 850;
+    }
+
+    .step h3 {
+      margin:
+        0 0 7px;
+
+      font-size: 18px;
+    }
+
+    .step p {
+      margin: 0;
+
+      color:
+        var(--muted);
+
+      font-size: 14px;
+    }
+
+    /* RELATED LINKS */
+
+    .related {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      justify-content: center;
+    }
+
+    .related a {
+      padding:
+        10px 14px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 10px;
+
+      background:
+        rgba(255,255,255,.03);
+
+      color:
+        #cbd6e8;
+
+      font-size: 14px;
+
+      transition:
+        .2s ease;
+    }
+
+    .related a:hover {
+      color: white;
+
+      border-color:
+        rgba(91,140,255,.5);
+
+      transform:
+        translateY(-2px);
+    }
+
+    /* FAQ */
+
+    .faq {
+      max-width: 830px;
+
+      margin: auto;
+    }
+
+    details {
+      margin-bottom: 12px;
+
+      padding:
+        17px 19px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 14px;
+
+      background:
+        rgba(255,255,255,.025);
+    }
+
+    summary {
+      cursor: pointer;
+
+      font-weight: 750;
+    }
+
+    details p {
+      margin:
+        12px 0 0;
+
+      color:
+        var(--muted);
+    }
+
+    /* CTA */
+
+    .cta {
+      padding:
+        62px 26px;
+
+      border-radius: 24px;
+
+      text-align: center;
+
+      border:
+        1px solid var(--border);
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(91,140,255,.21),
+          transparent 48%
+        ),
+        rgba(255,255,255,.035);
+    }
+
+    .cta h2 {
+      margin:
+        0 0 10px;
+
+      font-size:
+        clamp(
+          31px,
+          5vw,
+          46px
+        );
+
+      letter-spacing:
+        -.045em;
+    }
+
+    .cta p {
+      max-width: 650px;
+
+      margin:
+        0 auto 23px;
+
+      color:
+        var(--muted);
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding:
+        32px 0;
+
+      border-top:
+        1px solid var(--border);
+
+      color:
+        var(--muted);
+
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 15px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+
+      .navlinks {
+        display: none;
+      }
+
+      .grid,
+      .steps {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .benefits {
+        grid-template-columns:
+          1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+
+      .container {
+        width:
+          min(
+            var(--max),
+            calc(100% - 22px)
+          );
+      }
+
+      .hero {
+        padding:
+          65px 0 52px;
+      }
+
+      .editor-grid {
+        grid-template-columns:
+          1fr;
+      }
+
+      .code-panel {
+        border-right: 0;
+
+        border-bottom:
+          1px solid var(--border);
+      }
+
+      .preview-panel {
+        min-height:
+          360px;
+      }
+
+      .grid,
+      .steps {
+        grid-template-columns:
+          1fr;
+      }
+
+      section {
+        padding:
+          58px 0;
+      }
+
+      .brand span {
+        font-size: 14px;
+      }
+
+      .brand img {
+        width: 38px;
+        height: 38px;
+      }
+
+      .nav > .button {
+        min-height: 41px;
+
+        padding:
+          0 13px;
+
+        font-size: 13px;
+      }
+    }
+
+  </style>
+
+  <!-- STRUCTURED DATA -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JS CODE OUTPUT JavaScript Editor",
+    "url": "https://js-code-output.vercel.app/javascript-editor.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Free online JavaScript editor and playground for writing, editing and testing JavaScript code in a browser.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is an online JavaScript editor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An online JavaScript editor is a browser-based coding environment that lets you write, edit and test JavaScript without requiring a traditional local editor."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I run JavaScript online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JS CODE OUTPUT provides a browser-based environment where JavaScript can be written and tested as part of a web development workflow."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the JavaScript editor free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JS CODE OUTPUT provides a free online JavaScript editing experience."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use JavaScript on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The JavaScript editor page is responsive and can be accessed using modern mobile and desktop browsers."
+        }
+      }
+    ]
+  }
+  </script>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="container nav">
+
+    <a
+      class="brand"
+      href="/"
+      aria-label="JS CODE OUTPUT home"
+    >
+
+      <img
+        src="/logo.png"
+        alt="JS CODE OUTPUT logo"
+        width="42"
+        height="42"
+      >
+
+      <span>
+        JS CODE OUTPUT
+      </span>
+
+    </a>
+
+    <nav
+      class="navlinks"
+      aria-label="Primary navigation"
+    >
+
+      <a href="/online-code-editor.html">
+        Online Code Editor
+      </a>
+
+      <a href="/html-editor.html">
+        HTML Editor
+      </a>
+
+      <a href="/css-editor.html">
+        CSS Editor
+      </a>
+
+      <a href="/javascript-editor.html">
+        JavaScript Editor
+      </a>
+
+    </nav>
+
+    <a
+      class="button primary"
+      href="/"
+    >
+      Open Editor
+    </a>
+
+  </div>
+
+</header>
+
+<main>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="container">
+
+      <div class="eyebrow">
+        ✦ Free Online JavaScript Editor
+      </div>
+
+      <h1>
+        Write JavaScript.
+        <span class="gradient">
+          Run Your Ideas.
+        </span>
+      </h1>
+
+      <p class="hero-copy">
+        Write, edit and test JavaScript directly in your browser
+        with JS CODE OUTPUT's free online JavaScript editor.
+        Experiment with code, logic, functions and interactive
+        web experiences without leaving your browser.
+      </p>
+
+      <div class="actions">
+
+        <a
+          class="button primary"
+          href="/"
+        >
+          Start Coding Free →
+        </a>
+
+        <a
+          class="button"
+          href="#how-it-works"
+        >
+          How It Works
+        </a>
+
+      </div>
+
+      <!-- EDITOR PREVIEW -->
+
+      <div class="editor-demo">
+
+        <div class="editor-window">
+
+          <div class="editor-top">
+
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+            <span class="editor-title">
+              script.js — JavaScript Editor
+            </span>
+
+          </div>
+
+          <div class="editor-grid">
+
+            <div class="code-panel">
+
+              <div class="file-label">
+                JAVASCRIPT
+              </div>
+
+              <pre><span class="comment">// Try JavaScript directly</span>
+
+<span class="keyword">const</span> message =
+  <span class="string">"Hello from JS CODE OUTPUT!"</span>;
+
+<span class="keyword">function</span>
+<span class="function">greet</span>(name) {
+
+  <span class="keyword">return</span>
+    <span class="string">`Hello, ${name}!`</span>;
+}
+
+<span class="keyword">const</span> result =
+  <span class="function">greet</span>(
+    <span class="string">"Developer"</span>
+  );
+
+console.<span class="function">log</span>(
+  result
+);</pre>
+
+            </div>
+
+            <div class="preview-panel">
+
+              <div class="preview-label">
+                OUTPUT
+              </div>
+
+              <div class="preview">
+
+                <div class="console">
+
+                  <div class="console-title">
+                    JavaScript Console
+                  </div>
+
+                  <div class="console-line console-green">
+                    ✓ Code executed
+                  </div>
+
+                  <div class="console-line console-blue">
+                    Hello, Developer!
+                  </div>
+
+                  <div class="console-line console-yellow">
+                    Execution complete
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FEATURES -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          A simple place to experiment with JavaScript
+        </h2>
+
+        <p>
+          Practice JavaScript concepts, test snippets and
+          build interactive frontend ideas directly in your browser.
+        </p>
+
+      </div>
+
+      <div class="grid">
+
+        <article class="card">
+
+          <div class="icon">
+            JS
+          </div>
+
+          <h3>
+            Write JavaScript Online
+          </h3>
+
+          <p>
+            Create and edit JavaScript code directly from
+            your browser without opening a separate editor.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ▶
+          </div>
+
+          <h3>
+            Test Your Code
+          </h3>
+
+          <p>
+            Experiment with JavaScript logic and inspect
+            your results as you develop.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ⚡
+          </div>
+
+          <h3>
+            Fast Browser Workflow
+          </h3>
+
+          <p>
+            Open the editor and start experimenting without
+            installing a separate JavaScript development tool.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            {}
+          </div>
+
+          <h3>
+            Practice JavaScript
+          </h3>
+
+          <p>
+            Work with variables, functions, arrays, objects,
+            conditions and other JavaScript concepts.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ◈
+          </div>
+
+          <h3>
+            Build Interactive Ideas
+          </h3>
+
+          <p>
+            Combine JavaScript with HTML and CSS to create
+            interactive frontend experiences.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ✓
+          </div>
+
+          <h3>
+            Free to Start
+          </h3>
+
+          <p>
+            Start experimenting with JavaScript online using
+            the JS CODE OUTPUT development workspace.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- BENEFITS -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="benefits">
+
+        <article class="large-card">
+
+          <h3>
+            Learn by writing real JavaScript
+          </h3>
+
+          <p>
+            Instead of only reading JavaScript examples,
+            use an online editor to experiment with your
+            own ideas and understand how code behaves.
+          </p>
+
+          <ul class="check-list">
+
+            <li>
+              <span class="check">✓</span>
+              Practice JavaScript syntax
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              Test functions and variables
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              Experiment with arrays and objects
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              Test browser-side logic
+            </li>
+
+            <li>
+              <span class="check">✓</span>
+              Build interactive webpage ideas
+            </li>
+
+          </ul>
+
+        </article>
+
+        <article class="large-card">
+
+          <h3>
+            Connect JavaScript with your web projects
+          </h3>
+
+          <p>
+            JavaScript becomes even more useful when it works
+            together with HTML and CSS. Explore the other
+            editors to create complete frontend projects.
+          </p>
+
+          <div class="related">
+
+            <a href="/html-editor.html">
+              HTML Editor
+            </a>
+
+            <a href="/css-editor.html">
+              CSS Editor
+            </a>
+
+            <a href="/html-css-editor.html">
+              HTML + CSS Editor
+            </a>
+
+            <a href="/html-css-javascript-editor.html">
+              Full Web Editor
+            </a>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- HOW IT WORKS -->
+
+  <section id="how-it-works">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          How to use the online JavaScript editor
+        </h2>
+
+        <p>
+          Start coding in a few simple steps.
+        </p>
+
+      </div>
+
+      <div class="steps">
+
+        <article class="step">
+
+          <div class="number">
+            01
+          </div>
+
+          <h3>
+            Open the editor
+          </h3>
+
+          <p>
+            Start JS CODE OUTPUT and open your coding
+            workspace or create a new project.
+          </p>
+
+        </article>
+
+        <article class="step">
+
+          <div class="number">
+            02
+          </div>
+
+          <h3>
+            Write JavaScript
+          </h3>
+
+          <p>
+            Add variables, functions, conditions, loops and
+            other JavaScript code to your project.
+          </p>
+
+        </article>
+
+        <article class="step">
+
+          <div class="number">
+            03
+          </div>
+
+          <h3>
+            Run and inspect
+          </h3>
+
+          <p>
+            Run your project and inspect the resulting webpage
+            or JavaScript output.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- RELATED SEO PAGES -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Explore more coding tools
+        </h2>
+
+        <p>
+          Continue building with related JS CODE OUTPUT tools.
+        </p>
+
+      </div>
+
+      <div class="related">
+
+        <a href="/online-code-editor.html">
+          Online Code Editor
+        </a>
+
+        <a href="/html-editor.html">
+          HTML Editor
+        </a>
+
+        <a href="/css-editor.html">
+          CSS Editor
+        </a>
+
+        <a href="/javascript-playground.html">
+          JavaScript Playground
+        </a>
+
+        <a href="/javascript-tester.html">
+          JavaScript Tester
+        </a>
+
+        <a href="/run-javascript-online.html">
+          Run JavaScript Online
+        </a>
+
+        <a href="/html-css-javascript-editor.html">
+          HTML CSS JavaScript Editor
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FAQ -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Frequently asked questions
+        </h2>
+
+        <p>
+          Common questions about online JavaScript editors.
+        </p>
+
+      </div>
+
+      <div class="faq">
+
+        <details>
+
+          <summary>
+            What is an online JavaScript editor?
+          </summary>
+
+          <p>
+            An online JavaScript editor is a browser-based
+            coding environment where you can write, edit and
+            test JavaScript without relying entirely on a
+            locally installed editor.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Can I run JavaScript online?
+          </summary>
+
+          <p>
+            Yes. JS CODE OUTPUT provides a browser-based
+            workflow for writing and testing JavaScript as
+            part of web development projects.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Is the JavaScript editor free?
+          </summary>
+
+          <p>
+            JS CODE OUTPUT provides a free online JavaScript
+            editing experience.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Can beginners use an online JavaScript editor?
+          </summary>
+
+          <p>
+            Yes. Browser-based editors can be useful for
+            beginners because they allow quick experimentation
+            without requiring a complicated local setup.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Can I use JavaScript with HTML and CSS?
+          </summary>
+
+          <p>
+            Yes. JavaScript, HTML and CSS are commonly used
+            together to create interactive web pages and
+            frontend applications.
+          </p>
+
+        </details>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CTA -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="cta">
+
+        <h2>
+          Start writing JavaScript online
+        </h2>
+
+        <p>
+          Open JS CODE OUTPUT and experiment with JavaScript
+          directly in your browser.
+        </p>
+
+        <a
+          class="button primary"
+          href="/"
+        >
+          Open JavaScript Editor →
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+
+  <div class="container footer-inner">
+
+    <div>
+      © 2026 JS CODE OUTPUT. All rights reserved.
+    </div>
+
+    <div class="footer-links">
+
+      <a href="/">
+        Home
+      </a>
+
+      <a href="/online-code-editor.html">
+        Online Code Editor
+      </a>
+
+      <a href="/html-editor.html">
+        HTML Editor
+      </a>
+
+      <a href="/css-editor.html">
+        CSS Editor
+      </a>
+
+      <a href="/about.html">
+        About
+      </a>
+
+      <a href="/contact.html">
+        Contact
+      </a>
+
+      <a href="/privacy.html">
+        Privacy
+      </a>
+
+      <a href="/terms.html">
+        Terms
+      </a>
+
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
