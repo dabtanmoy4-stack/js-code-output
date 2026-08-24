@@ -1422,74 +1422,130 @@ async function handleFileUpload(e){
   const fileList = [...(e.target.files || [])];
   if(!fileList.length) return;
 
-  try {
-    const results = await Promise.all(fileList.map(async f => ({
-      path: f.name,
-      content: await readUploadedFile(f)
-    })));
+  // Read errors are handled per-file. Saving/rendering errors must NOT make
+  // a successfully uploaded file look like it failed to upload.
+  const results = [];
+  const failed = [];
 
-    results.forEach(x => addUploadedFilePath(x.path, x.content));
-
-    window.files = files;
-    hasTypedInSession = true;
-
-    const firstText = results.find(x => !isBinary(getExt(x.path)));
-    activeFile = firstText?.path || results[0]?.path || null;
-    window.activeFile = activeFile;
-
-    saveLocalProjectFiles();
-    renderFileExplorer();
-    openFile(activeFile);
-    updatePreview(true);
-    scheduleCloudSave();
-
-    showToast(`${results.length} file${results.length === 1 ? "" : "s"} uploaded.`);
-  } catch(err) {
-    console.error("File upload failed:", err);
-    showToast("Could not read one or more uploaded files.");
-  } finally {
-    e.target.value = "";
+  for(const f of fileList){
+    try {
+      results.push({
+        path: f.name,
+        content: await readUploadedFile(f)
+      });
+    } catch(err) {
+      console.error("Could not read file:", f.name, err);
+      failed.push(f.name);
+    }
   }
+
+  if(!results.length){
+    showToast("Could not read the selected file(s).");
+    e.target.value = "";
+    return;
+  }
+
+  results.forEach(x => addUploadedFilePath(x.path, x.content));
+
+  window.files = files;
+  hasTypedInSession = true;
+
+  const firstText = results.find(x => !isBinary(getExt(x.path)));
+  activeFile = firstText?.path || results[0]?.path || null;
+  window.activeFile = activeFile;
+
+  renderFileExplorer();
+  openFile(activeFile);
+
+  // Rendering must work even when localStorage is full.
+  try { updatePreview(true); }
+  catch(err) { console.error("Preview update failed:", err); }
+
+  try { saveLocalProjectFiles(); }
+  catch(err) {
+    console.warn("Local project save failed:", err);
+    if(err && err.name === "QuotaExceededError"){
+      showToast("Uploaded successfully. Browser storage is full, so local backup was skipped.");
+    }
+  }
+
+  try { scheduleCloudSave(); }
+  catch(err) { console.warn("Cloud save scheduling failed:", err); }
+
+  if(failed.length){
+    showToast(`${results.length} uploaded; ${failed.length} file${failed.length === 1 ? "" : "s"} could not be read.`);
+  } else {
+    showToast(`${results.length} file${results.length === 1 ? "" : "s"} uploaded successfully.`);
+  }
+
+  e.target.value = "";
 }
 
 async function handleFolderUpload(e){
   const uploadedFiles = [...(e.target.files || [])];
   if(!uploadedFiles.length) return;
 
-  try {
-    // Wait for ALL FileReaders. Their completion order is not guaranteed.
-    const results = await Promise.all(uploadedFiles.map(async f => ({
-      path: f.webkitRelativePath || f.name,
-      content: await readUploadedFile(f)
-    })));
+  const results = [];
+  const failed = [];
 
-    results.forEach(x => addUploadedFilePath(x.path, x.content));
-
-    window.files = files;
-    hasTypedInSession = true;
-
-    const preferred =
-      results.find(x => /\/index\.html$/i.test(x.path)) ||
-      results.find(x => /^index\.html$/i.test(x.path)) ||
-      results.find(x => !isBinary(getExt(x.path))) ||
-      results[0];
-
-    activeFile = preferred?.path || null;
-    window.activeFile = activeFile;
-
-    saveLocalProjectFiles();
-    renderFileExplorer();
-    openFile(activeFile);
-    updatePreview(true);
-    scheduleCloudSave();
-
-    showToast(`${results.length} file${results.length === 1 ? "" : "s"} from folder uploaded.`);
-  } catch(err) {
-    console.error("Folder upload failed:", err);
-    showToast("Could not read one or more folder files.");
-  } finally {
-    e.target.value = "";
+  // Do not use Promise.all here: one bad/unsupported file must not discard
+  // all the other successfully read files.
+  for(const f of uploadedFiles){
+    try {
+      results.push({
+        path: f.webkitRelativePath || f.name,
+        content: await readUploadedFile(f)
+      });
+    } catch(err) {
+      console.error("Could not read folder file:", f.name, err);
+      failed.push(f.webkitRelativePath || f.name);
+    }
   }
+
+  if(!results.length){
+    showToast("Could not read the selected folder.");
+    e.target.value = "";
+    return;
+  }
+
+  results.forEach(x => addUploadedFilePath(x.path, x.content));
+
+  window.files = files;
+  hasTypedInSession = true;
+
+  const preferred =
+    results.find(x => /\/index\.html$/i.test(x.path)) ||
+    results.find(x => /^index\.html$/i.test(x.path)) ||
+    results.find(x => !isBinary(getExt(x.path))) ||
+    results[0];
+
+  activeFile = preferred?.path || null;
+  window.activeFile = activeFile;
+
+  renderFileExplorer();
+  openFile(activeFile);
+
+  try { updatePreview(true); }
+  catch(err) { console.error("Preview update failed:", err); }
+
+  try { saveLocalProjectFiles(); }
+  catch(err) {
+    console.warn("Local project save failed:", err);
+    if(err && err.name === "QuotaExceededError"){
+      showToast("Folder uploaded. Browser storage is full, so local backup was skipped.");
+    }
+  }
+
+  try { scheduleCloudSave(); }
+  catch(err) { console.warn("Cloud save scheduling failed:", err); }
+
+  if(failed.length){
+    showToast(`${results.length} uploaded; ${failed.length} file${failed.length === 1 ? "" : "s"} could not be read.`);
+  } else {
+    showToast(`${results.length} file${results.length === 1 ? "" : "s"} from folder uploaded successfully.`);
+  }
+
+  e.target.value = "";
 }
 
 function dismissPlaceholder(){
