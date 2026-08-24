@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT</title>
+
+  <meta
+    name="description"
+    content="Use JS CODE OUTPUT's free HTML CSS JavaScript editor online to write HTML, CSS and JavaScript together, preview your website and build web projects in your browser."
+  >
+
+  <meta
+    name="keywords"
+    content="html css javascript editor, html css js editor, online html css javascript editor, html css javascript editor online, free web editor, online web development editor"
+  >
+
+  <meta
+    name="robots"
+    content="index, follow, max-image-preview:large"
+  >
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link
+    rel="canonical"
+    href="https://js-code-output.vercel.app/html-css-javascript-editor.html"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/favicon.png"
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:title"
+    content="Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT"
+  >
+
+  <meta
+    property="og:description"
+    content="Write HTML, CSS and JavaScript together and preview your web project online with JS CODE OUTPUT."
+  >
+
+  <meta
+    property="og:url"
+    content="https://js-code-output.vercel.app/html-css-javascript-editor.html"
+  >
+
+  <meta
+    property="og:site_name"
+    content="JS CODE OUTPUT"
+  >
+
+  <meta
+    property="og:image"
+    content="https://js-code-output.vercel.app/logo.png"
+  >
+
+  <meta
+    name="twitter:card"
+    content="summary"
+  >
+
+  <meta
+    name="twitter:title"
+    content="Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT"
+  >
+
+  <meta
+    name="twitter:description"
+    content="Build and preview HTML, CSS and JavaScript projects online."
+  >
+
+  <meta
+    name="twitter:image"
+    content="https://js-code-output.vercel.app/logo.png"
+  >
+
+  <style>
+
+    :root {
+      --bg: #070912;
+      --bg2: #0d1220;
+      --card: rgba(17,24,39,.78);
+      --border: rgba(255,255,255,.10);
+      --text: #f8fafc;
+      --muted: #aab4c7;
+      --blue: #5b8cff;
+      --purple: #7c5cff;
+      --green: #6ee7b7;
+      --orange: #ffb86b;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 10% 5%,
+          rgba(91,140,255,.18),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 8%,
+          rgba(124,92,255,.17),
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          var(--bg),
+          var(--bg2)
+        );
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width:
+        min(
+          var(--max),
+          calc(100% - 32px)
+        );
+
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+
+      top: 0;
+
+      z-index: 100;
+
+      background:
+        rgba(7,9,18,.84);
+
+      backdrop-filter:
+        blur(18px);
+
+      border-bottom:
+        1px solid var(--border);
+    }
+
+    .nav {
+      min-height: 72px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      font-weight: 850;
+
+      letter-spacing: -.03em;
+
+      white-space: nowrap;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 11px;
+
+      object-fit: contain;
+    }
+
+    .navlinks {
+      display: flex;
+
+      align-items: center;
+
+      gap: 17px;
+
+      color: var(--muted);
+
+      font-size: 14px;
+    }
+
+    .navlinks a:hover {
+      color: white;
+    }
+
+    .button {
+      min-height: 46px;
+
+      padding:
+        0 20px;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 12px;
+
+      border:
+        1px solid var(--border);
+
+      font-weight: 750;
+
+      transition:
+        transform .2s ease,
+        border-color .2s ease;
+    }
+
+    .button:hover {
+      transform:
+        translateY(-2px);
+
+      border-color:
+        rgba(255,255,255,.25);
+    }
+
+    .button.primary {
+      border: 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      box-shadow:
+        0 14px 38px
+        rgba(91,140,255,.22);
+    }
+
+    .hero {
+      padding:
+        88px 0 70px;
+
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding:
+        7px 13px;
+
+      border-radius: 999px;
+
+      border:
+        1px solid
+        rgba(110,231,183,.22);
+
+      background:
+        rgba(110,231,183,.06);
+
+      color:
+        var(--green);
+
+      font-size: 13px;
+
+      font-weight: 750;
+    }
+
+    h1 {
+      max-width: 900px;
+
+      margin:
+        20px auto 18px;
+
+      font-size:
+        clamp(42px, 7vw, 72px);
+
+      line-height: 1.03;
+
+      letter-spacing:
+        -.055em;
+    }
+
+    .gradient {
+      background:
+        linear-gradient(
+          90deg,
+          #fff,
+          #a9c4ff 45%,
+          #cbbaff
+        );
+
+      -webkit-background-clip: text;
+
+      background-clip: text;
+
+      color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 780px;
+
+      margin:
+        0 auto 29px;
+
+      color:
+        var(--muted);
+
+      font-size:
+        clamp(17px, 2.2vw, 20px);
+    }
+
+    .actions {
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      flex-wrap: wrap;
+
+      gap: 12px;
+    }
+
+    .editor-window {
+      max-width: 1080px;
+
+      margin:
+        42px auto 0;
+
+      padding: 1px;
+
+      border-radius: 23px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(91,140,255,.55),
+          rgba(124,92,255,.28)
+        );
+
+      box-shadow:
+        0 35px 100px
+        rgba(0,0,0,.42);
+    }
+
+    .window {
+      overflow: hidden;
+
+      border-radius: 22px;
+
+      background:
+        #080d16;
+    }
+
+    .window-top {
+      height: 50px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      padding:
+        0 16px;
+
+      border-bottom:
+        1px solid var(--border);
+
+      color:
+        #8f9bb0;
+
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+
+      border-radius: 50%;
+
+      background:
+        #4e596c;
+    }
+
+    .window-title {
+      margin-left: 8px;
+    }
+
+    .editor-grid {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      min-height: 410px;
+    }
+
+    .editors {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      border-right:
+        1px solid var(--border);
+    }
+
+    .editor {
+      min-width: 0;
+
+      padding:
+        18px;
+
+      border-right:
+        1px solid var(--border);
+
+      text-align: left;
+    }
+
+    .editor:last-child {
+      border-right: 0;
+    }
+
+    .editor-label {
+      margin-bottom:
+        14px;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+      letter-spacing:
+        .08em;
+
+      color:
+        #8f9bb0;
+    }
+
+    pre {
+      margin: 0;
+
+      white-space: pre-wrap;
+
+      font:
+        12px/1.75
+        Consolas,
+        Monaco,
+        monospace;
+
+      color:
+        #dbe5f5;
+    }
+
+    .html {
+      color:
+        #ffb86b;
+    }
+
+    .css {
+      color:
+        #8bb8ff;
+    }
+
+    .js {
+      color:
+        #8fe3b6;
+    }
+
+    .preview {
+      padding:
+        22px;
+
+      background:
+        #edf1f7;
+    }
+
+    .preview-label {
+      margin-bottom:
+        14px;
+
+      color:
+        #5b6474;
+
+      text-align: left;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+      letter-spacing:
+        .08em;
+    }
+
+    .preview-box {
+      min-height: 330px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 15px;
+
+      background:
+        white;
+
+      box-shadow:
+        0 18px 45px
+        rgba(0,0,0,.12);
+    }
+
+    .demo-card {
+      width:
+        min(
+          85%,
+          350px
+        );
+
+      padding:
+        26px;
+
+      border-radius:
+        18px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #111827,
+          #1f2937
+        );
+
+      color:
+        white;
+
+      text-align: left;
+    }
+
+    .demo-card h3 {
+      margin:
+        0 0 8px;
+
+      font-size: 24px;
+    }
+
+    .demo-card p {
+      margin:
+        0 0 17px;
+
+      color:
+        #aeb8c8;
+
+      font-size: 13px;
+    }
+
+    .demo-button {
+      display: inline-flex;
+
+      padding:
+        9px 14px;
+
+      border-radius: 9px;
+
+      background:
+        #5b8cff;
+
+      font-size: 12px;
+
+      font-weight: 750;
+    }
+
+    section {
+      padding:
+        78px 0;
+    }
+
+    .section-title {
+      max-width: 730px;
+
+      margin:
+        0 auto 42px;
+
+      text-align: center;
+    }
+
+    .section-title h2 {
+      margin:
+        0 0 11px;
+
+      font-size:
+        clamp(31px,5vw,47px);
+
+      line-height: 1.1;
+
+      letter-spacing:
+        -.045em;
+    }
+
+    .section-title p {
+      margin: 0;
+
+      color:
+        var(--muted);
+    }
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      gap: 18px;
+    }
+
+    .card {
+      padding:
+        26px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius:
+        18px;
+
+      background:
+        var(--card);
+
+      box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.16);
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+
+      place-items: center;
+
+      margin-bottom: 16px;
+
+      border-radius: 12px;
+
+      background:
+        rgba(91,140,255,.12);
+
+      border:
+        1px solid
+        rgba(91,140,255,.15);
+
+      font-size: 15px;
+
+      font-weight: 850;
+    }
+
+    .card h3 {
+      margin:
+        0 0 8px;
+
+      font-size: 19px;
+    }
+
+    .card p {
+      margin: 0;
+
+      color:
+        var(--muted);
+
+      font-size: 14px;
+    }
+
+    .content {
+      max-width: 850px;
+
+      margin: auto;
+
+      color:
+        #cbd5e1;
+    }
+
+    .content h2 {
+      margin-top: 34px;
+
+      color: white;
+
+      letter-spacing:
+        -.025em;
+    }
+
+    .content p {
+      color:
+        var(--muted);
+    }
+
+    .steps {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4,1fr);
+
+      gap: 16px;
+    }
+
+    .step {
+      padding:
+        24px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius:
+        18px;
+
+      background:
+        rgba(255,255,255,.035);
+    }
+
+    .number {
+      width: 37px;
+      height: 37px;
+
+      display: grid;
+
+      place-items: center;
+
+      margin-bottom:
+        15px;
+
+      border-radius:
+        11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      font-size: 12px;
+
+      font-weight: 850;
+    }
+
+    .step h3 {
+      margin:
+        0 0 7px;
+
+      font-size: 17px;
+    }
+
+    .step p {
+      margin: 0;
+
+      color:
+        var(--muted);
+
+      font-size: 13px;
+    }
+
+    .related {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      justify-content: center;
+
+      gap: 10px;
+    }
+
+    .related a {
+      padding:
+        10px 14px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius:
+        10px;
+
+      background:
+        rgba(255,255,255,.03);
+
+      color:
+        #cbd6e8;
+
+      font-size: 14px;
+    }
+
+    .related a:hover {
+      color: white;
+
+      border-color:
+        rgba(91,140,255,.5);
+
+      transform:
+        translateY(-2px);
+    }
+
+    .faq {
+      max-width: 830px;
+
+      margin: auto;
+    }
+
+    details {
+      margin-bottom:
+        12px;
+
+      padding:
+        17px 19px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius:
+        14px;
+
+      background:
+        rgba(255,255,255,.025);
+    }
+
+    summary {
+      cursor: pointer;
+
+      font-weight:
+        750;
+    }
+
+    details p {
+      margin:
+        12px 0 0;
+
+      color:
+        var(--muted);
+    }
+
+    .cta {
+      padding:
+        62px 26px;
+
+      border-radius:
+        24px;
+
+      text-align: center;
+
+      border:
+        1px solid var(--border);
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(91,140,255,.21),
+          transparent 48%
+        ),
+        rgba(255,255,255,.035);
+    }
+
+    .cta h2 {
+      margin:
+        0 0 10px;
+
+      font-size:
+        clamp(31px,5vw,46px);
+
+      letter-spacing:
+        -.045em;
+    }
+
+    .cta p {
+      max-width:
+        650px;
+
+      margin:
+        0 auto 23px;
+
+      color:
+        var(--muted);
+    }
+
+    footer {
+      padding:
+        32px 0;
+
+      border-top:
+        1px solid var(--border);
+
+      color:
+        var(--muted);
+
+      font-size:
+        13px;
+    }
+
+    .footer-inner {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 15px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    @media (max-width: 950px) {
+
+      .navlinks {
+        display: none;
+      }
+
+      .steps {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .editors {
+        grid-template-columns:
+          1fr;
+      }
+
+      .editor {
+        border-right: 0;
+
+        border-bottom:
+          1px solid var(--border);
+      }
+
+      .editor:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+
+      .container {
+        width:
+          min(
+            var(--max),
+            calc(100% - 22px)
+          );
+      }
+
+      .hero {
+        padding:
+          65px 0 52px;
+      }
+
+      .editor-grid {
+        grid-template-columns:
+          1fr;
+      }
+
+      .preview {
+        min-height: 350px;
+      }
+
+      .grid,
+      .steps {
+        grid-template-columns:
+          1fr;
+      }
+
+      section {
+        padding:
+          58px 0;
+      }
+
+      .brand span {
+        font-size:
+          14px;
+      }
+
+      .brand img {
+        width: 38px;
+        height: 38px;
+      }
+
+      .nav > .button {
+        min-height:
+          41px;
+
+        padding:
+          0 13px;
+
+        font-size:
+          13px;
+      }
+
+    }
+
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JS CODE OUTPUT HTML CSS JavaScript Editor",
+    "url": "https://js-code-output.vercel.app/html-css-javascript-editor.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Free online HTML CSS JavaScript editor for building and previewing web projects.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is an HTML CSS JavaScript editor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An HTML CSS JavaScript editor is a browser-based coding environment that lets you work with HTML, CSS and JavaScript together."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I edit HTML CSS and JavaScript online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. JS CODE OUTPUT provides an online environment for working with HTML, CSS and JavaScript."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the HTML CSS JavaScript editor free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JS CODE OUTPUT provides a free browser-based coding experience for web development."
+        }
+      }
+    ]
+  }
+  </script>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="container nav">
+
+    <a
+      class="brand"
+      href="/"
+      aria-label="JS CODE OUTPUT home"
+    >
+
+      <img
+        src="/logo.png"
+        alt="JS CODE OUTPUT logo"
+        width="42"
+        height="42"
+      >
+
+      <span>
+        JS CODE OUTPUT
+      </span>
+
+    </a>
+
+    <nav
+      class="navlinks"
+      aria-label="Primary navigation"
+    >
+
+      <a href="/online-code-editor.html">
+        Online Code Editor
+      </a>
+
+      <a href="/html-editor.html">
+        HTML Editor
+      </a>
+
+      <a href="/css-editor.html">
+        CSS Editor
+      </a>
+
+      <a href="/javascript-editor.html">
+        JavaScript Editor
+      </a>
+
+    </nav>
+
+    <a
+      class="button primary"
+      href="/"
+    >
+      Open Editor
+    </a>
+
+  </div>
+
+</header>
+
+<main>
+
+  <section class="hero">
+
+    <div class="container">
+
+      <div class="eyebrow">
+        ✦ HTML + CSS + JavaScript
+      </div>
+
+      <h1>
+        Build websites with
+        <span class="gradient">
+          HTML, CSS & JavaScript.
+        </span>
+      </h1>
+
+      <p class="hero-copy">
+        Write HTML, CSS and JavaScript together,
+        experiment with your code and preview your
+        web project directly in the browser.
+      </p>
+
+      <div class="actions">
+
+        <a
+          class="button primary"
+          href="/"
+        >
+          Start Building Free →
+        </a>
+
+        <a
+          class="button"
+          href="#how-it-works"
+        >
+          See How It Works
+        </a>
+
+      </div>
+
+      <div class="editor-window">
+
+        <div class="window">
+
+          <div class="window-top">
+
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+            <span class="window-title">
+              web-project — HTML CSS JavaScript
+            </span>
+
+          </div>
+
+          <div class="editor-grid">
+
+            <div class="editors">
+
+              <div class="editor">
+
+                <div class="editor-label">
+                  HTML
+                </div>
+
+                <pre class="html">&lt;div
+  class="card"&gt;
+
+  &lt;h1&gt;
+    Hello World
+  &lt;/h1&gt;
+
+  &lt;button
+    onclick="hello()"&gt;
+    Click Me
+  &lt;/button&gt;
+
+&lt;/div&gt;</pre>
+
+              </div>
+
+              <div class="editor">
+
+                <div class="editor-label">
+                  CSS
+                </div>
+
+                <pre class="css">.card {
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 9px;
+}</pre>
+
+              </div>
+
+              <div class="editor">
+
+                <div class="editor-label">
+                  JAVASCRIPT
+                </div>
+
+                <pre class="js">function hello() {
+  alert(
+    "Hello!"
+  );
+}</pre>
+
+              </div>
+
+            </div>
+
+            <div class="preview">
+
+              <div class="preview-label">
+                LIVE PREVIEW
+              </div>
+
+              <div class="preview-box">
+
+                <div class="demo-card">
+
+                  <h3>
+                    Hello World
+                  </h3>
+
+                  <p>
+                    Your HTML, CSS and JavaScript
+                    come together here.
+                  </p>
+
+                  <span class="demo-button">
+                    Click Me
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          One place for your web development code
+        </h2>
+
+        <p>
+          Work with the three core technologies of
+          modern frontend development.
+        </p>
+
+      </div>
+
+      <div class="grid">
+
+        <article class="card">
+
+          <div class="icon">
+            HTML
+          </div>
+
+          <h3>
+            Write HTML
+          </h3>
+
+          <p>
+            Create the structure and content of your
+            webpage using HTML.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            CSS
+          </div>
+
+          <h3>
+            Style with CSS
+          </h3>
+
+          <p>
+            Design layouts, colors, spacing and
+            responsive interfaces with CSS.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            JS
+          </div>
+
+          <h3>
+            Add JavaScript
+          </h3>
+
+          <p>
+            Add interaction and functionality to your
+            webpage using JavaScript.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ▶
+          </div>
+
+          <h3>
+            Preview Your Project
+          </h3>
+
+          <p>
+            See how your HTML, CSS and JavaScript
+            work together in a browser preview.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            ⚡
+          </div>
+
+          <h3>
+            Fast Experimentation
+          </h3>
+
+          <p>
+            Test ideas quickly without setting up a
+            complete local development environment.
+          </p>
+
+        </article>
+
+        <article class="card">
+
+          <div class="icon">
+            📱
+          </div>
+
+          <h3>
+            Browser Based
+          </h3>
+
+          <p>
+            Work from a modern browser on desktop,
+            laptop, tablet or mobile.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="how-it-works">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          How to build a web project
+        </h2>
+
+        <p>
+          Keep your workflow simple and focused.
+        </p>
+
+      </div>
+
+      <div class="steps">
+
+        <article class="step">
+
+          <div class="number">
+            01
+          </div>
+
+          <h3>
+            Create your project
+          </h3>
+
+          <p>
+            Open JS CODE OUTPUT and start a new
+            web project.
+          </p>
+
+        </article>
+
+        <article class="step">
+
+          <div class="number">
+            02
+          </div>
+
+          <h3>
+            Write HTML
+          </h3>
+
+          <p>
+            Build the structure and content of
+            your webpage.
+          </p>
+
+        </article>
+
+        <article class="step">
+
+          <div class="number">
+            03
+          </div>
+
+          <h3>
+            Add CSS & JavaScript
+          </h3>
+
+          <p>
+            Style the interface and add interactive
+            functionality.
+          </p>
+
+        </article>
+
+        <article class="step">
+
+          <div class="number">
+            04
+          </div>
+
+          <h3>
+            Preview & improve
+          </h3>
+
+          <p>
+            Run your project, inspect the result
+            and keep improving it.
+          </p>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="container">
+
+      <div class="content">
+
+        <h2>
+          What is an HTML CSS JavaScript editor?
+        </h2>
+
+        <p>
+          An HTML CSS JavaScript editor is a web-based
+          coding environment where you can work with
+          HTML, CSS and JavaScript together.
+        </p>
+
+        <p>
+          HTML provides the structure of a webpage,
+          CSS controls its presentation and JavaScript
+          adds interactive behavior. Using the three
+          technologies together allows developers to
+          create complete frontend web experiences.
+        </p>
+
+        <p>
+          JS CODE OUTPUT brings these technologies
+          together in a browser-based workflow so you
+          can experiment with web development projects
+          without unnecessarily complicated setup.
+        </p>
+
+        <h2>
+          Who can use this editor?
+        </h2>
+
+        <p>
+          Beginners can use it to practice frontend
+          development, while experienced developers can
+          use a browser-based editor for quick experiments,
+          prototypes and testing ideas.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Explore more JS CODE OUTPUT tools
+        </h2>
+
+        <p>
+          Jump directly to another coding environment.
+        </p>
+
+      </div>
+
+      <div class="related">
+
+        <a href="/online-code-editor.html">
+          Online Code Editor
+        </a>
+
+        <a href="/html-editor.html">
+          HTML Editor
+        </a>
+
+        <a href="/css-editor.html">
+          CSS Editor
+        </a>
+
+        <a href="/javascript-editor.html">
+          JavaScript Editor
+        </a>
+
+        <a href="/javascript-playground.html">
+          JavaScript Playground
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Frequently asked questions
+        </h2>
+
+        <p>
+          Common questions about HTML, CSS and JavaScript editors.
+        </p>
+
+      </div>
+
+      <div class="faq">
+
+        <details>
+
+          <summary>
+            What is an HTML CSS JavaScript editor?
+          </summary>
+
+          <p>
+            It is a browser-based editor that lets you
+            work with HTML, CSS and JavaScript together
+            to create and test web projects.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Can I edit HTML, CSS and JavaScript online?
+          </summary>
+
+          <p>
+            Yes. JS CODE OUTPUT provides a browser-based
+            environment for working with all three technologies.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Is this web editor free?
+          </summary>
+
+          <p>
+            JS CODE OUTPUT provides a free online coding
+            experience for web development.
+          </p>
+
+        </details>
+
+        <details>
+
+          <summary>
+            Can beginners use an HTML CSS JavaScript editor?
+          </summary>
+
+          <p>
+            Yes. It can be useful for learning frontend
+            concepts and experimenting with small projects.
+          </p>
+
+        </details>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="container">
+
+      <div class="cta">
+
+        <h2>
+          Start building your next webpage.
+        </h2>
+
+        <p>
+          Write HTML, style it with CSS, add JavaScript
+          and bring your idea to life with JS CODE OUTPUT.
+        </p>
+
+        <a
+          class="button primary"
+          href="/"
+        >
+          Start Coding Free →
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+
+  <div class="container footer-inner">
+
+    <div>
+      © 2026 JS CODE OUTPUT. All rights reserved.
+    </div>
+
+    <div class="footer-links">
+
+      <a href="/">
+        Home
+      </a>
+
+      <a href="/online-code-editor.html">
+        Online Code Editor
+      </a>
+
+      <a href="/html-editor.html">
+        HTML Editor
+      </a>
+
+      <a href="/css-editor.html">
+        CSS Editor
+      </a>
+
+      <a href="/javascript-editor.html">
+        JavaScript Editor
+      </a>
+
+      <a href="/javascript-playground.html">
+        JS Playground
+      </a>
+
+      <a href="/about.html">
+        About
+      </a>
+
+      <a href="/contact.html">
+        Contact
+      </a>
+
+      <a href="/privacy.html">
+        Privacy
+      </a>
+
+      <a href="/terms.html">
+        Terms
+      </a>
+
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
