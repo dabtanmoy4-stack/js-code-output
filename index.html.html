@@ -837,17 +837,40 @@ function saveLocalProjectFiles(){
   syncEditor();
   const id = window.currentProjectId;
   if (!id) return;
+  window.files = files;
   localStorage.setItem("js_files_" + id, JSON.stringify(files));
   if(activeFile) localStorage.setItem("js_active_file_" + id, activeFile);
   localStorage.setItem("js-code-output-active-project-id", id);
 }
 
+function normalizeFileMap(source){
+  const result = {};
+  if(!source || typeof source !== "object") return result;
+
+  Object.entries(source).forEach(([rawPath, value]) => {
+    if(!rawPath) return;
+    const path = String(rawPath).replace(/^\/+/, "");
+    if(!path) return;
+    result[path] = path.endsWith("/")
+      ? ""
+      : (typeof value === "string" ? value : (value == null ? "" : String(value)));
+  });
+
+  return result;
+}
+
+function setFileMap(source){
+  files = normalizeFileMap(source);
+  window.files = files;
+  return files;
+}
+
 function loadLocalProjectFiles(id){
   const saved = localStorage.getItem("js_files_" + id);
   if(saved){
-    try { files = JSON.parse(saved); } catch(e){ files = structuredClone(defaultTemplate); }
+    try { setFileMap(JSON.parse(saved)); } catch(e){ setFileMap(defaultTemplate); }
   } else {
-    files = structuredClone(defaultTemplate);
+    setFileMap(defaultTemplate);
   }
 
   let savedActive = localStorage.getItem("js_active_file_" + id);
@@ -1136,14 +1159,25 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
   }
 
   if(initialFiles){
-    files = initialFiles;
-    activeFile = Object.keys(files).filter(k => !k.endsWith('/'))[0] || null;
+    setFileMap(initialFiles);
+    const savedActive = localStorage.getItem("js_active_file_" + id);
+    const actualFiles = Object.keys(files).filter(k => !k.endsWith('/'));
+    activeFile = (savedActive && files[savedActive] !== undefined)
+      ? savedActive
+      : (actualFiles[0] || null);
+    window.activeFile = activeFile;
   } else {
     loadLocalProjectFiles(id);
   }
 
+  window.files = files;
+  window.activeFile = activeFile;
   renderFileExplorer();
   openFile(activeFile); 
+
+  if(Object.keys(files).some(k => /\.html?$/i.test(k))){
+    hasTypedInSession = true;
+  }
 
   if(!hasTypedInSession){
     document.getElementById("placeholderView").classList.remove("hidden");
@@ -1355,58 +1389,107 @@ window.deleteItem = function(path) {
   }
 };
 
-function handleFileUpload(e){
-  const fileList = [...e.target.files || []];
-  fileList.forEach(f => {
-    const r = new FileReader();
-    r.onload = ev => {
-      files[f.name] = ev.target.result || "";
-      saveLocalProjectFiles();
-      renderFileExplorer();
-      openFile(f.name);
-    };
-    const ext = getExt(f.name);
-    if (isBinary(ext)) {
-       r.readAsDataURL(f);
-    } else {
-       r.readAsText(f);
+function readUploadedFile(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = ev => resolve(ev.target.result || "");
+    reader.onerror = () => reject(reader.error || new Error("Could not read " + file.name));
+    try {
+      if(isBinary(getExt(file.name))) reader.readAsDataURL(file);
+      else reader.readAsText(file);
+    } catch(err) {
+      reject(err);
     }
   });
-  e.target.value = "";
 }
 
-function handleFolderUpload(e) {
-  const uploadedFiles = [...e.target.files || []];
-  let firstFile = null;
-  uploadedFiles.forEach((f, idx) => {
-      const r = new FileReader();
-      r.onload = ev => {
-          const path = f.webkitRelativePath || f.name; 
-          files[path] = ev.target.result || "";
-          if(idx === 0) firstFile = path;
+function addUploadedFilePath(path, content){
+  const cleanPath = String(path || "").replace(/^\/+/, "");
+  if(!cleanPath) return;
 
-          const parts = path.split('/');
-          let cur = "";
-          for(let i=0; i<parts.length-1; i++){
-              cur += parts[i] + "/";
-              folderState[cur] = true;
-          }
+  files[cleanPath] = content == null ? "" : content;
 
-          if(idx === uploadedFiles.length - 1) {
-              saveLocalProjectFiles();
-              renderFileExplorer();
-              if(firstFile) openFile(firstFile);
-          }
-      };
-      
-      const ext = getExt(f.name);
-      if (isBinary(ext)) {
-         r.readAsDataURL(f);
-      } else {
-         r.readAsText(f);
-      }
-  });
-  e.target.value = "";
+  const parts = cleanPath.split("/");
+  let cur = "";
+  for(let i = 0; i < parts.length - 1; i++){
+    cur += parts[i] + "/";
+    if(files[cur] === undefined) files[cur] = "";
+    folderState[cur] = true;
+  }
+}
+
+async function handleFileUpload(e){
+  const fileList = [...(e.target.files || [])];
+  if(!fileList.length) return;
+
+  try {
+    const results = await Promise.all(fileList.map(async f => ({
+      path: f.name,
+      content: await readUploadedFile(f)
+    })));
+
+    results.forEach(x => addUploadedFilePath(x.path, x.content));
+
+    window.files = files;
+    hasTypedInSession = true;
+
+    const firstText = results.find(x => !isBinary(getExt(x.path)));
+    activeFile = firstText?.path || results[0]?.path || null;
+    window.activeFile = activeFile;
+
+    saveLocalProjectFiles();
+    renderFileExplorer();
+    openFile(activeFile);
+    updatePreview(true);
+    scheduleCloudSave();
+
+    showToast(`${results.length} file${results.length === 1 ? "" : "s"} uploaded.`);
+  } catch(err) {
+    console.error("File upload failed:", err);
+    showToast("Could not read one or more uploaded files.");
+  } finally {
+    e.target.value = "";
+  }
+}
+
+async function handleFolderUpload(e){
+  const uploadedFiles = [...(e.target.files || [])];
+  if(!uploadedFiles.length) return;
+
+  try {
+    // Wait for ALL FileReaders. Their completion order is not guaranteed.
+    const results = await Promise.all(uploadedFiles.map(async f => ({
+      path: f.webkitRelativePath || f.name,
+      content: await readUploadedFile(f)
+    })));
+
+    results.forEach(x => addUploadedFilePath(x.path, x.content));
+
+    window.files = files;
+    hasTypedInSession = true;
+
+    const preferred =
+      results.find(x => /\/index\.html$/i.test(x.path)) ||
+      results.find(x => /^index\.html$/i.test(x.path)) ||
+      results.find(x => !isBinary(getExt(x.path))) ||
+      results[0];
+
+    activeFile = preferred?.path || null;
+    window.activeFile = activeFile;
+
+    saveLocalProjectFiles();
+    renderFileExplorer();
+    openFile(activeFile);
+    updatePreview(true);
+    scheduleCloudSave();
+
+    showToast(`${results.length} file${results.length === 1 ? "" : "s"} from folder uploaded.`);
+  } catch(err) {
+    console.error("Folder upload failed:", err);
+    showToast("Could not read one or more folder files.");
+  } finally {
+    e.target.value = "";
+  }
 }
 
 function dismissPlaceholder(){
@@ -1423,13 +1506,15 @@ function updatePreview(force=false){
 
   document.getElementById("placeholderView")?.classList.add("hidden");
 
-  const htmlKeys = Object.keys(files).filter(k => k.endsWith(".html"));
-  const cssKeys = Object.keys(files).filter(k => k.endsWith(".css"));
-  const jsKeys = Object.keys(files).filter(k => (k.endsWith(".js") || k.endsWith(".mjs")) && !k.endsWith(".json"));
+  const allFileKeys = Object.keys(files).filter(k => !k.endsWith("/"));
+  const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
+  const cssKeys = allFileKeys.filter(k => /\.css$/i.test(k));
+  const jsKeys = allFileKeys.filter(k => /\.(js|mjs)$/i.test(k));
 
-  let html = htmlKeys.includes("index.html") ? files["index.html"] : (htmlKeys.length ? files[htmlKeys[0]] : "");
-  let css = cssKeys.map(k => files[k]).join("\n");
-  const js = jsKeys.map(k => files[k]).join(";\n");
+  const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html");
+  let html = rootIndex ? files[rootIndex] : (htmlKeys.length ? files[htmlKeys[0]] : "");
+  let css = cssKeys.map(k => files[k] || "").join("\n");
+  const js = jsKeys.map(k => files[k] || "").join(";\n");
 
   // SMART IMAGE INJECTOR: Replaces file names with actual image/media data in the preview
   Object.keys(files).forEach(filename => {
