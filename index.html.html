@@ -4,7 +4,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9870552994374147"
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
-  
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JS CODE OUTPUT — World-Class Code Editor & Live Output</title>
 <link rel="icon" href="logo.png.jepg" type="image/jpeg">
@@ -14,7 +14,6 @@
 
 <!-- Tailwind & Icons -->
 <script src="https://cdn.tailwindcss.com"></script>
-  
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- CodeMirror Core & Dracula Theme -->
@@ -37,6 +36,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/php/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/markdown/markdown.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
@@ -598,13 +601,13 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <section class="editor-panel">
     <div class="editor-tabs">
       <div id="tabs" class="tabs"></div>
-      
+
       <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
       <div class="flex gap-1">
         <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
         <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
       </div>
-      
+
     </div>
     <div class="editor-container-wrapper">
       <div class="editor-content">
@@ -752,9 +755,9 @@ let currentProjectId = localStorage.getItem("js-code-output-active-project-id") 
 let cloudSaveTimer = null, debounceTimer = null;
 let hasTypedInSession = false;
 let isSwitchingProject = false; 
-let folderState = {}; // Keeps track of open/closed folders
+let folderState = {}; 
 
-const defaultTemplate = {}; // Project will start completely blank
+const defaultTemplate = {}; 
 
 window.files = files;
 window.activeFile = activeFile;
@@ -762,21 +765,70 @@ window.currentProjectId = currentProjectId;
 window.isSwitchingProject = false; 
 
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-function getExt(n){ return n && n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
+
+function getExt(n) {
+  if(!n) return "";
+  let parts = n.split('.');
+  if(parts.length === 1 || (parts[0] === "" && parts.length === 2)) return parts.pop().toLowerCase();
+  return parts.pop().toLowerCase();
+}
+
+function isBinary(ext) {
+  const bins = ['png','jpg','jpeg','gif','webp','ico','mp3','wav','mp4','webm','pdf','zip','rar','tar','gz','ttf','otf','woff','woff2','eot'];
+  return bins.includes(ext.toLowerCase());
+}
+
 function getMode(n){
   if(!n) return "text/plain";
   const e = getExt(n);
-  return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="mjs") ? "javascript" : "text/plain";
+  switch(e) {
+    case "html": case "htm": return "htmlmixed";
+    case "css": return "css";
+    case "js": case "mjs": case "json": return "javascript";
+    case "xml": case "svg": return "xml";
+    case "py": return "python";
+    case "php": return "php";
+    case "sql": return "sql";
+    case "md": return "markdown";
+    default: return "text/plain";
+  }
 }
-function icon(n){
+
+function icon(n) {
+  if (n.startsWith('.') && n.indexOf('.', 1) === -1) { 
+      const name = n.toLowerCase();
+      if(name === '.env') return '<i class="fa-solid fa-gear text-gray-400"></i>';
+      if(name === '.gitignore') return '<i class="fa-brands fa-git-alt text-red-500"></i>';
+  }
   const e = getExt(n);
-  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : e==="json" ? '<i class="fa-solid fa-code text-green-400"></i>' : '<i class="fa-solid fa-file"></i>';
+  switch(e) {
+    case 'html': case 'htm': return '<i class="fa-brands fa-html5 text-orange-500"></i>';
+    case 'css': return '<i class="fa-brands fa-css3-alt text-sky-400"></i>';
+    case 'js': case 'mjs': return '<i class="fa-brands fa-js text-yellow-400"></i>';
+    case 'json': return '<i class="fa-solid fa-brackets-curly text-green-400"></i>';
+    case 'xml': return '<i class="fa-solid fa-code text-blue-400"></i>';
+    case 'png': case 'jpg': case 'jpeg': case 'gif': case 'webp': case 'ico': case 'svg': return '<i class="fa-solid fa-image text-purple-400"></i>';
+    case 'env': return '<i class="fa-solid fa-gear text-gray-400"></i>';
+    case 'txt': case 'md': return '<i class="fa-solid fa-file-lines text-gray-300"></i>';
+    case 'py': return '<i class="fa-brands fa-python text-blue-500"></i>';
+    case 'java': return '<i class="fa-brands fa-java text-red-500"></i>';
+    case 'php': return '<i class="fa-brands fa-php text-indigo-400"></i>';
+    case 'sql': return '<i class="fa-solid fa-database text-gray-400"></i>';
+    case 'mp3': case 'wav': return '<i class="fa-solid fa-file-audio text-yellow-500"></i>';
+    case 'mp4': case 'webm': return '<i class="fa-solid fa-file-video text-pink-500"></i>';
+    case 'pdf': return '<i class="fa-solid fa-file-pdf text-red-400"></i>';
+    case 'zip': case 'rar': case 'tar': case 'gz': return '<i class="fa-solid fa-file-zipper text-orange-400"></i>';
+    default: return '<i class="fa-solid fa-file text-gray-400"></i>';
+  }
 }
 
 function syncEditor(){
   if(editor && activeFile && !isSwitchingProject) {
-    files[activeFile] = editor.getValue();
-    window.files = files;
+    const ext = getExt(activeFile);
+    if(!isBinary(ext)) {
+       files[activeFile] = editor.getValue();
+       window.files = files;
+    }
   }
 }
 
@@ -797,10 +849,10 @@ function loadLocalProjectFiles(id){
   } else {
     files = structuredClone(defaultTemplate);
   }
-  
+
   let savedActive = localStorage.getItem("js_active_file_" + id);
   let allActualFiles = Object.keys(files).filter(k => !k.endsWith('/'));
-  
+
   if(savedActive && files[savedActive] !== undefined && !savedActive.endsWith('/')) {
       activeFile = savedActive;
   } else if (allActualFiles.length > 0) {
@@ -808,7 +860,7 @@ function loadLocalProjectFiles(id){
   } else {
       activeFile = null;
   }
-  
+
   window.files = files;
   window.activeFile = activeFile;
 }
@@ -846,11 +898,10 @@ async function continueWithGoogle(){
   }
 }
 
-// START WITHOUT LOGIN (Creates Local Project)
 function startWithoutLogin(){
   document.getElementById("startLoginScreen").classList.add("hidden");
   let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  
+
   if(localProjects.length === 0) {
       const id = "local_proj_" + Date.now();
       localProjects.push({id, name: "Guest Project " + 1});
@@ -868,12 +919,11 @@ function openProjectsPage(pushHistory = true){
   document.getElementById("startLoginScreen").classList.add("hidden");
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.remove("hidden");
-  
+
   if (pushHistory) {
     history.pushState({ page: "projects" }, "", "#projects");
   }
 
-  // Save current project before going to dashboard
   if(window.currentProjectId) {
     syncEditor();
     let temp = isSwitchingProject;
@@ -912,7 +962,6 @@ async function firebaseLogout(){
   showToast("Logged out successfully.");
 }
 
-// Project Management
 function showCreateProject(){
   document.getElementById("createProjectModal").classList.remove("hidden");
   document.getElementById("newProjectName").value = "";
@@ -927,7 +976,7 @@ async function createProject(){
 
   isSwitchingProject = true;
   window.isSwitchingProject = true;
-  
+
   if (window.currentProjectId) {
     let temp = isSwitchingProject;
     isSwitchingProject = false;
@@ -1024,16 +1073,16 @@ async function loadProjects(){
   } else {
     empty.classList.add("hidden");
   }
-  
+
   loadHeaderProjects();
 }
 
 async function switchProject(id, name){
   if(id === window.currentProjectId) return; 
-  
+
   isSwitchingProject = true;
   window.isSwitchingProject = true;
-  
+
   if (window.currentProjectId) {
      let temp = isSwitchingProject;
      isSwitchingProject = false;
@@ -1095,20 +1144,19 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
 
   renderFileExplorer();
   openFile(activeFile); 
- 
+
   if(!hasTypedInSession){
     document.getElementById("placeholderView").classList.remove("hidden");
   } else {
     updatePreview();
   }
-  
+
   setTimeout(() => {
     isSwitchingProject = false;
     window.isSwitchingProject = false;
   }, 100);
 }
 
-// Recursive Tree Render Function
 function renderFileExplorer(){
   const el = document.getElementById("fileExplorer");
   if(!el) return;
@@ -1147,9 +1195,9 @@ function renderFileExplorer(){
           if(key.startsWith("_")) return;
           const item = node[key];
           const div = document.createElement("div");
-          
+
           if(item._isDir) {
-              let isOpen = folderState[item.path] !== false; // open by default
+              let isOpen = folderState[item.path] !== false; 
               div.className = "tree-item";
               div.innerHTML = `
                   <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item.path}', event)">
@@ -1188,7 +1236,7 @@ function renderFileExplorer(){
   } else {
       buildDOM(root, el, 0);
   }
-  
+
   renderEditorTabs();
 }
 
@@ -1215,12 +1263,12 @@ function renderEditorTabs(){
 
 function openFile(n){
   if(n && files[n] === undefined && !n.endsWith('/')) return;
-  
+
   if (!isSwitchingProject && activeFile && files[activeFile] !== undefined) {
     syncEditor();
     saveLocalProjectFiles();
   }
-  
+
   activeFile = n;
   window.activeFile = n;
 
@@ -1232,16 +1280,25 @@ function openFile(n){
         editor.setOption("readOnly", "nocursor");
         isSwitchingProject = oldLock;
     } else {
-        const m = getMode(n);
-        editor.setOption("mode", m);
-        editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
-        editor.setOption("readOnly", false);
-        
-        let oldLock = isSwitchingProject;
-        isSwitchingProject = true;
-        editor.setValue(files[n] || "");
-        editor.clearHistory();
-        isSwitchingProject = oldLock; 
+        const ext = getExt(n);
+        if(isBinary(ext)) {
+           let oldLock = isSwitchingProject;
+           isSwitchingProject = true;
+           editor.setValue("/* 🖼️ Binary/Media file (" + ext + ") \n   This file is loaded in memory and supported! \n   You can use it in your code directly (e.g., <img src=\""+n+"\">). \n   Text Editor preview is disabled for images to prevent lag. */");
+           editor.setOption("readOnly", "nocursor");
+           isSwitchingProject = oldLock;
+        } else {
+           const m = getMode(n);
+           editor.setOption("mode", m);
+           editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
+           editor.setOption("readOnly", false);
+
+           let oldLock = isSwitchingProject;
+           isSwitchingProject = true;
+           editor.setValue(files[n] || "");
+           editor.clearHistory();
+           isSwitchingProject = oldLock; 
+        }
     }
     setTimeout(() => editor.refresh(), 10);
   }
@@ -1249,7 +1306,7 @@ function openFile(n){
 }
 
 window.createNewFile = function(basePath = "") {
-  const n = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.css`);
+  const n = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.css, .env, data.xml`);
   if(!n) return;
   const name = n.trim();
   if(!name) return;
@@ -1269,7 +1326,7 @@ window.createNewFolder = function(basePath = "") {
   if(!name) return;
   const fullPath = basePath + name + "/";
   if(files[fullPath] !== undefined) return alert("Folder already exists.");
-  files[fullPath] = ""; // folder placeholder
+  files[fullPath] = ""; 
   folderState[fullPath] = true; 
   if(basePath) folderState[basePath] = true;
   saveLocalProjectFiles();
@@ -1279,7 +1336,7 @@ window.createNewFolder = function(basePath = "") {
 window.deleteItem = function(path) {
   const isFolder = path.endsWith('/');
   if(!confirm(`Delete ${isFolder ? 'folder and all its contents' : 'file'} (${path})?`)) return;
-  
+
   let requiresActiveChange = false;
   Object.keys(files).forEach(k => {
       if(k === path || k.startsWith(path)) {
@@ -1287,7 +1344,7 @@ window.deleteItem = function(path) {
           if(k === activeFile) requiresActiveChange = true;
       }
   });
-  
+
   if(requiresActiveChange) {
       const remainingFiles = Object.keys(files).filter(k => !k.endsWith('/'));
       activeFile = remainingFiles.length > 0 ? remainingFiles[0] : null;
@@ -1308,7 +1365,12 @@ function handleFileUpload(e){
       renderFileExplorer();
       openFile(f.name);
     };
-    r.readAsText(f);
+    const ext = getExt(f.name);
+    if (isBinary(ext)) {
+       r.readAsDataURL(f);
+    } else {
+       r.readAsText(f);
+    }
   });
   e.target.value = "";
 }
@@ -1322,22 +1384,27 @@ function handleFolderUpload(e) {
           const path = f.webkitRelativePath || f.name; 
           files[path] = ev.target.result || "";
           if(idx === 0) firstFile = path;
-          
-          // Ensure parent folders are expanded
+
           const parts = path.split('/');
           let cur = "";
           for(let i=0; i<parts.length-1; i++){
               cur += parts[i] + "/";
               folderState[cur] = true;
           }
-          
+
           if(idx === uploadedFiles.length - 1) {
               saveLocalProjectFiles();
               renderFileExplorer();
               if(firstFile) openFile(firstFile);
           }
       };
-      r.readAsText(f);
+      
+      const ext = getExt(f.name);
+      if (isBinary(ext)) {
+         r.readAsDataURL(f);
+      } else {
+         r.readAsText(f);
+      }
   });
   e.target.value = "";
 }
@@ -1356,14 +1423,23 @@ function updatePreview(force=false){
 
   document.getElementById("placeholderView")?.classList.add("hidden");
 
-  // Smart Compiler: Find html, bundle all css, bundle all js
   const htmlKeys = Object.keys(files).filter(k => k.endsWith(".html"));
   const cssKeys = Object.keys(files).filter(k => k.endsWith(".css"));
-  const jsKeys = Object.keys(files).filter(k => k.endsWith(".js") || k.endsWith(".mjs"));
+  const jsKeys = Object.keys(files).filter(k => (k.endsWith(".js") || k.endsWith(".mjs")) && !k.endsWith(".json"));
 
-  const html = htmlKeys.includes("index.html") ? files["index.html"] : (htmlKeys.length ? files[htmlKeys[0]] : "");
-  const css = cssKeys.map(k => files[k]).join("\n");
+  let html = htmlKeys.includes("index.html") ? files["index.html"] : (htmlKeys.length ? files[htmlKeys[0]] : "");
+  let css = cssKeys.map(k => files[k]).join("\n");
   const js = jsKeys.map(k => files[k]).join(";\n");
+
+  // SMART IMAGE INJECTOR: Replaces file names with actual image/media data in the preview
+  Object.keys(files).forEach(filename => {
+     if(isBinary(getExt(filename))) {
+        const safeKey = filename.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        const rx = new RegExp('(["\'])(\\.\\/)?' + safeKey + '\\1', 'g');
+        html = html.replace(rx, '$1' + files[filename] + '$1');
+        css = css.replace(rx, '$1' + files[filename] + '$1');
+     }
+  });
 
   const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
   const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
@@ -1431,7 +1507,15 @@ closeDownloadMenu();
 syncEditor();
 const z = new JSZip();
 Object.entries(files).forEach(([n,c]) => {
-    if(!n.endsWith('/')) z.file(n, c);
+    if(!n.endsWith('/')) {
+        if(isBinary(getExt(n))) {
+            const b64 = c.split(',')[1]; 
+            if(b64) z.file(n, b64, {base64: true});
+            else z.file(n, c);
+        } else {
+            z.file(n, c);
+        }
+    }
 });
 const blob = await z.generateAsync({type:"blob"});
 const a = document.createElement("a");
@@ -1567,7 +1651,7 @@ loadLocalProjectFiles(initialId);
 
 const wrapper = document.getElementById("wrapper-editor");
 editor = CodeMirror(wrapper, {
-value: (activeFile && files[activeFile]) ? files[activeFile] : "",
+value: (activeFile && files[activeFile] && !isBinary(getExt(activeFile))) ? files[activeFile] : "",
 mode: getMode(activeFile),
 theme: "dracula",
 lineNumbers: true,
