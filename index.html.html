@@ -609,24 +609,22 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <section class="editor-panel">
     <div class="editor-tabs">
       <div id="tabs" class="tabs"></div>
-
-  <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
-  <div class="flex gap-1">
-    <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-    <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
-  </div>
-  
-</div>
-<div class="editor-container-wrapper">
-  <div class="editor-content">
-    <div id="wrapper-editor" class="code-pane"></div>
-  </div>
-</div>
-
+      
+      <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
+      <div class="flex gap-1">
+        <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+      </div>
+      
+    </div>
+    <div class="editor-container-wrapper">
+      <div class="editor-content">
+        <div id="wrapper-editor" class="code-pane"></div>
+      </div>
+    </div>
   </section>
 
   <!-- Live Preview Panel -->
-
   <section class="preview-panel">
     <div class="preview-toolbar">
       <div class="flex items-center gap-2 text-[10px] font-bold">
@@ -1353,7 +1351,7 @@ function downloadHTMLFile(){
 closeDownloadMenu();
 syncEditor();
 const html = files["index.html"] || "", css = files["style.css"] || "", js = files["script.js"] || "";
-const blob = new Blob([<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}</script></body></html>], {type:"text/html"});
+const blob = new Blob([<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>], {type:"text/html"});
 const a = document.createElement("a");
 a.href = URL.createObjectURL(blob);
 a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
@@ -1518,8 +1516,8 @@ saveLocalProjectFiles();
 
 const auto = document.getElementById("autoRunToggle");
 if(auto?.checked){
-clearTimeout(debounceTimer);
-debounceTimer = setTimeout(() => updatePreview(), 400);
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => updatePreview(), 400);
 }
 scheduleCloudSave();
 
