@@ -4,25 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JS CODE OUTPUT — World-Class Code Editor & Live Output</title>
-<meta name="description" content="JS CODE OUTPUT is a premium free online code editor and web builder for HTML, CSS and JavaScript with instant live output, projects, templates, console and downloads.">
+<meta name="description" content="JS CODE OUTPUT is a premium free online code editor and web builder.">
 <link rel="canonical" href="https://js-code-output.vercel.app/">
 <meta name="theme-color" content="#07101d">
-  <link rel="icon" type="image/png" href="/logo.png">
 
 <!-- Tailwind & Icons -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- CodeMirror Core & Dracula Theme -->
+<!-- CodeMirror Core & Theme -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 
-<!-- CodeMirror Hint, Lint & Search Addons -->
+<!-- CodeMirror Addons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
 
-<!-- Linters & Parser Scripts (Updated HTMLHint to 0.9.13 to fix error) -->
+<!-- Linters & Parser Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.9.13/htmlhint.js"></script>
@@ -35,12 +34,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+
+<!-- MATCH TAGS SCRIPT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/xml-fold.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchtags.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/xml-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/html-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/css-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/javascript-hint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/javascript-lint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/css-lint.min.js"></script>
@@ -51,19 +54,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/search.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "JS CODE OUTPUT",
-  "url": "https://js-code-output.vercel.app/",
-  "logo": "https://js-code-output.vercel.app/logo.png"
-}
-</script>
-
 <style>
+/* Existing UI Styles retained for safety */
 :root{
   --bg:#f7f9fc;--surface:#fff;--surface2:#f1f4f8;--ink:#111827;--muted:#667085;
   --line:#dfe4ea;--brand:#1456b8;--brand2:#2f7be5;--accent:#0b2e59;--shadow:0 20px 60px rgba(15,35,65,.10);
@@ -72,544 +64,82 @@ html.dark{
   --bg:#07101d;--surface:#0c1624;--surface2:#111d2d;--ink:#f8fafc;--muted:#94a3b8;
   --line:#223149;--brand:#4f8fe8;--brand2:#6ea8ff;--accent:#b9d6ff;--shadow:0 20px 60px rgba(0,0,0,.35);
 }
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);scroll-behavior:smooth}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:var(--bg);}
 button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
 body{overflow-x:hidden}.hidden{display:none!important}
-
-/* Custom Scrollbars */
 ::-webkit-scrollbar { width:6px; height:6px; }
 ::-webkit-scrollbar-thumb { background:rgba(100,116,139,0.3); border-radius:3px; }
-::-webkit-scrollbar-thumb:hover { background:rgba(100,116,139,0.5); }
 
-/* --- LANDING PAGE STYLES --- */
-.logo-img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid var(--line);box-shadow:0 8px 25px rgba(15,35,65,.12)}
-.wire-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.wire{position:absolute;border:1px solid rgba(20,86,184,.15);filter:blur(.1px);transform:rotate(24deg);animation:wireMove 14s linear infinite}
-.w1{width:900px;height:900px;left:-250px;top:120px;border-radius:44%;}.w2{width:1100px;height:500px;right:-350px;top:420px;border-radius:50%;animation-duration:19s;animation-direction:reverse}.w3{width:700px;height:700px;right:12%;top:80px;border-radius:42%;animation-duration:16s}.w4{width:1200px;height:380px;left:-150px;bottom:0;border-radius:50%;animation-duration:22s}
-@keyframes wireMove{0%{transform:rotate(24deg) translate3d(-30px,0,0)}50%{transform:rotate(27deg) translate3d(35px,-25px,0)}100%{transform:rotate(24deg) translate3d(-30px,0,0)}}
-.wire-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:#2f7be5;box-shadow:0 0 18px #2f7be5;animation:dotFloat 8s ease-in-out infinite}
-@keyframes dotFloat{50%{transform:translate(70px,-40px);opacity:.25}}
-.site-nav{position:fixed;top:0;left:0;right:0;height:76px;z-index:80;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid color-mix(in srgb,var(--line) 75%,transparent)}
-.nav-brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.08em}.nav-brand span{font-size:13px}.nav-links{display:flex;gap:26px;font-size:13px;color:var(--muted)}.nav-links a:hover{color:var(--brand)}
-.nav-actions{display:flex;align-items:center;gap:9px}.theme-toggle,.nav-login{height:38px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:0 13px}.nav-login{background:var(--ink);color:var(--surface);border-color:var(--ink);font-weight:800}
-.landing{position:relative;min-height:100vh;padding-top:76px;overflow:hidden}.hero{position:relative;z-index:2;min-height:760px;display:grid;grid-template-columns:1.02fr .98fr;gap:70px;align-items:center;max-width:1240px;margin:auto;padding:90px 5vw 80px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--brand);box-shadow:0 8px 25px rgba(15,35,65,.05)}
-.hero h1{font-size:clamp(46px,6.4vw,88px);line-height:.98;letter-spacing:-.065em;margin:20px 0 20px;font-weight:950}.hero h1 em{font-style:normal;color:var(--brand)}
-.hero p{font-size:18px;line-height:1.75;color:var(--muted);max-width:650px}.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.primary-btn,.secondary-btn{border-radius:12px;padding:14px 20px;border:1px solid var(--line);font-weight:850;font-size:13px}.primary-btn{background:var(--ink);color:var(--surface);box-shadow:0 14px 35px rgba(15,35,65,.16)}.secondary-btn{background:var(--surface)}.primary-btn:hover,.secondary-btn:hover{transform:translateY(-2px)}
-.hero-meta{display:flex;gap:20px;margin-top:24px;color:var(--muted);font-size:11px}.hero-meta i{color:var(--brand);margin-right:5px}
-.hero-visual{position:relative}.hero-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;transform:perspective(1200px) rotateY(-4deg) rotateX(2deg);animation:heroFloat 6s ease-in-out infinite}.hero-card-head{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 15px}.traffic{display:flex;gap:6px}.traffic i{width:8px;height:8px;border-radius:50%;display:block}.t1{background:#f87171}.t2{background:#fbbf24}.t3{background:#34d399}.mini-title{font-size:9px;color:var(--muted);letter-spacing:.12em}.mock-workspace{display:grid;grid-template-columns:135px 1fr 1fr;height:355px}.mock-side{background:var(--surface2);border-right:1px solid var(--line);padding:16px 10px}.mock-file{font-size:9px;padding:8px;border-radius:7px;color:var(--muted);margin-bottom:4px}.mock-file.active{background:rgba(20,86,184,.11);color:var(--brand);font-weight:800}.mock-editor{padding:17px;background:#101827;color:#d6deeb;font:10px/1.9 "Fira Code",monospace;overflow:hidden}.code-blue{color:#72a7ff}.code-green{color:#77d69c}.code-orange{color:#f6b36a}.mock-output{background:#fff;padding:22px;color:#152238;position:relative}.mock-output .site-preview{height:100%;border:1px solid #dbe1e8;border-radius:10px;padding:22px;background:linear-gradient(145deg,#f8fbff,#fff)}.site-preview h3{font-size:18px;margin:10px 0}.site-preview .bar{height:7px;width:80%;background:#dbe7f7;border-radius:8px;margin:10px 0}.site-preview .box{height:80px;border-radius:12px;background:#eef5ff;margin-top:20px}.hero-badge{position:absolute;right:-18px;bottom:-18px;background:var(--ink);color:var(--surface);padding:15px 17px;border-radius:14px;box-shadow:0 18px 35px rgba(0,0,0,.16);font-size:11px;font-weight:850}.hero-badge strong{display:block;font-size:19px;color:#8dbdff}@keyframes heroFloat{50%{transform:perspective(1200px) rotateY(-2deg) rotateX(1deg) translateY(-8px)}}
-.section{position:relative;z-index:2;padding:105px 5vw}.section-inner{max-width:1160px;margin:auto}.section-head{text-align:center;max-width:700px;margin:0 auto 45px}.kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:900}.section-head h2{font-size:clamp(32px,4.5vw,56px);letter-spacing:-.045em;line-height:1.03;margin:12px 0}.section-head p{color:var(--muted);line-height:1.75}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.feature-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 10px 35px rgba(15,35,65,.045);transition:.25s}.feature-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.feature-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#eaf2ff;color:var(--brand);margin-bottom:20px}.dark .feature-icon{background:#142845}.feature-card h3{font-size:17px;margin:0 0 9px}.feature-card p{font-size:13px;line-height:1.7;color:var(--muted);margin:0}
-.showcase{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.showcase-copy h2{font-size:clamp(32px,4vw,52px);letter-spacing:-.05em;margin:10px 0 16px}.showcase-copy p{color:var(--muted);line-height:1.8}.check-list{list-style:none;padding:0;margin:25px 0}.check-list li{display:flex;gap:10px;margin:13px 0;font-size:13px}.check-list i{color:var(--brand);margin-top:2px}.video-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;box-shadow:var(--shadow)}.video-inner{height:350px;border-radius:14px;position:relative;overflow:hidden;background:#0b1320}.scan{position:absolute;left:0;right:0;height:2px;background:#6ea8ff;box-shadow:0 0 30px #6ea8ff;animation:scan 4s linear infinite}.orbit{position:absolute;border:1px solid rgba(110,168,255,.35);border-radius:50%;inset:45px;animation:spin 12s linear infinite}.orbit:before,.orbit:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#75b0ff;box-shadow:0 0 20px #75b0ff}.orbit:before{left:10%;top:20%}.orbit:after{right:12%;bottom:17%}.video-label{position:absolute;left:25px;bottom:22px;color:#dcecff;font:11px monospace;letter-spacing:.12em}@keyframes scan{from{top:-5px}to{top:100%}}@keyframes spin{to{transform:rotate(360deg)}}
-.language-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:30px}.lang{padding:10px 14px;border:1px solid var(--line);background:var(--surface);border-radius:999px;font-size:11px;color:var(--muted)}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:22px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.step-num{font-size:11px;color:var(--brand);font-weight:900}.step h3{margin:13px 0 7px}.step p{font-size:12px;color:var(--muted);line-height:1.65}
-.final-cta{background:var(--ink);color:var(--surface);border-radius:26px;padding:65px;text-align:center;position:relative;overflow:hidden}.final-cta h2{font-size:clamp(32px,5vw,62px);letter-spacing:-.05em;margin:0 0 13px}.final-cta p{color:#a8b5c7;max-width:600px;margin:0 auto 25px;line-height:1.7}.final-cta .primary-btn{background:#fff;color:#101827}
-.site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
-.floating-theme{position:fixed;right:22px;bottom:22px;z-index:100;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 12px 30px rgba(0,0,0,.16);display:grid;place-items:center}.floating-theme:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(20,86,184,.25);animation:sunPulse 2.5s infinite}.floating-theme i{position:relative}@keyframes sunPulse{50%{transform:scale(1.12);opacity:.35}}
+/* Landing, Header, and general app styles */
+.site-nav { position:fixed;top:0;left:0;right:0;height:76px;z-index:80;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--line); }
+.landing{position:relative;min-height:100vh;padding-top:76px;overflow:hidden}.hero{min-height:760px;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;padding:90px 5vw}
+.primary-btn{background:var(--ink);color:var(--surface);padding:14px 20px;border-radius:12px;font-weight:bold}
 
-/* --- APP STYLES --- */
-#app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
-#topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; }
-.header-left { display:flex;align-items:center;gap:14px; }
-.app-brand { display:flex;align-items:center;gap:9px;min-width:0; }
-.app-brand h1 { font-size:12px;margin:0;font-weight:950;letter-spacing:.09em; }
-.app-brand p { font-size:8px;margin:2px 0 0;color:var(--muted); }
+#app { height:100vh;display:flex;flex-direction:column; }
+#topHeader { height:58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between; }
+#workspace { flex:1;display:flex;overflow:hidden; }
+.explorer { width:220px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column; }
+.explorer-head { height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10px;font-weight:900; }
+.explorer-body { padding:12px 0;overflow:auto;flex:1; }
 
-.project-switcher { position:relative; }
-.current-project { max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:6px;font-weight:700;border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px 12px;font-size:11px; }
-.project-menu { position:absolute;left:0;top:40px;width:300px;background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);z-index:500;overflow:hidden; }
-.project-menu-head { padding:13px;border-bottom:1px solid var(--line); }
-.project-list { max-height:260px;overflow:auto;padding:7px; }
-.header-project-item { width:100%;display:flex;align-items:center;gap:8px;padding:9px;border:0;background:transparent;color:var(--ink);font-size:11px;text-align:left;border-radius:7px; }
-.header-project-item:hover { background:var(--surface2); }
-.header-project-item.current { background:rgba(20,86,184,.1);color:var(--brand);font-weight:800; }
+/* Drag and drop zone */
+.explorer-body.dragover { background: rgba(59,130,246,0.1); border: 2px dashed #3b82f6; }
 
-#workspace { flex:1;min-height:0;display:flex;overflow:hidden; }
-.explorer { width:220px;flex:0 0 220px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0; }
-.explorer-head { height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10px;font-weight:900;letter-spacing:.12em; }
-.explorer-body { padding:12px;overflow:auto;flex:1; }
-.explorer-file { width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:7px;color:var(--muted);font-size:11px;text-align:left;cursor:pointer; }
-.explorer-file:hover { background:var(--surface2);color:var(--ink); }
-.explorer-file.active { background:rgba(20,86,184,.11);color:var(--brand);font-weight:800; }
+.explorer-file { display:flex;align-items:center;justify-content:space-between;padding:6px 12px;font-size:12px;cursor:pointer; border-left: 2px solid transparent; }
+.explorer-file:hover { background:var(--surface2); }
+.explorer-file.active { background:rgba(20,86,184,.11);color:var(--brand); border-left: 2px solid var(--brand); font-weight: bold; }
 .explorer-actions { padding:10px;border-top:1px solid var(--line);display:grid;gap:7px; }
-.explorer-actions button, .tool-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:10px; }
+.explorer-actions button, .tool-btn { border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px;font-size:11px; }
 
-.main-area { flex:1;min-width:0;min-height:0;display:flex;overflow:hidden; }
-.editor-panel { flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line); }
-.preview-panel { flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column; }
-.editor-tabs, .preview-toolbar { height:40px;flex:0 0 40px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px; }
+.main-area { flex:1;display:flex;overflow:hidden; }
+.editor-panel { flex:1;display:flex;flex-direction:column;border-right:1px solid var(--line); transition: 0.2s all; }
+
+/* FULLSCREEN EDITOR STYLE */
+.editor-panel.fullscreen-editor { position: fixed; inset: 0; z-index: 9999; background: var(--bg); border: none; }
+
+.preview-panel { flex:1;display:flex;flex-direction:column; }
+.editor-tabs, .preview-toolbar { height:40px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px; }
 .tabs { display:flex;gap:3px;overflow:auto; }
-.editor-tab { height:34px;border:0;background:transparent;color:var(--muted);font-size:11px;padding:0 12px;border-radius:7px 7px 0 0;display:inline-flex;align-items:center;gap:6px; }
-.editor-tab:hover { background:var(--surface2);color:var(--ink); }
-.editor-tab.active-file-tab { background:var(--surface2);color:var(--brand);border-top:2px solid var(--brand);font-weight:800; }
-.editor-container-wrapper { flex:1;min-height:0;display:flex;flex-direction:column;position:relative; }
-.editor-content { flex:1;min-height:0;position:relative; }
+.editor-tab { height:34px;padding:0 12px;font-size:11px;border-radius:7px 7px 0 0; }
+.editor-tab.active-file-tab { background:var(--surface2);color:var(--brand);border-top:2px solid var(--brand); font-weight:bold; }
+.editor-content { flex:1;position:relative; }
 .code-pane { position:absolute;inset:0; }
-.CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#1e1e2e!important;color:#cdd6f4!important; }
+.CodeMirror { height:100%!important;font-family:"Fira Code",monospace;font-size:13px;background:#1e1e2e!important;color:#cdd6f4!important; }
+.CodeMirror-matchingtag { background: rgba(255,255,255,.2); } 
 
-/* CodeMirror Dialog (Search) Styling */
-.CodeMirror-dialog { background:#181825!important; color:#cdd6f4!important; border-bottom:1px solid #313244!important; font-family:"Fira Code",monospace; font-size:12px; padding:8px 16px!important; }
-.CodeMirror-dialog input { background:#11111b; border:1px solid #313244; color:#cdd6f4; border-radius:4px; padding:4px 8px; outline:none; margin:0 5px; }
-.CodeMirror-dialog button { background:#313244; color:#cdd6f4; border:none; border-radius:4px; padding:4px 10px; margin-left:4px; cursor:pointer; font-size:11px; }
-.CodeMirror-dialog button:hover { background:#45475a; }
-.CodeMirror-search-hint { color:#a6adc8!important; font-size:10px; font-style:italic; }
-
-#iframeContainer { flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;background:#0d1527;position:relative; }
-#outputIframe { width:100%;height:100%;border:0;background:white;transition:.2s; }
-
-/* Full Screen CSS for Preview */
-#iframeContainer:fullscreen { background: #000; }
-#iframeContainer:-webkit-full-screen { background: #000; }
-#iframeContainer:-ms-fullscreen { background: #000; }
-
-/* Interactive Live Preview Placeholder */
-.placeholder-view { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at center, #111d33 0%, #080f1d 100%);color:#f8fafc;padding:30px;text-align:center;z-index:20; }
-.pulse-ring { width:80px;height:80px;border-radius:50%;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(59,130,246,0.35);animation:glow 3s infinite;margin-bottom:20px; }
-@keyframes glow { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.08);opacity:1;box-shadow:0 0 45px rgba(59,130,246,0.6)} }
-
-.screen-btn { border:0;background:transparent;color:var(--muted);padding:5px 8px;border-radius:6px;font-size:11px; }
-.screen-btn.active, .screen-btn:hover { background:var(--surface2);color:var(--brand); }
-.app-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:6px; }
-.app-btn.run { background:#0f766e;color:white;border-color:#0f766e; }
-
-/* Modals & Overlays */
-.overlay { position:fixed;inset:0;z-index:1000;background:rgba(2,8,23,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px; }
-.modal { width:min(440px,94vw);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px; }
-.modal h3 { margin:0;font-size:18px;font-weight:800; }
-.modal p { color:var(--muted);font-size:12px;margin:8px 0 16px; }
-.modal input { width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:10px;padding:11px;outline:0; }
-.modal-actions { display:flex;justify-content:flex-end;gap:8px;margin-top:20px; }
-.modal-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);padding:9px 15px;border-radius:8px;font-size:11px;font-weight:700; }
-.modal-btn.primary { background:var(--ink);color:var(--surface); }
-
-.login-card { text-align:center;width:min(400px,94vw);background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:32px 24px;box-shadow:var(--shadow); }
-.google-btn { width:100%;padding:12px;border:1px solid #d0d5dd;background:#fff;color:#111827;border-radius:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05); }
-.maybe-btn { width:100%;padding:11px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:12px;margin-top:10px;font-weight:700; }
-
-.projects-page { position:fixed;inset:0;z-index:900;background:var(--bg);color:var(--ink);overflow:auto; }
-.projects-header { height:68px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw; }
-.projects-main { max-width:1150px;margin:auto;padding:45px 5vw; }
-.projects-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
-.project-card { background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;justify-content:space-between;min-height:140px; }
-.project-card:hover { transform:translateY(-3px);border-color:var(--brand);box-shadow:var(--shadow); }
-
-.toast { position:fixed;right:20px;bottom:20px;z-index:2000;background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:var(--shadow);opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s; }
-.toast.show { opacity:1;transform:none; }
-
-/* Lint and Hint Styling */
-.CodeMirror-lint-marker-error { background:#ef4444!important;border-radius:50%;width:8px;height:8px; }
-.CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
-.CodeMirror-hints { background:#181825!important;border:1px solid #313244!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
-.CodeMirror-hint-active { background:#313244!important;color:#89b4fa!important;border-radius:4px; }
-
-@media(max-width:1000px){
-  .hero{grid-template-columns:1fr;gap:35px}
-  .hero-visual{max-width:760px;margin:auto}
-  .feature-grid{grid-template-columns:1fr 1fr}
-  .showcase{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr 1fr}
-  .projects-grid{grid-template-columns:1fr 1fr}
-  .explorer{display:none}
-}
-@media(max-width:700px){
-  .nav-links{display:none}
-  .site-nav{padding:0 16px}
-  .nav-brand span{display:none}
-  .hero{padding:70px 18px}
-  .section{padding:70px 18px}
-  .hero h1{font-size:42px}
-  .mock-workspace{grid-template-columns:90px 1fr;height:290px}
-  .mock-output{display:none}
-  .feature-grid,.steps,.projects-grid{grid-template-columns:1fr}
-  .final-cta{padding:40px 22px}
-  .footer-inner{flex-direction:column}
-  .hero-meta{flex-wrap:wrap}
-  .top-actions .hide-mobile{display:none!important}
-}
+#iframeContainer { flex:1;background:#0d1527;position:relative; }
+#outputIframe { width:100%;height:100%;border:0;background:white; }
+.app-btn { border:1px solid var(--line);padding:6px 12px;border-radius:8px;font-size:11px;font-weight:bold; }
+.app-btn.run { background:#0f766e;color:white; }
 </style>
 </head>
 <body>
 
-<!-- 1. FULL RICH LANDING PAGE -->
+<!-- Landing Page -->
 <div id="landingPage" class="landing">
-  <div class="wire-bg">
-    <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
-    <div class="wire-dot" style="left:14%;top:26%"></div><div class="wire-dot" style="left:76%;top:22%;animation-delay:1.7s"></div>
-    <div class="wire-dot" style="left:64%;top:72%;animation-delay:3.2s"></div><div class="wire-dot" style="left:31%;top:80%;animation-delay:4.1s"></div>
-  </div>
-
   <nav class="site-nav">
-    <a href="#" class="nav-brand"><i class="fa-solid fa-code text-blue-500 text-2xl"></i><span>JS CODE OUTPUT</span></a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#workspace-showcase">Workspace</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="/html-editor.html">HTML Editor</a>
-      <a href="/css-editor.html">CSS Editor</a>
-      <a href="/javascript-editor.html">JavaScript Editor</a>
-      <a href="/javascript-playground.html">JavaScript Playground</a>
-      <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-      <a href="/online-css-editor.html">Online CSS Editor</a>
-      <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-    </div>
-    <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
-      <button class="nav-login" onclick="startBuilding()">Start Building</button>
-    </div>
+    <a href="#" class="font-bold text-xl"><i class="fa-solid fa-code text-blue-500"></i> JS CODE OUTPUT</a>
+    <button class="primary-btn" onclick="startWithoutLogin()">Start Building</button>
   </nav>
-
-  <section class="hero">
+  <section class="hero text-center">
     <div>
-      <span class="eyebrow"><i class="fa-solid fa-bolt"></i> PROFESSIONAL WEB BUILDING, IN YOUR BROWSER</span>
-      <h1>World-class code editor.<br><em>Live output.</em></h1>
-      <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, and live preview into one elegant browser experience.</p>
-      <div class="hero-cta">
-        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
-      </div>
-      <div class="hero-meta">
-        <span><i class="fa-solid fa-check"></i> HTML / CSS / JS</span>
-        <span><i class="fa-solid fa-bolt"></i> IntelliSense & Linting</span>
-        <span><i class="fa-solid fa-cloud"></i> Cloud Projects</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-card">
-        <div class="hero-card-head">
-          <div class="traffic"><i class="t1"></i><i class="t2"></i><i class="t3"></i></div>
-          <span class="mini-title">JS CODE OUTPUT / LIVE WORKSPACE</span>
-          <span style="color:#6b7280;font-size:10px">● LIVE</span>
-        </div>
-        <div class="mock-workspace">
-          <div class="mock-side">
-            <div style="font-size:8px;color:#94a3b8;font-weight:900;margin-bottom:10px">EXPLORER</div>
-            <div class="mock-file active">⌁ index.html</div>
-            <div class="mock-file"># style.css</div>
-            <div class="mock-file">JS script.js</div>
-            <div class="mock-file">+ app.js</div>
-          </div>
-          <div class="mock-editor">
-            <div>&lt;<span class="code-blue">section</span> <span class="code-orange">class</span>=<span class="code-green">"hero"</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">h1</span>&gt;Build anything&lt;/<span class="code-blue">h1</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">p</span>&gt;See it live.&lt;/<span class="code-blue">p</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">button</span> <span class="code-orange">id</span>=<span class="code-green">"start"</span>&gt;</div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;Start Building</div>
-            <div>&nbsp;&nbsp;&lt;/<span class="code-blue">button</span>&gt;</div>
-            <div>&lt;/<span class="code-blue">section</span>&gt;</div>
-            <br>
-            <div><span class="code-blue">const</span> app = document.querySelector(...)</div>
-          </div>
-          <div class="mock-output">
-            <div class="site-preview">
-              <div style="font-size:8px;color:#5b6b7f">LIVE PREVIEW</div>
-              <h3>Build anything.</h3>
-              <div class="bar"></div>
-              <div class="bar" style="width:55%"></div>
-              <div class="box"></div>
-              <div style="margin-top:15px;background:#1456b8;color:white;padding:8px 12px;border-radius:8px;display:inline-block;font-size:9px">RUN PROJECT →</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-badge"><strong>LIVE</strong> output while you code</div>
+      <h1 class="text-5xl font-black mb-4">World-class code editor.</h1>
+      <p class="text-gray-400 mb-8">Folders, clean slate, full-screen editing, and instant live output.</p>
+      <button class="primary-btn" onclick="startWithoutLogin()">🚀 Enter Workspace</button>
     </div>
   </section>
-
-  <section class="section" id="features">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Built for makers</div>
-        <h2>Everything you need to turn code into a real interface.</h2>
-        <p>A clean workflow designed to keep your attention on the build — not the setup.</p>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
-          <h3>Focused code editor</h3>
-          <p>CodeMirror-powered editing with syntax highlighting, VS Code style autocompletion (IntelliSense), and live error linting.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-display"></i></div>
-          <h3>Instant live output</h3>
-          <p>Run HTML, CSS and JavaScript together and see the result instantly in a responsive live preview.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-folder-tree"></i></div>
-          <h3>Isolated Projects</h3>
-          <p>Create separate projects and keep each project's files completely isolated in its own cloud or local document.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
-          <h3>Libraries on demand</h3>
-          <p>Turn Tailwind CSS, Font Awesome, Three.js and Chart.js on or off for your project.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-file-export"></i></div>
-          <h3>Export anywhere</h3>
-          <p>Download a complete HTML file or package every project file into a ZIP with one click.</p>
-        </article>
-        <a href="/css-editor.html" class="tool-card">
-    <h3>Online CSS Editor</h3>
-    <p>
-        Write, edit and preview CSS online with JS CODE OUTPUT.
-    </p>
-</a>
-        <a href="/javascript-editor.html">
-    <h3>Online JavaScript Editor</h3>
-
-    <p>
-        Write, edit and test JavaScript online
-        directly in your browser.
-    </p>
-</a>
-        <a href="/javascript-editor.html">
-    <h3>Online JavaScript Editor</h3>
-
-    <p>
-        Write, edit and test JavaScript online
-        directly in your browser.
-    </p>
-</a>
-        <a href="/html-css-javascript-editor.html" class="tool-card">
-    <h3>HTML CSS JavaScript Editor</h3>
-    <p>
-        Write HTML, CSS and JavaScript together and preview your web project online.
-    </p>
-</a>
-        <a href="/online-css-editor.html" class="tool-card">
-    <h3>Online CSS Editor</h3>
-    <p>
-        Write, test and preview CSS online with JS CODE OUTPUT.
-    </p>
-</a>
-        <a href="/online-javascript-editor.html" class="tool-card">
-    <h3>Online JavaScript Editor</h3>
-    <p>
-        Write, run and test JavaScript online with JS CODE OUTPUT.
-    </p>
-</a>
-        
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="workspace-showcase">
-    <div class="section-inner showcase">
-      <div class="showcase-copy">
-        <div class="kicker">The workspace</div>
-        <h2>Write once. Watch it become a website.</h2>
-        <p>The editor and live output sit side by side so you can experiment quickly, test responsive layouts and iterate without leaving the browser.</p>
-        <ul class="check-list">
-          <li><i class="fa-solid fa-circle-check"></i><span>Desktop, tablet and mobile preview modes</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span>Separate HTML, CSS, JS and custom files</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span>Cloud auto-saving after Google sign-in</span></li>
-        </ul>
-        <button class="primary-btn mt-4" onclick="startBuilding()">Open the workspace →</button>
-      </div>
-      <div class="video-card">
-        <div class="video-inner">
-          <div class="orbit"></div>
-          <div class="scan"></div>
-          <div style="position:absolute;inset:0;display:grid;place-items:center;color:#dcecff">
-            <div style="text-align:center">
-              <i class="fa-solid fa-play" style="font-size:32px;margin-bottom:15px"></i>
-              <div style="font-weight:800">LIVE BUILD VISUALIZER</div>
-              <div style="font-size:10px;color:#91a7c0;margin-top:5px">CODE → RENDER → ITERATE</div>
-            </div>
-          </div>
-          <div class="video-label">&lt;/&gt; REAL-TIME WORKFLOW</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Code without limits</div>
-        <h2>Start with the languages you already know.</h2>
-        <p>Use the editor for front-end experiments, landing pages, UI prototypes, demos and learning projects.</p>
-      </div>
-      <div class="language-strip">
-        <span class="lang">HTML5</span><span class="lang">CSS3</span><span class="lang">JavaScript</span>
-        <span class="lang">Tailwind CSS</span><span class="lang">Three.js</span><span class="lang">Chart.js</span><span class="lang">Font Awesome</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="how-it-works">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Simple workflow</div>
-        <h2>From blank page to live project in four steps.</h2>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01 / START</div>
-          <h3>Enter the builder</h3>
-          <p>Choose Google sign-in for cloud projects or continue locally without an account.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">02 / CREATE</div>
-          <h3>Pick a project</h3>
-          <p>Create a new project or open an existing one. Every project keeps its own files isolated.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">03 / BUILD</div>
-          <h3>Write your code</h3>
-          <p>Edit HTML, CSS, JavaScript and see syntax errors and autocomplete hints live.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">04 / SHIP</div>
-          <h3>Preview & export</h3>
-          <p>Run the output and download the project as HTML or ZIP.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="about">
-    <div class="section-inner">
-      <div class="final-cta">
-        <div class="kicker" style="color:#8dbdff">JS CODE OUTPUT</div>
-        <h2>Build something worth seeing.</h2>
-        <p>A premium, browser-first coding experience for creators, students and developers who want to move from idea to live output quickly.</p>
-        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started Free</button>
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div style="display:flex;align-items:center;gap:10px">
-        <i class="fa-solid fa-code text-blue-500 text-3xl"></i>
-        <div>
-          <strong style="font-size:14px">JS CODE OUTPUT</strong>
-          <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
-        </div>
-      </div>
-      <div class="footer-links">
-        <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a><a href="/css-editor.html">CSS Editor</a>
-        <a href="/javascript-editor.html"> JavaScript Editor</a>
-        <a href="/javascript-playground.html">JavaScript Playground</a>
-        <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-        <a href="/online-css-editor.html">Online CSS Editor</a>
-        <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-      </div>
-      <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
-    </div>
-  </footer>
 </div>
 
-<button class="floating-theme" onclick="toggleTheme()" title="Switch theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
-
-<!-- 2. LOGIN MODAL -->
-<div id="startLoginScreen" class="overlay hidden">
-  <div class="login-card">
-    <div class="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-500 flex items-center justify-center text-2xl mx-auto mb-4">
-      <i class="fa-solid fa-cloud-bolt"></i>
-    </div>
-    <h2 class="text-xl font-bold mb-2">Welcome to JS CODE OUTPUT</h2>
-    <p class="text-xs text-gray-500 mb-6">Sign in with Google to keep each of your separate projects saved securely in the cloud.</p>
-    <button id="googleLoginButton" class="google-btn" onclick="continueWithGoogle()">
-      <i class="fa-brands fa-google text-red-500"></i> Continue with Google
-    </button>
-    <button class="maybe-btn" onclick="startWithoutLogin()">Continue as Guest (Local)</button>
-    <button onclick="closeStartLogin()" class="mt-4 text-xs text-gray-400 hover:text-gray-200">← Back to Home</button>
-  </div>
-</div>
-
-<!-- 3. PROJECTS SELECTION PAGE -->
-<div id="projectsPage" class="projects-page hidden">
-  <header class="projects-header">
-    <div class="flex items-center gap-3">
-      <i class="fa-solid fa-code text-blue-500 text-2xl"></i>
-      <div>
-        <strong class="text-sm block">JS CODE OUTPUT</strong>
-        <span class="text-[10px] text-gray-500">Dashboard & Projects</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-      <span id="projectsUserName" class="text-xs text-gray-400 font-medium"></span>
-      <button class="app-btn hidden" id="signOutBtn" onclick="firebaseLogout()">Sign Out</button>
-    </div>
-  </header>
-  <main class="projects-main">
-    <div class="flex justify-between items-end gap-4 mb-8">
-      <div>
-        <div class="text-xs font-bold uppercase tracking-wider text-blue-500">Workspace</div>
-        <h2 class="text-3xl font-extrabold tracking-tight mt-1">Select a Project</h2>
-        <p class="text-xs text-gray-500 mt-1">Every project contains its own separate HTML, CSS, JavaScript, and asset files.</p>
-      </div>
-      <button class="primary-btn" onclick="showCreateProject()">+ New Project</button>
-    </div>
-    <div id="projectsList" class="projects-grid"></div>
-    <div id="noProjects" class="hidden text-center py-20">
-      <div class="text-5xl mb-4">📂</div>
-      <h3 class="text-lg font-bold">No Projects Found</h3>
-      <p class="text-xs text-gray-500 mb-4">Create your first isolated project workspace.</p>
-      <button class="primary-btn" onclick="showCreateProject()">+ Create Project</button>
-    </div>
-  </main>
-</div>
-
-<!-- 4. CREATE PROJECT MODAL -->
-<div id="createProjectModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Create New Project</h3>
-      <button onclick="closeCreateProject()" class="text-gray-400 text-lg font-bold">×</button>
-    </div>
-    <p>Give your new project a distinctive name.</p>
-    <input id="newProjectName" placeholder="e.g. Portfolio Website, Canvas Game">
-    <div class="modal-actions">
-      <button class="modal-btn" onclick="closeCreateProject()">Cancel</button>
-      <button class="modal-btn primary" onclick="createProject()">Create Project</button>
-    </div>
-  </div>
-</div>
-
-<!-- 5. MAIN WORKSPACE / EDITOR APP -->
+<!-- Main App -->
 <div id="app" class="hidden">
   <header id="topHeader">
-    <div class="header-left">
-      <div class="app-brand cursor-pointer" onclick="openProjectsPage()">
-        <i class="fa-solid fa-code text-blue-500 text-xl"></i>
-        <div>
-          <h1>JS CODE OUTPUT</h1>
-          <p>LIVE DEVELOPER ENVIRONMENT</p>
-        </div>
-      </div>
-      <!-- Project Switcher on the left -->
-      <div class="project-switcher ml-4">
-        <button id="currentProjectButton" class="current-project" onclick="toggleProjectSwitcher(event)">
-          <i class="fa-solid fa-folder-open text-blue-500"></i>
-          <span id="currentProjectName">Untitled Project</span>
-          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-        </button>
-        <div id="projectSwitcherMenu" class="project-menu hidden">
-          <div class="project-menu-head">
-            <div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
-            <div id="dropdownCurrentProject" class="text-xs font-extrabold mt-1">Untitled Project</div>
-          </div>
-          <div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
-          <div id="headerProjectsList" class="project-list"></div>
-          <div class="p-2 border-t border-[var(--line)]">
-            <button class="app-btn w-full justify-center" onclick="headerAddProject()">+ Add Project</button>
-          </div>
-        </div>
-      </div>
+    <div class="flex items-center gap-4">
+      <div class="font-bold cursor-pointer" onclick="backToHome()"><i class="fa-solid fa-code text-blue-500"></i> WORKSPACE</div>
+      <div class="text-xs px-3 py-1 bg-gray-800 rounded text-white" id="currentProjectName">My Project</div>
     </div>
-
-    <div class="flex items-center gap-2">
-      <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer">
-        <input id="autoRunToggle" type="checkbox" checked class="rounded"> Auto Sync
-      </label>
+    <div class="flex gap-2">
       <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> Run</button>
-      <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> Libraries</button>
-      <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
-      <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName">Guest</span></button>
-      <button class="app-btn" onclick="backToHome()" title="Back to Home"><i class="fa-solid fa-house"></i> Home</button>
-      <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
+      <button class="app-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
     </div>
   </header>
 
@@ -618,66 +148,50 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <div class="explorer-head">
         <span>EXPLORER</span>
         <div class="flex gap-1">
-          <button onclick="createNewFile()" class="tool-btn" style="padding:2px 6px" title="New File"><i class="fa-solid fa-plus"></i></button>
-          <button onclick="document.getElementById('fileUpload').click()" class="tool-btn" style="padding:2px 6px" title="Upload"><i class="fa-solid fa-upload"></i></button>
+          <button onclick="createNewFile()" class="tool-btn" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
+          <button onclick="createNewFolder()" class="tool-btn" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
+          <button onclick="document.getElementById('fileUpload').click()" class="tool-btn" title="Upload Files"><i class="fa-solid fa-upload"></i></button>
+          <button onclick="document.getElementById('folderUpload').click()" class="tool-btn" title="Upload Folder"><i class="fa-solid fa-folder-open"></i></button>
         </div>
       </div>
-      <div class="explorer-body">
-        <div class="text-[9px] text-gray-400 font-bold mb-2">FILES IN PROJECT</div>
-        <div id="fileExplorer"></div>
+      
+      <!-- Drag and Drop Area -->
+      <div class="explorer-body" id="fileExplorer" 
+           ondragover="event.preventDefault(); this.classList.add('dragover');" 
+           ondragleave="this.classList.remove('dragover');" 
+           ondrop="handleFileDrop(event)">
       </div>
-      <div class="explorer-actions">
-        <button onclick="createNewFile()">+ Add File</button>
-        <button onclick="document.getElementById('fileUpload').click()">Upload File</button>
+      
+      <div class="explorer-actions text-center text-xs text-gray-500 pb-2">
+        <p>Drop files/folders here</p>
       </div>
     </aside>
+
+    <!-- Hidden Inputs for Upload -->
     <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
+    <input type="file" id="folderUpload" webkitdirectory directory multiple hidden onchange="handleFileUpload(event)">
 
     <div class="main-area">
       <!-- Editor Panel -->
-      <section class="editor-panel">
+      <section class="editor-panel" id="editorPanel">
         <div class="editor-tabs">
           <div id="tabs" class="tabs"></div>
-          
-          <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
           <div class="flex gap-1">
-            <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="triggerSearch()" class="tool-btn" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button onclick="toggleEditorFullscreen()" class="tool-btn" title="Full Screen Editor"><i class="fa-solid fa-expand"></i></button>
           </div>
-          
         </div>
-        <div class="editor-container-wrapper">
-          <div class="editor-content">
-            <div id="wrapper-editor" class="code-pane"></div>
-          </div>
+        <div class="editor-content">
+          <div id="wrapper-editor" class="code-pane"></div>
         </div>
       </section>
 
-      <!-- Live Preview Panel -->
+      <!-- Preview Panel -->
       <section class="preview-panel">
         <div class="preview-toolbar">
-          <div class="flex items-center gap-2 text-[10px] font-bold">
-            <span class="text-red-500">●</span><span class="text-yellow-500">●</span><span class="text-green-500">●</span>
-            <span class="text-gray-400 ml-1">LIVE OUTPUT</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <button class="screen-btn" onclick="toggleFullScreenPreview()" title="Full Screen"><i class="fa-solid fa-expand"></i></button>
-            <button id="screen-full" class="screen-btn active" onclick="setScreenSize('full')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
-            <button id="screen-tablet" class="screen-btn" onclick="setScreenSize('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button id="screen-mobile" class="screen-btn" onclick="setScreenSize('mobile')" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
-            <button class="screen-btn" onclick="updatePreview(true)" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
-          </div>
+          <span class="text-xs font-bold text-gray-400">LIVE OUTPUT</span>
         </div>
         <div id="iframeContainer">
-          <!-- Premium Placeholder with Animation -->
-          <div id="placeholderView" class="placeholder-view">
-            <div class="pulse-ring">
-              <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
-            </div>
-            <h3 class="text-lg font-black tracking-tight mb-1">Ready for Live Output</h3>
-            <p class="text-xs text-slate-400 max-w-xs mb-4">Type code on the left side and get instant live output rendered in real-time right here.</p>
-            <button onclick="dismissPlaceholder()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition">Render Live Output</button>
-          </div>
           <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
         </div>
       </section>
@@ -685,870 +199,292 @@ body{overflow-x:hidden}.hidden{display:none!important}
   </main>
 </div>
 
-<!-- DOWNLOAD & LIBRARIES MODALS -->
-<div id="downloadModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Download Project</h3>
-      <button onclick="closeDownloadMenu()" class="text-gray-400 text-lg">×</button>
-    </div>
-    <p>Export your full project bundle.</p>
-    <button class="modal-btn w-full mb-2 text-left flex items-center gap-2" onclick="downloadHTMLFile()">
-      <i class="fa-brands fa-html5 text-orange-500"></i> Single HTML File
-    </button>
-    <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
-      <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
-    </button>
-  </div>
-</div>
-
-<div id="librariesModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Project Libraries</h3>
-      <button onclick="toggleLibraries()" class="text-gray-400 text-lg">×</button>
-    </div>
-    <p>Toggle CDN dependencies for this project.</p>
-    <div class="space-y-2 text-xs">
-      <label class="modal-btn flex justify-between items-center">Tailwind CSS <input id="lib-tailwind" type="checkbox" checked onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Font Awesome <input id="lib-fontawesome" type="checkbox" checked onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Three.js <input id="lib-three" type="checkbox" onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Chart.js <input id="lib-chart" type="checkbox" onchange="updatePreview(true)"></label>
-    </div>
-    <button class="modal-btn primary w-full mt-4" onclick="toggleLibraries()">Done</button>
-  </div>
-</div>
-
-<div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
-
-<!-- FIREBASE SDK -->
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,setDoc,getDoc,arrayUnion,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
-  authDomain: "js-code-output.firebaseapp.com",
-  projectId: "js-code-output",
-  storageBucket: "js-code-output.firebasestorage.app",
-  messagingSenderId: "600350018167",
-  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
-  measurementId: "G-L47M0E9V96"
-};
-const app = initializeApp(firebaseConfig);
-try{getAnalytics(app)}catch(e){}
-const auth = getAuth(app), provider = new GoogleAuthProvider(), db = getFirestore(app);
-
-window.firebaseAuth = auth;
-window.firebaseDB = db;
-window.firebaseDoc = doc;
-window.firebaseSetDoc = setDoc;
-window.firebaseGetDoc = getDoc;
-window.firebaseArrayUnion = arrayUnion;
-window.firebaseServerTimestamp = serverTimestamp;
-window.firebaseSignOut = signOut;
-window.googleSignIn = () => signInWithPopup(auth, provider);
-
-window.saveProjectDraft = async (idOverride=null) => {
-  const user = auth.currentUser;
-  const id = idOverride || window.currentProjectId;
-  if (!user || !id || id.startsWith("local_proj_")) return false; 
-  if (!window.isSwitchingProject) syncEditor();
-  try {
-    await setDoc(doc(db, "users", user.uid, "projects", id), {
-      files: JSON.parse(JSON.stringify(window.files || {})),
-      html: window.files["index.html"] || "",
-      css: window.files["style.css"] || "",
-      js: window.files["script.js"] || "",
-      updatedAt: serverTimestamp()
-    }, {merge:true});
-    return true;
-  } catch(e) {
-    console.error("Save failed:", e);
-    return false;
-  }
-};
-
-let resolveAuth;
-window.firebaseAuthReady = new Promise(r => resolveAuth = r);
-
-onAuthStateChanged(auth, user => {
-  window.currentUser = user || null;
-  window.firebaseCurrentUser = user || null;
-  if (user) {
-    localStorage.removeItem("js-code-output-skip-login");
-    document.getElementById("signOutBtn")?.classList.remove("hidden");
-  } else {
-    document.getElementById("signOutBtn")?.classList.add("hidden");
-  }
-  resolveAuth(user || null);
-});
-</script>
-
 <script>
 "use strict";
 
 let files = {};
-let activeFile = "index.html";
+let activeFile = null;
 let editor = null;
-let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "";
-let cloudSaveTimer = null, debounceTimer = null;
-let hasTypedInSession = false;
-let isSwitchingProject = false; // CRITICAL FIX: Lock editor during load!
 
-const defaultTemplate = {
-  "index.html": `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JS CODE OUTPUT</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="card">
-    <h1>🚀 Hello World</h1>
-    <p>Start editing HTML, CSS, and JS to build your app!</p>
-    <button id="btn">Click Me</button>
-  </div>
-  <script src="script.js"><\/script>
-</body>
-</html>`,
-  "style.css": `body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0f172a;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.card {
-  background: #1e293b;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  text-align: center;
-}
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 12px;
-}
-button:hover { background: #2563eb; }`,
-  "script.js": `console.log("Workspace initialized successfully.");
-
-document.getElementById("btn")?.addEventListener("click", () => {
-  alert("Button clicked! Live JavaScript is working.");
-  console.log("User clicked the button at: " + new Date().toLocaleTimeString());
-});`
-};
-
-window.files = files;
-window.activeFile = activeFile;
-window.currentProjectId = currentProjectId;
-window.isSwitchingProject = false; 
-
-function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-function getExt(n){ return n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
-function getMode(n){
-  const e = getExt(n);
-  return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="mjs") ? "javascript" : "text/plain";
-}
+// File Icons mapped correctly
 function icon(n){
-  const e = getExt(n);
-  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : '<i class="fa-solid fa-file"></i>';
+  const e = n.includes(".") ? n.split(".").pop().toLowerCase() : "";
+  if(e==="html" || e==="htm") return '<i class="fa-brands fa-html5 text-orange-500"></i>';
+  if(e==="css") return '<i class="fa-brands fa-css3-alt text-sky-400"></i>';
+  if(e==="js" || e==="mjs") return '<i class="fa-brands fa-js text-yellow-400"></i>';
+  if(e==="json") return '<i class="fa-solid fa-brackets-curly text-green-400"></i>';
+  if(e==="png" || e==="jpg" || e==="jpeg" || e==="svg" || e==="gif") return '<i class="fa-solid fa-image text-purple-400"></i>';
+  if(e==="md") return '<i class="fa-brands fa-markdown text-blue-300"></i>';
+  return '<i class="fa-solid fa-file text-gray-400"></i>';
+}
+
+function getMode(n){
+  if(!n) return "text/plain";
+  const e = n.split(".").pop().toLowerCase();
+  return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="json") ? "javascript" : "text/plain";
 }
 
 function syncEditor(){
-  if(editor && activeFile && !isSwitchingProject) {
+  if(editor && activeFile && !activeFile.endsWith('/')) {
     files[activeFile] = editor.getValue();
-    window.files = files;
   }
 }
 
-function saveLocalProjectFiles(){
-  if(isSwitchingProject) return; 
-  syncEditor();
-  const id = window.currentProjectId;
-  if (!id) return;
-  localStorage.setItem("js_files_" + id, JSON.stringify(files));
-  localStorage.setItem("js_active_file_" + id, activeFile);
-  localStorage.setItem("js-code-output-active-project-id", id);
-}
-
-function loadLocalProjectFiles(id){
-  const saved = localStorage.getItem("js_files_" + id);
-  if(saved){
-    try { files = JSON.parse(saved); } catch(e){ files = structuredClone(defaultTemplate); }
-  } else {
-    files = structuredClone(defaultTemplate);
-  }
-  activeFile = localStorage.getItem("js_active_file_" + id) || "index.html";
-  if(!files[activeFile]) activeFile = Object.keys(files)[0] || "index.html";
-  window.files = files;
-  window.activeFile = activeFile;
-}
-
-// Navigation Flow Logic
-async function startBuilding(){
-  try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e){}
-  const u = window.firebaseCurrentUser || window.currentUser;
-  if(u) {
-    openProjectsPage();
-  } else {
-    document.getElementById("startLoginScreen").classList.remove("hidden");
-  }
-}
-
-function closeStartLogin(){ document.getElementById("startLoginScreen").classList.add("hidden"); }
-
-async function continueWithGoogle(){
-  const btn = document.getElementById("googleLoginButton");
-  try {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
-    const res = await window.googleSignIn();
-    if(res?.user){
-      window.firebaseCurrentUser = res.user;
-      window.currentUser = res.user;
-      document.getElementById("startLoginScreen").classList.add("hidden");
-      openProjectsPage();
-    }
-  } catch(e) {
-    showToast("Google sign-in cancelled or failed.");
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-brands fa-google text-red-500"></i> Continue with Google';
-  }
-}
-
-// START WITHOUT LOGIN (Creates Local Project)
 function startWithoutLogin(){
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  
-  if(localProjects.length === 0) {
-      const id = "local_proj_" + Date.now();
-      localProjects.push({id, name: "Guest Project " + 1});
-      localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
-      openEditorWorkspace(id, "Guest Project 1", structuredClone(defaultTemplate));
-  } else {
-      const lastId = localStorage.getItem("js-code-output-active-project-id") || localProjects[0].id;
-      const p = localProjects.find(x => x.id === lastId) || localProjects[0];
-      openEditorWorkspace(p.id, p.name);
-  }
-}
-
-function openProjectsPage(){
   document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("projectsPage").classList.remove("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  files = {}; 
   
-  // Save current project before going to dashboard
-  if(window.currentProjectId) {
-    syncEditor();
-    let temp = isSwitchingProject;
-    isSwitchingProject = false;
-    saveLocalProjectFiles();
-    isSwitchingProject = temp;
-  }
-
-  const u = window.firebaseCurrentUser || window.currentUser;
-  if(u) {
-    document.getElementById("projectsUserName").textContent = u.displayName || u.email || "Developer";
-    document.getElementById("signOutBtn").classList.remove("hidden");
+  if(Object.keys(files).length === 0) {
+    files["index.html"] = "";
+    activeFile = "index.html";
   } else {
-    document.getElementById("projectsUserName").textContent = "Guest Mode";
-    document.getElementById("signOutBtn").classList.add("hidden");
+    activeFile = Object.keys(files)[0];
   }
-  loadProjects();
+  
+  initEditor();
+  renderFileExplorer();
+  openFile(activeFile);
 }
 
 function backToHome() {
   document.getElementById("app").classList.add("hidden");
-  document.getElementById("projectsPage").classList.add("hidden");
   document.getElementById("landingPage").classList.remove("hidden");
 }
 
-async function firebaseLogout(){
-  await window.firebaseSignOut(window.firebaseAuth);
-  window.currentProjectId = "";
-  document.getElementById("projectsPage").classList.add("hidden");
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("landingPage").classList.remove("hidden");
-  showToast("Logged out successfully.");
-}
-
-// Project Management
-function showCreateProject(){
-  document.getElementById("createProjectModal").classList.remove("hidden");
-  document.getElementById("newProjectName").value = "";
-  setTimeout(()=>document.getElementById("newProjectName").focus(), 100);
-}
-function closeCreateProject(){ document.getElementById("createProjectModal").classList.add("hidden"); }
-
-async function createProject(){
-  const name = document.getElementById("newProjectName").value.trim();
-  const u = window.firebaseCurrentUser;
-  if(!name) return alert("Please enter a project name.");
-
-  // CRITICAL FIX: Save outgoing project before creating a new one!
-  isSwitchingProject = true;
-  window.isSwitchingProject = true;
-  
-  if (window.currentProjectId) {
-    let temp = isSwitchingProject;
-    isSwitchingProject = false;
-    syncEditor();
-    saveLocalProjectFiles();
-    isSwitchingProject = temp;
-  }
-
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if(u) await window.saveProjectDraft(window.currentProjectId);
-  }
-
-  const initialFiles = structuredClone(defaultTemplate);
-
-  if (u) {
-    // Cloud Creation
-    const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-    try {
-      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
-        id, name, ownerId: u.uid,
-        files: initialFiles,
-        html: initialFiles["index.html"],
-        css: initialFiles["style.css"],
-        js: initialFiles["script.js"],
-        createdAt: window.firebaseServerTimestamp(),
-        updatedAt: window.firebaseServerTimestamp()
-      });
-      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
-        projectIds: window.firebaseArrayUnion(id)
-      }, {merge:true});
-
-      closeCreateProject();
-      openEditorWorkspace(id, name, initialFiles);
-      showToast("Cloud Project created.");
-    } catch(e) {
-      console.error(e);
-      alert("Could not create cloud project.");
-    }
-  } else {
-    // Local Creation (Guest Mode)
-    const id = "local_proj_" + Date.now();
-    let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-    localProjects.push({ id, name, updatedAt: Date.now() });
-    localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
-
-    closeCreateProject();
-    openEditorWorkspace(id, name, initialFiles);
-    showToast("Local Project created.");
-  }
-}
-
-function createProjectCardHTML(id, name, isCloud) {
-  const card = document.createElement("div");
-  card.className = "project-card";
-  card.innerHTML = `
-    <div>
-      <i class="fa-solid fa-${isCloud ? 'cloud' : 'folder'} text-blue-500 text-2xl mb-2"></i>
-      <h3 class="font-bold text-sm">${escapeHTML(name || "Untitled")}</h3>
-      <p class="text-[10px] text-gray-400">${isCloud ? 'Cloud Workspace' : 'Local Workspace'}</p>
-    </div>
-    <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
-  `;
-  card.onclick = () => switchProject(id, name);
-  return card;
-}
-
-async function loadProjects(){
-  const list = document.getElementById("projectsList");
-  const empty = document.getElementById("noProjects");
-  list.innerHTML = "";
-
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  let hasProjects = localProjects.length > 0;
-
-  // Render Local Projects First
-  localProjects.forEach(p => {
-    list.appendChild(createProjectCardHTML(p.id, p.name, false));
-  });
-
-  // Render Cloud Projects if logged in
-  const u = window.firebaseCurrentUser;
-  if(u) {
-    try {
-      const userDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-      const ids = userDoc.exists() ? userDoc.data().projectIds || [] : [];
-      if(ids.length > 0) hasProjects = true;
-
-      for(const id of ids){
-        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-        if(!pDoc.exists()) continue;
-        const d = pDoc.data();
-        list.appendChild(createProjectCardHTML(id, d.name, true));
-      }
-    } catch(e) {
-      console.error(e);
-    }
-  }
-
-  if(!hasProjects) {
-    empty.classList.remove("hidden");
-  } else {
-    empty.classList.add("hidden");
-  }
-  
-  loadHeaderProjects();
-}
-
-async function switchProject(id, name){
-  if(id === window.currentProjectId) return; // Ignore if clicking same project
-  
-  // CRITICAL FIX: Save Outgoing project!
-  isSwitchingProject = true;
-  window.isSwitchingProject = true;
-  
-  if (window.currentProjectId) {
-     let temp = isSwitchingProject;
-     isSwitchingProject = false;
-     syncEditor();
-     saveLocalProjectFiles(); // Force save to old ID before switching
-     isSwitchingProject = temp;
-  }
-
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if (window.firebaseCurrentUser) await window.saveProjectDraft(window.currentProjectId);
-  }
-
-  if(id.startsWith("local_proj_")) {
-    openEditorWorkspace(id, name);
-    return;
-  }
-
-  const u = window.firebaseCurrentUser;
-  if(u){
-    const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-    if(pDoc.exists()){
-      const d = pDoc.data();
-      openEditorWorkspace(id, d.name || name, d.files);
-      return;
-    }
-  }
-  openEditorWorkspace(id, name);
-}
-
-function openEditorWorkspace(id, name, initialFiles=null){
-  document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("projectsPage").classList.add("hidden");
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-
-  window.currentProjectId = id;
-  currentProjectId = id;
-  localStorage.setItem("js-code-output-active-project-id", id);
-  document.getElementById("currentProjectName").textContent = name || "Untitled Project";
-  document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
-
-  const u = window.firebaseCurrentUser || window.currentUser;
-  const accountSpan = document.getElementById("workspaceAccountName");
-  if(accountSpan) {
-    accountSpan.textContent = u ? (u.displayName || u.email || "Developer") : "Guest";
-  }
-
-  if(initialFiles){
-    files = initialFiles;
-    activeFile = "index.html";
-  } else {
-    loadLocalProjectFiles(id);
-  }
-
-  renderFileExplorer();
-  openFile(activeFile); 
- 
-  if(!hasTypedInSession){
-    document.getElementById("placeholderView").classList.remove("hidden");
-  } else {
-    updatePreview();
-  }
-  
-  // Unlock editor now that switch is complete
-  setTimeout(() => {
-    isSwitchingProject = false;
-    window.isSwitchingProject = false;
-  }, 100);
-}
-
+// Tree view renderer for Folder & Files (VS Code Style)
 function renderFileExplorer(){
   const el = document.getElementById("fileExplorer");
-  if(!el) return;
   el.innerHTML = "";
-  Object.keys(files).sort().forEach(n => {
-    const d = document.createElement("div");
-    d.className = "explorer-file " + (n === activeFile ? "active" : "");
-    d.innerHTML = `
-      <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
-        ${icon(n)} <span>${escapeHTML(n)}</span>
-      </span>
-      ${n !== "index.html" ? `<button onclick="deleteFile('${encodeURIComponent(n)}');event.stopPropagation()" class="text-red-400 hover:text-red-500 font-bold">×</button>` : ""}
-    `;
-    d.onclick = () => openFile(n);
-    el.appendChild(d);
+
+  // 1. Build a Tree Object from Flat paths
+  const tree = {};
+  Object.keys(files).forEach(path => {
+    const parts = path.split('/');
+    let current = tree;
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (part === "") continue; // Skip trailing slash artifacts
+      
+      const isFolder = (i < parts.length - 1) || path.endsWith('/');
+      if (!current[part]) {
+        current[part] = isFolder ? {} : null; // {} means folder, null means file
+      }
+      current = current[part];
+    }
   });
+
+  // 2. Render Tree Recursively
+  function buildDOM(node, prefix = "", level = 0) {
+    Object.keys(node).sort().forEach(name => {
+      const isDir = node[name] !== null;
+      const fullPath = prefix + name + (isDir ? "/" : "");
+      
+      const d = document.createElement("div");
+      d.className = "explorer-file " + (fullPath === activeFile && !isDir ? "active" : "");
+      d.style.paddingLeft = (12 + level * 16) + "px"; // Indentation for folders
+      
+      if (isDir) {
+        d.innerHTML = `
+          <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap" title="${fullPath}">
+            <i class="fa-solid fa-folder text-blue-400"></i> <span>${name}</span>
+          </span>
+          <button onclick="deleteFile('${encodeURIComponent(fullPath)}');event.stopPropagation()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+        `;
+        // No onclick for folder expand/collapse in this simple version, they stay expanded.
+      } else {
+        d.innerHTML = `
+          <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap" title="${fullPath}">
+            ${icon(name)} <span>${name}</span>
+          </span>
+          <button onclick="deleteFile('${encodeURIComponent(fullPath)}');event.stopPropagation()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+        `;
+        d.onclick = () => openFile(fullPath);
+      }
+      
+      el.appendChild(d);
+      
+      if (isDir) {
+        buildDOM(node[name], fullPath, level + 1); // Recursively add children
+      }
+    });
+  }
+  
+  buildDOM(tree);
   renderEditorTabs();
 }
 
 function renderEditorTabs(){
   const el = document.getElementById("tabs");
-  if(!el) return;
   el.innerHTML = "";
-  Object.keys(files).forEach(n => {
-    const b = document.createElement("button");
-    b.className = "editor-tab " + (n === activeFile ? "active-file-tab" : "");
-    b.innerHTML = `${icon(n)} <span>${escapeHTML(n)}</span>`;
-    b.onclick = () => openFile(n);
-    el.appendChild(b);
-  });
+  if(activeFile && files[activeFile] !== undefined && !activeFile.endsWith('/')) {
+      const b = document.createElement("button");
+      const name = activeFile.split('/').pop();
+      b.className = "editor-tab active-file-tab";
+      b.innerHTML = `${icon(name)} <span>${name}</span>`;
+      el.appendChild(b);
+  }
 }
 
-function openFile(n){
-  if(files[n] === undefined) return;
-  
-  // Only save if not currently in the middle of a project swap
-  if (!isSwitchingProject) {
-    syncEditor();
-    saveLocalProjectFiles();
-  }
-  
-  activeFile = n;
-  window.activeFile = n;
-
+function openFile(path){
+  if(files[path] === undefined || path.endsWith('/')) return; // Do not open folders in editor
+  syncEditor();
+  activeFile = path;
   if(editor){
-    const m = getMode(n);
-    editor.setOption("mode", m);
-    editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
-    
-    // Prevent false triggers on change
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true;
-    editor.setValue(files[n] || "");
-    editor.clearHistory();
-    isSwitchingProject = oldLock; 
-    
+    editor.setOption("mode", getMode(path));
+    editor.setValue(files[path] || "");
     setTimeout(() => editor.refresh(), 10);
   }
   renderFileExplorer();
 }
 
 function createNewFile(){
-  const n = prompt("Enter file name (e.g. app.js, style.css, data.json):");
+  const n = prompt("Enter file name (e.g. script.js or folder/style.css):");
+  if(!n) return;
+  const path = n.trim();
+  if(!path || files[path] !== undefined || path.endsWith('/')) return alert("Invalid or existing file name.");
+  files[path] = "";
+  renderFileExplorer();
+  openFile(path);
+}
+
+// CREATE FOLDER FUNCTION
+function createNewFolder(){
+  const n = prompt("Enter folder name:");
   if(!n) return;
   const name = n.trim();
-  if(!name || files[name] !== undefined) return alert("Invalid or existing file name.");
-  files[name] = "";
-  saveLocalProjectFiles();
+  if(!name) return;
+  const path = name.endsWith('/') ? name : name + '/';
+  if(files[path] !== undefined) return alert("Folder already exists.");
+  files[path] = ""; // Empty string placeholder for folder
   renderFileExplorer();
-  openFile(name);
 }
 
 function deleteFile(encoded){
-  const n = decodeURIComponent(encoded);
-  if(n === "index.html") return alert("index.html cannot be deleted.");
-  if(!confirm(`Delete ${n}?`)) return;
-  delete files[n];
-  if(activeFile === n) {
-    activeFile = "index.html";
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true; 
-    openFile(activeFile); 
-    isSwitchingProject = oldLock;
+  const path = decodeURIComponent(encoded);
+  if(!confirm(`Delete ${path}?`)) return;
+  
+  if(path.endsWith('/')) {
+    // Delete all files inside this folder
+    Object.keys(files).forEach(k => {
+      if(k.startsWith(path)) delete files[k];
+    });
+  } else {
+    delete files[path];
   }
-  saveLocalProjectFiles();
+  
+  // Reset active file if it was deleted
+  if(activeFile && activeFile.startsWith(path)) {
+    const keys = Object.keys(files).filter(k => !k.endsWith('/'));
+    activeFile = keys.length > 0 ? keys[0] : null;
+    if(activeFile) {
+      openFile(activeFile);
+    } else {
+      if(editor) editor.setValue("");
+      renderEditorTabs();
+    }
+  }
   renderFileExplorer();
 }
 
-function handleFileUpload(e){
-  const fileList = [...e.target.files || []];
-  fileList.forEach(f => {
+function toggleEditorFullscreen() {
+    const panel = document.getElementById("editorPanel");
+    panel.classList.toggle("fullscreen-editor");
+    if(editor) setTimeout(() => editor.refresh(), 100);
+}
+
+function triggerSearch() {
+  if (editor) editor.execCommand("find");
+}
+function toggleTheme(){ 
+  document.documentElement.classList.toggle("dark"); 
+}
+
+function processFilesList(fileList) {
+  Array.from(fileList).forEach(f => {
+    const path = f.webkitRelativePath || f.name;
     const r = new FileReader();
     r.onload = ev => {
-      files[f.name] = ev.target.result || "";
-      saveLocalProjectFiles();
+      files[path] = ev.target.result || "";
+      if(!activeFile && !path.endsWith('/')) activeFile = path;
       renderFileExplorer();
-      openFile(f.name);
+      if(activeFile === path) openFile(path);
     };
-    r.readAsText(f);
+    
+    if(f.type.startsWith("image/")) {
+       r.readAsDataURL(f);
+    } else {
+       r.readAsText(f);
+    }
   });
+}
+
+function handleFileUpload(e){
+  processFilesList(e.target.files || []);
   e.target.value = "";
 }
 
-function dismissPlaceholder(){
-  hasTypedInSession = true;
-  document.getElementById("placeholderView").classList.add("hidden");
-  updatePreview(true);
-}
-
-// Live Output & Compiler
-function updatePreview(force=false){
-  if(!editor) return;
-  syncEditor();
-  if(!hasTypedInSession && !force) return;
-
-  document.getElementById("placeholderView")?.classList.add("hidden");
-
-  const html = files["index.html"] || "";
-  const css = files["style.css"] || "";
-  const js = files["script.js"] || "";
-
-  const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
-  const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
-  const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
-  const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
-
-  document.getElementById("outputIframe").srcdoc = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  ${tw}${fa}${three}${chart}
-  <style>${css}</style>
-</head>
-<body>
-  ${html}
-  <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
-</body>
-</html>`;
-
-  saveLocalProjectFiles();
-  scheduleCloudSave();
-}
-
-function toggleFullScreenPreview() {
-  const elem = document.getElementById("iframeContainer");
-  if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
+function handleFileDrop(e) {
+  e.preventDefault();
+  document.getElementById("fileExplorer").classList.remove('dragover');
+  
+  if (e.dataTransfer.items) {
+    const items = Array.from(e.dataTransfer.items).filter(item => item.kind === 'file');
+    const droppedFiles = items.map(item => item.getAsFile());
+    processFilesList(droppedFiles);
   } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
+    processFilesList(e.dataTransfer.files);
   }
 }
 
-function scheduleCloudSave(){
-  const u = window.firebaseCurrentUser;
-  const id = window.currentProjectId;
-  if(!u || !id || id.startsWith("local_proj_")) return;
-  clearTimeout(cloudSaveTimer);
-  cloudSaveTimer = setTimeout(() => {
-    window.saveProjectDraft(id);
-  }, 1200);
-}
-
-function openDownloadMenu(){ document.getElementById("downloadModal").classList.remove("hidden"); }
-function closeDownloadMenu(){ document.getElementById("downloadModal").classList.add("hidden"); }
-
-function downloadHTMLFile(){
-  closeDownloadMenu();
-  syncEditor();
-  const html = files["index.html"] || "", css = files["style.css"] || "", js = files["script.js"] || "";
-  const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`], {type:"text/html"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
-  a.click();
-  showToast("HTML downloaded!");
-}
-
-async function downloadZIPProject(){
-  closeDownloadMenu();
-  syncEditor();
-  const z = new JSZip();
-  Object.entries(files).forEach(([n,c]) => z.file(n, c));
-  const blob = await z.generateAsync({type:"blob"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".zip";
-  a.click();
-  showToast("ZIP exported!");
-}
-
-function clearEditors(){
-  if(!confirm("Clear active file?")) return;
-  editor.setValue("");
-  syncEditor();
-}
-
-// SEARCH FUNCTION TRIGERRED BY BUTTON
-function triggerSearch() {
-  if (editor) {
-    editor.execCommand("find");
-  }
-}
-
-function setScreenSize(s){
-  ["full","tablet","mobile"].forEach(x => document.getElementById("screen-"+x)?.classList.toggle("active", x===s));
-  const f = document.getElementById("outputIframe");
-  if(s==="full"){ f.style.width="100%"; f.style.height="100%"; f.style.borderRadius="0"; }
-  if(s==="tablet"){ f.style.width="768px"; f.style.height="92%"; f.style.borderRadius="16px"; }
-  if(s==="mobile"){ f.style.width="375px"; f.style.height="92%"; f.style.borderRadius="16px"; }
-}
-
-function toggleLibraries(){ document.getElementById("librariesModal").classList.toggle("hidden"); }
-function toggleTheme(){ 
-  const isDark = document.documentElement.classList.toggle("dark"); 
-  document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-}
-
-function toggleProjectSwitcher(e){
-  e?.stopPropagation();
-  document.getElementById("projectSwitcherMenu").classList.toggle("hidden");
-  if(!document.getElementById("projectSwitcherMenu").classList.contains("hidden")){
-    loadHeaderProjects();
-  }
-}
-function headerAddProject(){
-  document.getElementById("projectSwitcherMenu").classList.add("hidden");
-  showCreateProject();
-}
-
-async function loadHeaderProjects(){
-  const el = document.getElementById("headerProjectsList");
-  el.innerHTML = "";
+// Smarter preview to find the right HTML, CSS, JS no matter what folder they are in
+function updatePreview(){
+  const htmlFile = Object.keys(files).find(k => k.endsWith('.html'));
+  const html = htmlFile ? files[htmlFile] : "";
   
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  localProjects.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "header-project-item " + (p.id === window.currentProjectId ? "current" : "");
-    btn.innerHTML = `<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span>`;
-    btn.onclick = () => {
-      document.getElementById("projectSwitcherMenu").classList.add("hidden");
-      switchProject(p.id, p.name);
-    };
-    el.appendChild(btn);
-  });
-
-  const u = window.firebaseCurrentUser;
-  if(u){
-    try {
-      const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-      const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
-      for(const id of ids){
-        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-        if(!pDoc.exists()) continue;
-        const d = pDoc.data();
-        const btn = document.createElement("button");
-        btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
-        btn.innerHTML = `<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>`;
-        btn.onclick = () => {
-          document.getElementById("projectSwitcherMenu").classList.add("hidden");
-          switchProject(id, d.name);
-        };
-        el.appendChild(btn);
-      }
-    } catch(e) {}
-  }
-}
-
-function showToast(msg){
-  const t = document.getElementById("toast");
-  document.getElementById("toastMsg").textContent = msg;
-  t.classList.add("show");
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove("show"), 2500);
-}
-
-// BACK CONFIRMATION WARNING
-window.addEventListener("beforeunload", function (e) {
-  if (hasTypedInSession) {
-    e.preventDefault();
-    e.returnValue = ""; 
-  }
-});
-
-// Initialize CodeMirror
-window.addEventListener("DOMContentLoaded", () => {
-  document.documentElement.classList.add("dark");
+  const cssFile = Object.keys(files).find(k => k.endsWith('.css'));
+  const css = cssFile ? files[cssFile] : "";
   
-  let initialId = localStorage.getItem("js-code-output-active-project-id");
-  if(initialId && initialId.startsWith("local_proj_")) {
-      let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-      let p = localProjects.find(x => x.id === initialId);
-      if(p && document.getElementById("currentProjectName")) {
-          document.getElementById("currentProjectName").textContent = p.name;
-          document.getElementById("dropdownCurrentProject").textContent = p.name;
-      }
-  }
+  const jsFile = Object.keys(files).find(k => k.endsWith('.js') && !k.endsWith('.json'));
+  const js = jsFile ? files[jsFile] : "";
 
-  if (initialId) {
-      loadLocalProjectFiles(initialId);
-  }
+  document.getElementById("outputIframe").srcdoc = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>${css}</style>
+    </head>
+    <body>
+      ${html}
+      <script>${js}<\/script>
+    </body>
+    </html>
+  `;
+}
 
+function initEditor() {
+  if(editor) return;
   const wrapper = document.getElementById("wrapper-editor");
   editor = CodeMirror(wrapper, {
-    value: files[activeFile] || "",
+    value: activeFile && files[activeFile] ? files[activeFile] : "",
     mode: getMode(activeFile),
     theme: "dracula",
     lineNumbers: true,
     autoCloseTags: true,
+    matchTags: { bothTags: true }, // ENABLES HIGHLIGHTING MATCHING TAGS
     autoCloseBrackets: true,
     lineWrapping: true,
     indentUnit: 2,
-    tabSize: 2,
-    gutters: ["CodeMirror-lint-markers"],
-    lint: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" }
-  });
-  window.editor = editor;
-
-  editor.on("inputRead", (cm, change) => {
-    if (/^[a-zA-Z\.\<\$]$/.test(change.text[0])) {
-      cm.showHint({ completeSingle: false });
-    }
+    tabSize: 2
   });
 
-  // CRITICAL FIX: Skip if editor is blocked (e.g. during file switch)
-  editor.on("change", (cm, changeObj) => {
-    if (isSwitchingProject) return; 
-    
-    hasTypedInSession = true;
+  editor.on("change", () => {
     syncEditor();
-    saveLocalProjectFiles();
-    
-    const auto = document.getElementById("autoRunToggle");
-    if(auto?.checked){
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => updatePreview(), 400);
-    }
-    scheduleCloudSave();
+    setTimeout(updatePreview, 500);
   });
+}
 
-  renderFileExplorer();
-});
+document.documentElement.classList.add("dark");
 </script>
 </body>
 </html>
