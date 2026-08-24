@@ -916,12 +916,16 @@ function startWithoutLogin(){
   }
 }
 
-function openProjectsPage(){
+function openProjectsPage(pushHistory = true){
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("startLoginScreen").classList.add("hidden");
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.remove("hidden");
   
+  if (pushHistory) {
+    history.pushState({ page: "projects" }, "", "#projects");
+  }
+
   // Save current project before going to dashboard
   if(window.currentProjectId) {
     syncEditor();
@@ -942,10 +946,14 @@ function openProjectsPage(){
   loadProjects();
 }
 
-function backToHome() {
+function backToHome(pushHistory = true) {
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.add("hidden");
   document.getElementById("landingPage").classList.remove("hidden");
+
+  if (pushHistory) {
+    history.pushState({ page: "home" }, "", window.location.pathname);
+  }
 }
 
 async function firebaseLogout(){
@@ -1117,7 +1125,7 @@ async function switchProject(id, name){
   openEditorWorkspace(id, name);
 }
 
-function openEditorWorkspace(id, name, initialFiles=null){
+function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("projectsPage").classList.add("hidden");
   document.getElementById("startLoginScreen").classList.add("hidden");
@@ -1128,6 +1136,11 @@ function openEditorWorkspace(id, name, initialFiles=null){
   localStorage.setItem("js-code-output-active-project-id", id);
   document.getElementById("currentProjectName").textContent = name || "Untitled Project";
   document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
+
+  if (pushHistory) {
+    const safeProjectName = encodeURIComponent((name || "project").toLowerCase().replace(/\s+/g, "-"));
+    history.pushState({ page: "editor", id: id, name: name }, "", `#editor?project=${safeProjectName}`);
+  }
 
   const u = window.firebaseCurrentUser || window.currentUser;
   const accountSpan = document.getElementById("workspaceAccountName");
@@ -1459,6 +1472,20 @@ e.returnValue = "";
 }
 });
 
+// History API Routing Listener
+window.addEventListener("popstate", (e) => {
+  const hash = window.location.hash;
+  if (hash.startsWith("#editor")) {
+    const id = localStorage.getItem("js-code-output-active-project-id");
+    const name = document.getElementById("currentProjectName")?.textContent || "Project";
+    if (id) openEditorWorkspace(id, name, null, false);
+  } else if (hash === "#projects") {
+    openProjectsPage(false);
+  } else {
+    backToHome(false);
+  }
+});
+
 // Initialize CodeMirror
 window.addEventListener("DOMContentLoaded", () => {
 document.documentElement.classList.add("dark");
@@ -1522,4 +1549,4 @@ renderFileExplorer();
 </script>
 
 </body>
-</html>
+</html> 
