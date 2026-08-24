@@ -118,14 +118,22 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .header-project-item.current { background:rgba(20,86,184,.1);color:var(--brand);font-weight:800; }
 
 #workspace { flex:1;min-height:0;display:flex;overflow:hidden; }
-.explorer { width:220px;flex:0 0 220px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0; }
+.explorer { width:240px;flex:0 0 240px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0; }
 .explorer-head { height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10px;font-weight:900;letter-spacing:.12em; }
-.explorer-body { padding:12px;overflow:auto;flex:1; }
-.explorer-file { width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:7px;color:var(--muted);font-size:11px;text-align:left;cursor:pointer; }
-.explorer-file:hover { background:var(--surface2);color:var(--ink); }
-.explorer-file.active { background:rgba(20,86,184,.11);color:var(--brand);font-weight:800; }
-.explorer-actions { padding:10px;border-top:1px solid var(--line);display:grid;gap:7px; }
-.explorer-actions button, .tool-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:10px; }
+.explorer-body { padding:12px 6px; overflow:auto;flex:1; }
+
+/* Tree Explorer Styles */
+.tree-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.tree-item:hover { background: var(--surface2); color: var(--ink); }
+.tree-item.active { background: rgba(20,86,184,.11); color: var(--brand); font-weight: 800; }
+.tree-actions { display: none; gap: 8px; align-items: center;}
+.tree-item:hover .tree-actions { display: flex; }
+.tree-indent { padding-left: 14px; margin-left: 7px; border-left: 1px solid var(--line); }
+
+.explorer-actions { padding:10px;border-top:1px solid var(--line); display:flex; flex-direction:column; gap:7px; }
+.explorer-actions .action-row { display:flex; gap:7px; }
+.explorer-actions button, .tool-btn { flex:1; border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:10px; display:flex; align-items:center; justify-content:center; gap:6px; }
+.explorer-actions button:hover, .tool-btn:hover { border-color: var(--brand); color: var(--brand); }
 
 .main-area { flex:1;min-width:0;min-height:0;display:flex;overflow:hidden; }
 .editor-panel { flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line); }
@@ -225,7 +233,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <body>
 
 <!-- 1. FULL RICH LANDING PAGE -->
-
 <div id="landingPage" class="landing">
   <div class="wire-bg">
     <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
@@ -242,15 +249,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <a href="#features">Features</a>
       <a href="#workspace-showcase">Workspace</a>
       <a href="#how-it-works">How it works</a>
-      
-      <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-      <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-      <a href="/online-css-editor.html">Online CSS Editor</a>
-      <a href="/javascript-playground.html">JavaScript Playground</a>
-      <a href="/javascript-editor.html">JavaScript Editor</a>
-      <a href="/css-editor.html">CSS Editor</a>
-      <a href="/html-editor.html">HTML Editor</a>
-      <a href="/online-code-editor.html">Online Code Editor</a>
     </div>
     <div class="nav-actions">
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
@@ -448,14 +446,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
       </div>
       <div class="footer-links">
         <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a>
-         <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-      <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-      <a href="/online-css-editor.html">Online CSS Editor</a>
-      <a href="/javascript-playground.html">JavaScript Playground</a>
-      <a href="/javascript-editor.html">JavaScript Editor</a>
-      <a href="/css-editor.html">CSS Editor</a>
-      <a href="/html-editor.html">HTML Editor</a>
-      <a href="/online-code-editor.html">Online Code Editor</a>
       </div>
       <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
     </div>
@@ -465,7 +455,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <button class="floating-theme" onclick="toggleTheme()" title="Switch theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
 
 <!-- 2. LOGIN MODAL -->
-
 <div id="startLoginScreen" class="overlay hidden">
   <div class="login-card">
     <div class="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-500 flex items-center justify-center text-2xl mx-auto mb-4">
@@ -482,7 +471,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 </div>
 
 <!-- 3. PROJECTS SELECTION PAGE -->
-
 <div id="projectsPage" class="projects-page hidden">
   <header class="projects-header">
     <div class="flex items-center gap-3">
@@ -517,7 +505,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 </div>
 
 <!-- 4. CREATE PROJECT MODAL -->
-
 <div id="createProjectModal" class="overlay hidden">
   <div class="modal">
     <div class="flex justify-between items-center">
@@ -534,7 +521,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 </div>
 
 <!-- 5. MAIN WORKSPACE / EDITOR APP -->
-
 <div id="app" class="hidden">
   <header id="topHeader">
     <div class="header-left">
@@ -585,20 +571,27 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <div class="explorer-head">
         <span>EXPLORER</span>
         <div class="flex gap-1">
-          <button onclick="createNewFile()" class="tool-btn" style="padding:2px 6px" title="New File"><i class="fa-solid fa-plus"></i></button>
-          <button onclick="document.getElementById('fileUpload').click()" class="tool-btn" style="padding:2px 6px" title="Upload"><i class="fa-solid fa-upload"></i></button>
+          <button onclick="createNewFile()" class="tool-btn" style="padding:2px 6px" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
+          <button onclick="createNewFolder()" class="tool-btn" style="padding:2px 6px" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
         </div>
       </div>
-      <div class="explorer-body">
-        <div class="text-[9px] text-gray-400 font-bold mb-2">FILES IN PROJECT</div>
-        <div id="fileExplorer"></div>
+      <div class="explorer-body" id="fileExplorer">
+        <!-- Tree renders here -->
       </div>
       <div class="explorer-actions">
-        <button onclick="createNewFile()">+ Add File</button>
-        <button onclick="document.getElementById('fileUpload').click()">Upload File</button>
+        <div class="action-row">
+            <button onclick="createNewFile()"><i class="fa-solid fa-file-circle-plus"></i> File</button>
+            <button onclick="createNewFolder()"><i class="fa-solid fa-folder-plus"></i> Folder</button>
+        </div>
+        <div class="action-row">
+            <button onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-upload"></i> Files</button>
+            <button onclick="document.getElementById('folderUpload').click()"><i class="fa-solid fa-upload"></i> Folder</button>
+        </div>
       </div>
     </aside>
+    <!-- Hidden Inputs for File/Folder Upload -->
     <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
+    <input type="file" id="folderUpload" webkitdirectory directory multiple hidden onchange="handleFolderUpload(event)">
 
 <div class="main-area">
   <!-- Editor Panel -->
@@ -642,7 +635,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
           <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
         </div>
         <h3 class="text-lg font-black tracking-tight mb-1">Ready for Live Output</h3>
-        <p class="text-xs text-slate-400 max-w-xs mb-4">Type code on the left side and get instant live output rendered in real-time right here.</p>
+        <p class="text-xs text-slate-400 max-w-xs mb-4">Create some HTML, CSS or JS files and start typing code on the left side to get instant live output rendered here.</p>
         <button onclick="dismissPlaceholder()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition">Render Live Output</button>
       </div>
       <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
@@ -654,7 +647,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 </div>
 
 <!-- DOWNLOAD & LIBRARIES MODALS -->
-
 <div id="downloadModal" class="overlay hidden">
   <div class="modal">
     <div class="flex justify-between items-center">
@@ -662,9 +654,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <button onclick="closeDownloadMenu()" class="text-gray-400 text-lg">×</button>
     </div>
     <p>Export your full project bundle.</p>
-    <button class="modal-btn w-full mb-2 text-left flex items-center gap-2" onclick="downloadHTMLFile()">
-      <i class="fa-brands fa-html5 text-orange-500"></i> Single HTML File
-    </button>
     <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
       <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
     </button>
@@ -691,7 +680,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
 
 <!-- FIREBASE SDK -->
-
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
@@ -729,9 +717,6 @@ window.saveProjectDraft = async (idOverride=null) => {
   try {
     await setDoc(doc(db, "users", user.uid, "projects", id), {
       files: JSON.parse(JSON.stringify(window.files || {})),
-      html: window.files["index.html"] || "",
-      css: window.files["style.css"] || "",
-      js: window.files["script.js"] || "",
       updatedAt: serverTimestamp()
     }, {merge:true});
     return true;
@@ -761,66 +746,15 @@ onAuthStateChanged(auth, user => {
 "use strict";
 
 let files = {};
-let activeFile = "index.html";
+let activeFile = null;
 let editor = null;
 let currentProjectId = localStorage.getItem("js-code-output-active-project-id") || "";
 let cloudSaveTimer = null, debounceTimer = null;
 let hasTypedInSession = false;
-let isSwitchingProject = false; // CRITICAL FIX: Lock editor during load!
+let isSwitchingProject = false; 
+let folderState = {}; // Keeps track of open/closed folders
 
-const defaultTemplate = {
-  "index.html": `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JS CODE OUTPUT</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="card">
-    <h1>🚀 Hello World</h1>
-    <p>Start editing HTML, CSS, and JS to build your app!</p>
-    <button id="btn">Click Me</button>
-  </div>
-  <script src="script.js"><\/script>
-</body>
-</html>`,
-  "style.css": `body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0f172a;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.card {
-  background: #1e293b;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  text-align: center;
-}
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 12px;
-}
-button:hover { background: #2563eb; }`,
-  "script.js": `console.log("Workspace initialized successfully.");
-
-document.getElementById("btn")?.addEventListener("click", () => {
-  alert("Button clicked! Live JavaScript is working.");
-  console.log("User clicked the button at: " + new Date().toLocaleTimeString());
-});`
-};
+const defaultTemplate = {}; // Project will start completely blank
 
 window.files = files;
 window.activeFile = activeFile;
@@ -828,14 +762,15 @@ window.currentProjectId = currentProjectId;
 window.isSwitchingProject = false; 
 
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-function getExt(n){ return n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
+function getExt(n){ return n && n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
 function getMode(n){
+  if(!n) return "text/plain";
   const e = getExt(n);
   return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="mjs") ? "javascript" : "text/plain";
 }
 function icon(n){
   const e = getExt(n);
-  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : '<i class="fa-solid fa-file"></i>';
+  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : e==="json" ? '<i class="fa-solid fa-code text-green-400"></i>' : '<i class="fa-solid fa-file"></i>';
 }
 
 function syncEditor(){
@@ -851,7 +786,7 @@ function saveLocalProjectFiles(){
   const id = window.currentProjectId;
   if (!id) return;
   localStorage.setItem("js_files_" + id, JSON.stringify(files));
-  localStorage.setItem("js_active_file_" + id, activeFile);
+  if(activeFile) localStorage.setItem("js_active_file_" + id, activeFile);
   localStorage.setItem("js-code-output-active-project-id", id);
 }
 
@@ -862,8 +797,18 @@ function loadLocalProjectFiles(id){
   } else {
     files = structuredClone(defaultTemplate);
   }
-  activeFile = localStorage.getItem("js_active_file_" + id) || "index.html";
-  if(!files[activeFile]) activeFile = Object.keys(files)[0] || "index.html";
+  
+  let savedActive = localStorage.getItem("js_active_file_" + id);
+  let allActualFiles = Object.keys(files).filter(k => !k.endsWith('/'));
+  
+  if(savedActive && files[savedActive] !== undefined && !savedActive.endsWith('/')) {
+      activeFile = savedActive;
+  } else if (allActualFiles.length > 0) {
+      activeFile = allActualFiles[0];
+  } else {
+      activeFile = null;
+  }
+  
   window.files = files;
   window.activeFile = activeFile;
 }
@@ -980,7 +925,6 @@ async function createProject(){
   const u = window.firebaseCurrentUser;
   if(!name) return alert("Please enter a project name.");
 
-  // CRITICAL FIX: Save outgoing project before creating a new one!
   isSwitchingProject = true;
   window.isSwitchingProject = true;
   
@@ -999,15 +943,11 @@ async function createProject(){
   const initialFiles = structuredClone(defaultTemplate);
 
   if (u) {
-    // Cloud Creation
     const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
     try {
       await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
         id, name, ownerId: u.uid,
         files: initialFiles,
-        html: initialFiles["index.html"],
-        css: initialFiles["style.css"],
-        js: initialFiles["script.js"],
         createdAt: window.firebaseServerTimestamp(),
         updatedAt: window.firebaseServerTimestamp()
       });
@@ -1023,7 +963,6 @@ async function createProject(){
       alert("Could not create cloud project.");
     }
   } else {
-    // Local Creation (Guest Mode)
     const id = "local_proj_" + Date.now();
     let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
     localProjects.push({ id, name, updatedAt: Date.now() });
@@ -1058,12 +997,10 @@ async function loadProjects(){
   let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
   let hasProjects = localProjects.length > 0;
 
-  // Render Local Projects First
   localProjects.forEach(p => {
     list.appendChild(createProjectCardHTML(p.id, p.name, false));
   });
 
-  // Render Cloud Projects if logged in
   const u = window.firebaseCurrentUser;
   if(u) {
     try {
@@ -1092,9 +1029,8 @@ async function loadProjects(){
 }
 
 async function switchProject(id, name){
-  if(id === window.currentProjectId) return; // Ignore if clicking same project
+  if(id === window.currentProjectId) return; 
   
-  // CRITICAL FIX: Save Outgoing project!
   isSwitchingProject = true;
   window.isSwitchingProject = true;
   
@@ -1102,7 +1038,7 @@ async function switchProject(id, name){
      let temp = isSwitchingProject;
      isSwitchingProject = false;
      syncEditor();
-     saveLocalProjectFiles(); // Force save to old ID before switching
+     saveLocalProjectFiles(); 
      isSwitchingProject = temp;
   }
 
@@ -1152,7 +1088,7 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
 
   if(initialFiles){
     files = initialFiles;
-    activeFile = "index.html";
+    activeFile = Object.keys(files).filter(k => !k.endsWith('/'))[0] || null;
   } else {
     loadLocalProjectFiles(id);
   }
@@ -1166,50 +1102,121 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
     updatePreview();
   }
   
-  // Unlock editor now that switch is complete
   setTimeout(() => {
     isSwitchingProject = false;
     window.isSwitchingProject = false;
   }, 100);
 }
 
+// Recursive Tree Render Function
 function renderFileExplorer(){
   const el = document.getElementById("fileExplorer");
   if(!el) return;
   el.innerHTML = "";
-  Object.keys(files).sort().forEach(n => {
-    const d = document.createElement("div");
-    d.className = "explorer-file " + (n === activeFile ? "active" : "");
-    d.innerHTML = `
-      <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
-        ${icon(n)} <span>${escapeHTML(n)}</span>
-      </span>
-      ${n !== "index.html" ? `<button onclick="deleteFile('${encodeURIComponent(n)}');event.stopPropagation()" class="text-red-400 hover:text-red-500 font-bold">×</button>` : ""}
-    `;
-    d.onclick = () => openFile(n);
-    el.appendChild(d);
+
+  const root = {};
+  Object.keys(files).sort().forEach(path => {
+      const parts = path.split('/');
+      let current = root;
+      for(let i=0; i<parts.length; i++) {
+          if(parts[i] === "") continue;
+          let isLast = (i === parts.length - 1);
+          let isDir = isLast && path.endsWith('/');
+          let partName = parts[i];
+
+          if(isDir || !isLast) {
+              if(!current[partName]) current[partName] = { _isDir: true, path: parts.slice(0, i+1).join('/') + '/' };
+              current = current[partName];
+          } else {
+              current[partName] = { _isFile: true, path: path };
+          }
+      }
   });
+
+  function buildDOM(node, container, level = 0) {
+      const ul = document.createElement("div");
+      if(level > 0) ul.className = "tree-indent";
+
+      Object.keys(node).sort((a,b) => {
+          let aIsDir = node[a]._isDir;
+          let bIsDir = node[b]._isDir;
+          if(aIsDir && !bIsDir) return -1;
+          if(!aIsDir && bIsDir) return 1;
+          return a.localeCompare(b);
+      }).forEach(key => {
+          if(key.startsWith("_")) return;
+          const item = node[key];
+          const div = document.createElement("div");
+          
+          if(item._isDir) {
+              let isOpen = folderState[item.path] !== false; // open by default
+              div.className = "tree-item";
+              div.innerHTML = `
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item.path}', event)">
+                      <i class="fa-solid fa-chevron-${isOpen ? 'down' : 'right'} text-[8px] w-2 text-gray-500"></i>
+                      <i class="fa-solid fa-${isOpen ? 'folder-open' : 'folder'} text-blue-400"></i> <span>${escapeHTML(key)}</span>
+                  </span>
+                  <div class="tree-actions">
+                      <button onclick="createNewFile('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-green-400" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
+                      <button onclick="createNewFolder('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-blue-400" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
+                      <button onclick="deleteItem('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete Folder"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+              `;
+              ul.appendChild(div);
+              if(isOpen) {
+                  buildDOM(item, ul, level + 1);
+              }
+          } else {
+              div.className = "tree-item " + (item.path === activeFile ? "active" : "");
+              div.innerHTML = `
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="openFile('${item.path}')">
+                      <span class="w-2"></span>
+                      ${icon(item.path)} <span>${escapeHTML(key)}</span>
+                  </span>
+                  <div class="tree-actions">
+                      <button onclick="deleteItem('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete File"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+              `;
+              ul.appendChild(div);
+          }
+      });
+      container.appendChild(ul);
+  }
+
+  if(Object.keys(root).length === 0) {
+      el.innerHTML = `<div class="text-xs text-gray-500 text-center py-6">Workspace is empty.<br>Create a file or folder.</div>`;
+  } else {
+      buildDOM(root, el, 0);
+  }
+  
   renderEditorTabs();
+}
+
+window.toggleFolder = function(path, e) {
+  e.stopPropagation();
+  folderState[path] = folderState[path] === false ? true : false;
+  renderFileExplorer();
 }
 
 function renderEditorTabs(){
   const el = document.getElementById("tabs");
   if(!el) return;
   el.innerHTML = "";
-  Object.keys(files).forEach(n => {
+  Object.keys(files).filter(n => !n.endsWith('/')).forEach(n => {
     const b = document.createElement("button");
     b.className = "editor-tab " + (n === activeFile ? "active-file-tab" : "");
-    b.innerHTML = `${icon(n)} <span>${escapeHTML(n)}</span>`;
+    const parts = n.split('/');
+    const shortName = parts[parts.length - 1];
+    b.innerHTML = `${icon(n)} <span>${escapeHTML(shortName)}</span>`;
     b.onclick = () => openFile(n);
     el.appendChild(b);
   });
 }
 
 function openFile(n){
-  if(files[n] === undefined) return;
+  if(n && files[n] === undefined && !n.endsWith('/')) return;
   
-  // Only save if not currently in the middle of a project swap
-  if (!isSwitchingProject) {
+  if (!isSwitchingProject && activeFile && files[activeFile] !== undefined) {
     syncEditor();
     saveLocalProjectFiles();
   }
@@ -1218,48 +1225,78 @@ function openFile(n){
   window.activeFile = n;
 
   if(editor){
-    const m = getMode(n);
-    editor.setOption("mode", m);
-    editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
-    
-    // Prevent false triggers on change
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true;
-    editor.setValue(files[n] || "");
-    editor.clearHistory();
-    isSwitchingProject = oldLock; 
-    
+    if(!n) {
+        let oldLock = isSwitchingProject;
+        isSwitchingProject = true;
+        editor.setValue("");
+        editor.setOption("readOnly", "nocursor");
+        isSwitchingProject = oldLock;
+    } else {
+        const m = getMode(n);
+        editor.setOption("mode", m);
+        editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
+        editor.setOption("readOnly", false);
+        
+        let oldLock = isSwitchingProject;
+        isSwitchingProject = true;
+        editor.setValue(files[n] || "");
+        editor.clearHistory();
+        isSwitchingProject = oldLock; 
+    }
     setTimeout(() => editor.refresh(), 10);
   }
   renderFileExplorer();
 }
 
-function createNewFile(){
-  const n = prompt("Enter file name (e.g. app.js, style.css, data.json):");
+window.createNewFile = function(basePath = "") {
+  const n = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.css`);
   if(!n) return;
   const name = n.trim();
-  if(!name || files[name] !== undefined) return alert("Invalid or existing file name.");
-  files[name] = "";
+  if(!name) return;
+  const fullPath = basePath + name;
+  if(files[fullPath] !== undefined) return alert("File already exists.");
+  files[fullPath] = "";
+  if(basePath) folderState[basePath] = true;
   saveLocalProjectFiles();
   renderFileExplorer();
-  openFile(name);
-}
+  openFile(fullPath);
+};
 
-function deleteFile(encoded){
-  const n = decodeURIComponent(encoded);
-  if(n === "index.html") return alert("index.html cannot be deleted.");
-  if(!confirm(`Delete ${n}?`)) return;
-  delete files[n];
-  if(activeFile === n) {
-    activeFile = "index.html";
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true; 
-    openFile(activeFile); 
-    isSwitchingProject = oldLock;
-  }
+window.createNewFolder = function(basePath = "") {
+  const n = prompt(`Enter folder name ${basePath ? '(inside '+basePath+')' : ''}:`);
+  if(!n) return;
+  const name = n.trim();
+  if(!name) return;
+  const fullPath = basePath + name + "/";
+  if(files[fullPath] !== undefined) return alert("Folder already exists.");
+  files[fullPath] = ""; // folder placeholder
+  folderState[fullPath] = true; 
+  if(basePath) folderState[basePath] = true;
   saveLocalProjectFiles();
   renderFileExplorer();
-}
+};
+
+window.deleteItem = function(path) {
+  const isFolder = path.endsWith('/');
+  if(!confirm(`Delete ${isFolder ? 'folder and all its contents' : 'file'} (${path})?`)) return;
+  
+  let requiresActiveChange = false;
+  Object.keys(files).forEach(k => {
+      if(k === path || k.startsWith(path)) {
+          delete files[k];
+          if(k === activeFile) requiresActiveChange = true;
+      }
+  });
+  
+  if(requiresActiveChange) {
+      const remainingFiles = Object.keys(files).filter(k => !k.endsWith('/'));
+      activeFile = remainingFiles.length > 0 ? remainingFiles[0] : null;
+      openFile(activeFile);
+  } else {
+      saveLocalProjectFiles();
+      renderFileExplorer();
+  }
+};
 
 function handleFileUpload(e){
   const fileList = [...e.target.files || []];
@@ -1272,6 +1309,35 @@ function handleFileUpload(e){
       openFile(f.name);
     };
     r.readAsText(f);
+  });
+  e.target.value = "";
+}
+
+function handleFolderUpload(e) {
+  const uploadedFiles = [...e.target.files || []];
+  let firstFile = null;
+  uploadedFiles.forEach((f, idx) => {
+      const r = new FileReader();
+      r.onload = ev => {
+          const path = f.webkitRelativePath || f.name; 
+          files[path] = ev.target.result || "";
+          if(idx === 0) firstFile = path;
+          
+          // Ensure parent folders are expanded
+          const parts = path.split('/');
+          let cur = "";
+          for(let i=0; i<parts.length-1; i++){
+              cur += parts[i] + "/";
+              folderState[cur] = true;
+          }
+          
+          if(idx === uploadedFiles.length - 1) {
+              saveLocalProjectFiles();
+              renderFileExplorer();
+              if(firstFile) openFile(firstFile);
+          }
+      };
+      r.readAsText(f);
   });
   e.target.value = "";
 }
@@ -1290,9 +1356,14 @@ function updatePreview(force=false){
 
   document.getElementById("placeholderView")?.classList.add("hidden");
 
-  const html = files["index.html"] || "";
-  const css = files["style.css"] || "";
-  const js = files["script.js"] || "";
+  // Smart Compiler: Find html, bundle all css, bundle all js
+  const htmlKeys = Object.keys(files).filter(k => k.endsWith(".html"));
+  const cssKeys = Object.keys(files).filter(k => k.endsWith(".css"));
+  const jsKeys = Object.keys(files).filter(k => k.endsWith(".js") || k.endsWith(".mjs"));
+
+  const html = htmlKeys.includes("index.html") ? files["index.html"] : (htmlKeys.length ? files[htmlKeys[0]] : "");
+  const css = cssKeys.map(k => files[k]).join("\n");
+  const js = jsKeys.map(k => files[k]).join(";\n");
 
   const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
   const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
@@ -1306,7 +1377,6 @@ function updatePreview(force=false){
   <meta name="viewport" content="width=device-width,initial-scale=1">
   ${tw}${fa}${three}${chart}
   <style>${css}</style>
-
 </head>
 <body>
   ${html}
@@ -1314,8 +1384,8 @@ function updatePreview(force=false){
 </body>
 </html>`;
 
-saveLocalProjectFiles();
-scheduleCloudSave();
+  saveLocalProjectFiles();
+  scheduleCloudSave();
 }
 
 function toggleFullScreenPreview() {
@@ -1356,23 +1426,13 @@ window.saveProjectDraft(id);
 function openDownloadMenu(){ document.getElementById("downloadModal").classList.remove("hidden"); }
 function closeDownloadMenu(){ document.getElementById("downloadModal").classList.add("hidden"); }
 
-function downloadHTMLFile(){
-closeDownloadMenu();
-syncEditor();
-const html = files["index.html"] || "", css = files["style.css"] || "", js = files["script.js"] || "";
-const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`], {type:"text/html"});
-const a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
-a.click();
-showToast("HTML downloaded!");
-}
-
 async function downloadZIPProject(){
 closeDownloadMenu();
 syncEditor();
 const z = new JSZip();
-Object.entries(files).forEach(([n,c]) => z.file(n, c));
+Object.entries(files).forEach(([n,c]) => {
+    if(!n.endsWith('/')) z.file(n, c);
+});
 const blob = await z.generateAsync({type:"blob"});
 const a = document.createElement("a");
 a.href = URL.createObjectURL(blob);
@@ -1383,11 +1443,10 @@ showToast("ZIP exported!");
 
 function clearEditors(){
 if(!confirm("Clear active file?")) return;
-editor.setValue("");
+if(editor) editor.setValue("");
 syncEditor();
 }
 
-// SEARCH FUNCTION TRIGERRED BY BUTTON
 function triggerSearch() {
 if (editor) {
 editor.execCommand("find");
@@ -1508,7 +1567,7 @@ loadLocalProjectFiles(initialId);
 
 const wrapper = document.getElementById("wrapper-editor");
 editor = CodeMirror(wrapper, {
-value: files[activeFile] || "",
+value: (activeFile && files[activeFile]) ? files[activeFile] : "",
 mode: getMode(activeFile),
 theme: "dracula",
 lineNumbers: true,
@@ -1519,7 +1578,8 @@ indentUnit: 2,
 tabSize: 2,
 gutters: ["CodeMirror-lint-markers"],
 lint: true,
-extraKeys: { "Ctrl-Space": "autocomplete" }
+extraKeys: { "Ctrl-Space": "autocomplete" },
+readOnly: activeFile ? false : "nocursor"
 });
 window.editor = editor;
 
@@ -1529,7 +1589,6 @@ cm.showHint({ completeSingle: false });
 }
 });
 
-// CRITICAL FIX: Skip if editor is blocked (e.g. during file switch)
 editor.on("change", (cm, changeObj) => {
 if (isSwitchingProject) return;
 
@@ -1543,7 +1602,6 @@ if(auto?.checked){
   debounceTimer = setTimeout(() => updatePreview(), 400);
 }
 scheduleCloudSave();
-
 });
 
 renderFileExplorer();
@@ -1551,4 +1609,4 @@ renderFileExplorer();
 </script>
 
 </body>
-</html> 
+</html>
