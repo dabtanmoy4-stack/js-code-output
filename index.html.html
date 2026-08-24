@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,70 +8,86 @@
 <meta name="description" content="JS CODE OUTPUT is a premium free online code editor and web builder for HTML, CSS and JavaScript with instant live output, projects, templates, console and downloads.">
 <link rel="canonical" href="https://js-code-output.vercel.app/">
 <meta name="theme-color" content="#07101d">
-  <link rel="icon" type="image/png" href="/logo.png">
 
 <!-- Tailwind & Icons -->
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- CodeMirror Core & Dracula Theme -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 
 <!-- CodeMirror Hint, Lint & Search Addons -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
 
 <!-- Linters & Parser Scripts (Updated HTMLHint to 0.9.13 to fix error) -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.9.13/htmlhint.js"></script>
 
 <!-- CodeMirror Scripts -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/xml-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/html-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/css-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/javascript-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/javascript-lint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/css-lint.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/html-lint.min.js"></script>
 
 <!-- CodeMirror Search Scripts -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/searchcursor.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/search/search.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "JS CODE OUTPUT",
-  "url": "https://js-code-output.vercel.app/",
-  "logo": "https://js-code-output.vercel.app/logo.png"
-}
-</script>
-
 <style>
 :root{
-  --bg:#f7f9fc;--surface:#fff;--surface2:#f1f4f8;--ink:#111827;--muted:#667085;
-  --line:#dfe4ea;--brand:#1456b8;--brand2:#2f7be5;--accent:#0b2e59;--shadow:0 20px 60px rgba(15,35,65,.10);
+  --bg:#f7f9fc;--surface:#fff;--surface2:#f1f4f8;--ink:#111827;--muted:#667085;
+  --line:#dfe4ea;--brand:#1456b8;--brand2:#2f7be5;--accent:#0b2e59;--shadow:0 20px 60px rgba(15,35,65,.10);
 }
 html.dark{
-  --bg:#07101d;--surface:#0c1624;--surface2:#111d2d;--ink:#f8fafc;--muted:#94a3b8;
-  --line:#223149;--brand:#4f8fe8;--brand2:#6ea8ff;--accent:#b9d6ff;--shadow:0 20px 60px rgba(0,0,0,.35);
+  --bg:#07101d;--surface:#0c1624;--surface2:#111d2d;--ink:#f8fafc;--muted:#94a3b8;
+  --line:#223149;--brand:#4f8fe8;--brand2:#6ea8ff;--accent:#b9d6ff;--shadow:0 20px 60px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);scroll-behavior:smooth}
 button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
@@ -203,525 +220,482 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .CodeMirror-hint-active { background:#313244!important;color:#89b4fa!important;border-radius:4px; }
 
 @media(max-width:1000px){
-  .hero{grid-template-columns:1fr;gap:35px}
-  .hero-visual{max-width:760px;margin:auto}
-  .feature-grid{grid-template-columns:1fr 1fr}
-  .showcase{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr 1fr}
-  .projects-grid{grid-template-columns:1fr 1fr}
-  .explorer{display:none}
+  .hero{grid-template-columns:1fr;gap:35px}
+  .hero-visual{max-width:760px;margin:auto}
+  .feature-grid{grid-template-columns:1fr 1fr}
+  .showcase{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .projects-grid{grid-template-columns:1fr 1fr}
+  .explorer{display:none}
 }
 @media(max-width:700px){
-  .nav-links{display:none}
-  .site-nav{padding:0 16px}
-  .nav-brand span{display:none}
-  .hero{padding:70px 18px}
-  .section{padding:70px 18px}
-  .hero h1{font-size:42px}
-  .mock-workspace{grid-template-columns:90px 1fr;height:290px}
-  .mock-output{display:none}
-  .feature-grid,.steps,.projects-grid{grid-template-columns:1fr}
-  .final-cta{padding:40px 22px}
-  .footer-inner{flex-direction:column}
-  .hero-meta{flex-wrap:wrap}
-  .top-actions .hide-mobile{display:none!important}
+  .nav-links{display:none}
+  .site-nav{padding:0 16px}
+  .nav-brand span{display:none}
+  .hero{padding:70px 18px}
+  .section{padding:70px 18px}
+  .hero h1{font-size:42px}
+  .mock-workspace{grid-template-columns:90px 1fr;height:290px}
+  .mock-output{display:none}
+  .feature-grid,.steps,.projects-grid{grid-template-columns:1fr}
+  .final-cta{padding:40px 22px}
+  .footer-inner{flex-direction:column}
+  .hero-meta{flex-wrap:wrap}
+  .top-actions .hide-mobile{display:none!important}
 }
 </style>
+
 </head>
 <body>
 
 <!-- 1. FULL RICH LANDING PAGE -->
+
 <div id="landingPage" class="landing">
-  <div class="wire-bg">
-    <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
-    <div class="wire-dot" style="left:14%;top:26%"></div><div class="wire-dot" style="left:76%;top:22%;animation-delay:1.7s"></div>
-    <div class="wire-dot" style="left:64%;top:72%;animation-delay:3.2s"></div><div class="wire-dot" style="left:31%;top:80%;animation-delay:4.1s"></div>
-  </div>
+  <div class="wire-bg">
+    <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
+    <div class="wire-dot" style="left:14%;top:26%"></div><div class="wire-dot" style="left:76%;top:22%;animation-delay:1.7s"></div>
+    <div class="wire-dot" style="left:64%;top:72%;animation-delay:3.2s"></div><div class="wire-dot" style="left:31%;top:80%;animation-delay:4.1s"></div>
+  </div>
 
-  <nav class="site-nav">
-    <a href="#" class="nav-brand"><i class="fa-solid fa-code text-blue-500 text-2xl"></i><span>JS CODE OUTPUT</span></a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#workspace-showcase">Workspace</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="/html-editor.html">HTML Editor</a>
-      <a href="/css-editor.html">CSS Editor</a>
-      <a href="/javascript-editor.html">JavaScript Editor</a>
-      <a href="/javascript-playground.html">JavaScript Playground</a>
-      <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-      <a href="/online-css-editor.html">Online CSS Editor</a>
-      <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-    </div>
-    <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
-      <button class="nav-login" onclick="startBuilding()">Start Building</button>
-    </div>
-  </nav>
+  <nav class="site-nav">
+    <a href="#" class="nav-brand"><i class="fa-solid fa-code text-blue-500 text-2xl"></i><span>JS CODE OUTPUT</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#workspace-showcase">Workspace</a>
+      <a href="#how-it-works">How it works</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+      <button class="nav-login" onclick="startBuilding()">Start Building</button>
+    </div>
+  </nav>
 
-  <section class="hero">
-    <div>
-      <span class="eyebrow"><i class="fa-solid fa-bolt"></i> PROFESSIONAL WEB BUILDING, IN YOUR BROWSER</span>
-      <h1>World-class code editor.<br><em>Live output.</em></h1>
-      <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, and live preview into one elegant browser experience.</p>
-      <div class="hero-cta">
-        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
-      </div>
-      <div class="hero-meta">
-        <span><i class="fa-solid fa-check"></i> HTML / CSS / JS</span>
-        <span><i class="fa-solid fa-bolt"></i> IntelliSense & Linting</span>
-        <span><i class="fa-solid fa-cloud"></i> Cloud Projects</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-card">
-        <div class="hero-card-head">
-          <div class="traffic"><i class="t1"></i><i class="t2"></i><i class="t3"></i></div>
-          <span class="mini-title">JS CODE OUTPUT / LIVE WORKSPACE</span>
-          <span style="color:#6b7280;font-size:10px">● LIVE</span>
-        </div>
-        <div class="mock-workspace">
-          <div class="mock-side">
-            <div style="font-size:8px;color:#94a3b8;font-weight:900;margin-bottom:10px">EXPLORER</div>
-            <div class="mock-file active">⌁ index.html</div>
-            <div class="mock-file"># style.css</div>
-            <div class="mock-file">JS script.js</div>
-            <div class="mock-file">+ app.js</div>
-          </div>
-          <div class="mock-editor">
-            <div>&lt;<span class="code-blue">section</span> <span class="code-orange">class</span>=<span class="code-green">"hero"</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">h1</span>&gt;Build anything&lt;/<span class="code-blue">h1</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">p</span>&gt;See it live.&lt;/<span class="code-blue">p</span>&gt;</div>
-            <div>&nbsp;&nbsp;&lt;<span class="code-blue">button</span> <span class="code-orange">id</span>=<span class="code-green">"start"</span>&gt;</div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;Start Building</div>
-            <div>&nbsp;&nbsp;&lt;/<span class="code-blue">button</span>&gt;</div>
-            <div>&lt;/<span class="code-blue">section</span>&gt;</div>
-            <br>
-            <div><span class="code-blue">const</span> app = document.querySelector(...)</div>
-          </div>
-          <div class="mock-output">
-            <div class="site-preview">
-              <div style="font-size:8px;color:#5b6b7f">LIVE PREVIEW</div>
-              <h3>Build anything.</h3>
-              <div class="bar"></div>
-              <div class="bar" style="width:55%"></div>
-              <div class="box"></div>
-              <div style="margin-top:15px;background:#1456b8;color:white;padding:8px 12px;border-radius:8px;display:inline-block;font-size:9px">RUN PROJECT →</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-badge"><strong>LIVE</strong> output while you code</div>
-    </div>
-  </section>
+  <section class="hero">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-bolt"></i> PROFESSIONAL WEB BUILDING, IN YOUR BROWSER</span>
+      <h1>World-class code editor.<br><em>Live output.</em></h1>
+      <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, and live preview into one elegant browser experience.</p>
+      <div class="hero-cta">
+        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
+      </div>
+      <div class="hero-meta">
+        <span><i class="fa-solid fa-check"></i> HTML / CSS / JS</span>
+        <span><i class="fa-solid fa-bolt"></i> IntelliSense & Linting</span>
+        <span><i class="fa-solid fa-cloud"></i> Cloud Projects</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-head">
+          <div class="traffic"><i class="t1"></i><i class="t2"></i><i class="t3"></i></div>
+          <span class="mini-title">JS CODE OUTPUT / LIVE WORKSPACE</span>
+          <span style="color:#6b7280;font-size:10px">● LIVE</span>
+        </div>
+        <div class="mock-workspace">
+          <div class="mock-side">
+            <div style="font-size:8px;color:#94a3b8;font-weight:900;margin-bottom:10px">EXPLORER</div>
+            <div class="mock-file active">⌁ index.html</div>
+            <div class="mock-file"># style.css</div>
+            <div class="mock-file">JS script.js</div>
+            <div class="mock-file">+ app.js</div>
+          </div>
+          <div class="mock-editor">
+            <div>&lt;<span class="code-blue">section</span> <span class="code-orange">class</span>=<span class="code-green">"hero"</span>&gt;</div>
+            <div>&nbsp;&nbsp;&lt;<span class="code-blue">h1</span>&gt;Build anything&lt;/<span class="code-blue">h1</span>&gt;</div>
+            <div>&nbsp;&nbsp;&lt;<span class="code-blue">p</span>&gt;See it live.&lt;/<span class="code-blue">p</span>&gt;</div>
+            <div>&nbsp;&nbsp;&lt;<span class="code-blue">button</span> <span class="code-orange">id</span>=<span class="code-green">"start"</span>&gt;</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;Start Building</div>
+            <div>&nbsp;&nbsp;&lt;/<span class="code-blue">button</span>&gt;</div>
+            <div>&lt;/<span class="code-blue">section</span>&gt;</div>
+            <br>
+            <div><span class="code-blue">const</span> app = document.querySelector(...)</div>
+          </div>
+          <div class="mock-output">
+            <div class="site-preview">
+              <div style="font-size:8px;color:#5b6b7f">LIVE PREVIEW</div>
+              <h3>Build anything.</h3>
+              <div class="bar"></div>
+              <div class="bar" style="width:55%"></div>
+              <div class="box"></div>
+              <div style="margin-top:15px;background:#1456b8;color:white;padding:8px 12px;border-radius:8px;display:inline-block;font-size:9px">RUN PROJECT →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-badge"><strong>LIVE</strong> output while you code</div>
+    </div>
+  </section>
 
-  <section class="section" id="features">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Built for makers</div>
-        <h2>Everything you need to turn code into a real interface.</h2>
-        <p>A clean workflow designed to keep your attention on the build — not the setup.</p>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
-          <h3>Focused code editor</h3>
-          <p>CodeMirror-powered editing with syntax highlighting, VS Code style autocompletion (IntelliSense), and live error linting.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-display"></i></div>
-          <h3>Instant live output</h3>
-          <p>Run HTML, CSS and JavaScript together and see the result instantly in a responsive live preview.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-folder-tree"></i></div>
-          <h3>Isolated Projects</h3>
-          <p>Create separate projects and keep each project's files completely isolated in its own cloud or local document.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
-          <h3>Libraries on demand</h3>
-          <p>Turn Tailwind CSS, Font Awesome, Three.js and Chart.js on or off for your project.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon"><i class="fa-solid fa-file-export"></i></div>
-          <h3>Export anywhere</h3>
-          <p>Download a complete HTML file or package every project file into a ZIP with one click.</p>
-        </article>
-        <a href="/css-editor.html" class="tool-card">
-    <h3>Online CSS Editor</h3>
-    <p>
-        Write, edit and preview CSS online with JS CODE OUTPUT.
-    </p>
-</a>
-        <a href="/javascript-editor.html">
-    <h3>Online JavaScript Editor</h3>
+  <section class="section" id="features">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="kicker">Built for makers</div>
+        <h2>Everything you need to turn code into a real interface.</h2>
+        <p>A clean workflow designed to keep your attention on the build — not the setup.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
+          <h3>Focused code editor</h3>
+          <p>CodeMirror-powered editing with syntax highlighting, VS Code style autocompletion (IntelliSense), and live error linting.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-display"></i></div>
+          <h3>Instant live output</h3>
+          <p>Run HTML, CSS and JavaScript together and see the result instantly in a responsive live preview.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-folder-tree"></i></div>
+          <h3>Isolated Projects</h3>
+          <p>Create separate projects and keep each project's files completely isolated in its own cloud or local document.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
+          <h3>Libraries on demand</h3>
+          <p>Turn Tailwind CSS, Font Awesome, Three.js and Chart.js on or off for your project.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-file-export"></i></div>
+          <h3>Export anywhere</h3>
+          <p>Download a complete HTML file or package every project file into a ZIP with one click.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 
-    <p>
-        Write, edit and test JavaScript online
-        directly in your browser.
-    </p>
-</a>
-        <a href="/javascript-editor.html">
-    <h3>Online JavaScript Editor</h3>
+  <section class="section" id="workspace-showcase">
+    <div class="section-inner showcase">
+      <div class="showcase-copy">
+        <div class="kicker">The workspace</div>
+        <h2>Write once. Watch it become a website.</h2>
+        <p>The editor and live output sit side by side so you can experiment quickly, test responsive layouts and iterate without leaving the browser.</p>
+        <ul class="check-list">
+          <li><i class="fa-solid fa-circle-check"></i><span>Desktop, tablet and mobile preview modes</span></li>
+          <li><i class="fa-solid fa-circle-check"></i><span>Separate HTML, CSS, JS and custom files</span></li>
+          <li><i class="fa-solid fa-circle-check"></i><span>Cloud auto-saving after Google sign-in</span></li>
+        </ul>
+        <button class="primary-btn mt-4" onclick="startBuilding()">Open the workspace →</button>
+      </div>
+      <div class="video-card">
+        <div class="video-inner">
+          <div class="orbit"></div>
+          <div class="scan"></div>
+          <div style="position:absolute;inset:0;display:grid;place-items:center;color:#dcecff">
+            <div style="text-align:center">
+              <i class="fa-solid fa-play" style="font-size:32px;margin-bottom:15px"></i>
+              <div style="font-weight:800">LIVE BUILD VISUALIZER</div>
+              <div style="font-size:10px;color:#91a7c0;margin-top:5px">CODE → RENDER → ITERATE</div>
+            </div>
+          </div>
+          <div class="video-label">&lt;/&gt; REAL-TIME WORKFLOW</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <p>
-        Write, edit and test JavaScript online
-        directly in your browser.
-    </p>
-</a>
-        <a href="/html-css-javascript-editor.html" class="tool-card">
-    <h3>HTML CSS JavaScript Editor</h3>
-    <p>
-        Write HTML, CSS and JavaScript together and preview your web project online.
-    </p>
-</a>
-        <a href="/online-css-editor.html" class="tool-card">
-    <h3>Online CSS Editor</h3>
-    <p>
-        Write, test and preview CSS online with JS CODE OUTPUT.
-    </p>
-</a>
-        <a href="/online-javascript-editor.html" class="tool-card">
-    <h3>Online JavaScript Editor</h3>
-    <p>
-        Write, run and test JavaScript online with JS CODE OUTPUT.
-    </p>
-</a>
-        
-      </div>
-    </div>
-  </section>
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="kicker">Code without limits</div>
+        <h2>Start with the languages you already know.</h2>
+        <p>Use the editor for front-end experiments, landing pages, UI prototypes, demos and learning projects.</p>
+      </div>
+      <div class="language-strip">
+        <span class="lang">HTML5</span><span class="lang">CSS3</span><span class="lang">JavaScript</span>
+        <span class="lang">Tailwind CSS</span><span class="lang">Three.js</span><span class="lang">Chart.js</span><span class="lang">Font Awesome</span>
+      </div>
+    </div>
+  </section>
 
-  <section class="section" id="workspace-showcase">
-    <div class="section-inner showcase">
-      <div class="showcase-copy">
-        <div class="kicker">The workspace</div>
-        <h2>Write once. Watch it become a website.</h2>
-        <p>The editor and live output sit side by side so you can experiment quickly, test responsive layouts and iterate without leaving the browser.</p>
-        <ul class="check-list">
-          <li><i class="fa-solid fa-circle-check"></i><span>Desktop, tablet and mobile preview modes</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span>Separate HTML, CSS, JS and custom files</span></li>
-          <li><i class="fa-solid fa-circle-check"></i><span>Cloud auto-saving after Google sign-in</span></li>
-        </ul>
-        <button class="primary-btn mt-4" onclick="startBuilding()">Open the workspace →</button>
-      </div>
-      <div class="video-card">
-        <div class="video-inner">
-          <div class="orbit"></div>
-          <div class="scan"></div>
-          <div style="position:absolute;inset:0;display:grid;place-items:center;color:#dcecff">
-            <div style="text-align:center">
-              <i class="fa-solid fa-play" style="font-size:32px;margin-bottom:15px"></i>
-              <div style="font-weight:800">LIVE BUILD VISUALIZER</div>
-              <div style="font-size:10px;color:#91a7c0;margin-top:5px">CODE → RENDER → ITERATE</div>
-            </div>
-          </div>
-          <div class="video-label">&lt;/&gt; REAL-TIME WORKFLOW</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section class="section" id="how-it-works">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="kicker">Simple workflow</div>
+        <h2>From blank page to live project in four steps.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01 / START</div>
+          <h3>Enter the builder</h3>
+          <p>Choose Google sign-in for cloud projects or continue locally without an account.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02 / CREATE</div>
+          <h3>Pick a project</h3>
+          <p>Create a new project or open an existing one. Every project keeps its own files isolated.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03 / BUILD</div>
+          <h3>Write your code</h3>
+          <p>Edit HTML, CSS, JavaScript and see syntax errors and autocomplete hints live.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04 / SHIP</div>
+          <h3>Preview & export</h3>
+          <p>Run the output and download the project as HTML or ZIP.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section class="section">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Code without limits</div>
-        <h2>Start with the languages you already know.</h2>
-        <p>Use the editor for front-end experiments, landing pages, UI prototypes, demos and learning projects.</p>
-      </div>
-      <div class="language-strip">
-        <span class="lang">HTML5</span><span class="lang">CSS3</span><span class="lang">JavaScript</span>
-        <span class="lang">Tailwind CSS</span><span class="lang">Three.js</span><span class="lang">Chart.js</span><span class="lang">Font Awesome</span>
-      </div>
-    </div>
-  </section>
+  <section class="section" id="about">
+    <div class="section-inner">
+      <div class="final-cta">
+        <div class="kicker" style="color:#8dbdff">JS CODE OUTPUT</div>
+        <h2>Build something worth seeing.</h2>
+        <p>A premium, browser-first coding experience for creators, students and developers who want to move from idea to live output quickly.</p>
+        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started Free</button>
+      </div>
+    </div>
+  </section>
 
-  <section class="section" id="how-it-works">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Simple workflow</div>
-        <h2>From blank page to live project in four steps.</h2>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01 / START</div>
-          <h3>Enter the builder</h3>
-          <p>Choose Google sign-in for cloud projects or continue locally without an account.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">02 / CREATE</div>
-          <h3>Pick a project</h3>
-          <p>Create a new project or open an existing one. Every project keeps its own files isolated.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">03 / BUILD</div>
-          <h3>Write your code</h3>
-          <p>Edit HTML, CSS, JavaScript and see syntax errors and autocomplete hints live.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">04 / SHIP</div>
-          <h3>Preview & export</h3>
-          <p>Run the output and download the project as HTML or ZIP.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="about">
-    <div class="section-inner">
-      <div class="final-cta">
-        <div class="kicker" style="color:#8dbdff">JS CODE OUTPUT</div>
-        <h2>Build something worth seeing.</h2>
-        <p>A premium, browser-first coding experience for creators, students and developers who want to move from idea to live output quickly.</p>
-        <button class="primary-btn" onclick="startBuilding()">🚀 Get Started Free</button>
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div style="display:flex;align-items:center;gap:10px">
-        <i class="fa-solid fa-code text-blue-500 text-3xl"></i>
-        <div>
-          <strong style="font-size:14px">JS CODE OUTPUT</strong>
-          <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
-        </div>
-      </div>
-      <div class="footer-links">
-        <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a><a href="/css-editor.html">CSS Editor</a>
-        <a href="/javascript-editor.html"> JavaScript Editor</a>
-        <a href="/javascript-playground.html">JavaScript Playground</a>
-        <a href="/html-css-javascript-editor.html">HTML CSS JavaScript Editor</a>
-        <a href="/online-css-editor.html">Online CSS Editor</a>
-        <a href="/online-javascript-editor.html">Online JavaScript Editor</a>
-      </div>
-      <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
-    </div>
-  </footer>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="fa-solid fa-code text-blue-500 text-3xl"></i>
+        <div>
+          <strong style="font-size:14px">JS CODE OUTPUT</strong>
+          <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
+    </div>
+  </footer>
 </div>
 
 <button class="floating-theme" onclick="toggleTheme()" title="Switch theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
 
 <!-- 2. LOGIN MODAL -->
+
 <div id="startLoginScreen" class="overlay hidden">
-  <div class="login-card">
-    <div class="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-500 flex items-center justify-center text-2xl mx-auto mb-4">
-      <i class="fa-solid fa-cloud-bolt"></i>
-    </div>
-    <h2 class="text-xl font-bold mb-2">Welcome to JS CODE OUTPUT</h2>
-    <p class="text-xs text-gray-500 mb-6">Sign in with Google to keep each of your separate projects saved securely in the cloud.</p>
-    <button id="googleLoginButton" class="google-btn" onclick="continueWithGoogle()">
-      <i class="fa-brands fa-google text-red-500"></i> Continue with Google
-    </button>
-    <button class="maybe-btn" onclick="startWithoutLogin()">Continue as Guest (Local)</button>
-    <button onclick="closeStartLogin()" class="mt-4 text-xs text-gray-400 hover:text-gray-200">← Back to Home</button>
-  </div>
+  <div class="login-card">
+    <div class="w-16 h-16 rounded-2xl bg-blue-600/10 text-blue-500 flex items-center justify-center text-2xl mx-auto mb-4">
+      <i class="fa-solid fa-cloud-bolt"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-2">Welcome to JS CODE OUTPUT</h2>
+    <p class="text-xs text-gray-500 mb-6">Sign in with Google to keep each of your separate projects saved securely in the cloud.</p>
+    <button id="googleLoginButton" class="google-btn" onclick="continueWithGoogle()">
+      <i class="fa-brands fa-google text-red-500"></i> Continue with Google
+    </button>
+    <button class="maybe-btn" onclick="startWithoutLogin()">Continue as Guest (Local)</button>
+    <button onclick="closeStartLogin()" class="mt-4 text-xs text-gray-400 hover:text-gray-200">← Back to Home</button>
+  </div>
 </div>
 
 <!-- 3. PROJECTS SELECTION PAGE -->
+
 <div id="projectsPage" class="projects-page hidden">
-  <header class="projects-header">
-    <div class="flex items-center gap-3">
-      <i class="fa-solid fa-code text-blue-500 text-2xl"></i>
-      <div>
-        <strong class="text-sm block">JS CODE OUTPUT</strong>
-        <span class="text-[10px] text-gray-500">Dashboard & Projects</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-      <span id="projectsUserName" class="text-xs text-gray-400 font-medium"></span>
-      <button class="app-btn hidden" id="signOutBtn" onclick="firebaseLogout()">Sign Out</button>
-    </div>
-  </header>
-  <main class="projects-main">
-    <div class="flex justify-between items-end gap-4 mb-8">
-      <div>
-        <div class="text-xs font-bold uppercase tracking-wider text-blue-500">Workspace</div>
-        <h2 class="text-3xl font-extrabold tracking-tight mt-1">Select a Project</h2>
-        <p class="text-xs text-gray-500 mt-1">Every project contains its own separate HTML, CSS, JavaScript, and asset files.</p>
-      </div>
-      <button class="primary-btn" onclick="showCreateProject()">+ New Project</button>
-    </div>
-    <div id="projectsList" class="projects-grid"></div>
-    <div id="noProjects" class="hidden text-center py-20">
-      <div class="text-5xl mb-4">📂</div>
-      <h3 class="text-lg font-bold">No Projects Found</h3>
-      <p class="text-xs text-gray-500 mb-4">Create your first isolated project workspace.</p>
-      <button class="primary-btn" onclick="showCreateProject()">+ Create Project</button>
-    </div>
-  </main>
+  <header class="projects-header">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-code text-blue-500 text-2xl"></i>
+      <div>
+        <strong class="text-sm block">JS CODE OUTPUT</strong>
+        <span class="text-[10px] text-gray-500">Dashboard & Projects</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <span id="projectsUserName" class="text-xs text-gray-400 font-medium"></span>
+      <button class="app-btn hidden" id="signOutBtn" onclick="firebaseLogout()">Sign Out</button>
+    </div>
+  </header>
+  <main class="projects-main">
+    <div class="flex justify-between items-end gap-4 mb-8">
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider text-blue-500">Workspace</div>
+        <h2 class="text-3xl font-extrabold tracking-tight mt-1">Select a Project</h2>
+        <p class="text-xs text-gray-500 mt-1">Every project contains its own separate HTML, CSS, JavaScript, and asset files.</p>
+      </div>
+      <button class="primary-btn" onclick="showCreateProject()">+ New Project</button>
+    </div>
+    <div id="projectsList" class="projects-grid"></div>
+    <div id="noProjects" class="hidden text-center py-20">
+      <div class="text-5xl mb-4">📂</div>
+      <h3 class="text-lg font-bold">No Projects Found</h3>
+      <p class="text-xs text-gray-500 mb-4">Create your first isolated project workspace.</p>
+      <button class="primary-btn" onclick="showCreateProject()">+ Create Project</button>
+    </div>
+  </main>
 </div>
 
 <!-- 4. CREATE PROJECT MODAL -->
+
 <div id="createProjectModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Create New Project</h3>
-      <button onclick="closeCreateProject()" class="text-gray-400 text-lg font-bold">×</button>
-    </div>
-    <p>Give your new project a distinctive name.</p>
-    <input id="newProjectName" placeholder="e.g. Portfolio Website, Canvas Game">
-    <div class="modal-actions">
-      <button class="modal-btn" onclick="closeCreateProject()">Cancel</button>
-      <button class="modal-btn primary" onclick="createProject()">Create Project</button>
-    </div>
-  </div>
+  <div class="modal">
+    <div class="flex justify-between items-center">
+      <h3>Create New Project</h3>
+      <button onclick="closeCreateProject()" class="text-gray-400 text-lg font-bold">×</button>
+    </div>
+    <p>Give your new project a distinctive name.</p>
+    <input id="newProjectName" placeholder="e.g. Portfolio Website, Canvas Game">
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeCreateProject()">Cancel</button>
+      <button class="modal-btn primary" onclick="createProject()">Create Project</button>
+    </div>
+  </div>
 </div>
 
 <!-- 5. MAIN WORKSPACE / EDITOR APP -->
+
 <div id="app" class="hidden">
-  <header id="topHeader">
-    <div class="header-left">
-      <div class="app-brand cursor-pointer" onclick="openProjectsPage()">
-        <i class="fa-solid fa-code text-blue-500 text-xl"></i>
-        <div>
-          <h1>JS CODE OUTPUT</h1>
-          <p>LIVE DEVELOPER ENVIRONMENT</p>
-        </div>
-      </div>
-      <!-- Project Switcher on the left -->
-      <div class="project-switcher ml-4">
-        <button id="currentProjectButton" class="current-project" onclick="toggleProjectSwitcher(event)">
-          <i class="fa-solid fa-folder-open text-blue-500"></i>
-          <span id="currentProjectName">Untitled Project</span>
-          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-        </button>
-        <div id="projectSwitcherMenu" class="project-menu hidden">
-          <div class="project-menu-head">
-            <div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
-            <div id="dropdownCurrentProject" class="text-xs font-extrabold mt-1">Untitled Project</div>
-          </div>
-          <div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
-          <div id="headerProjectsList" class="project-list"></div>
-          <div class="p-2 border-t border-[var(--line)]">
-            <button class="app-btn w-full justify-center" onclick="headerAddProject()">+ Add Project</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <header id="topHeader">
+    <div class="header-left">
+      <div class="app-brand cursor-pointer" onclick="openProjectsPage()">
+        <i class="fa-solid fa-code text-blue-500 text-xl"></i>
+        <div>
+          <h1>JS CODE OUTPUT</h1>
+          <p>LIVE DEVELOPER ENVIRONMENT</p>
+        </div>
+      </div>
+      <!-- Project Switcher on the left -->
+      <div class="project-switcher ml-4">
+        <button id="currentProjectButton" class="current-project" onclick="toggleProjectSwitcher(event)">
+          <i class="fa-solid fa-folder-open text-blue-500"></i>
+          <span id="currentProjectName">Untitled Project</span>
+          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+        </button>
+        <div id="projectSwitcherMenu" class="project-menu hidden">
+          <div class="project-menu-head">
+            <div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
+            <div id="dropdownCurrentProject" class="text-xs font-extrabold mt-1">Untitled Project</div>
+          </div>
+          <div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
+          <div id="headerProjectsList" class="project-list"></div>
+          <div class="p-2 border-t border-[var(--line)]">
+            <button class="app-btn w-full justify-center" onclick="headerAddProject()">+ Add Project</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div class="flex items-center gap-2">
-      <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer">
-        <input id="autoRunToggle" type="checkbox" checked class="rounded"> Auto Sync
-      </label>
-      <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> Run</button>
-      <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> Libraries</button>
-      <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
-      <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName">Guest</span></button>
-      <button class="app-btn" onclick="backToHome()" title="Back to Home"><i class="fa-solid fa-house"></i> Home</button>
-      <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
-    </div>
-  </header>
+<div class="flex items-center gap-2">
+  <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer">
+    <input id="autoRunToggle" type="checkbox" checked class="rounded"> Auto Sync
+  </label>
+  <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> Run</button>
+  <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> Libraries</button>
+  <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
+  <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName">Guest</span></button>
+  <button class="app-btn" onclick="backToHome()" title="Back to Home"><i class="fa-solid fa-house"></i> Home</button>
+  <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
+</div>
 
-  <main id="workspace">
-    <aside class="explorer">
-      <div class="explorer-head">
-        <span>EXPLORER</span>
-        <div class="flex gap-1">
-          <button onclick="createNewFile()" class="tool-btn" style="padding:2px 6px" title="New File"><i class="fa-solid fa-plus"></i></button>
-          <button onclick="document.getElementById('fileUpload').click()" class="tool-btn" style="padding:2px 6px" title="Upload"><i class="fa-solid fa-upload"></i></button>
-        </div>
-      </div>
-      <div class="explorer-body">
-        <div class="text-[9px] text-gray-400 font-bold mb-2">FILES IN PROJECT</div>
-        <div id="fileExplorer"></div>
-      </div>
-      <div class="explorer-actions">
-        <button onclick="createNewFile()">+ Add File</button>
-        <button onclick="document.getElementById('fileUpload').click()">Upload File</button>
-      </div>
-    </aside>
-    <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
+  </header>
 
-    <div class="main-area">
-      <!-- Editor Panel -->
-      <section class="editor-panel">
-        <div class="editor-tabs">
-          <div id="tabs" class="tabs"></div>
-          
-          <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
-          <div class="flex gap-1">
-            <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
-          </div>
-          
-        </div>
-        <div class="editor-container-wrapper">
-          <div class="editor-content">
-            <div id="wrapper-editor" class="code-pane"></div>
-          </div>
-        </div>
-      </section>
+  <main id="workspace">
+    <aside class="explorer">
+      <div class="explorer-head">
+        <span>EXPLORER</span>
+        <div class="flex gap-1">
+          <button onclick="createNewFile()" class="tool-btn" style="padding:2px 6px" title="New File"><i class="fa-solid fa-plus"></i></button>
+          <button onclick="document.getElementById('fileUpload').click()" class="tool-btn" style="padding:2px 6px" title="Upload"><i class="fa-solid fa-upload"></i></button>
+        </div>
+      </div>
+      <div class="explorer-body">
+        <div class="text-[9px] text-gray-400 font-bold mb-2">FILES IN PROJECT</div>
+        <div id="fileExplorer"></div>
+      </div>
+      <div class="explorer-actions">
+        <button onclick="createNewFile()">+ Add File</button>
+        <button onclick="document.getElementById('fileUpload').click()">Upload File</button>
+      </div>
+    </aside>
+    <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
 
-      <!-- Live Preview Panel -->
-      <section class="preview-panel">
-        <div class="preview-toolbar">
-          <div class="flex items-center gap-2 text-[10px] font-bold">
-            <span class="text-red-500">●</span><span class="text-yellow-500">●</span><span class="text-green-500">●</span>
-            <span class="text-gray-400 ml-1">LIVE OUTPUT</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <button class="screen-btn" onclick="toggleFullScreenPreview()" title="Full Screen"><i class="fa-solid fa-expand"></i></button>
-            <button id="screen-full" class="screen-btn active" onclick="setScreenSize('full')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
-            <button id="screen-tablet" class="screen-btn" onclick="setScreenSize('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button id="screen-mobile" class="screen-btn" onclick="setScreenSize('mobile')" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
-            <button class="screen-btn" onclick="updatePreview(true)" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
-          </div>
-        </div>
-        <div id="iframeContainer">
-          <!-- Premium Placeholder with Animation -->
-          <div id="placeholderView" class="placeholder-view">
-            <div class="pulse-ring">
-              <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
-            </div>
-            <h3 class="text-lg font-black tracking-tight mb-1">Ready for Live Output</h3>
-            <p class="text-xs text-slate-400 max-w-xs mb-4">Type code on the left side and get instant live output rendered in real-time right here.</p>
-            <button onclick="dismissPlaceholder()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition">Render Live Output</button>
-          </div>
-          <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
-        </div>
-      </section>
-    </div>
-  </main>
+<div class="main-area">
+  <!-- Editor Panel -->
+  <section class="editor-panel">
+    <div class="editor-tabs">
+      <div id="tabs" class="tabs"></div>
+      
+      <!-- SEARCH AND CLEAR BUTTONS IN THE UI -->
+      <div class="flex gap-1">
+        <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+      </div>
+      
+    </div>
+    <div class="editor-container-wrapper">
+      <div class="editor-content">
+        <div id="wrapper-editor" class="code-pane"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Preview Panel -->
+  <section class="preview-panel">
+    <div class="preview-toolbar">
+      <div class="flex items-center gap-2 text-[10px] font-bold">
+        <span class="text-red-500">●</span><span class="text-yellow-500">●</span><span class="text-green-500">●</span>
+        <span class="text-gray-400 ml-1">LIVE OUTPUT</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button class="screen-btn" onclick="toggleFullScreenPreview()" title="Full Screen"><i class="fa-solid fa-expand"></i></button>
+        <button id="screen-full" class="screen-btn active" onclick="setScreenSize('full')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+        <button id="screen-tablet" class="screen-btn" onclick="setScreenSize('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+        <button id="screen-mobile" class="screen-btn" onclick="setScreenSize('mobile')" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
+        <button class="screen-btn" onclick="updatePreview(true)" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+      </div>
+    </div>
+    <div id="iframeContainer">
+      <!-- Premium Placeholder with Animation -->
+      <div id="placeholderView" class="placeholder-view">
+        <div class="pulse-ring">
+          <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-black tracking-tight mb-1">Ready for Live Output</h3>
+        <p class="text-xs text-slate-400 max-w-xs mb-4">Type code on the left side and get instant live output rendered in real-time right here.</p>
+        <button onclick="dismissPlaceholder()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition">Render Live Output</button>
+      </div>
+      <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
+    </div>
+  </section>
+</div>
+
+  </main>
 </div>
 
 <!-- DOWNLOAD & LIBRARIES MODALS -->
+
 <div id="downloadModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Download Project</h3>
-      <button onclick="closeDownloadMenu()" class="text-gray-400 text-lg">×</button>
-    </div>
-    <p>Export your full project bundle.</p>
-    <button class="modal-btn w-full mb-2 text-left flex items-center gap-2" onclick="downloadHTMLFile()">
-      <i class="fa-brands fa-html5 text-orange-500"></i> Single HTML File
-    </button>
-    <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
-      <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
-    </button>
-  </div>
+  <div class="modal">
+    <div class="flex justify-between items-center">
+      <h3>Download Project</h3>
+      <button onclick="closeDownloadMenu()" class="text-gray-400 text-lg">×</button>
+    </div>
+    <p>Export your full project bundle.</p>
+    <button class="modal-btn w-full mb-2 text-left flex items-center gap-2" onclick="downloadHTMLFile()">
+      <i class="fa-brands fa-html5 text-orange-500"></i> Single HTML File
+    </button>
+    <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
+      <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
+    </button>
+  </div>
 </div>
 
 <div id="librariesModal" class="overlay hidden">
-  <div class="modal">
-    <div class="flex justify-between items-center">
-      <h3>Project Libraries</h3>
-      <button onclick="toggleLibraries()" class="text-gray-400 text-lg">×</button>
-    </div>
-    <p>Toggle CDN dependencies for this project.</p>
-    <div class="space-y-2 text-xs">
-      <label class="modal-btn flex justify-between items-center">Tailwind CSS <input id="lib-tailwind" type="checkbox" checked onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Font Awesome <input id="lib-fontawesome" type="checkbox" checked onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Three.js <input id="lib-three" type="checkbox" onchange="updatePreview(true)"></label>
-      <label class="modal-btn flex justify-between items-center">Chart.js <input id="lib-chart" type="checkbox" onchange="updatePreview(true)"></label>
-    </div>
-    <button class="modal-btn primary w-full mt-4" onclick="toggleLibraries()">Done</button>
-  </div>
+  <div class="modal">
+    <div class="flex justify-between items-center">
+      <h3>Project Libraries</h3>
+      <button onclick="toggleLibraries()" class="text-gray-400 text-lg">×</button>
+    </div>
+    <p>Toggle CDN dependencies for this project.</p>
+    <div class="space-y-2 text-xs">
+      <label class="modal-btn flex justify-between items-center">Tailwind CSS <input id="lib-tailwind" type="checkbox" checked onchange="updatePreview(true)"></label>
+      <label class="modal-btn flex justify-between items-center">Font Awesome <input id="lib-fontawesome" type="checkbox" checked onchange="updatePreview(true)"></label>
+      <label class="modal-btn flex justify-between items-center">Three.js <input id="lib-three" type="checkbox" onchange="updatePreview(true)"></label>
+      <label class="modal-btn flex justify-between items-center">Chart.js <input id="lib-chart" type="checkbox" onchange="updatePreview(true)"></label>
+    </div>
+    <button class="modal-btn primary w-full mt-4" onclick="toggleLibraries()">Done</button>
+  </div>
 </div>
 
 <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
 
 <!-- FIREBASE SDK -->
+
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
@@ -729,13 +703,13 @@ import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} f
 import {getFirestore,doc,setDoc,getDoc,arrayUnion,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
-  authDomain: "js-code-output.firebaseapp.com",
-  projectId: "js-code-output",
-  storageBucket: "js-code-output.firebasestorage.app",
-  messagingSenderId: "600350018167",
-  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
-  measurementId: "G-L47M0E9V96"
+  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+  authDomain: "js-code-output.firebaseapp.com",
+  projectId: "js-code-output",
+  storageBucket: "js-code-output.firebasestorage.app",
+  messagingSenderId: "600350018167",
+  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+  measurementId: "G-L47M0E9V96"
 };
 const app = initializeApp(firebaseConfig);
 try{getAnalytics(app)}catch(e){}
@@ -752,38 +726,38 @@ window.firebaseSignOut = signOut;
 window.googleSignIn = () => signInWithPopup(auth, provider);
 
 window.saveProjectDraft = async (idOverride=null) => {
-  const user = auth.currentUser;
-  const id = idOverride || window.currentProjectId;
-  if (!user || !id || id.startsWith("local_proj_")) return false; 
-  if (!window.isSwitchingProject) syncEditor();
-  try {
-    await setDoc(doc(db, "users", user.uid, "projects", id), {
-      files: JSON.parse(JSON.stringify(window.files || {})),
-      html: window.files["index.html"] || "",
-      css: window.files["style.css"] || "",
-      js: window.files["script.js"] || "",
-      updatedAt: serverTimestamp()
-    }, {merge:true});
-    return true;
-  } catch(e) {
-    console.error("Save failed:", e);
-    return false;
-  }
+  const user = auth.currentUser;
+  const id = idOverride || window.currentProjectId;
+  if (!user || !id || id.startsWith("local_proj_")) return false; 
+  if (!window.isSwitchingProject) syncEditor();
+  try {
+    await setDoc(doc(db, "users", user.uid, "projects", id), {
+      files: JSON.parse(JSON.stringify(window.files || {})),
+      html: window.files["index.html"] || "",
+      css: window.files["style.css"] || "",
+      js: window.files["script.js"] || "",
+      updatedAt: serverTimestamp()
+    }, {merge:true});
+    return true;
+  } catch(e) {
+    console.error("Save failed:", e);
+    return false;
+  }
 };
 
 let resolveAuth;
 window.firebaseAuthReady = new Promise(r => resolveAuth = r);
 
 onAuthStateChanged(auth, user => {
-  window.currentUser = user || null;
-  window.firebaseCurrentUser = user || null;
-  if (user) {
-    localStorage.removeItem("js-code-output-skip-login");
-    document.getElementById("signOutBtn")?.classList.remove("hidden");
-  } else {
-    document.getElementById("signOutBtn")?.classList.add("hidden");
-  }
-  resolveAuth(user || null);
+  window.currentUser = user || null;
+  window.firebaseCurrentUser = user || null;
+  if (user) {
+    localStorage.removeItem("js-code-output-skip-login");
+    document.getElementById("signOutBtn")?.classList.remove("hidden");
+  } else {
+    document.getElementById("signOutBtn")?.classList.add("hidden");
+  }
+  resolveAuth(user || null);
 });
 </script>
 
@@ -799,756 +773,759 @@ let hasTypedInSession = false;
 let isSwitchingProject = false; // CRITICAL FIX: Lock editor during load!
 
 const defaultTemplate = {
-  "index.html": `<!DOCTYPE html>
+  "index.html": `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JS CODE OUTPUT</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS CODE OUTPUT</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card">
-    <h1>🚀 Hello World</h1>
-    <p>Start editing HTML, CSS, and JS to build your app!</p>
-    <button id="btn">Click Me</button>
-  </div>
-  <script src="script.js"><\/script>
+  <div class="card">
+    <h1>🚀 Hello World</h1>
+    <p>Start editing HTML, CSS, and JS to build your app!</p>
+    <button id="btn">Click Me</button>
+  </div>
+  <script src="script.js"><\/script>
 </body>
 </html>`,
-  "style.css": `body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0f172a;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  "style.css": `body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 .card {
-  background: #1e293b;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  text-align: center;
+  background: #1e293b;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: center;
 }
 button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 12px;
 }
 button:hover { background: #2563eb; }`,
-  "script.js": `console.log("Workspace initialized successfully.");
+  "script.js": `console.log("Workspace initialized successfully.");
 
 document.getElementById("btn")?.addEventListener("click", () => {
-  alert("Button clicked! Live JavaScript is working.");
-  console.log("User clicked the button at: " + new Date().toLocaleTimeString());
+  alert("Button clicked! Live JavaScript is working.");
+  console.log("User clicked the button at: " + new Date().toLocaleTimeString());
 });`
 };
 
 window.files = files;
 window.activeFile = activeFile;
 window.currentProjectId = currentProjectId;
-window.isSwitchingProject = false; 
+window.isSwitchingProject = false; 
 
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 function getExt(n){ return n.includes(".") ? n.split(".").pop().toLowerCase() : ""; }
 function getMode(n){
-  const e = getExt(n);
-  return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="mjs") ? "javascript" : "text/plain";
+  const e = getExt(n);
+  return (e==="html"||e==="htm") ? "htmlmixed" : e==="css" ? "css" : (e==="js"||e==="mjs") ? "javascript" : "text/plain";
 }
 function icon(n){
-  const e = getExt(n);
-  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : '<i class="fa-solid fa-file"></i>';
+  const e = getExt(n);
+  return e==="html" ? '<i class="fa-brands fa-html5 text-orange-500"></i>' : e==="css" ? '<i class="fa-brands fa-css3-alt text-sky-400"></i>' : e==="js" ? '<i class="fa-brands fa-js text-yellow-400"></i>' : '<i class="fa-solid fa-file"></i>';
 }
 
 function syncEditor(){
-  if(editor && activeFile && !isSwitchingProject) {
-    files[activeFile] = editor.getValue();
-    window.files = files;
-  }
+  if(editor && activeFile && !isSwitchingProject) {
+    files[activeFile] = editor.getValue();
+    window.files = files;
+  }
 }
 
 function saveLocalProjectFiles(){
-  if(isSwitchingProject) return; 
-  syncEditor();
-  const id = window.currentProjectId;
-  if (!id) return;
-  localStorage.setItem("js_files_" + id, JSON.stringify(files));
-  localStorage.setItem("js_active_file_" + id, activeFile);
-  localStorage.setItem("js-code-output-active-project-id", id);
+  if(isSwitchingProject) return; 
+  syncEditor();
+  const id = window.currentProjectId;
+  if (!id) return;
+  localStorage.setItem("js_files_" + id, JSON.stringify(files));
+  localStorage.setItem("js_active_file_" + id, activeFile);
+  localStorage.setItem("js-code-output-active-project-id", id);
 }
 
 function loadLocalProjectFiles(id){
-  const saved = localStorage.getItem("js_files_" + id);
-  if(saved){
-    try { files = JSON.parse(saved); } catch(e){ files = structuredClone(defaultTemplate); }
-  } else {
-    files = structuredClone(defaultTemplate);
-  }
-  activeFile = localStorage.getItem("js_active_file_" + id) || "index.html";
-  if(!files[activeFile]) activeFile = Object.keys(files)[0] || "index.html";
-  window.files = files;
-  window.activeFile = activeFile;
+  const saved = localStorage.getItem("js_files_" + id);
+  if(saved){
+    try { files = JSON.parse(saved); } catch(e){ files = structuredClone(defaultTemplate); }
+  } else {
+    files = structuredClone(defaultTemplate);
+  }
+  activeFile = localStorage.getItem("js_active_file_" + id) || "index.html";
+  if(!files[activeFile]) activeFile = Object.keys(files)[0] || "index.html";
+  window.files = files;
+  window.activeFile = activeFile;
 }
 
 // Navigation Flow Logic
 async function startBuilding(){
-  try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e){}
-  const u = window.firebaseCurrentUser || window.currentUser;
-  if(u) {
-    openProjectsPage();
-  } else {
-    document.getElementById("startLoginScreen").classList.remove("hidden");
-  }
+  try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e){}
+  const u = window.firebaseCurrentUser || window.currentUser;
+  if(u) {
+    openProjectsPage();
+  } else {
+    document.getElementById("startLoginScreen").classList.remove("hidden");
+  }
 }
 
 function closeStartLogin(){ document.getElementById("startLoginScreen").classList.add("hidden"); }
 
 async function continueWithGoogle(){
-  const btn = document.getElementById("googleLoginButton");
-  try {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
-    const res = await window.googleSignIn();
-    if(res?.user){
-      window.firebaseCurrentUser = res.user;
-      window.currentUser = res.user;
-      document.getElementById("startLoginScreen").classList.add("hidden");
-      openProjectsPage();
-    }
-  } catch(e) {
-    showToast("Google sign-in cancelled or failed.");
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-brands fa-google text-red-500"></i> Continue with Google';
-  }
+  const btn = document.getElementById("googleLoginButton");
+  try {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+    const res = await window.googleSignIn();
+    if(res?.user){
+      window.firebaseCurrentUser = res.user;
+      window.currentUser = res.user;
+      document.getElementById("startLoginScreen").classList.add("hidden");
+      openProjectsPage();
+    }
+  } catch(e) {
+    showToast("Google sign-in cancelled or failed.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-brands fa-google text-red-500"></i> Continue with Google';
+  }
 }
 
 // START WITHOUT LOGIN (Creates Local Project)
 function startWithoutLogin(){
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  
-  if(localProjects.length === 0) {
-      const id = "local_proj_" + Date.now();
-      localProjects.push({id, name: "Guest Project " + 1});
-      localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
-      openEditorWorkspace(id, "Guest Project 1", structuredClone(defaultTemplate));
-  } else {
-      const lastId = localStorage.getItem("js-code-output-active-project-id") || localProjects[0].id;
-      const p = localProjects.find(x => x.id === lastId) || localProjects[0];
-      openEditorWorkspace(p.id, p.name);
-  }
+  document.getElementById("startLoginScreen").classList.add("hidden");
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  
+  if(localProjects.length === 0) {
+      const id = "local_proj_" + Date.now();
+      localProjects.push({id, name: "Guest Project " + 1});
+      localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
+      openEditorWorkspace(id, "Guest Project 1", structuredClone(defaultTemplate));
+  } else {
+      const lastId = localStorage.getItem("js-code-output-active-project-id") || localProjects[0].id;
+      const p = localProjects.find(x => x.id === lastId) || localProjects[0];
+      openEditorWorkspace(p.id, p.name);
+  }
 }
 
 function openProjectsPage(){
-  document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("projectsPage").classList.remove("hidden");
-  
-  // Save current project before going to dashboard
-  if(window.currentProjectId) {
-    syncEditor();
-    let temp = isSwitchingProject;
-    isSwitchingProject = false;
-    saveLocalProjectFiles();
-    isSwitchingProject = temp;
-  }
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("startLoginScreen").classList.add("hidden");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("projectsPage").classList.remove("hidden");
+  
+  // Save current project before going to dashboard
+  if(window.currentProjectId) {
+    syncEditor();
+    let temp = isSwitchingProject;
+    isSwitchingProject = false;
+    saveLocalProjectFiles();
+    isSwitchingProject = temp;
+  }
 
-  const u = window.firebaseCurrentUser || window.currentUser;
-  if(u) {
-    document.getElementById("projectsUserName").textContent = u.displayName || u.email || "Developer";
-    document.getElementById("signOutBtn").classList.remove("hidden");
-  } else {
-    document.getElementById("projectsUserName").textContent = "Guest Mode";
-    document.getElementById("signOutBtn").classList.add("hidden");
-  }
-  loadProjects();
+  const u = window.firebaseCurrentUser || window.currentUser;
+  if(u) {
+    document.getElementById("projectsUserName").textContent = u.displayName || u.email || "Developer";
+    document.getElementById("signOutBtn").classList.remove("hidden");
+  } else {
+    document.getElementById("projectsUserName").textContent = "Guest Mode";
+    document.getElementById("signOutBtn").classList.add("hidden");
+  }
+  loadProjects();
 }
 
 function backToHome() {
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("projectsPage").classList.add("hidden");
-  document.getElementById("landingPage").classList.remove("hidden");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("projectsPage").classList.add("hidden");
+  document.getElementById("landingPage").classList.remove("hidden");
 }
 
 async function firebaseLogout(){
-  await window.firebaseSignOut(window.firebaseAuth);
-  window.currentProjectId = "";
-  document.getElementById("projectsPage").classList.add("hidden");
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("landingPage").classList.remove("hidden");
-  showToast("Logged out successfully.");
+  await window.firebaseSignOut(window.firebaseAuth);
+  window.currentProjectId = "";
+  document.getElementById("projectsPage").classList.add("hidden");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("landingPage").classList.remove("hidden");
+  showToast("Logged out successfully.");
 }
 
 // Project Management
 function showCreateProject(){
-  document.getElementById("createProjectModal").classList.remove("hidden");
-  document.getElementById("newProjectName").value = "";
-  setTimeout(()=>document.getElementById("newProjectName").focus(), 100);
+  document.getElementById("createProjectModal").classList.remove("hidden");
+  document.getElementById("newProjectName").value = "";
+  setTimeout(()=>document.getElementById("newProjectName").focus(), 100);
 }
 function closeCreateProject(){ document.getElementById("createProjectModal").classList.add("hidden"); }
 
 async function createProject(){
-  const name = document.getElementById("newProjectName").value.trim();
-  const u = window.firebaseCurrentUser;
-  if(!name) return alert("Please enter a project name.");
+  const name = document.getElementById("newProjectName").value.trim();
+  const u = window.firebaseCurrentUser;
+  if(!name) return alert("Please enter a project name.");
 
-  // CRITICAL FIX: Save outgoing project before creating a new one!
-  isSwitchingProject = true;
-  window.isSwitchingProject = true;
-  
-  if (window.currentProjectId) {
-    let temp = isSwitchingProject;
-    isSwitchingProject = false;
-    syncEditor();
-    saveLocalProjectFiles();
-    isSwitchingProject = temp;
-  }
+  // CRITICAL FIX: Save outgoing project before creating a new one!
+  isSwitchingProject = true;
+  window.isSwitchingProject = true;
+  
+  if (window.currentProjectId) {
+    let temp = isSwitchingProject;
+    isSwitchingProject = false;
+    syncEditor();
+    saveLocalProjectFiles();
+    isSwitchingProject = temp;
+  }
 
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if(u) await window.saveProjectDraft(window.currentProjectId);
-  }
+  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
+    if(u) await window.saveProjectDraft(window.currentProjectId);
+  }
 
-  const initialFiles = structuredClone(defaultTemplate);
+  const initialFiles = structuredClone(defaultTemplate);
 
-  if (u) {
-    // Cloud Creation
-    const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-    try {
-      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
-        id, name, ownerId: u.uid,
-        files: initialFiles,
-        html: initialFiles["index.html"],
-        css: initialFiles["style.css"],
-        js: initialFiles["script.js"],
-        createdAt: window.firebaseServerTimestamp(),
-        updatedAt: window.firebaseServerTimestamp()
-      });
-      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
-        projectIds: window.firebaseArrayUnion(id)
-      }, {merge:true});
+  if (u) {
+    // Cloud Creation
+    const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+    try {
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
+        id, name, ownerId: u.uid,
+        files: initialFiles,
+        html: initialFiles["index.html"],
+        css: initialFiles["style.css"],
+        js: initialFiles["script.js"],
+        createdAt: window.firebaseServerTimestamp(),
+        updatedAt: window.firebaseServerTimestamp()
+      });
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
+        projectIds: window.firebaseArrayUnion(id)
+      }, {merge:true});
 
-      closeCreateProject();
-      openEditorWorkspace(id, name, initialFiles);
-      showToast("Cloud Project created.");
-    } catch(e) {
-      console.error(e);
-      alert("Could not create cloud project.");
-    }
-  } else {
-    // Local Creation (Guest Mode)
-    const id = "local_proj_" + Date.now();
-    let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-    localProjects.push({ id, name, updatedAt: Date.now() });
-    localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
+      closeCreateProject();
+      openEditorWorkspace(id, name, initialFiles);
+      showToast("Cloud Project created.");
+    } catch(e) {
+      console.error(e);
+      alert("Could not create cloud project.");
+    }
+  } else {
+    // Local Creation (Guest Mode)
+    const id = "local_proj_" + Date.now();
+    let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+    localProjects.push({ id, name, updatedAt: Date.now() });
+    localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
 
-    closeCreateProject();
-    openEditorWorkspace(id, name, initialFiles);
-    showToast("Local Project created.");
-  }
+    closeCreateProject();
+    openEditorWorkspace(id, name, initialFiles);
+    showToast("Local Project created.");
+  }
 }
 
 function createProjectCardHTML(id, name, isCloud) {
-  const card = document.createElement("div");
-  card.className = "project-card";
-  card.innerHTML = `
-    <div>
-      <i class="fa-solid fa-${isCloud ? 'cloud' : 'folder'} text-blue-500 text-2xl mb-2"></i>
-      <h3 class="font-bold text-sm">${escapeHTML(name || "Untitled")}</h3>
-      <p class="text-[10px] text-gray-400">${isCloud ? 'Cloud Workspace' : 'Local Workspace'}</p>
-    </div>
-    <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
-  `;
-  card.onclick = () => switchProject(id, name);
-  return card;
+  const card = document.createElement("div");
+  card.className = "project-card";
+  card.innerHTML = `
+    <div>
+      <i class="fa-solid fa-${isCloud ? 'cloud' : 'folder'} text-blue-500 text-2xl mb-2"></i>
+      <h3 class="font-bold text-sm">${escapeHTML(name || "Untitled")}</h3>
+      <p class="text-[10px] text-gray-400">${isCloud ? 'Cloud Workspace' : 'Local Workspace'}</p>
+    </div>
+    <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
+  `;
+  card.onclick = () => switchProject(id, name);
+  return card;
 }
 
 async function loadProjects(){
-  const list = document.getElementById("projectsList");
-  const empty = document.getElementById("noProjects");
-  list.innerHTML = "";
+  const list = document.getElementById("projectsList");
+  const empty = document.getElementById("noProjects");
+  list.innerHTML = "";
 
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  let hasProjects = localProjects.length > 0;
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  let hasProjects = localProjects.length > 0;
 
-  // Render Local Projects First
-  localProjects.forEach(p => {
-    list.appendChild(createProjectCardHTML(p.id, p.name, false));
-  });
+  // Render Local Projects First
+  localProjects.forEach(p => {
+    list.appendChild(createProjectCardHTML(p.id, p.name, false));
+  });
 
-  // Render Cloud Projects if logged in
-  const u = window.firebaseCurrentUser;
-  if(u) {
-    try {
-      const userDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-      const ids = userDoc.exists() ? userDoc.data().projectIds || [] : [];
-      if(ids.length > 0) hasProjects = true;
+  // Render Cloud Projects if logged in
+  const u = window.firebaseCurrentUser;
+  if(u) {
+    try {
+      const userDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
+      const ids = userDoc.exists() ? userDoc.data().projectIds || [] : [];
+      if(ids.length > 0) hasProjects = true;
 
-      for(const id of ids){
-        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-        if(!pDoc.exists()) continue;
-        const d = pDoc.data();
-        list.appendChild(createProjectCardHTML(id, d.name, true));
-      }
-    } catch(e) {
-      console.error(e);
-    }
-  }
+      for(const id of ids){
+        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
+        if(!pDoc.exists()) continue;
+        const d = pDoc.data();
+        list.appendChild(createProjectCardHTML(id, d.name, true));
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  }
 
-  if(!hasProjects) {
-    empty.classList.remove("hidden");
-  } else {
-    empty.classList.add("hidden");
-  }
-  
-  loadHeaderProjects();
+  if(!hasProjects) {
+    empty.classList.remove("hidden");
+  } else {
+    empty.classList.add("hidden");
+  }
+  
+  loadHeaderProjects();
 }
 
 async function switchProject(id, name){
-  if(id === window.currentProjectId) return; // Ignore if clicking same project
-  
-  // CRITICAL FIX: Save Outgoing project!
-  isSwitchingProject = true;
-  window.isSwitchingProject = true;
-  
-  if (window.currentProjectId) {
-     let temp = isSwitchingProject;
-     isSwitchingProject = false;
-     syncEditor();
-     saveLocalProjectFiles(); // Force save to old ID before switching
-     isSwitchingProject = temp;
-  }
+  if(id === window.currentProjectId) return; // Ignore if clicking same project
+  
+  // CRITICAL FIX: Save Outgoing project!
+  isSwitchingProject = true;
+  window.isSwitchingProject = true;
+  
+  if (window.currentProjectId) {
+     let temp = isSwitchingProject;
+     isSwitchingProject = false;
+     syncEditor();
+     saveLocalProjectFiles(); // Force save to old ID before switching
+     isSwitchingProject = temp;
+  }
 
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if (window.firebaseCurrentUser) await window.saveProjectDraft(window.currentProjectId);
-  }
+  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
+    if (window.firebaseCurrentUser) await window.saveProjectDraft(window.currentProjectId);
+  }
 
-  if(id.startsWith("local_proj_")) {
-    openEditorWorkspace(id, name);
-    return;
-  }
+  if(id.startsWith("local_proj_")) {
+    openEditorWorkspace(id, name);
+    return;
+  }
 
-  const u = window.firebaseCurrentUser;
-  if(u){
-    const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-    if(pDoc.exists()){
-      const d = pDoc.data();
-      openEditorWorkspace(id, d.name || name, d.files);
-      return;
-    }
-  }
-  openEditorWorkspace(id, name);
+  const u = window.firebaseCurrentUser;
+  if(u){
+    const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
+    if(pDoc.exists()){
+      const d = pDoc.data();
+      openEditorWorkspace(id, d.name || name, d.files);
+      return;
+    }
+  }
+  openEditorWorkspace(id, name);
 }
 
 function openEditorWorkspace(id, name, initialFiles=null){
-  document.getElementById("landingPage").classList.add("hidden");
-  document.getElementById("projectsPage").classList.add("hidden");
-  document.getElementById("startLoginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("landingPage").classList.add("hidden");
+  document.getElementById("projectsPage").classList.add("hidden");
+  document.getElementById("startLoginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
 
-  window.currentProjectId = id;
-  currentProjectId = id;
-  localStorage.setItem("js-code-output-active-project-id", id);
-  document.getElementById("currentProjectName").textContent = name || "Untitled Project";
-  document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
+  window.currentProjectId = id;
+  currentProjectId = id;
+  localStorage.setItem("js-code-output-active-project-id", id);
+  document.getElementById("currentProjectName").textContent = name || "Untitled Project";
+  document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
 
-  const u = window.firebaseCurrentUser || window.currentUser;
-  const accountSpan = document.getElementById("workspaceAccountName");
-  if(accountSpan) {
-    accountSpan.textContent = u ? (u.displayName || u.email || "Developer") : "Guest";
-  }
+  const u = window.firebaseCurrentUser || window.currentUser;
+  const accountSpan = document.getElementById("workspaceAccountName");
+  if(accountSpan) {
+    accountSpan.textContent = u ? (u.displayName || u.email || "Developer") : "Guest";
+  }
 
-  if(initialFiles){
-    files = initialFiles;
-    activeFile = "index.html";
-  } else {
-    loadLocalProjectFiles(id);
-  }
+  if(initialFiles){
+    files = initialFiles;
+    activeFile = "index.html";
+  } else {
+    loadLocalProjectFiles(id);
+  }
 
-  renderFileExplorer();
-  openFile(activeFile); 
- 
-  if(!hasTypedInSession){
-    document.getElementById("placeholderView").classList.remove("hidden");
-  } else {
-    updatePreview();
-  }
-  
-  // Unlock editor now that switch is complete
-  setTimeout(() => {
-    isSwitchingProject = false;
-    window.isSwitchingProject = false;
-  }, 100);
+  renderFileExplorer();
+  openFile(activeFile); 
+ 
+  if(!hasTypedInSession){
+    document.getElementById("placeholderView").classList.remove("hidden");
+  } else {
+    updatePreview();
+  }
+  
+  // Unlock editor now that switch is complete
+  setTimeout(() => {
+    isSwitchingProject = false;
+    window.isSwitchingProject = false;
+  }, 100);
 }
 
 function renderFileExplorer(){
-  const el = document.getElementById("fileExplorer");
-  if(!el) return;
-  el.innerHTML = "";
-  Object.keys(files).sort().forEach(n => {
-    const d = document.createElement("div");
-    d.className = "explorer-file " + (n === activeFile ? "active" : "");
-    d.innerHTML = `
-      <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
-        ${icon(n)} <span>${escapeHTML(n)}</span>
-      </span>
-      ${n !== "index.html" ? `<button onclick="deleteFile('${encodeURIComponent(n)}');event.stopPropagation()" class="text-red-400 hover:text-red-500 font-bold">×</button>` : ""}
-    `;
-    d.onclick = () => openFile(n);
-    el.appendChild(d);
-  });
-  renderEditorTabs();
+  const el = document.getElementById("fileExplorer");
+  if(!el) return;
+  el.innerHTML = "";
+  Object.keys(files).sort().forEach(n => {
+    const d = document.createElement("div");
+    d.className = "explorer-file " + (n === activeFile ? "active" : "");
+    d.innerHTML = `
+      <span class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+        ${icon(n)} <span>${escapeHTML(n)}</span>
+      </span>
+      ${n !== "index.html" ? `<button onclick="deleteFile('${encodeURIComponent(n)}');event.stopPropagation()" class="text-red-400 hover:text-red-500 font-bold">×</button>` : ""}
+    `;
+    d.onclick = () => openFile(n);
+    el.appendChild(d);
+  });
+  renderEditorTabs();
 }
 
 function renderEditorTabs(){
-  const el = document.getElementById("tabs");
-  if(!el) return;
-  el.innerHTML = "";
-  Object.keys(files).forEach(n => {
-    const b = document.createElement("button");
-    b.className = "editor-tab " + (n === activeFile ? "active-file-tab" : "");
-    b.innerHTML = `${icon(n)} <span>${escapeHTML(n)}</span>`;
-    b.onclick = () => openFile(n);
-    el.appendChild(b);
-  });
+  const el = document.getElementById("tabs");
+  if(!el) return;
+  el.innerHTML = "";
+  Object.keys(files).forEach(n => {
+    const b = document.createElement("button");
+    b.className = "editor-tab " + (n === activeFile ? "active-file-tab" : "");
+    b.innerHTML = `${icon(n)} <span>${escapeHTML(n)}</span>`;
+    b.onclick = () => openFile(n);
+    el.appendChild(b);
+  });
 }
 
 function openFile(n){
-  if(files[n] === undefined) return;
-  
-  // Only save if not currently in the middle of a project swap
-  if (!isSwitchingProject) {
-    syncEditor();
-    saveLocalProjectFiles();
-  }
-  
-  activeFile = n;
-  window.activeFile = n;
+  if(files[n] === undefined) return;
+  
+  // Only save if not currently in the middle of a project swap
+  if (!isSwitchingProject) {
+    syncEditor();
+    saveLocalProjectFiles();
+  }
+  
+  activeFile = n;
+  window.activeFile = n;
 
-  if(editor){
-    const m = getMode(n);
-    editor.setOption("mode", m);
-    editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
-    
-    // Prevent false triggers on change
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true;
-    editor.setValue(files[n] || "");
-    editor.clearHistory();
-    isSwitchingProject = oldLock; 
-    
-    setTimeout(() => editor.refresh(), 10);
-  }
-  renderFileExplorer();
+  if(editor){
+    const m = getMode(n);
+    editor.setOption("mode", m);
+    editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
+    
+    // Prevent false triggers on change
+    let oldLock = isSwitchingProject;
+    isSwitchingProject = true;
+    editor.setValue(files[n] || "");
+    editor.clearHistory();
+    isSwitchingProject = oldLock; 
+    
+    setTimeout(() => editor.refresh(), 10);
+  }
+  renderFileExplorer();
 }
 
 function createNewFile(){
-  const n = prompt("Enter file name (e.g. app.js, style.css, data.json):");
-  if(!n) return;
-  const name = n.trim();
-  if(!name || files[name] !== undefined) return alert("Invalid or existing file name.");
-  files[name] = "";
-  saveLocalProjectFiles();
-  renderFileExplorer();
-  openFile(name);
+  const n = prompt("Enter file name (e.g. app.js, style.css, data.json):");
+  if(!n) return;
+  const name = n.trim();
+  if(!name || files[name] !== undefined) return alert("Invalid or existing file name.");
+  files[name] = "";
+  saveLocalProjectFiles();
+  renderFileExplorer();
+  openFile(name);
 }
 
 function deleteFile(encoded){
-  const n = decodeURIComponent(encoded);
-  if(n === "index.html") return alert("index.html cannot be deleted.");
-  if(!confirm(`Delete ${n}?`)) return;
-  delete files[n];
-  if(activeFile === n) {
-    activeFile = "index.html";
-    let oldLock = isSwitchingProject;
-    isSwitchingProject = true; 
-    openFile(activeFile); 
-    isSwitchingProject = oldLock;
-  }
-  saveLocalProjectFiles();
-  renderFileExplorer();
+  const n = decodeURIComponent(encoded);
+  if(n === "index.html") return alert("index.html cannot be deleted.");
+  if(!confirm(`Delete ${n}?`)) return;
+  delete files[n];
+  if(activeFile === n) {
+    activeFile = "index.html";
+    let oldLock = isSwitchingProject;
+    isSwitchingProject = true; 
+    openFile(activeFile); 
+    isSwitchingProject = oldLock;
+  }
+  saveLocalProjectFiles();
+  renderFileExplorer();
 }
 
 function handleFileUpload(e){
-  const fileList = [...e.target.files || []];
-  fileList.forEach(f => {
-    const r = new FileReader();
-    r.onload = ev => {
-      files[f.name] = ev.target.result || "";
-      saveLocalProjectFiles();
-      renderFileExplorer();
-      openFile(f.name);
-    };
-    r.readAsText(f);
-  });
-  e.target.value = "";
+  const fileList = [...e.target.files || []];
+  fileList.forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      files[f.name] = ev.target.result || "";
+      saveLocalProjectFiles();
+      renderFileExplorer();
+      openFile(f.name);
+    };
+    r.readAsText(f);
+  });
+  e.target.value = "";
 }
 
 function dismissPlaceholder(){
-  hasTypedInSession = true;
-  document.getElementById("placeholderView").classList.add("hidden");
-  updatePreview(true);
+  hasTypedInSession = true;
+  document.getElementById("placeholderView").classList.add("hidden");
+  updatePreview(true);
 }
 
 // Live Output & Compiler
 function updatePreview(force=false){
-  if(!editor) return;
-  syncEditor();
-  if(!hasTypedInSession && !force) return;
+  if(!editor) return;
+  syncEditor();
+  if(!hasTypedInSession && !force) return;
 
-  document.getElementById("placeholderView")?.classList.add("hidden");
+  document.getElementById("placeholderView")?.classList.add("hidden");
 
-  const html = files["index.html"] || "";
-  const css = files["style.css"] || "";
-  const js = files["script.js"] || "";
+  const html = files["index.html"] || "";
+  const css = files["style.css"] || "";
+  const js = files["script.js"] || "";
 
-  const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
-  const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
-  const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
-  const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
+  const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
+  const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
+  const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
+  const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
 
-  document.getElementById("outputIframe").srcdoc = `<!DOCTYPE html>
+  document.getElementById("outputIframe").srcdoc = `<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  ${tw}${fa}${three}${chart}
-  <style>${css}</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  ${tw}${fa}${three}${chart}
+  <style>${css}</style>
+
 </head>
 <body>
-  ${html}
-  <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
+  ${html}
+  <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
 </body>
 </html>`;
 
-  saveLocalProjectFiles();
-  scheduleCloudSave();
+saveLocalProjectFiles();
+scheduleCloudSave();
 }
 
 function toggleFullScreenPreview() {
-  const elem = document.getElementById("iframeContainer");
-  if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
+const elem = document.getElementById("iframeContainer");
+if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+if (elem.requestFullscreen) {
+elem.requestFullscreen();
+} else if (elem.msRequestFullscreen) {
+elem.msRequestFullscreen();
+} else if (elem.mozRequestFullScreen) {
+elem.mozRequestFullScreen();
+} else if (elem.webkitRequestFullscreen) {
+elem.webkitRequestFullscreen();
+}
+} else {
+if (document.exitFullscreen) {
+document.exitFullscreen();
+} else if (document.msExitFullscreen) {
+document.msExitFullscreen();
+} else if (document.mozCancelFullScreen) {
+document.mozCancelFullScreen();
+} else if (document.webkitExitFullscreen) {
+document.webkitExitFullscreen();
+}
+}
 }
 
 function scheduleCloudSave(){
-  const u = window.firebaseCurrentUser;
-  const id = window.currentProjectId;
-  if(!u || !id || id.startsWith("local_proj_")) return;
-  clearTimeout(cloudSaveTimer);
-  cloudSaveTimer = setTimeout(() => {
-    window.saveProjectDraft(id);
-  }, 1200);
+const u = window.firebaseCurrentUser;
+const id = window.currentProjectId;
+if(!u || !id || id.startsWith("local_proj_")) return;
+clearTimeout(cloudSaveTimer);
+cloudSaveTimer = setTimeout(() => {
+window.saveProjectDraft(id);
+}, 1200);
 }
 
 function openDownloadMenu(){ document.getElementById("downloadModal").classList.remove("hidden"); }
 function closeDownloadMenu(){ document.getElementById("downloadModal").classList.add("hidden"); }
 
 function downloadHTMLFile(){
-  closeDownloadMenu();
-  syncEditor();
-  const html = files["index.html"] || "", css = files["style.css"] || "", js = files["script.js"] || "";
-  const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`], {type:"text/html"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
-  a.click();
-  showToast("HTML downloaded!");
+closeDownloadMenu();
+syncEditor();
+const html = files["index.html"] || "", css = files["style.css"] || "", js = files["script.js"] || "";
+const blob = new Blob([<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>], {type:"text/html"});
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
+a.click();
+showToast("HTML downloaded!");
 }
 
 async function downloadZIPProject(){
-  closeDownloadMenu();
-  syncEditor();
-  const z = new JSZip();
-  Object.entries(files).forEach(([n,c]) => z.file(n, c));
-  const blob = await z.generateAsync({type:"blob"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".zip";
-  a.click();
-  showToast("ZIP exported!");
+closeDownloadMenu();
+syncEditor();
+const z = new JSZip();
+Object.entries(files).forEach(([n,c]) => z.file(n, c));
+const blob = await z.generateAsync({type:"blob"});
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".zip";
+a.click();
+showToast("ZIP exported!");
 }
 
 function clearEditors(){
-  if(!confirm("Clear active file?")) return;
-  editor.setValue("");
-  syncEditor();
+if(!confirm("Clear active file?")) return;
+editor.setValue("");
+syncEditor();
 }
 
 // SEARCH FUNCTION TRIGERRED BY BUTTON
 function triggerSearch() {
-  if (editor) {
-    editor.execCommand("find");
-  }
+if (editor) {
+editor.execCommand("find");
+}
 }
 
 function setScreenSize(s){
-  ["full","tablet","mobile"].forEach(x => document.getElementById("screen-"+x)?.classList.toggle("active", x===s));
-  const f = document.getElementById("outputIframe");
-  if(s==="full"){ f.style.width="100%"; f.style.height="100%"; f.style.borderRadius="0"; }
-  if(s==="tablet"){ f.style.width="768px"; f.style.height="92%"; f.style.borderRadius="16px"; }
-  if(s==="mobile"){ f.style.width="375px"; f.style.height="92%"; f.style.borderRadius="16px"; }
+["full","tablet","mobile"].forEach(x => document.getElementById("screen-"+x)?.classList.toggle("active", x===s));
+const f = document.getElementById("outputIframe");
+if(s==="full"){ f.style.width="100%"; f.style.height="100%"; f.style.borderRadius="0"; }
+if(s==="tablet"){ f.style.width="768px"; f.style.height="92%"; f.style.borderRadius="16px"; }
+if(s==="mobile"){ f.style.width="375px"; f.style.height="92%"; f.style.borderRadius="16px"; }
 }
 
 function toggleLibraries(){ document.getElementById("librariesModal").classList.toggle("hidden"); }
-function toggleTheme(){ 
-  const isDark = document.documentElement.classList.toggle("dark"); 
-  document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+function toggleTheme(){
+const isDark = document.documentElement.classList.toggle("dark");
+document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
 }
 
 function toggleProjectSwitcher(e){
-  e?.stopPropagation();
-  document.getElementById("projectSwitcherMenu").classList.toggle("hidden");
-  if(!document.getElementById("projectSwitcherMenu").classList.contains("hidden")){
-    loadHeaderProjects();
-  }
+e?.stopPropagation();
+document.getElementById("projectSwitcherMenu").classList.toggle("hidden");
+if(!document.getElementById("projectSwitcherMenu").classList.contains("hidden")){
+loadHeaderProjects();
+}
 }
 function headerAddProject(){
-  document.getElementById("projectSwitcherMenu").classList.add("hidden");
-  showCreateProject();
+document.getElementById("projectSwitcherMenu").classList.add("hidden");
+showCreateProject();
 }
 
 async function loadHeaderProjects(){
-  const el = document.getElementById("headerProjectsList");
-  el.innerHTML = "";
-  
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  localProjects.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "header-project-item " + (p.id === window.currentProjectId ? "current" : "");
-    btn.innerHTML = `<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span>`;
-    btn.onclick = () => {
-      document.getElementById("projectSwitcherMenu").classList.add("hidden");
-      switchProject(p.id, p.name);
-    };
-    el.appendChild(btn);
-  });
+const el = document.getElementById("headerProjectsList");
+el.innerHTML = "";
 
-  const u = window.firebaseCurrentUser;
-  if(u){
-    try {
-      const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-      const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
-      for(const id of ids){
-        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-        if(!pDoc.exists()) continue;
-        const d = pDoc.data();
-        const btn = document.createElement("button");
-        btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
-        btn.innerHTML = `<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>`;
-        btn.onclick = () => {
-          document.getElementById("projectSwitcherMenu").classList.add("hidden");
-          switchProject(id, d.name);
-        };
-        el.appendChild(btn);
-      }
-    } catch(e) {}
-  }
+let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+localProjects.forEach(p => {
+const btn = document.createElement("button");
+btn.className = "header-project-item " + (p.id === window.currentProjectId ? "current" : "");
+btn.innerHTML = <i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span>;
+btn.onclick = () => {
+document.getElementById("projectSwitcherMenu").classList.add("hidden");
+switchProject(p.id, p.name);
+};
+el.appendChild(btn);
+});
+
+const u = window.firebaseCurrentUser;
+if(u){
+try {
+const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
+const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
+for(const id of ids){
+const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
+if(!pDoc.exists()) continue;
+const d = pDoc.data();
+const btn = document.createElement("button");
+btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
+btn.innerHTML = <i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>;
+btn.onclick = () => {
+document.getElementById("projectSwitcherMenu").classList.add("hidden");
+switchProject(id, d.name);
+};
+el.appendChild(btn);
+}
+} catch(e) {}
+}
 }
 
 function showToast(msg){
-  const t = document.getElementById("toast");
-  document.getElementById("toastMsg").textContent = msg;
-  t.classList.add("show");
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove("show"), 2500);
+const t = document.getElementById("toast");
+document.getElementById("toastMsg").textContent = msg;
+t.classList.add("show");
+clearTimeout(t._timer);
+t._timer = setTimeout(() => t.classList.remove("show"), 2500);
 }
 
 // BACK CONFIRMATION WARNING
 window.addEventListener("beforeunload", function (e) {
-  if (hasTypedInSession) {
-    e.preventDefault();
-    e.returnValue = ""; 
-  }
+if (hasTypedInSession) {
+e.preventDefault();
+e.returnValue = "";
+}
 });
 
 // Initialize CodeMirror
 window.addEventListener("DOMContentLoaded", () => {
-  document.documentElement.classList.add("dark");
-  
-  let initialId = localStorage.getItem("js-code-output-active-project-id");
-  if(initialId && initialId.startsWith("local_proj_")) {
-      let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-      let p = localProjects.find(x => x.id === initialId);
-      if(p && document.getElementById("currentProjectName")) {
-          document.getElementById("currentProjectName").textContent = p.name;
-          document.getElementById("dropdownCurrentProject").textContent = p.name;
-      }
-  }
+document.documentElement.classList.add("dark");
 
-  if (initialId) {
-      loadLocalProjectFiles(initialId);
-  }
+let initialId = localStorage.getItem("js-code-output-active-project-id");
+if(initialId && initialId.startsWith("local_proj_")) {
+let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+let p = localProjects.find(x => x.id === initialId);
+if(p && document.getElementById("currentProjectName")) {
+document.getElementById("currentProjectName").textContent = p.name;
+document.getElementById("dropdownCurrentProject").textContent = p.name;
+}
+}
 
-  const wrapper = document.getElementById("wrapper-editor");
-  editor = CodeMirror(wrapper, {
-    value: files[activeFile] || "",
-    mode: getMode(activeFile),
-    theme: "dracula",
-    lineNumbers: true,
-    autoCloseTags: true,
-    autoCloseBrackets: true,
-    lineWrapping: true,
-    indentUnit: 2,
-    tabSize: 2,
-    gutters: ["CodeMirror-lint-markers"],
-    lint: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" }
-  });
-  window.editor = editor;
+if (initialId) {
+loadLocalProjectFiles(initialId);
+}
 
-  editor.on("inputRead", (cm, change) => {
-    if (/^[a-zA-Z\.\<\$]$/.test(change.text[0])) {
-      cm.showHint({ completeSingle: false });
-    }
-  });
+const wrapper = document.getElementById("wrapper-editor");
+editor = CodeMirror(wrapper, {
+value: files[activeFile] || "",
+mode: getMode(activeFile),
+theme: "dracula",
+lineNumbers: true,
+autoCloseTags: true,
+autoCloseBrackets: true,
+lineWrapping: true,
+indentUnit: 2,
+tabSize: 2,
+gutters: ["CodeMirror-lint-markers"],
+lint: true,
+extraKeys: { "Ctrl-Space": "autocomplete" }
+});
+window.editor = editor;
 
-  // CRITICAL FIX: Skip if editor is blocked (e.g. during file switch)
-  editor.on("change", (cm, changeObj) => {
-    if (isSwitchingProject) return; 
-    
-    hasTypedInSession = true;
-    syncEditor();
-    saveLocalProjectFiles();
-    
-    const auto = document.getElementById("autoRunToggle");
-    if(auto?.checked){
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => updatePreview(), 400);
-    }
-    scheduleCloudSave();
-  });
+editor.on("inputRead", (cm, change) => {
+if (/^[a-zA-Z.<$]$/.test(change.text[0])) {
+cm.showHint({ completeSingle: false });
+}
+});
 
-  renderFileExplorer();
+// CRITICAL FIX: Skip if editor is blocked (e.g. during file switch)
+editor.on("change", (cm, changeObj) => {
+if (isSwitchingProject) return;
+
+hasTypedInSession = true;
+syncEditor();
+saveLocalProjectFiles();
+
+const auto = document.getElementById("autoRunToggle");
+if(auto?.checked){
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => updatePreview(), 400);
+}
+scheduleCloudSave();
+
+});
+
+renderFileExplorer();
 });
 </script>
+
 </body>
 </html>
