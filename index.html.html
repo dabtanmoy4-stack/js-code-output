@@ -28,7 +28,6 @@
 <!-- Linters & Parser Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.js"></script>
-<!-- FIXED HTMLHint CDN -->
 <script src="https://unpkg.com/htmlhint@1.1.4/dist/htmlhint.js"></script>
 
 <!-- CodeMirror Scripts -->
@@ -73,12 +72,11 @@ html.dark{
 button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
 body{overflow-x:hidden}.hidden{display:none!important}
 
-/* Custom Scrollbars */
 ::-webkit-scrollbar { width:6px; height:6px; }
 ::-webkit-scrollbar-thumb { background:rgba(100,116,139,0.3); border-radius:3px; }
 ::-webkit-scrollbar-thumb:hover { background:rgba(100,116,139,0.5); }
 
-/* --- LANDING PAGE STYLES --- */
+/* ALL PREVIOUS STYLES REMAIN EXACTLY THE SAME... */
 .wire-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .wire{position:absolute;border:1px solid rgba(20,86,184,.15);filter:blur(.1px);transform:rotate(24deg);animation:wireMove 14s linear infinite}
 .w1{width:900px;height:900px;left:-250px;top:120px;border-radius:44%;}.w2{width:1100px;height:500px;right:-350px;top:420px;border-radius:50%;animation-duration:19s;animation-direction:reverse}.w3{width:700px;height:700px;right:12%;top:80px;border-radius:42%;animation-duration:16s}.w4{width:1200px;height:380px;left:-150px;bottom:0;border-radius:50%;animation-duration:22s}
@@ -102,15 +100,12 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .final-cta{background:var(--ink);color:var(--surface);border-radius:26px;padding:65px;text-align:center;position:relative;overflow:hidden}.final-cta h2{font-size:clamp(32px,5vw,62px);letter-spacing:-.05em;margin:0 0 13px}.final-cta p{color:#a8b5c7;max-width:600px;margin:0 auto 25px;line-height:1.7}.final-cta .primary-btn{background:#fff;color:#101827}
 .site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
 .floating-theme{position:fixed;right:22px;bottom:22px;z-index:100;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 12px 30px rgba(0,0,0,.16);display:grid;place-items:center}.floating-theme:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(20,86,184,.25);animation:sunPulse 2.5s infinite}.floating-theme i{position:relative}@keyframes sunPulse{50%{transform:scale(1.12);opacity:.35}}
-
-/* --- APP STYLES --- */
 #app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
 #topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; }
 .header-left { display:flex;align-items:center;gap:14px; }
 .app-brand { display:flex;align-items:center;gap:9px;min-width:0; }
 .app-brand h1 { font-size:12px;margin:0;font-weight:950;letter-spacing:.09em; }
 .app-brand p { font-size:8px;margin:2px 0 0;color:var(--muted); }
-
 .project-switcher { position:relative; }
 .current-project { max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:6px;font-weight:700;border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px 12px;font-size:11px; }
 .project-menu { position:absolute;left:0;top:40px;width:300px;background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);z-index:500;overflow:hidden; }
@@ -119,25 +114,20 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .header-project-item { width:100%;display:flex;align-items:center;gap:8px;padding:9px;border:0;background:transparent;color:var(--ink);font-size:11px;text-align:left;border-radius:7px; }
 .header-project-item:hover { background:var(--surface2); }
 .header-project-item.current { background:rgba(20,86,184,.1);color:var(--brand);font-weight:800; }
-
 #workspace { flex:1;min-height:0;display:flex;overflow:hidden; }
 .explorer { width:240px;flex:0 0 240px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0; }
 .explorer-head { height:40px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10px;font-weight:900;letter-spacing:.12em; }
 .explorer-body { padding:12px 6px; overflow:auto;flex:1; }
-
-/* Tree Explorer Styles */
 .tree-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 11px; color: var(--muted); margin-bottom: 2px; user-select: none; }
 .tree-item:hover { background: var(--surface2); color: var(--ink); }
 .tree-item.active { background: rgba(20,86,184,.11); color: var(--brand); font-weight: 800; }
 .tree-actions { display: none; gap: 8px; align-items: center;}
 .tree-item:hover .tree-actions { display: flex; }
 .tree-indent { padding-left: 14px; margin-left: 7px; border-left: 1px solid var(--line); }
-
 .explorer-actions { padding:10px;border-top:1px solid var(--line); display:flex; flex-direction:column; gap:7px; }
 .explorer-actions .action-row { display:flex; gap:7px; }
 .explorer-actions button, .tool-btn { flex:1; border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:8px;font-size:10px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .explorer-actions button:hover, .tool-btn:hover { border-color: var(--brand); color: var(--brand); }
-
 .main-area { flex:1;min-width:0;min-height:0;display:flex;overflow:hidden; }
 .editor-panel { flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line); }
 .preview-panel { flex:1 1 50%;min-width:0;min-height:0;display:flex;flex-direction:column; }
@@ -150,33 +140,23 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .editor-content { flex:1;min-height:0;position:relative; }
 .code-pane { position:absolute;inset:0; }
 .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#1e1e2e!important;color:#cdd6f4!important; }
-
-/* CodeMirror Dialog (Search) Styling */
 .CodeMirror-dialog { background:#181825!important; color:#cdd6f4!important; border-bottom:1px solid #313244!important; font-family:"Fira Code",monospace; font-size:12px; padding:8px 16px!important; }
 .CodeMirror-dialog input { background:#11111b; border:1px solid #313244; color:#cdd6f4; border-radius:4px; padding:4px 8px; outline:none; margin:0 5px; }
 .CodeMirror-dialog button { background:#313244; color:#cdd6f4; border:none; border-radius:4px; padding:4px 10px; margin-left:4px; cursor:pointer; font-size:11px; }
 .CodeMirror-dialog button:hover { background:#45475a; }
 .CodeMirror-search-hint { color:#a6adc8!important; font-size:10px; font-style:italic; }
-
 #iframeContainer { flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;background:#0d1527;position:relative; }
 #outputIframe { width:100%;height:100%;border:0;background:white;transition:.2s; }
-
-/* Full Screen CSS for Preview */
 #iframeContainer:fullscreen { background: #000; }
 #iframeContainer:-webkit-full-screen { background: #000; }
 #iframeContainer:-ms-fullscreen { background: #000; }
-
-/* Interactive Live Preview Placeholder */
 .placeholder-view { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at center, #111d33 0%, #080f1d 100%);color:#f8fafc;padding:30px;text-align:center;z-index:20; }
 .pulse-ring { width:80px;height:80px;border-radius:50%;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(59,130,246,0.35);animation:glow 3s infinite;margin-bottom:20px; }
 @keyframes glow { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.08);opacity:1;box-shadow:0 0 45px rgba(59,130,246,0.6)} }
-
 .screen-btn { border:0;background:transparent;color:var(--muted);padding:5px 8px;border-radius:6px;font-size:11px; }
 .screen-btn.active, .screen-btn:hover { background:var(--surface2);color:var(--brand); }
 .app-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:6px; }
 .app-btn.run { background:#0f766e;color:white;border-color:#0f766e; }
-
-/* Modals & Overlays */
 .overlay { position:fixed;inset:0;z-index:1000;background:rgba(2,8,23,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px; }
 .modal { width:min(440px,94vw);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px; }
 .modal h3 { margin:0;font-size:18px;font-weight:800; }
@@ -185,81 +165,26 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .modal-actions { display:flex;justify-content:flex-end;gap:8px;margin-top:20px; }
 .modal-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);padding:9px 15px;border-radius:8px;font-size:11px;font-weight:700; }
 .modal-btn.primary { background:var(--ink);color:var(--surface); }
-
 .login-card { text-align:center;width:min(400px,94vw);background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:32px 24px;box-shadow:var(--shadow); }
 .google-btn { width:100%;padding:12px;border:1px solid #d0d5dd;background:#fff;color:#111827;border-radius:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05); }
 .maybe-btn { width:100%;padding:11px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:12px;margin-top:10px;font-weight:700; }
-
 .projects-page { position:fixed;inset:0;z-index:900;background:var(--bg);color:var(--ink);overflow:auto; }
 .projects-header { height:68px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw; }
 .projects-main { max-width:1150px;margin:auto;padding:45px 5vw; }
 .projects-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
 .project-card { background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;justify-content:space-between;min-height:140px; }
 .project-card:hover { transform:translateY(-3px);border-color:var(--brand);box-shadow:var(--shadow); }
-
 .toast { position:fixed;right:20px;bottom:20px;z-index:2000;background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:var(--shadow);opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s; }
 .toast.show { opacity:1;transform:none; }
-
-/* Custom Right-Click Context Menu */
-.context-menu {
-  position: fixed;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  padding: 4px;
-  z-index: 10000;
-  display: none;
-  flex-direction: column;
-  min-width: 140px;
-}
-.context-menu button {
-  text-align: left;
-  padding: 8px 12px;
-  font-size: 11px;
-  border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.context-menu button:hover {
-  background: var(--surface2);
-  color: var(--brand);
-}
-
-/* Lint and Hint Styling */
+.context-menu { position: fixed; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 4px; z-index: 10000; display: none; flex-direction: column; min-width: 140px; }
+.context-menu button { text-align: left; padding: 8px 12px; font-size: 11px; border-radius: 4px; border: none; background: transparent; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.context-menu button:hover { background: var(--surface2); color: var(--brand); }
 .CodeMirror-lint-marker-error { background:#ef4444!important;border-radius:50%;width:8px;height:8px; }
 .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
 .CodeMirror-hints { background:#181825!important;border:1px solid #313244!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
 .CodeMirror-hint-active { background:#313244!important;color:#89b4fa!important;border-radius:4px; }
-
-@media(max-width:1000px){
-  .hero{grid-template-columns:1fr;gap:35px}
-  .hero-visual{max-width:760px;margin:auto}
-  .feature-grid{grid-template-columns:1fr 1fr}
-  .showcase{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr 1fr}
-  .projects-grid{grid-template-columns:1fr 1fr}
-  .explorer{display:none}
-}
-@media(max-width:700px){
-  .nav-links{display:none}
-  .site-nav{padding:0 16px}
-  .nav-brand span{display:none}
-  .hero{padding:70px 18px}
-  .section{padding:70px 18px}
-  .hero h1{font-size:42px}
-  .mock-workspace{grid-template-columns:90px 1fr;height:290px}
-  .mock-output{display:none}
-  .feature-grid,.steps,.projects-grid{grid-template-columns:1fr}
-  .final-cta{padding:40px 22px}
-  .footer-inner{flex-direction:column}
-  .hero-meta{flex-wrap:wrap}
-  .top-actions .hide-mobile{display:none!important}
-}
+@media(max-width:1000px){ .hero{grid-template-columns:1fr;gap:35px} .hero-visual{max-width:760px;margin:auto} .feature-grid{grid-template-columns:1fr 1fr} .showcase{grid-template-columns:1fr} .steps{grid-template-columns:1fr 1fr} .projects-grid{grid-template-columns:1fr 1fr} .explorer{display:none} }
+@media(max-width:700px){ .nav-links{display:none} .site-nav{padding:0 16px} .nav-brand span{display:none} .hero{padding:70px 18px} .section{padding:70px 18px} .hero h1{font-size:42px} .mock-workspace{grid-template-columns:90px 1fr;height:290px} .mock-output{display:none} .feature-grid,.steps,.projects-grid{grid-template-columns:1fr} .final-cta{padding:40px 22px} .footer-inner{flex-direction:column} .hero-meta{flex-wrap:wrap} .top-actions .hide-mobile{display:none!important} }
 </style>
 
 </head>
@@ -905,14 +830,22 @@ function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt
 
 function getExt(n) {
   if(!n || typeof n !== 'string') return "";
-  const lastDot = n.lastIndexOf('.');
-  if(lastDot === -1 || lastDot === 0) return "";
-  return n.substring(lastDot + 1).toLowerCase();
+  const parts = n.split('/');
+  const filename = parts[parts.length - 1];
+  const lastDot = filename.lastIndexOf('.');
+  if(lastDot === -1) return filename.toLowerCase(); // Extensionless like Makefile
+  if(lastDot === 0 && filename.length > 1 && filename.indexOf('.', 1) === -1) return filename.substring(1).toLowerCase(); // .env, .gitignore
+  return filename.substring(lastDot + 1).toLowerCase();
 }
 
 function isText(ext) {
-  const texts = ['html','htm','css','js','mjs','json','xml','svg','py','php','sql','md','txt','env','csv','yaml','yml','ini','sh','bat','gitignore'];
-  return texts.includes(ext.toLowerCase());
+  // We treat everything as text unless it is strictly known to be binary
+  const binaries = [
+    'class', 'wasm', 'sqlite', 'sqlite3', 'db', 'db3',
+    'png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'bmp', 'ico', 'tiff', 'tif', 'psd', 'ai', 'eps',
+    'mp3', 'wav', 'mp4', 'webm', 'pdf', 'zip', 'rar', 'tar', 'gz'
+  ];
+  return !binaries.includes(ext.toLowerCase());
 }
 function isBinary(ext) {
   return !isText(ext);
@@ -922,39 +855,67 @@ function getMode(n){
   if(!n || typeof n !== 'string') return "text/plain";
   const e = getExt(n);
   switch(e) {
-    case "html": case "htm": return "htmlmixed";
-    case "css": return "css";
-    case "js": case "mjs": case "json": return "javascript";
-    case "xml": case "svg": return "xml";
-    case "py": return "python";
-    case "php": return "php";
+    case "html": case "htm": case "xhtml": case "vue": case "svelte": case "astro": return "htmlmixed";
+    case "css": case "scss": case "sass": case "less": case "styl": return "css";
+    case "js": case "jsx": case "mjs": case "cjs": case "json": case "json5": case "jsonc": return "javascript";
+    case "ts": case "tsx": return "text/typescript";
+    case "xml": case "svg": case "xsd": case "xsl": case "xslt": return "xml";
+    case "py": case "pyw": case "pyx": return "python";
+    case "php": case "php3": case "php4": case "php5": case "php7": case "php8": return "php";
     case "sql": return "sql";
-    case "md": return "markdown";
+    case "md": case "markdown": case "mdx": return "markdown";
     default: return "text/plain";
   }
 }
 
 function icon(n) {
   if(!n || typeof n !== 'string') return '<i class="fa-solid fa-file text-gray-400"></i>';
-  if (n.startsWith('.') && n.indexOf('.', 1) === -1) { 
-      const name = n.toLowerCase();
-      if(name === '.env') return '<i class="fa-solid fa-gear text-gray-400"></i>';
-      if(name === '.gitignore') return '<i class="fa-brands fa-git-alt text-red-500"></i>';
-  }
+  
+  const parts = n.split('/');
+  const filename = parts[parts.length - 1].toLowerCase();
+
+  // Exact file names
+  if(filename === 'makefile') return '<i class="fa-solid fa-hammer text-gray-400"></i>';
+  if(filename === 'dockerfile' || filename === '.dockerignore') return '<i class="fa-brands fa-docker text-blue-500"></i>';
+  if(filename === 'package.json' || filename === 'package-lock.json') return '<i class="fa-brands fa-npm text-red-500"></i>';
+  if(filename === 'yarn.lock' || filename === '.yarnrc') return '<i class="fa-brands fa-yarn text-blue-400"></i>';
+  if(filename === '.gitignore' || filename === '.gitattributes' || filename === '.gitmodules') return '<i class="fa-brands fa-git-alt text-red-500"></i>';
+  if(filename === 'composer.json') return '<i class="fa-brands fa-php text-indigo-400"></i>';
+  if(filename === 'cargo.toml' || filename === 'cargo.lock') return '<i class="fa-brands fa-rust text-orange-600"></i>';
+  if(filename === 'go.mod' || filename === 'go.sum') return '<i class="fa-brands fa-golang text-cyan-500"></i>';
+
+  // Partial names / tests
+  if (filename.includes('.test.') || filename.includes('.spec.')) return '<i class="fa-solid fa-vial text-green-400"></i>';
+  if (filename.startsWith('.env')) return '<i class="fa-solid fa-gear text-yellow-500"></i>';
+
   const e = getExt(n);
   switch(e) {
-    case 'html': case 'htm': return '<i class="fa-brands fa-html5 text-orange-500"></i>';
-    case 'css': return '<i class="fa-brands fa-css3-alt text-sky-400"></i>';
-    case 'js': case 'mjs': return '<i class="fa-brands fa-js text-yellow-400"></i>';
-    case 'json': return '<i class="fa-solid fa-brackets-curly text-green-400"></i>';
-    case 'xml': return '<i class="fa-solid fa-code text-blue-400"></i>';
-    case 'png': case 'jpg': case 'jpeg': case 'gif': case 'webp': case 'ico': case 'svg': return '<i class="fa-solid fa-image text-purple-400"></i>';
-    case 'env': return '<i class="fa-solid fa-gear text-gray-400"></i>';
-    case 'txt': case 'md': return '<i class="fa-solid fa-file-lines text-gray-300"></i>';
-    case 'py': return '<i class="brands fa-python text-blue-500"></i>';
-    case 'java': return '<i class="fa-brands fa-java text-red-500"></i>';
-    case 'php': return '<i class="fa-brands fa-php text-indigo-400"></i>';
-    case 'sql': return '<i class="fa-solid fa-database text-gray-400"></i>';
+    case 'html': case 'htm': case 'xhtml': return '<i class="fa-brands fa-html5 text-orange-500"></i>';
+    case 'css': case 'scss': case 'sass': case 'less': case 'styl': return '<i class="fa-brands fa-css3-alt text-sky-400"></i>';
+    case 'js': case 'jsx': case 'mjs': case 'cjs': return '<i class="fa-brands fa-js text-yellow-400"></i>';
+    case 'ts': case 'tsx': return '<i class="fa-brands fa-js text-blue-500"></i>';
+    case 'json': case 'json5': case 'jsonc': return '<i class="fa-solid fa-code text-green-400"></i>';
+    case 'xml': case 'svg': case 'xsd': case 'xsl': case 'xslt': return '<i class="fa-solid fa-code text-orange-400"></i>';
+    case 'png': case 'jpg': case 'jpeg': case 'gif': case 'webp': case 'avif': case 'bmp': case 'ico': case 'tiff': case 'tif': case 'psd': case 'ai': case 'eps': return '<i class="fa-solid fa-image text-purple-400"></i>';
+    case 'txt': case 'md': case 'markdown': case 'mdx': case 'rst': case 'adoc': case 'org': case 'csv': case 'tsv': case 'log': return '<i class="fa-solid fa-file-lines text-gray-300"></i>';
+    case 'py': case 'pyw': case 'pyx': return '<i class="fa-brands fa-python text-blue-500"></i>';
+    case 'java': case 'class': return '<i class="fa-brands fa-java text-red-500"></i>';
+    case 'c': case 'h': case 'cc': case 'cpp': case 'cxx': case 'hpp': case 'hh': return '<i class="fa-solid fa-c text-blue-600"></i>';
+    case 'cs': case 'csx': return '<i class="fa-solid fa-c text-purple-500"></i>';
+    case 'go': return '<i class="fa-brands fa-golang text-cyan-500"></i>';
+    case 'rs': return '<i class="fa-brands fa-rust text-orange-600"></i>';
+    case 'php': case 'php3': case 'php4': case 'php5': case 'php7': case 'php8': return '<i class="fa-brands fa-php text-indigo-400"></i>';
+    case 'rb': case 'ruby': return '<i class="fa-solid fa-gem text-red-500"></i>';
+    case 'sh': case 'bash': case 'zsh': case 'fish': case 'bat': case 'cmd': case 'ps1': case 'psm1': return '<i class="fa-solid fa-terminal text-green-500"></i>';
+    case 'sql': case 'sqlite': case 'sqlite3': case 'db': case 'db3': return '<i class="fa-solid fa-database text-gray-400"></i>';
+    case 'vue': return '<i class="fa-brands fa-vuejs text-green-500"></i>';
+    case 'svelte': return '<i class="fa-solid fa-fire text-orange-500"></i>';
+    case 'astro': return '<i class="fa-solid fa-rocket text-purple-500"></i>';
+    case 'swift': return '<i class="fa-brands fa-swift text-orange-500"></i>';
+    case 'yaml': case 'yml': case 'toml': case 'ini': case 'cfg': case 'conf': case 'config': case 'properties': return '<i class="fa-solid fa-gear text-gray-400"></i>';
+    case 'graphql': case 'gql': return '<i class="fa-solid fa-project-diagram text-pink-500"></i>';
+    case 'tex': case 'latex': return '<i class="fa-solid fa-subscript text-gray-300"></i>';
+    case 'wasm': return '<i class="fa-solid fa-microchip text-indigo-500"></i>';
     case 'mp3': case 'wav': return '<i class="fa-solid fa-file-audio text-yellow-500"></i>';
     case 'mp4': case 'webm': return '<i class="fa-solid fa-file-video text-pink-500"></i>';
     case 'pdf': return '<i class="fa-solid fa-file-pdf text-red-400"></i>';
@@ -1485,7 +1446,7 @@ function openFile(n){
         }
     } else {
         const ext = getExt(n);
-        const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'svg'].includes(ext);
+        const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'bmp', 'ico', 'tiff', 'tif', 'psd', 'ai', 'eps'].includes(ext);
 
         if(isImage && files[n]) {
             // SHOW IMAGE PREVIEW
