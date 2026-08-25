@@ -716,6 +716,17 @@ body{overflow-x:hidden}.hidden{display:none!important}
   </div>
 </div>
 
+<!-- UPLOAD PROGRESS OVERLAY (GEMINI-LIKE LOADER) -->
+<div id="uploadProgressOverlay" class="overlay hidden" style="z-index: 9999;">
+  <div class="modal" style="width: 320px; text-align: center;">
+    <div class="pulse-ring mx-auto mb-4" style="width: 60px; height: 60px; border-color: #3b82f6;">
+      <i class="fa-solid fa-cloud-arrow-up text-blue-500 text-xl"></i>
+    </div>
+    <h3 style="margin-bottom: 8px;">Uploading Workspace...</h3>
+    <p id="uploadProgressText" class="text-xs text-gray-400 font-mono">Analyzing files: 0%</p>
+  </div>
+</div>
+
 <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
 
 <!-- Context Menu Element -->
@@ -899,7 +910,6 @@ function getExt(n) {
   return n.substring(lastDot + 1).toLowerCase();
 }
 
-// Ensure A-Z File Format Support by assuming everything is binary EXCEPT explicitly listed code/text formats.
 function isText(ext) {
   const texts = ['html','htm','css','js','mjs','json','xml','svg','py','php','sql','md','txt','env','csv','yaml','yml','ini','sh','bat','gitignore'];
   return texts.includes(ext.toLowerCase());
@@ -1352,7 +1362,6 @@ function renderFileExplorer(){
           let partName = parts[i];
 
           if(isDir || !isLast) {
-              // CHANGE: Used `_path` instead of `path` to avoid iteration issue inside tree building
               if(!current[partName]) current[partName] = { _isDir: true, _path: parts.slice(0, i+1).join('/') + '/' };
               current = current[partName];
           } else {
@@ -1372,7 +1381,7 @@ function renderFileExplorer(){
           if(!aIsDir && bIsDir) return 1;
           return a.localeCompare(b);
       }).forEach(key => {
-          if(key.startsWith("_")) return; // Fix: Automatically ignores internal props like `_isDir` and `_path`
+          if(key.startsWith("_")) return;
           const item = node[key];
           const div = document.createElement("div");
 
@@ -1479,7 +1488,7 @@ function openFile(n){
         const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'svg'].includes(ext);
 
         if(isImage && files[n]) {
-            // 🖼️ SHOW IMAGE PREVIEW
+            // SHOW IMAGE PREVIEW
             editorWrapper.style.visibility = "hidden"; // Hide editor without breaking dimensions
             if(imageViewer) {
                 imageViewer.classList.remove("hidden");
@@ -1494,7 +1503,7 @@ function openFile(n){
                 imgName.textContent = n + " (Image Preview)";
             }
         } else if(isBinary(ext)) {
-           // 📦 OTHER BINARY FILES (Audio, Video, Zip)
+           // OTHER BINARY FILES (Audio, Video, Zip)
            editorWrapper.style.visibility = "visible";
            if(imageViewer) {
              imageViewer.classList.add("hidden");
@@ -1506,7 +1515,7 @@ function openFile(n){
            editor.setOption("readOnly", "nocursor");
            isSwitchingProject = oldLock;
         } else {
-           // 💻 NORMAL TEXT/CODE FILES
+           // NORMAL TEXT/CODE FILES
            editorWrapper.style.visibility = "visible";
            if(imageViewer) {
              imageViewer.classList.add("hidden");
@@ -1613,27 +1622,71 @@ function addUploadedFilePath(path, content){
   }
 }
 
+// ==== NEW LAG-FREE CHUNKING UPLOAD LOGIC ====
+async function processFilesWithProgress(fileList) {
+  const results = [];
+  const failed = [];
+  const chunkSize = 10; // Batch size to prevent lag
+  const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+
+  const overlay = document.getElementById("uploadProgressOverlay");
+  const text = document.getElementById("uploadProgressText");
+
+  if(overlay) {
+      overlay.classList.remove("hidden");
+      overlay.style.display = "flex";
+  }
+
+  for (let i = 0; i < fileList.length; i += chunkSize) {
+    const chunk = fileList.slice(i, i + chunkSize);
+    
+    if(text) {
+        let percent = Math.round((i / fileList.length) * 100);
+        text.innerText = `Analyzing files: ${percent}% (${i}/${fileList.length})`;
+    }
+
+    const chunkPromises = chunk.map(async (f) => {
+      if (f.size > maxFileSize) {
+         failed.push(`${f.name} (Too large)`);
+         return null;
+      }
+      try {
+        return {
+          path: f.webkitRelativePath || f.name,
+          content: await readUploadedFile(f)
+        };
+      } catch(err) {
+        failed.push(f.name);
+        return null;
+      }
+    });
+
+    const resolvedChunk = await Promise.all(chunkPromises);
+    resolvedChunk.forEach(res => { if(res) results.push(res); });
+
+    // Give the browser 50ms to breathe and update the UI
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+
+  if(text) text.innerText = `Finalizing 100%...`;
+  await new Promise(resolve => setTimeout(resolve, 150)); // Small delay before closing
+
+  if(overlay) {
+      overlay.classList.add("hidden");
+      overlay.style.display = "none";
+  }
+  
+  return { results, failed };
+}
+
 async function handleFileUpload(e){
   const fileList = [...(e.target.files || [])];
   if(!fileList.length) return;
 
-  const results = [];
-  const failed = [];
-
-  for(const f of fileList){
-    try {
-      results.push({
-        path: f.name,
-        content: await readUploadedFile(f)
-      });
-    } catch(err) {
-      console.error("Could not read file:", f.name, err);
-      failed.push(f.name);
-    }
-  }
+  const { results, failed } = await processFilesWithProgress(fileList);
 
   if(!results.length){
-    showToast("Could not read the selected file(s).");
+    showToast(failed.length ? "Files too large (Max 5MB limit)." : "Could not read the selected file(s).");
     e.target.value = "";
     return;
   }
@@ -1649,24 +1702,14 @@ async function handleFileUpload(e){
   renderFileExplorer();
   if(preferred) openFile(preferred);
 
-  try { updatePreview(true); }
-  catch(err) { console.error("Preview update failed:", err); }
-
-  try { saveLocalProjectFiles(); }
-  catch(err) {
-    console.warn("Local project save failed:", err);
-    if(err && err.name === "QuotaExceededError"){
-      showToast("Uploaded successfully. Browser storage is full, so local backup was skipped.");
-    }
-  }
-
-  try { scheduleCloudSave(); }
-  catch(err) { console.warn("Cloud save scheduling failed:", err); }
+  try { updatePreview(true); } catch(err) { }
+  try { saveLocalProjectFiles(); } catch(err) { }
+  try { scheduleCloudSave(); } catch(err) { }
 
   if(failed.length){
-    showToast(`${results.length} uploaded; ${failed.length} file${failed.length === 1 ? "" : "s"} could not be read.`);
+    showToast(`${results.length} uploaded; ${failed.length} skipped.`);
   } else {
-    showToast(`${results.length} file${results.length === 1 ? "" : "s"} uploaded successfully.`);
+    showToast(`${results.length} file(s) uploaded successfully.`);
   }
 
   e.target.value = "";
@@ -1676,23 +1719,10 @@ async function handleFolderUpload(e){
   const uploadedFiles = [...(e.target.files || [])];
   if(!uploadedFiles.length) return;
 
-  const results = [];
-  const failed = [];
-
-  for(const f of uploadedFiles){
-    try {
-      results.push({
-        path: f.webkitRelativePath || f.name,
-        content: await readUploadedFile(f)
-      });
-    } catch(err) {
-      console.error("Could not read folder file:", f.name, err);
-      failed.push(f.webkitRelativePath || f.name);
-    }
-  }
+  const { results, failed } = await processFilesWithProgress(uploadedFiles);
 
   if(!results.length){
-    showToast("Could not read the selected folder.");
+    showToast(failed.length ? "Files too large (Max 5MB)." : "Could not read the folder.");
     e.target.value = "";
     return;
   }
@@ -1713,28 +1743,19 @@ async function handleFolderUpload(e){
   renderFileExplorer();
   if(preferredPath) openFile(preferredPath);
 
-  try { updatePreview(true); }
-  catch(err) { console.error("Preview update failed:", err); }
-
-  try { saveLocalProjectFiles(); }
-  catch(err) {
-    console.warn("Local project save failed:", err);
-    if(err && err.name === "QuotaExceededError"){
-      showToast("Folder uploaded. Browser storage is full, so local backup was skipped.");
-    }
-  }
-
-  try { scheduleCloudSave(); }
-  catch(err) { console.warn("Cloud save scheduling failed:", err); }
+  try { updatePreview(true); } catch(err) { }
+  try { saveLocalProjectFiles(); } catch(err) { }
+  try { scheduleCloudSave(); } catch(err) { }
 
   if(failed.length){
-    showToast(`${results.length} uploaded; ${failed.length} file${failed.length === 1 ? "" : "s"} could not be read.`);
+    showToast(`${results.length} uploaded; ${failed.length} skipped.`);
   } else {
-    showToast(`${results.length} file${results.length === 1 ? "" : "s"} from folder uploaded successfully.`);
+    showToast(`${results.length} file(s) from folder uploaded.`);
   }
 
   e.target.value = "";
 }
+// ===========================================
 
 function dismissPlaceholder(){
   hasTypedInSession = true;
