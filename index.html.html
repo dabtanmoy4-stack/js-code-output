@@ -833,14 +833,35 @@ function syncEditor(){
 }
 
 function saveLocalProjectFiles(){
-  if(isSwitchingProject) return; 
-  syncEditor();
-  const id = window.currentProjectId;
-  if (!id) return;
-  window.files = files;
-  localStorage.setItem("js_files_" + id, JSON.stringify(files));
-  if(activeFile) localStorage.setItem("js_active_file_" + id, activeFile);
-  localStorage.setItem("js-code-output-active-project-id", id);
+  if(isSwitchingProject) return false;
+
+  try {
+    syncEditor();
+    const id = window.currentProjectId;
+    if (!id) return false;
+
+    window.files = files;
+
+    /*
+      IMPORTANT:
+      Browser localStorage can become full, especially after uploading
+      images/media because those files are kept as Data URLs. A storage
+      exception must NEVER stop file/folder creation, upload, rendering,
+      or opening an editor tab. The project remains alive in memory and
+      cloud saving can still work for signed-in users.
+    */
+    localStorage.setItem("js_files_" + id, JSON.stringify(files));
+    if(activeFile) localStorage.setItem("js_active_file_" + id, activeFile);
+    localStorage.setItem("js-code-output-active-project-id", id);
+    return true;
+  } catch(err) {
+    console.warn("Local project storage skipped:", err);
+
+    if(err && (err.name === "QuotaExceededError" || err.code === 22)) {
+      showToast("Saved in workspace memory. Browser storage is full.");
+    }
+    return false;
+  }
 }
 
 function normalizeFileMap(source){
