@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JS CODE OUTPUT — World-Class Code Editor & Live Output</title>
-<link rel="icon" href="logo.png.jepg" type="image/jpeg">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%231456b8' d='M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm-52.5-137.5l65-65c4.7-4.7 4.7-12.3 0-17l-65-65c-4.7-4.7-12.3-4.7-17 0l-17 17c-4.7 4.7-4.7 12.3 0 17l39.5 39.5-39.5 39.5c-4.7 4.7-4.7 12.3 0 17l17 17c4.7 4.7 12.3 4.7 17 0zm122 0l17-17c4.7-4.7 4.7-12.3 0-17l-65-65c-4.7-4.7-12.3-4.7-17 0l-65 65c-4.7 4.7-4.7 12.3 0 17l17 17c4.7 4.7 12.3 4.7 17 0l39.5-39.5 39.5 39.5c4.7 4.8 12.3 4.8 17 0z'/></svg>">
 <meta name="description" content="JS CODE OUTPUT is a premium free online code editor and web builder for HTML, CSS and JavaScript with instant live output, projects, templates, console and downloads.">
 <link rel="canonical" href="https://js-code-output.vercel.app/">
 <meta name="theme-color" content="#07101d">
@@ -28,7 +28,8 @@
 <!-- Linters & Parser Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.9.13/htmlhint.js"></script>
+<!-- FIXED HTMLHint CDN -->
+<script src="https://unpkg.com/htmlhint@1.1.4/dist/htmlhint.js"></script>
 
 <!-- CodeMirror Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
@@ -78,7 +79,6 @@ body{overflow-x:hidden}.hidden{display:none!important}
 ::-webkit-scrollbar-thumb:hover { background:rgba(100,116,139,0.5); }
 
 /* --- LANDING PAGE STYLES --- */
-.logo-img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid var(--line);box-shadow:0 8px 25px rgba(15,35,65,.12)}
 .wire-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .wire{position:absolute;border:1px solid rgba(20,86,184,.15);filter:blur(.1px);transform:rotate(24deg);animation:wireMove 14s linear infinite}
 .w1{width:900px;height:900px;left:-250px;top:120px;border-radius:44%;}.w2{width:1100px;height:500px;right:-350px;top:420px;border-radius:50%;animation-duration:19s;animation-direction:reverse}.w3{width:700px;height:700px;right:12%;top:80px;border-radius:42%;animation-duration:16s}.w4{width:1200px;height:380px;left:-150px;bottom:0;border-radius:50%;animation-duration:22s}
@@ -275,7 +275,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 
   <nav class="site-nav">
  <a href="#" class="nav-brand">
-  <img src="logo.png.jepg" class="w-7 h-7 rounded-full object-cover shadow-sm" alt="Logo">
+  <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-xs"></i></div>
   <span>JS CODE OUTPUT</span>
 </a>
     <div class="nav-links">
@@ -471,7 +471,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <footer class="site-footer">
     <div class="footer-inner">
     <div style="display:flex;align-items:center;gap:10px">
-  <img src="logo.png.jepg" class="w-10 h-10 rounded-full object-cover shadow-sm" alt="Logo">
+  <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-lg"></i></div>
         <div>
           <strong style="font-size:14px">JS CODE OUTPUT</strong>
           <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
@@ -507,7 +507,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <div id="projectsPage" class="projects-page hidden">
   <header class="projects-header">
     <div class="flex items-center gap-3">
-  <img src="logo.png.jepg" class="w-8 h-8 rounded-md object-cover shadow-sm" alt="Logo">
+  <div class="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-sm"></i></div>
       <div>
         <strong class="text-sm block">JS CODE OUTPUT</strong>
         <span class="text-[10px] text-gray-500">Dashboard & Projects</span>
@@ -558,7 +558,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <header id="topHeader">
     <div class="header-left">
       <div class="app-brand cursor-pointer" onclick="openProjectsPage()">
-  <img src="logo.png.jepg" class="w-6 h-6 rounded-md object-cover shadow-sm" alt="Logo">
+  <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-[10px]"></i></div>
         <div>
           <h1>JS CODE OUTPUT</h1>
           <p>LIVE DEVELOPER ENVIRONMENT</p>
@@ -671,7 +671,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
         <p class="text-xs text-slate-400 max-w-xs mb-4">Create some HTML, CSS or JS files and start typing code on the left side to get instant live output rendered here.</p>
         <button onclick="dismissPlaceholder()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition">Render Live Output</button>
       </div>
-      <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-same-origin allow-forms"></iframe>
+      <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-forms"></iframe>
     </div>
   </section>
 </div>
@@ -887,7 +887,7 @@ window.cmRename = function() {
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 
 function getExt(n) {
-  if(!n) return "";
+  if(!n || typeof n !== 'string') return "";
   const lastDot = n.lastIndexOf('.');
   if(lastDot === -1 || lastDot === 0) return "";
   return n.substring(lastDot + 1).toLowerCase();
@@ -903,7 +903,7 @@ function isBinary(ext) {
 }
 
 function getMode(n){
-  if(!n) return "text/plain";
+  if(!n || typeof n !== 'string') return "text/plain";
   const e = getExt(n);
   switch(e) {
     case "html": case "htm": return "htmlmixed";
@@ -919,6 +919,7 @@ function getMode(n){
 }
 
 function icon(n) {
+  if(!n || typeof n !== 'string') return '<i class="fa-solid fa-file text-gray-400"></i>';
   if (n.startsWith('.') && n.indexOf('.', 1) === -1) { 
       const name = n.toLowerCase();
       if(name === '.env') return '<i class="fa-solid fa-gear text-gray-400"></i>';
@@ -1333,8 +1334,9 @@ function renderFileExplorer(){
   if(!el) return;
   el.innerHTML = "";
 
-  const root = {};
+  const root = Object.create(null);
   Object.keys(files).sort().forEach(path => {
+      if(!path) return;
       const parts = path.split('/');
       let current = root;
       for(let i=0; i<parts.length; i++) {
