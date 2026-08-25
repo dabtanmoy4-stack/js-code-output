@@ -618,9 +618,14 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <button onclick="closeDownloadMenu()" class="text-gray-400 text-lg">×</button>
     </div>
     <p>Export your full project bundle.</p>
-    <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
-      <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
-    </button>
+    <div class="flex flex-col gap-2 mt-2">
+      <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadZIPProject()">
+        <i class="fa-solid fa-file-zipper text-purple-500"></i> Complete Project ZIP
+      </button>
+      <button class="modal-btn w-full text-left flex items-center gap-2" onclick="downloadSingleHTML()">
+        <i class="fa-brands fa-html5 text-orange-500"></i> Single HTML File
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1834,6 +1839,56 @@ a.href = URL.createObjectURL(blob);
 a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".zip";
 a.click();
 showToast("ZIP exported!");
+}
+
+async function downloadSingleHTML() {
+  closeDownloadMenu();
+  syncEditor();
+  
+  const allFileKeys = Object.keys(files).filter(k => !k.endsWith("/"));
+  const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
+  const cssKeys = allFileKeys.filter(k => /\.css$/i.test(k));
+  const jsKeys = allFileKeys.filter(k => /\.(js|mjs)$/i.test(k));
+
+  const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html");
+  let html = rootIndex ? files[rootIndex] : (htmlKeys.length ? files[htmlKeys[0]] : "");
+  let css = cssKeys.map(k => files[k] || "").join("\n");
+  const js = jsKeys.map(k => files[k] || "").join(";\n");
+
+  Object.keys(files).forEach(filename => {
+     if(isBinary(getExt(filename))) {
+        const safeKey = filename.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        const rx = new RegExp('(["\'])(\\.\\/)?' + safeKey + '\\1', 'g');
+        html = html.replace(rx, '$1' + files[filename] + '$1');
+        css = css.replace(rx, '$1' + files[filename] + '$1');
+     }
+  });
+
+  const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
+  const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
+  const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
+  const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
+
+  const finalHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  ${tw}${fa}${three}${chart}
+  <style>${css}</style>
+</head>
+<body>
+  ${html}
+  <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([finalHTML], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (document.getElementById("currentProjectName").textContent.trim() || "project") + ".html";
+  a.click();
+  showToast("Single HTML exported!");
 }
 
 function clearEditors(){
