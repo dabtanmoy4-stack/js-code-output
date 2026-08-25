@@ -878,14 +878,9 @@ window.cmRename = function() {
     files = newFiles;
     window.files = files;
 
-    if(requiresActiveChange) {
-        activeFile = activeNewPath;
-        window.activeFile = activeFile;
-    }
-
     saveLocalProjectFiles();
     renderFileExplorer();
-    if(requiresActiveChange) openFile(activeFile);
+    if(requiresActiveChange) openFile(activeNewPath);
 };
 
 
@@ -939,7 +934,7 @@ function icon(n) {
     case 'png': case 'jpg': case 'jpeg': case 'gif': case 'webp': case 'ico': case 'svg': return '<i class="fa-solid fa-image text-purple-400"></i>';
     case 'env': return '<i class="fa-solid fa-gear text-gray-400"></i>';
     case 'txt': case 'md': return '<i class="fa-solid fa-file-lines text-gray-300"></i>';
-    case 'py': return '<i class="fa-brands fa-python text-blue-500"></i>';
+    case 'py': return '<i class="brands fa-python text-blue-500"></i>';
     case 'java': return '<i class="fa-brands fa-java text-red-500"></i>';
     case 'php': return '<i class="fa-brands fa-php text-indigo-400"></i>';
     case 'sql': return '<i class="fa-solid fa-database text-gray-400"></i>';
@@ -1439,6 +1434,8 @@ function renderEditorTabs(){
 
 function openFile(n){
   if(n && files[n] === undefined && !n.endsWith('/')) return;
+  
+  if (n === activeFile) return;
 
   if (!isSwitchingProject && activeFile && files[activeFile] !== undefined) {
     syncEditor();
@@ -1490,9 +1487,13 @@ window.createNewFile = function(basePath = "") {
   if(files[fullPath] !== undefined) return alert("File already exists.");
   files[fullPath] = "";
   if(basePath) folderState[basePath] = true;
+  
+  hasTypedInSession = true;
+  
   saveLocalProjectFiles();
   renderFileExplorer();
   openFile(fullPath);
+  updatePreview(true);
 };
 
 window.createNewFolder = function(basePath = "") {
@@ -1523,8 +1524,8 @@ window.deleteItem = function(path) {
 
   if(requiresActiveChange) {
       const remainingFiles = Object.keys(files).filter(k => !k.endsWith('/'));
-      activeFile = remainingFiles.length > 0 ? remainingFiles[0] : null;
-      openFile(activeFile);
+      const nextFile = remainingFiles.length > 0 ? remainingFiles[0] : null;
+      openFile(nextFile);
   } else {
       saveLocalProjectFiles();
       renderFileExplorer();
@@ -1591,11 +1592,10 @@ async function handleFileUpload(e){
   hasTypedInSession = true;
 
   const firstText = results.find(x => !isBinary(getExt(x.path)));
-  activeFile = firstText?.path || results[0]?.path || null;
-  window.activeFile = activeFile;
+  const preferred = firstText?.path || results[0]?.path || null;
 
   renderFileExplorer();
-  openFile(activeFile);
+  if(preferred) openFile(preferred);
 
   try { updatePreview(true); }
   catch(err) { console.error("Preview update failed:", err); }
@@ -1656,11 +1656,10 @@ async function handleFolderUpload(e){
     results.find(x => !isBinary(getExt(x.path))) ||
     results[0];
 
-  activeFile = preferred?.path || null;
-  window.activeFile = activeFile;
+  const preferredPath = preferred?.path || null;
 
   renderFileExplorer();
-  openFile(activeFile);
+  if(preferredPath) openFile(preferredPath);
 
   try { updatePreview(true); }
   catch(err) { console.error("Preview update failed:", err); }
