@@ -641,8 +641,14 @@ body{overflow-x:hidden}.hidden{display:none!important}
     </div>
     <div class="editor-container-wrapper">
       <div class="editor-content">
-        <div id="wrapper-editor" class="code-pane"></div>
-      </div>
+  <div id="wrapper-editor" class="code-pane"></div>
+  
+  <!-- New Image Viewer Overlay -->
+  <div id="image-viewer" class="hidden" style="position:absolute; inset:0; background:#1e1e2e; z-index:10; flex-direction:column; align-items:center; justify-content:center; padding:20px; overflow:auto;">
+    <img id="image-preview-element" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);" />
+    <div id="image-preview-name" style="margin-top:15px; font-size:12px; color:#a6adc8; font-family:monospace; background:rgba(0,0,0,0.3); padding:4px 10px; border-radius:4px;"></div>
+  </div>
+</div>
     </div>
   </section>
 
@@ -1448,6 +1454,12 @@ function openFile(n){
   activeFile = n;
   window.activeFile = n;
 
+  // Get Editor & Viewer Elements
+  const editorWrapper = document.getElementById("wrapper-editor");
+  const imageViewer = document.getElementById("image-viewer");
+  const imgElement = document.getElementById("image-preview-element");
+  const imgName = document.getElementById("image-preview-name");
+
   if(editor){
     if(!n) {
         let oldLock = isSwitchingProject;
@@ -1455,15 +1467,52 @@ function openFile(n){
         editor.setValue("");
         editor.setOption("readOnly", "nocursor");
         isSwitchingProject = oldLock;
+        
+        // Reset Views
+        editorWrapper.style.visibility = "visible";
+        if(imageViewer) {
+          imageViewer.classList.add("hidden");
+          imageViewer.style.display = "none";
+        }
     } else {
         const ext = getExt(n);
-        if(isBinary(ext)) {
+        const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'svg'].includes(ext);
+
+        if(isImage && files[n]) {
+            // 🖼️ SHOW IMAGE PREVIEW
+            editorWrapper.style.visibility = "hidden"; // Hide editor without breaking dimensions
+            if(imageViewer) {
+                imageViewer.classList.remove("hidden");
+                imageViewer.style.display = "flex";
+                
+                // SVG fixes
+                if(ext === 'svg' && !files[n].startsWith('data:')) {
+                    imgElement.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(files[n]);
+                } else {
+                    imgElement.src = files[n]; 
+                }
+                imgName.textContent = n + " (Image Preview)";
+            }
+        } else if(isBinary(ext)) {
+           // 📦 OTHER BINARY FILES (Audio, Video, Zip)
+           editorWrapper.style.visibility = "visible";
+           if(imageViewer) {
+             imageViewer.classList.add("hidden");
+             imageViewer.style.display = "none";
+           }
            let oldLock = isSwitchingProject;
            isSwitchingProject = true;
-           editor.setValue("/* 🖼️ Binary/Media file (" + ext + ") \n   This file is loaded in memory and supported! \n   You can use it in your code directly (e.g., <img src=\""+n+"\">). \n   Text Editor preview is disabled for images to prevent lag. */");
+           editor.setValue("/* 📦 Binary/Media file (" + ext + ") \n   This file is loaded in memory and supported! \n   You can use it in your code directly (e.g., <audio src=\""+n+"\"></audio>). \n   Text Editor preview is disabled to prevent lag. */");
            editor.setOption("readOnly", "nocursor");
            isSwitchingProject = oldLock;
         } else {
+           // 💻 NORMAL TEXT/CODE FILES
+           editorWrapper.style.visibility = "visible";
+           if(imageViewer) {
+             imageViewer.classList.add("hidden");
+             imageViewer.style.display = "none";
+           }
+
            const m = getMode(n);
            editor.setOption("mode", m);
            editor.setOption("lint", m === "javascript" || m === "css" || m === "htmlmixed");
