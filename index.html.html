@@ -126,7 +126,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .explorer-body { padding:12px 6px; overflow:auto;flex:1; }
 
 /* Tree Explorer Styles */
-.tree-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.tree-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 11px; color: var(--muted); margin-bottom: 2px; user-select: none; }
 .tree-item:hover { background: var(--surface2); color: var(--ink); }
 .tree-item.active { background: rgba(20,86,184,.11); color: var(--brand); font-weight: 800; }
 .tree-actions { display: none; gap: 8px; align-items: center;}
@@ -199,6 +199,36 @@ body{overflow-x:hidden}.hidden{display:none!important}
 
 .toast { position:fixed;right:20px;bottom:20px;z-index:2000;background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:var(--shadow);opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s; }
 .toast.show { opacity:1;transform:none; }
+
+/* Custom Right-Click Context Menu */
+.context-menu {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 4px;
+  z-index: 10000;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+}
+.context-menu button {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 11px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.context-menu button:hover {
+  background: var(--surface2);
+  color: var(--brand);
+}
 
 /* Lint and Hint Styling */
 .CodeMirror-lint-marker-error { background:#ef4444!important;border-radius:50%;width:8px;height:8px; }
@@ -682,6 +712,14 @@ body{overflow-x:hidden}.hidden{display:none!important}
 
 <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
 
+<!-- Context Menu Element -->
+<div id="customContextMenu" class="context-menu">
+    <button id="cm-add-file" onclick="cmAddFile()"><i class="fa-solid fa-file-circle-plus"></i> Add File</button>
+    <button id="cm-add-folder" onclick="cmAddFolder()"><i class="fa-solid fa-folder-plus"></i> Add Folder</button>
+    <button id="cm-rename" onclick="cmRename()"><i class="fa-solid fa-pen"></i> Rename</button>
+    <button id="cm-delete" onclick="cmDelete()"><i class="fa-solid fa-trash text-red-500"></i> Delete</button>
+</div>
+
 <!-- FIREBASE SDK -->
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -764,18 +802,109 @@ window.activeFile = activeFile;
 window.currentProjectId = currentProjectId;
 window.isSwitchingProject = false; 
 
+// Setup global click to close context menu
+window.addEventListener('click', () => {
+    document.getElementById('customContextMenu').style.display = 'none';
+});
+
+// Custom Context Menu Logic
+let cmTarget = null;
+let cmIsDir = false;
+window.showContextMenu = function(e, path, isDir) {
+    e.preventDefault();
+    e.stopPropagation();
+    cmTarget = path;
+    cmIsDir = isDir;
+    
+    const menu = document.getElementById('customContextMenu');
+    menu.style.display = 'flex';
+    
+    const x = e.pageX;
+    const y = e.pageY;
+    
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    
+    document.getElementById('cm-add-file').style.display = isDir ? 'flex' : 'none';
+    document.getElementById('cm-add-folder').style.display = isDir ? 'flex' : 'none';
+    document.getElementById('cm-rename').style.display = 'flex';
+    document.getElementById('cm-delete').style.display = 'flex';
+};
+
+window.cmAddFile = function() {
+    if(cmTarget) window.createNewFile(cmTarget);
+};
+window.cmAddFolder = function() {
+    if(cmTarget) window.createNewFolder(cmTarget);
+};
+window.cmDelete = function() {
+    if(cmTarget) window.deleteItem(cmTarget);
+};
+window.cmRename = function() {
+    if(!cmTarget) return;
+    const parts = cmTarget.split('/');
+    const oldName = cmIsDir ? parts[parts.length - 2] : parts[parts.length - 1];
+    const basePath = cmIsDir ? parts.slice(0, parts.length - 2).join('/') : parts.slice(0, parts.length - 1).join('/');
+    const prefix = basePath ? basePath + '/' : '';
+
+    const newName = prompt(`Rename ${oldName} to:`, oldName);
+    if(!newName || newName === oldName) return;
+
+    const newPath = prefix + newName + (cmIsDir ? '/' : '');
+    if(files[newPath] !== undefined) return alert("A file or folder with this name already exists.");
+
+    const newFiles = {};
+    let requiresActiveChange = false;
+    let activeNewPath = activeFile;
+
+    Object.keys(files).forEach(k => {
+        if(k === cmTarget || k.startsWith(cmTarget)) {
+            const renamedKey = newPath + k.substring(cmTarget.length);
+            newFiles[renamedKey] = files[k];
+            if(k === activeFile) {
+                requiresActiveChange = true;
+                activeNewPath = renamedKey;
+            }
+        } else {
+            newFiles[k] = files[k];
+        }
+    });
+
+    if (cmIsDir) {
+        folderState[newPath] = folderState[cmTarget];
+        delete folderState[cmTarget];
+    }
+
+    files = newFiles;
+    window.files = files;
+
+    if(requiresActiveChange) {
+        activeFile = activeNewPath;
+        window.activeFile = activeFile;
+    }
+
+    saveLocalProjectFiles();
+    renderFileExplorer();
+    if(requiresActiveChange) openFile(activeFile);
+};
+
+
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 
 function getExt(n) {
   if(!n) return "";
-  let parts = n.split('.');
-  if(parts.length === 1 || (parts[0] === "" && parts.length === 2)) return parts.pop().toLowerCase();
-  return parts.pop().toLowerCase();
+  const lastDot = n.lastIndexOf('.');
+  if(lastDot === -1 || lastDot === 0) return "";
+  return n.substring(lastDot + 1).toLowerCase();
 }
 
+// Ensure A-Z File Format Support by assuming everything is binary EXCEPT explicitly listed code/text formats.
+function isText(ext) {
+  const texts = ['html','htm','css','js','mjs','json','xml','svg','py','php','sql','md','txt','env','csv','yaml','yml','ini','sh','bat','gitignore'];
+  return texts.includes(ext.toLowerCase());
+}
 function isBinary(ext) {
-  const bins = ['png','jpg','jpeg','gif','webp','ico','mp3','wav','mp4','webm','pdf','zip','rar','tar','gz','ttf','otf','woff','woff2','eot'];
-  return bins.includes(ext.toLowerCase());
+  return !isText(ext);
 }
 
 function getMode(n){
@@ -842,14 +971,6 @@ function saveLocalProjectFiles(){
 
     window.files = files;
 
-    /*
-      IMPORTANT:
-      Browser localStorage can become full, especially after uploading
-      images/media because those files are kept as Data URLs. A storage
-      exception must NEVER stop file/folder creation, upload, rendering,
-      or opening an editor tab. The project remains alive in memory and
-      cloud saving can still work for signed-in users.
-    */
     localStorage.setItem("js_files_" + id, JSON.stringify(files));
     if(activeFile) localStorage.setItem("js_active_file_" + id, activeFile);
     localStorage.setItem("js-code-output-active-project-id", id);
@@ -1255,7 +1376,7 @@ function renderFileExplorer(){
               let isOpen = folderState[item.path] !== false; 
               div.className = "tree-item";
               div.innerHTML = `
-                  <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item.path}', event)">
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item.path}', event)" oncontextmenu="showContextMenu(event, '${item.path}', true)">
                       <i class="fa-solid fa-chevron-${isOpen ? 'down' : 'right'} text-[8px] w-2 text-gray-500"></i>
                       <i class="fa-solid fa-${isOpen ? 'folder-open' : 'folder'} text-blue-400"></i> <span>${escapeHTML(key)}</span>
                   </span>
@@ -1272,7 +1393,7 @@ function renderFileExplorer(){
           } else {
               div.className = "tree-item " + (item.path === activeFile ? "active" : "");
               div.innerHTML = `
-                  <span class="flex items-center gap-2 truncate flex-1" onclick="openFile('${item.path}')">
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="openFile('${item.path}')" oncontextmenu="showContextMenu(event, '${item.path}', false)">
                       <span class="w-2"></span>
                       ${icon(item.path)} <span>${escapeHTML(key)}</span>
                   </span>
@@ -1443,8 +1564,6 @@ async function handleFileUpload(e){
   const fileList = [...(e.target.files || [])];
   if(!fileList.length) return;
 
-  // Read errors are handled per-file. Saving/rendering errors must NOT make
-  // a successfully uploaded file look like it failed to upload.
   const results = [];
   const failed = [];
 
@@ -1478,7 +1597,6 @@ async function handleFileUpload(e){
   renderFileExplorer();
   openFile(activeFile);
 
-  // Rendering must work even when localStorage is full.
   try { updatePreview(true); }
   catch(err) { console.error("Preview update failed:", err); }
 
@@ -1509,8 +1627,6 @@ async function handleFolderUpload(e){
   const results = [];
   const failed = [];
 
-  // Do not use Promise.all here: one bad/unsupported file must not discard
-  // all the other successfully read files.
   for(const f of uploadedFiles){
     try {
       results.push({
