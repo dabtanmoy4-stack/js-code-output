@@ -1346,10 +1346,11 @@ function renderFileExplorer(){
           let partName = parts[i];
 
           if(isDir || !isLast) {
-              if(!current[partName]) current[partName] = { _isDir: true, path: parts.slice(0, i+1).join('/') + '/' };
+              // CHANGE: Used `_path` instead of `path` to avoid iteration issue inside tree building
+              if(!current[partName]) current[partName] = { _isDir: true, _path: parts.slice(0, i+1).join('/') + '/' };
               current = current[partName];
           } else {
-              current[partName] = { _isFile: true, path: path };
+              current[partName] = { _isFile: true, _path: path };
           }
       }
   });
@@ -1365,22 +1366,22 @@ function renderFileExplorer(){
           if(!aIsDir && bIsDir) return 1;
           return a.localeCompare(b);
       }).forEach(key => {
-          if(key.startsWith("_")) return;
+          if(key.startsWith("_")) return; // Fix: Automatically ignores internal props like `_isDir` and `_path`
           const item = node[key];
           const div = document.createElement("div");
 
           if(item._isDir) {
-              let isOpen = folderState[item.path] !== false; 
+              let isOpen = folderState[item._path] !== false; 
               div.className = "tree-item";
               div.innerHTML = `
-                  <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item.path}', event)" oncontextmenu="showContextMenu(event, '${item.path}', true)">
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item._path}', event)" oncontextmenu="showContextMenu(event, '${item._path}', true)">
                       <i class="fa-solid fa-chevron-${isOpen ? 'down' : 'right'} text-[8px] w-2 text-gray-500"></i>
                       <i class="fa-solid fa-${isOpen ? 'folder-open' : 'folder'} text-blue-400"></i> <span>${escapeHTML(key)}</span>
                   </span>
                   <div class="tree-actions">
-                      <button onclick="createNewFile('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-green-400" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
-                      <button onclick="createNewFolder('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-blue-400" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
-                      <button onclick="deleteItem('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete Folder"><i class="fa-solid fa-trash"></i></button>
+                      <button onclick="createNewFile('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-green-400" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
+                      <button onclick="createNewFolder('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-blue-400" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
+                      <button onclick="deleteItem('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete Folder"><i class="fa-solid fa-trash"></i></button>
                   </div>
               `;
               ul.appendChild(div);
@@ -1388,14 +1389,14 @@ function renderFileExplorer(){
                   buildDOM(item, ul, level + 1);
               }
           } else {
-              div.className = "tree-item " + (item.path === activeFile ? "active" : "");
+              div.className = "tree-item " + (item._path === activeFile ? "active" : "");
               div.innerHTML = `
-                  <span class="flex items-center gap-2 truncate flex-1" onclick="openFile('${item.path}')" oncontextmenu="showContextMenu(event, '${item.path}', false)">
+                  <span class="flex items-center gap-2 truncate flex-1" onclick="openFile('${item._path}')" oncontextmenu="showContextMenu(event, '${item._path}', false)">
                       <span class="w-2"></span>
-                      ${icon(item.path)} <span>${escapeHTML(key)}</span>
+                      ${icon(item._path)} <span>${escapeHTML(key)}</span>
                   </span>
                   <div class="tree-actions">
-                      <button onclick="deleteItem('${item.path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete File"><i class="fa-solid fa-trash"></i></button>
+                      <button onclick="deleteItem('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete File"><i class="fa-solid fa-trash"></i></button>
                   </div>
               `;
               ul.appendChild(div);
