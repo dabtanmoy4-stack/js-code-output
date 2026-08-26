@@ -7,7 +7,8 @@
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JS CODE OUTPUT — World-Class Code Editor & Live Output</title>
-<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%231456b8' d='M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm-52.5-137.5l65-65c4.7-4.7 4.7-12.3 0-17l-65-65c-4.7-4.7-12.3-4.7-17 0l-17 17c-4.7 4.7-4.7 12.3 0 17l39.5 39.5-39.5 39.5c-4.7 4.7-4.7 12.3 0 17l17 17c4.7 4.7 12.3 4.7 17 0zm122 0l17-17c4.7-4.7 4.7-12.3 0-17l-65-65c-4.7-4.7-12.3-4.7-17 0l-65 65c-4.7 4.7-4.7 12.3 0 17l17 17c4.7 4.7 12.3 4.7 17 0l39.5-39.5 39.5 39.5c4.7 4.8 12.3 4.8 17 0z'/></svg>">
+<!-- Favicon updated to logo.jpeg for Google Search and Browser Tabs -->
+<link rel="icon" href="logo.jpeg" type="image/jpeg">
 <meta name="description" content="JS CODE OUTPUT is a premium free online code editor and web builder for HTML, CSS and JavaScript with instant live output, projects, templates, console and downloads.">
 <link rel="canonical" href="https://js-code-output.vercel.app/">
 <meta name="theme-color" content="#07101d">
@@ -110,7 +111,8 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
 .floating-theme{position:fixed;right:22px;bottom:22px;z-index:100;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 12px 30px rgba(0,0,0,.16);display:grid;place-items:center}.floating-theme:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(20,86,184,.25);animation:sunPulse 2.5s infinite}.floating-theme i{position:relative}@keyframes sunPulse{50%{transform:scale(1.12);opacity:.35}}
 #app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
-#topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; overflow-x: auto;}
+/* FIXED TOP HEADER SCROLL ISSUE: overflow-x removed so dropdown menu is visible properly */
+#topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; }
 .header-left { display:flex;align-items:center;gap:14px; }
 .app-brand { display:flex;align-items:center;gap:9px;min-width:0; }
 .app-brand h1 { font-size:12px;margin:0;font-weight:950;letter-spacing:.09em; }
@@ -219,7 +221,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 
   <nav class="site-nav">
  <a href="#" class="nav-brand">
-  <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-xs"></i></div>
+  <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-7 h-7 rounded-full shadow-sm object-cover">
   <span>JS CODE OUTPUT</span>
 </a>
     <div class="nav-links">
@@ -415,14 +417,14 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <footer class="site-footer">
     <div class="footer-inner">
     <div style="display:flex;align-items:center;gap:10px">
-  <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-lg"></i></div>
+      <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-10 h-10 rounded-full shadow-sm object-cover">
         <div>
           <strong style="font-size:14px">JS CODE OUTPUT</strong>
           <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
         </div>
       </div>
       <div class="footer-links">
-        <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a>
+        <a href="#about">About</a><a href="mailto:contact@jscodeoutput.com">Contact</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a>
       </div>
       <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
     </div>
@@ -451,7 +453,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <div id="projectsPage" class="projects-page hidden">
   <header class="projects-header">
     <div class="flex items-center gap-3">
-  <div class="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-sm"></i></div>
+  <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-8 h-8 rounded-md shadow-sm object-cover">
       <div>
         <strong class="text-sm block">JS CODE OUTPUT</strong>
         <span class="text-[10px] text-gray-500">Dashboard & Projects</span>
@@ -502,7 +504,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <header id="topHeader">
     <div class="header-left">
       <div class="app-brand cursor-pointer" onclick="openProjectsPage()">
-  <div class="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center text-white shadow-sm"><i class="fa-solid fa-code text-[10px]"></i></div>
+  <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-6 h-6 rounded-md shadow-sm object-cover">
         <div>
           <h1>JS CODE OUTPUT</h1>
           <p>LIVE DEVELOPER ENVIRONMENT</p>
