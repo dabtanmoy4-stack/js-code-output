@@ -105,7 +105,78 @@ body{overflow-x:hidden}.hidden{display:none!important}
 .section{position:relative;z-index:2;padding:105px 5vw}.section-inner{max-width:1160px;margin:auto}.section-head{text-align:center;max-width:700px;margin:0 auto 45px}.kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:900}.section-head h2{font-size:clamp(32px,4.5vw,56px);letter-spacing:-.045em;line-height:1.03;margin:12px 0}.section-head p{color:var(--muted);line-height:1.75}
 .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.feature-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 10px 35px rgba(15,35,65,.045);transition:.25s}.feature-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.feature-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#eaf2ff;color:var(--brand);margin-bottom:20px}.dark .feature-icon{background:#142845}.feature-card h3{font-size:17px;margin:0 0 9px}.feature-card p{font-size:13px;line-height:1.7;color:var(--muted);margin:0}
 .showcase{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.showcase-copy h2{font-size:clamp(32px,4vw,52px);letter-spacing:-.05em;margin:10px 0 16px}.showcase-copy p{color:var(--muted);line-height:1.8}.check-list{list-style:none;padding:0;margin:25px 0}.check-list li{display:flex;gap:10px;margin:13px 0;font-size:13px}.check-list i{color:var(--brand);margin-top:2px}.video-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;box-shadow:var(--shadow)}.video-inner{height:350px;border-radius:14px;position:relative;overflow:hidden;background:#0b1320}.scan{position:absolute;left:0;right:0;height:2px;background:#6ea8ff;box-shadow:0 0 30px #6ea8ff;animation:scan 4s linear infinite}.orbit{position:absolute;border:1px solid rgba(110,168,255,.35);border-radius:50%;inset:45px;animation:spin 12s linear infinite}.orbit:before,.orbit:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#75b0ff;box-shadow:0 0 20px #75b0ff}.orbit:before{left:10%;top:20%}.orbit:after{right:12%;bottom:17%}.video-label{position:absolute;left:25px;bottom:22px;color:#dcecff;font:11px monospace;letter-spacing:.12em}@keyframes scan{from{top:-5px}to{top:100%}}@keyframes spin{to{transform:rotate(360deg)}}
-.language-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:30px}.lang{padding:10px 14px;border:1px solid var(--line);background:var(--surface);border-radius:999px;font-size:11px;color:var(--muted)}
+
+/* NEW FULL-SPACE FLOATING ANIMATION CSS START */
+.ecosystem-section {
+  position: relative;
+  width: 100vw;
+  margin-left: -5vw; /* Pulling out of section-inner padding */
+  padding: 40px 0;
+  overflow: hidden;
+}
+.floating-ecosystem {
+  position: relative;
+  width: 110vw;
+  left: -5vw;
+  height: 65vh;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  transform: rotate(-3deg) scale(1.05); /* Tilted for a modern, expansive feel */
+  mask-image: radial-gradient(ellipse at center, black 10%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 80%);
+  pointer-events: none; /* Let users click through if needed, though mostly visual */
+}
+.float-row {
+  display: flex;
+  width: max-content;
+  gap: 28px;
+  pointer-events: auto;
+}
+.float-row.left-fast { animation: scrollLeft 45s linear infinite; }
+.float-row.right-slow { animation: scrollRight 55s linear infinite; justify-content: flex-end; }
+.float-row.left-slow { animation: scrollLeft 60s linear infinite; }
+.float-row.right-fast { animation: scrollRight 40s linear infinite; justify-content: flex-end; }
+
+.float-row:hover { animation-play-state: paused; }
+
+.float-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--muted);
+  white-space: nowrap;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  cursor: default;
+}
+.float-item:hover {
+  transform: translateY(-8px) scale(1.05);
+  border-color: var(--brand);
+  color: var(--ink);
+  box-shadow: 0 15px 35px rgba(20, 86, 184, 0.15);
+}
+.float-item i {
+  font-size: 24px;
+}
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+/* NEW FULL-SPACE FLOATING ANIMATION CSS END */
+
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:22px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.step-num{font-size:11px;color:var(--brand);font-weight:900}.step h3{margin:13px 0 7px}.step p{font-size:12px;color:var(--muted);line-height:1.65}
 .final-cta{background:var(--ink);color:var(--surface);border-radius:26px;padding:65px;text-align:center;position:relative;overflow:hidden}.final-cta h2{font-size:clamp(32px,5vw,62px);letter-spacing:-.05em;margin:0 0 13px}.final-cta p{color:#a8b5c7;max-width:600px;margin:0 auto 25px;line-height:1.7}.final-cta .primary-btn{background:#fff;color:#101827}
 .site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
@@ -358,16 +429,85 @@ body{overflow-x:hidden}.hidden{display:none!important}
     </div>
   </section>
 
-  <section class="section">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="kicker">Code without limits</div>
-        <h2>Start with the languages you already know.</h2>
-        <p>Use the editor for front-end experiments, landing pages, UI prototypes, demos and learning projects.</p>
+  <!-- NEW FULL-SPACE (Lombe-Chaurai) ANIMATED SCROLLER SECTION -->
+  <section class="section ecosystem-section">
+    <div class="section-inner" style="position: relative; z-index: 5;">
+      <div class="section-head mb-0">
+        <div class="kicker">80+ File Types Supported</div>
+        <h2>Everything you need, right in the browser.</h2>
+        <p>From standard web languages to images, binary files, configurations, and complex frameworks.</p>
       </div>
-      <div class="language-strip">
-        <span class="lang">HTML5</span><span class="lang">CSS3</span><span class="lang">JavaScript</span>
-        <span class="lang">Tailwind CSS</span><span class="lang">Three.js</span><span class="lang">Chart.js</span><span class="lang">Font Awesome</span>
+    </div>
+    
+    <div class="floating-ecosystem">
+      <!-- ROW 1 : Moves Left (Fast) -->
+      <div class="float-row left-fast">
+        <div class="float-item"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</div>
+        <div class="float-item"><i class="fa-brands fa-css3-alt text-sky-400"></i> CSS3</div>
+        <div class="float-item"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</div>
+        <div class="float-item"><i class="fa-brands fa-react text-cyan-400"></i> React</div>
+        <div class="float-item"><i class="fa-brands fa-vuejs text-green-500"></i> Vue.js</div>
+        <div class="float-item"><i class="fa-brands fa-python text-blue-400"></i> Python</div>
+        <div class="float-item"><i class="fa-brands fa-java text-red-500"></i> Java</div>
+        <!-- Duplicates for infinite scroll -->
+        <div class="float-item"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</div>
+        <div class="float-item"><i class="fa-brands fa-css3-alt text-sky-400"></i> CSS3</div>
+        <div class="float-item"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</div>
+        <div class="float-item"><i class="fa-brands fa-react text-cyan-400"></i> React</div>
+        <div class="float-item"><i class="fa-brands fa-vuejs text-green-500"></i> Vue.js</div>
+        <div class="float-item"><i class="fa-brands fa-python text-blue-400"></i> Python</div>
+        <div class="float-item"><i class="fa-brands fa-java text-red-500"></i> Java</div>
+      </div>
+
+      <!-- ROW 2 : Moves Right (Slow) -->
+      <div class="float-row right-slow">
+        <div class="float-item"><i class="fa-solid fa-c text-blue-600"></i> C / C++</div>
+        <div class="float-item"><i class="fa-brands fa-rust text-orange-600"></i> Rust</div>
+        <div class="float-item"><i class="fa-brands fa-golang text-cyan-500"></i> Go</div>
+        <div class="float-item"><i class="fa-brands fa-php text-indigo-400"></i> PHP</div>
+        <div class="float-item"><i class="fa-brands fa-swift text-orange-500"></i> Swift</div>
+        <div class="float-item"><i class="fa-brands fa-sass text-pink-500"></i> SASS / SCSS</div>
+        <!-- Duplicates for infinite scroll -->
+        <div class="float-item"><i class="fa-solid fa-c text-blue-600"></i> C / C++</div>
+        <div class="float-item"><i class="fa-brands fa-rust text-orange-600"></i> Rust</div>
+        <div class="float-item"><i class="fa-brands fa-golang text-cyan-500"></i> Go</div>
+        <div class="float-item"><i class="fa-brands fa-php text-indigo-400"></i> PHP</div>
+        <div class="float-item"><i class="fa-brands fa-swift text-orange-500"></i> Swift</div>
+        <div class="float-item"><i class="fa-brands fa-sass text-pink-500"></i> SASS / SCSS</div>
+      </div>
+
+      <!-- ROW 3 : Moves Left (Slow) -->
+      <div class="float-row left-slow">
+        <div class="float-item"><i class="fa-solid fa-database text-gray-400"></i> SQL / SQLite</div>
+        <div class="float-item"><i class="fa-solid fa-code text-green-400"></i> JSON / XML</div>
+        <div class="float-item"><i class="fa-solid fa-image text-purple-400"></i> PNG / JPG / SVG</div>
+        <div class="float-item"><i class="fa-brands fa-markdown text-gray-400"></i> Markdown</div>
+        <div class="float-item"><i class="fa-solid fa-file-video text-pink-500"></i> Video / Audio</div>
+        <div class="float-item"><i class="fa-brands fa-docker text-blue-500"></i> Docker</div>
+        <!-- Duplicates for infinite scroll -->
+        <div class="float-item"><i class="fa-solid fa-database text-gray-400"></i> SQL / SQLite</div>
+        <div class="float-item"><i class="fa-solid fa-code text-green-400"></i> JSON / XML</div>
+        <div class="float-item"><i class="fa-solid fa-image text-purple-400"></i> PNG / JPG / SVG</div>
+        <div class="float-item"><i class="fa-brands fa-markdown text-gray-400"></i> Markdown</div>
+        <div class="float-item"><i class="fa-solid fa-file-video text-pink-500"></i> Video / Audio</div>
+        <div class="float-item"><i class="fa-brands fa-docker text-blue-500"></i> Docker</div>
+      </div>
+
+      <!-- ROW 4 : Moves Right (Fast) -->
+      <div class="float-row right-fast">
+        <div class="float-item"><i class="fa-brands fa-git-alt text-red-500"></i> Git</div>
+        <div class="float-item"><i class="fa-brands fa-npm text-red-600"></i> NPM Packages</div>
+        <div class="float-item"><i class="fa-solid fa-file-zipper text-orange-400"></i> ZIP Archives</div>
+        <div class="float-item"><i class="fa-solid fa-gear text-gray-400"></i> YAML / Configs</div>
+        <div class="float-item"><i class="fa-solid fa-terminal text-green-500"></i> Bash / Scripts</div>
+        <div class="float-item"><i class="fa-solid fa-microchip text-indigo-500"></i> WebAssembly</div>
+        <!-- Duplicates for infinite scroll -->
+        <div class="float-item"><i class="fa-brands fa-git-alt text-red-500"></i> Git</div>
+        <div class="float-item"><i class="fa-brands fa-npm text-red-600"></i> NPM Packages</div>
+        <div class="float-item"><i class="fa-solid fa-file-zipper text-orange-400"></i> ZIP Archives</div>
+        <div class="float-item"><i class="fa-solid fa-gear text-gray-400"></i> YAML / Configs</div>
+        <div class="float-item"><i class="fa-solid fa-terminal text-green-500"></i> Bash / Scripts</div>
+        <div class="float-item"><i class="fa-solid fa-microchip text-indigo-500"></i> WebAssembly</div>
       </div>
     </div>
   </section>
