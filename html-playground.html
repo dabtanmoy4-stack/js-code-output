@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & CSS Playground</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #fff;}
+        .header { background: #2d2d2d; padding: 15px; text-align: center; border-bottom: 2px solid #007acc;}
+        .container { display: flex; flex: 1; overflow: hidden; }
+        .editors { display: flex; flex-direction: column; width: 50%; border-right: 5px solid #2d2d2d; }
+        textarea { flex: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 16px; padding: 10px; border: none; border-bottom: 2px solid #2d2d2d; resize: none; outline: none;}
+        iframe { width: 50%; background: #ffffff; border: none; }
+        .label { background: #007acc; font-size: 12px; padding: 3px 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>HTML & CSS Editor</h2>
+    </div>
+    <div class="container">
+        <div class="editors">
+            <span class="label">HTML</span>
+            <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
+            <span class="label">CSS</span>
+            <textarea id="css-code" placeholder="h1 { color: red; }"></textarea>
+        </div>
+        <iframe id="output"></iframe>
+    </div>
+
+    <script>
+        function runCode() {
+            let html = document.getElementById("html-code").value;
+            let css = "<style>" + document.getElementById("css-code").value + "</style>";
+            let output = document.getElementById("output");
+            output.contentDocument.body.innerHTML = html + css;
+        }
+        document.getElementById("html-code").addEventListener("keyup", runCode);
+        document.getElementById("css-code").addEventListener("keyup", runCode);
+    </script>
+</body>
+</html>
