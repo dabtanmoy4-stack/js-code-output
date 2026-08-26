@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Code Editor with Preview</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background: #f4f4f9;}
+        .header { background: #20232a; color: #61dafb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .editor-container { display: flex; flex: 1; }
+        .code-panels { display: flex; flex-direction: column; width: 40%; background: #282c34; border-right: 4px solid #20232a;}
+        .panel { display: flex; flex-direction: column; flex: 1; border-bottom: 2px solid #20232a; }
+        .panel-title { background: #32363e; color: #abb2bf; padding: 5px 10px; font-size: 13px; font-weight: bold; }
+        textarea { flex: 1; background: transparent; color: #fff; font-family: 'Consolas', monospace; padding: 10px; border: none; resize: none; outline: none; font-size: 15px;}
+        iframe { width: 60%; border: none; background: #fff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 style="margin:0;">Live Web Editor</h2>
+        <span>Type to see Live Preview</span>
+    </div>
+    <div class="editor-container">
+        <div class="code-panels">
+            <div class="panel">
+                <div class="panel-title">HTML</div>
+                <textarea id="html-code" onkeyup="runCode()"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-title">CSS</div>
+                <textarea id="css-code" onkeyup="runCode()"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-title">JS</div>
+                <textarea id="js-code" onkeyup="runCode()"></textarea>
+            </div>
+        </div>
+        <iframe id="output"></iframe>
+    </div>
+
+    <script>
+        function runCode() {
+            let htmlCode = document.getElementById("html-code").value;
+            let cssCode = "<style>" + document.getElementById("css-code").value + "</style>";
+            let jsCode = document.getElementById("js-code").value;
+            let iframe = document.getElementById("output");
+            
+            // Writing to Iframe
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(htmlCode + cssCode);
+            iframe.contentDocument.close();
+
+            // Running JS safely
+            try {
+                if(jsCode.trim() !== ""){
+                    iframe.contentWindow.eval(jsCode);
+                }
+            } catch (e) {
+                // Error ignore korbe typing er somoy
+            }
+        }
+    </script>
+</body>
+</html>
