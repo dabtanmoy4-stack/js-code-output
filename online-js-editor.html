@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Playground</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #272822; color: #f8f8f2;}
+        .header { background: #1e1f1c; padding: 15px; text-align: center; border-bottom: 2px solid #e6db74;}
+        .container { display: flex; flex-direction: column; flex: 1; }
+        textarea { flex: 2; background: #272822; color: #a6e22e; font-size: 18px; padding: 15px; border: none; resize: none; outline: none; }
+        .output-box { flex: 1; background: #1e1f1c; padding: 15px; border-top: 5px solid #464741; overflow-y: auto;}
+        button { background: #e6db74; color: #000; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Online JS Editor</h2>
+        <button onclick="runJS()">Run Code ▶</button>
+    </div>
+    <div class="container">
+        <textarea id="js-code" placeholder="console.log('Hello JavaScript!');"></textarea>
+        <div class="output-box" id="js-output">
+            <strong style="color:#fd971f;">Console Output:</strong><br><br>
+        </div>
+    </div>
+
+    <script>
+        function runJS() {
+            let code = document.getElementById("js-code").value;
+            let outputBox = document.getElementById("js-output");
+            outputBox.innerHTML = '<strong style="color:#fd971f;">Console Output:</strong><br><br>';
+            
+            // Overriding console.log temporarily to show in our box
+            let oldLog = console.log;
+            console.log = function(...args) {
+                outputBox.innerHTML += args.join(' ') + '<br>';
+                oldLog.apply(console, args);
+            };
+
+            try {
+                eval(code);
+            } catch (error) {
+                outputBox.innerHTML += '<span style="color:#f92672;">' + error + '</span><br>';
+            }
+        }
+    </script>
+</body>
+</html>
