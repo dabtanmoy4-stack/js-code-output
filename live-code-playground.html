@@ -3,38 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Code Editor with Preview</title>
+    <!-- Tab Icon (Favicon) -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    <title>Live Code Editor | JS Code Output</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background: #f4f4f9;}
-        .header { background: #20232a; color: #61dafb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .editor-container { display: flex; flex: 1; }
-        .code-panels { display: flex; flex-direction: column; width: 40%; background: #282c34; border-right: 4px solid #20232a;}
-        .panel { display: flex; flex-direction: column; flex: 1; border-bottom: 2px solid #20232a; }
-        .panel-title { background: #32363e; color: #abb2bf; padding: 5px 10px; font-size: 13px; font-weight: bold; }
-        textarea { flex: 1; background: transparent; color: #fff; font-family: 'Consolas', monospace; padding: 10px; border: none; resize: none; outline: none; font-size: 15px;}
-        iframe { width: 60%; border: none; background: #fff; }
+        /* মডার্ন ডার্ক থিম এবং ফন্ট */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+
+        /* হেডার ডিজাইন */
+        .header { 
+            background: #181818; 
+            border-bottom: 1px solid #333;
+            padding: 12px 24px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand img {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .brand h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e3e3e3;
+        }
+
+        .brand span {
+            font-size: 12px;
+            color: #888;
+            margin-left: 10px;
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        /* মূল ওয়েবসাইটে যাওয়ার বাটন */
+        .main-site-btn {
+            background: #007acc;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .main-site-btn:hover {
+            background: #005f9e;
+        }
+
+        /* এডিটর এবং আউটপুট কন্টেইনার */
+        .editor-container { 
+            display: flex; 
+            flex: 1; 
+            overflow: hidden;
+        }
+
+        .code-panels { 
+            display: flex; 
+            flex-direction: column; 
+            width: 45%; 
+            background: #252526; 
+            border-right: 2px solid #333;
+        }
+
+        .panel { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            border-bottom: 2px solid #333; 
+        }
+
+        .panel:last-child {
+            border-bottom: none;
+        }
+
+        .panel-title { 
+            background: #1e1e1e; 
+            color: #9cdcfe; 
+            padding: 8px 15px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #333;
+        }
+
+        /* টেক্সট এরিয়া (কোড লেখার জায়গা) */
+        textarea { 
+            flex: 1; 
+            background: #1e1e1e; 
+            color: #d4d4d4; 
+            font-family: 'Fira Code', monospace; /* কোডিং ফন্ট */
+            padding: 15px; 
+            border: none; 
+            resize: none; 
+            outline: none; 
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* কাস্টম স্ক্রলবার */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #444; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* লাইভ প্রিভিউ */
+        iframe { 
+            width: 55%; 
+            border: none; 
+            background: #ffffff; 
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2 style="margin:0;">Live Web Editor</h2>
-        <span>Type to see Live Preview</span>
+        <div class="brand">
+            <!-- তোমার লোগো এখানে -->
+            <img src="logo.jpeg" alt="Logo">
+            <h2>Live Web Editor</h2>
+            <span>Live Preview</span>
+        </div>
+        
+        <!-- তোমার মূল ওয়েবসাইটের লিঙ্ক -->
+        <a href="https://js-code-output.vercel.app" class="main-site-btn" target="_blank">
+            Visit Main Website
+        </a>
     </div>
+
     <div class="editor-container">
         <div class="code-panels">
             <div class="panel">
                 <div class="panel-title">HTML</div>
-                <textarea id="html-code" onkeyup="runCode()"></textarea>
+                <textarea id="html-code" onkeyup="runCode()" placeholder="Write HTML here..."></textarea>
             </div>
             <div class="panel">
                 <div class="panel-title">CSS</div>
-                <textarea id="css-code" onkeyup="runCode()"></textarea>
+                <textarea id="css-code" onkeyup="runCode()" placeholder="Write CSS here..."></textarea>
             </div>
             <div class="panel">
                 <div class="panel-title">JS</div>
-                <textarea id="js-code" onkeyup="runCode()"></textarea>
+                <textarea id="js-code" onkeyup="runCode()" placeholder="Write JavaScript here..."></textarea>
             </div>
         </div>
+        <!-- আউটপুট দেখানোর জায়গা -->
         <iframe id="output"></iframe>
     </div>
 
@@ -42,22 +187,15 @@
         function runCode() {
             let htmlCode = document.getElementById("html-code").value;
             let cssCode = "<style>" + document.getElementById("css-code").value + "</style>";
-            let jsCode = document.getElementById("js-code").value;
+            // JS কোড সরাসরি স্ক্রিপ্ট ট্যাগের মাধ্যমে ইনজেক্ট করা হচ্ছে যাতে রিয়েল-টাইম ব্রাউজার এনভায়রনমেন্ট পায়
+            let jsCode = "<script>" + document.getElementById("js-code").value + "<\/script>";
+            
             let iframe = document.getElementById("output");
             
-            // Writing to Iframe
+            // Writing all codes to Iframe securely
             iframe.contentDocument.open();
-            iframe.contentDocument.write(htmlCode + cssCode);
+            iframe.contentDocument.write(htmlCode + cssCode + jsCode);
             iframe.contentDocument.close();
-
-            // Running JS safely
-            try {
-                if(jsCode.trim() !== ""){
-                    iframe.contentWindow.eval(jsCode);
-                }
-            } catch (e) {
-                // Error ignore korbe typing er somoy
-            }
         }
     </script>
 </body>
