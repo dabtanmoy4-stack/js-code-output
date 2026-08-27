@@ -2,73 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <title>Free Online HTML Editor & Live Preview | JS CODE OUTPUT</title>
-
-  <meta
-    name="description"
-    content="Write, edit and preview HTML online with JS CODE OUTPUT's free online HTML editor. Build webpages directly in your browser with live preview."
-  >
-
-  <link
-    rel="canonical"
-    href="https://js-code-output.vercel.app/html-editor.html"
-  >
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online HTML Editor & Live Preview | JS CODE OUTPUT</title>
+  
+  <meta name="description" content="Write, edit and preview HTML online with JS CODE OUTPUT's free online HTML editor. Build webpages directly in your browser with live preview.">
   <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://js-code-output.vercel.app/html-editor.html">
 
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Free Online HTML Editor & Live Preview">
-  <meta
-    property="og:description"
-    content="Write, edit and preview HTML online with JS CODE OUTPUT's free browser-based HTML editor."
-  >
-  <meta
-    property="og:url"
-    content="https://js-code-output.vercel.app/html-editor.html"
-  >
-  <meta
-    property="og:image"
-    content="https://js-code-output.vercel.app/logo.png"
-  >
+  <meta property="og:description" content="Write, edit and preview HTML online with JS CODE OUTPUT's free browser-based HTML editor.">
+  <meta property="og:url" content="https://js-code-output.vercel.app/html-editor.html">
+  <meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
   <meta property="og:site_name" content="JS CODE OUTPUT">
 
-  <meta name="twitter:card" content="summary">
-  <meta
-    name="twitter:title"
-    content="Free Online HTML Editor | JS CODE OUTPUT"
-  >
-  <meta
-    name="twitter:description"
-    content="Write, edit and preview HTML online with a free browser-based HTML editor."
-  >
-  <meta
-    name="twitter:image"
-    content="https://js-code-output.vercel.app/logo.png"
-  >
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Online HTML Editor | JS CODE OUTPUT">
+  <meta name="twitter:description" content="Write, edit and preview HTML online with a free browser-based HTML editor.">
+  <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
 
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.png">
+  <!-- Icons -->
+  <link rel="icon" type="image/jpeg" href="/logo.jpeg">
+  <link rel="apple-touch-icon" href="/logo.jpeg">
+
+  <!-- Google Fonts for better UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #070b14;
-      --bg2: #0d1321;
-      --card: rgba(18, 26, 42, .78);
-      --card2: rgba(255, 255, 255, .035);
-      --border: rgba(255, 255, 255, .10);
-      --text: #f7f9fc;
-      --muted: #a9b4c7;
-      --blue: #5b8cff;
-      --purple: #7c5cff;
-      --gold: #e7c978;
-      --green: #6ee7b7;
-      --max: 1180px;
+      /* Modern Dark Theme Colors */
+      --bg-main: #000000;
+      --bg-secondary: #0a0a0a;
+      --surface: #111111;
+      --surface-hover: #1a1a1a;
+      --border: #222222;
+      --border-hover: #333333;
+      
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      
+      --accent-blue: #3291ff;
+      --accent-purple: #7928ca;
+      --accent-glow: rgba(50, 145, 255, 0.15);
+      
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --max-width: 1200px;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     html {
@@ -76,664 +65,525 @@
     }
 
     body {
-      margin: 0;
-      color: var(--text);
-      background:
-        radial-gradient(
-          circle at 12% 8%,
-          rgba(91, 140, 255, .18),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 88% 12%,
-          rgba(124, 92, 255, .16),
-          transparent 30%
-        ),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      line-height: 1.65;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 15% 50%, rgba(50, 145, 255, 0.05), transparent 25%),
+                        radial-gradient(circle at 85% 30%, rgba(121, 40, 202, 0.05), transparent 25%);
     }
 
     a {
       color: inherit;
       text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
+      transition: all 0.2s ease;
     }
 
     .container {
-      width: min(var(--max), calc(100% - 32px));
+      width: 100%;
+      max-width: var(--max-width);
       margin: 0 auto;
+      padding: 0 20px;
     }
 
-    /* NAVIGATION */
-
+    /* --- NAVBAR --- */
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      background: rgba(7, 11, 20, .80);
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
 
     .nav {
-      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      height: 70px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 11px;
-      font-weight: 800;
-      letter-spacing: -.025em;
-      white-space: nowrap;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
     }
 
     .brand img {
-      width: 42px;
-      height: 42px;
-      object-fit: contain;
-      border-radius: 11px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
     }
 
     .navlinks {
       display: flex;
-      align-items: center;
-      gap: 20px;
-      color: var(--muted);
-      font-size: 14px;
+      gap: 24px;
     }
 
     .navlinks a {
-      transition: color .2s ease;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     .navlinks a:hover {
-      color: #fff;
+      color: var(--text-main);
     }
 
-    .button {
-      min-height: 46px;
-      padding: 0 19px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-weight: 750;
-      transition:
-        transform .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,.22);
-    }
-
-    .button.primary {
-      border: 0;
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--purple)
-        );
-      box-shadow:
-        0 14px 38px rgba(91,140,255,.23);
-    }
-
-    /* HERO */
-
-    .hero {
-      padding: 88px 0 68px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 13px;
-      border-radius: 999px;
-      border: 1px solid rgba(231,201,120,.25);
-      background: rgba(231,201,120,.07);
-      color: #f2d990;
-      font-size: 13px;
-      font-weight: 750;
-    }
-
-    h1 {
-      max-width: 900px;
-      margin: 20px auto 18px;
-      font-size: clamp(42px, 7vw, 76px);
-      line-height: 1.03;
-      letter-spacing: -.055em;
-    }
-
-    .gradient {
-      background:
-        linear-gradient(
-          90deg,
-          #fff,
-          #a9c4ff 45%,
-          #cbbaff
-        );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-copy {
-      max-width: 750px;
-      margin: 0 auto 29px;
-      color: var(--muted);
-      font-size: clamp(17px, 2.2vw, 20px);
-    }
-
-    .actions {
+    .nav-actions {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
       gap: 12px;
     }
 
-    /* EDITOR DEMO */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      height: 40px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
 
-    .editor-demo {
-      margin: 38px auto 0;
+    .btn:hover {
+      border-color: var(--text-muted);
+      background: var(--surface-hover);
+    }
+
+    .btn-primary {
+      background: var(--text-main);
+      color: var(--bg-main);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #e0e0e0;
+      transform: translateY(-1px);
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+    }
+
+    .text-gradient {
+      background: linear-gradient(to right, #fff, #888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-accent {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .hero-buttons .btn {
+      height: 48px;
+      padding: 0 24px;
+      font-size: 1rem;
+    }
+
+    /* --- EDITOR DEMO MOCKUP --- */
+    .editor-wrapper {
+      margin: 60px auto 0;
+      max-width: 1000px;
+      border-radius: 12px;
       padding: 1px;
-      max-width: 1080px;
-      border-radius: 23px;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(91,140,255,.58),
-          rgba(124,92,255,.20),
-          rgba(231,201,120,.28)
-        );
-      box-shadow:
-        0 35px 100px rgba(0,0,0,.40);
+      background: linear-gradient(180deg, var(--border), transparent);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 80px var(--accent-glow);
     }
 
     .editor-window {
+      background: var(--surface);
+      border-radius: 11px;
       overflow: hidden;
-      border-radius: 22px;
-      background: #0a0f19;
-      border: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      flex-direction: column;
     }
 
-    .editor-top {
-      height: 50px;
+    .editor-header {
+      height: 40px;
+      background: var(--bg-main);
       display: flex;
       align-items: center;
-      gap: 7px;
       padding: 0 16px;
       border-bottom: 1px solid var(--border);
-      color: #8f9bb0;
-      font-size: 13px;
     }
 
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #4e596c;
+    .mac-dots {
+      display: flex;
+      gap: 6px;
     }
+
+    .mac-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .mac-dot.close { background: #ff5f56; }
+    .mac-dot.min { background: #ffbd2e; }
+    .mac-dot.max { background: #27c93f; }
 
     .editor-title {
-      margin-left: 8px;
+      margin: 0 auto;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      transform: translateX(-24px);
     }
 
-    .editor-grid {
+    .editor-body {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      min-height: 380px;
+      height: 400px;
     }
 
-    .code-panel {
-      padding: 25px;
-      text-align: left;
+    .code-pane {
+      padding: 20px;
       border-right: 1px solid var(--border);
-      overflow: auto;
+      overflow-y: auto;
+      background: #0d0d0d;
     }
 
-    .file-label {
-      color: #8f9bb0;
-      font-size: 12px;
-      margin-bottom: 13px;
-      font-weight: 700;
-    }
-
-    pre {
-      margin: 0;
-      white-space: pre-wrap;
-      font:
-        14px/1.8
-        Consolas,
-        Monaco,
-        "Courier New",
-        monospace;
-      color: #dce6f6;
-    }
-
-    .tag {
-      color: #7db3ff;
-    }
-
-    .attr {
-      color: #d7b8ff;
-    }
-
-    .string {
-      color: #8fe3b6;
-    }
-
-    .preview-panel {
-      padding: 22px;
-      background: #eef2f7;
-      color: #182033;
-    }
-
-    .preview-label {
-      color: #667085;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 13px;
-    }
-
-    .preview {
-      min-height: 310px;
-      height: calc(100% - 30px);
+    .preview-pane {
+      background: #ffffff;
+      color: #000000;
+      padding: 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 25px;
-      border-radius: 15px;
-      background: #fff;
-      box-shadow: 0 16px 40px rgba(0,0,0,.13);
+      flex-direction: column;
+    }
+
+    .pane-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    
+    .preview-pane .pane-label {
+      padding: 12px 20px;
+      border-bottom: 1px solid #eaeaea;
+      margin-bottom: 0;
+      color: #666;
+      background: #fafafa;
     }
 
     .preview-content {
-      max-width: 370px;
-    }
-
-    .preview-content h3 {
-      margin: 0 0 8px;
-      font-size: 30px;
-      letter-spacing: -.04em;
-    }
-
-    .preview-content p {
-      margin: 0 0 18px;
-      color: #667085;
-    }
-
-    .preview-button {
-      display: inline-flex;
-      padding: 9px 16px;
-      border-radius: 9px;
-      background: #172033;
-      color: white;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    /* GENERAL SECTIONS */
-
-    section {
-      padding: 78px 0;
-    }
-
-    .section-title {
-      max-width: 720px;
-      margin: 0 auto 42px;
+      padding: 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
     }
 
-    .section-title h2 {
-      margin: 0 0 11px;
-      font-size: clamp(31px, 5vw, 47px);
-      line-height: 1.1;
-      letter-spacing: -.045em;
+    pre {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e1e4e8;
     }
 
-    .section-title p {
-      margin: 0;
-      color: var(--muted);
+    /* Syntax Highlighting */
+    .token.tag { color: #85e89d; }
+    .token.attr { color: #b392f0; }
+    .token.string { color: #9ecbff; }
+    .token.text { color: #e1e4e8; }
+
+    /* --- SECTION STYLES --- */
+    section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .grid {
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 48px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* --- FEATURES GRID --- */
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
     }
 
     .card {
-      padding: 26px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--card);
-      box-shadow: 0 15px 45px rgba(0,0,0,.16);
+      border-radius: 12px;
+      padding: 32px;
+      transition: all 0.3s ease;
     }
 
-    .icon {
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      margin-bottom: 16px;
-      border-radius: 12px;
-      background: rgba(91,140,255,.12);
-      border: 1px solid rgba(91,140,255,.15);
-      font-size: 19px;
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      background: var(--surface-hover);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(50, 145, 255, 0.1);
+      border: 1px solid rgba(50, 145, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent-blue);
+      margin-bottom: 20px;
     }
 
     .card h3 {
-      margin: 0 0 8px;
-      font-size: 19px;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
     }
 
     .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
-    /* BENEFITS */
-
-    .benefits {
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    .large-card {
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background:
-        radial-gradient(
-          circle at 90% 10%,
-          rgba(91,140,255,.12),
-          transparent 38%
-        ),
-        var(--card);
-    }
-
-    .large-card h3 {
-      margin: 0 0 13px;
-      font-size: 27px;
-      letter-spacing: -.035em;
-    }
-
-    .large-card p {
-      color: var(--muted);
-      margin: 0 0 18px;
-    }
-
-    .check-list {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .check-list li {
-      display: flex;
-      gap: 10px;
-      padding: 8px 0;
-      color: #d8e0ed;
-      font-size: 14px;
-    }
-
-    .check {
-      color: var(--green);
-      font-weight: 900;
-    }
-
-    /* STEPS */
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .step {
-      position: relative;
-      padding: 27px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: var(--card2);
-    }
-
-    .number {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      margin-bottom: 16px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    .step h3 {
-      margin: 0 0 7px;
-      font-size: 18px;
-    }
-
-    .step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* RELATED */
-
-    .related {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .related a {
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: rgba(255,255,255,.03);
-      color: #cbd6e8;
-      font-size: 14px;
-      transition: .2s ease;
-    }
-
-    .related a:hover {
-      color: white;
-      border-color: rgba(91,140,255,.5);
-      transform: translateY(-2px);
-    }
-
-    /* FAQ */
-
-    .faq {
-      max-width: 830px;
+    /* --- FAQ ACCORDION --- */
+    .faq-wrapper {
+      max-width: 800px;
       margin: 0 auto;
     }
 
     details {
-      margin-bottom: 12px;
-      padding: 17px 19px;
-      border-radius: 14px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      background: rgba(255,255,255,.025);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
     }
 
     summary {
+      padding: 20px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: 750;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: '+';
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    details[open] summary::after {
+      content: '−';
     }
 
     details p {
-      margin: 12px 0 0;
-      color: var(--muted);
-    }
-
-    /* CTA */
-
-    .cta {
-      padding: 62px 26px;
-      border-radius: 24px;
-      text-align: center;
-      border: 1px solid var(--border);
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          rgba(91,140,255,.21),
-          transparent 48%
-        ),
-        rgba(255,255,255,.035);
-    }
-
-    .cta h2 {
-      margin: 0 0 10px;
-      font-size: clamp(31px, 5vw, 46px);
-      letter-spacing: -.045em;
-    }
-
-    .cta p {
-      max-width: 650px;
-      margin: 0 auto 23px;
-      color: var(--muted);
-    }
-
-    /* FOOTER */
-
-    footer {
-      padding: 32px 0;
+      padding: 0 20px 20px;
+      color: var(--text-muted);
       border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
+      margin-top: 10px;
+      padding-top: 16px;
     }
 
-    .footer-inner {
+    /* --- CTA SECTION --- */
+    .cta-section {
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(180deg, transparent, rgba(50, 145, 255, 0.05));
+      border: none;
+    }
+
+    .cta-box {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 16px;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      background: var(--bg-main);
+      padding: 60px 0 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-top {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 60px;
     }
 
-    .footer-links {
+    .footer-brand {
+      max-width: 300px;
+    }
+    
+    .footer-brand p {
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-size: 0.9rem;
+    }
+
+    .footer-links-grid {
       display: flex;
+      gap: 60px;
       flex-wrap: wrap;
-      gap: 15px;
     }
 
-    .footer-links a:hover {
-      color: white;
+    .footer-col h4 {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: var(--text-main);
     }
 
-    /* RESPONSIVE */
+    .footer-col a {
+      display: block;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+    
+    .footer-col a:hover {
+      color: var(--accent-blue);
+    }
 
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* --- RESPONSIVE --- */
     @media (max-width: 900px) {
-      .navlinks {
-        display: none;
-      }
-
-      .grid,
-      .steps {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .benefits {
+      .editor-body {
         grid-template-columns: 1fr;
+        height: auto;
       }
-    }
-
-    @media (max-width: 700px) {
-      .container {
-        width: min(var(--max), calc(100% - 22px));
-      }
-
-      .hero {
-        padding: 65px 0 52px;
-      }
-
-      .editor-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .code-panel {
-        border-right: 0;
+      .code-pane {
+        height: 300px;
+        border-right: none;
         border-bottom: 1px solid var(--border);
       }
-
-      .preview-panel {
-        min-height: 350px;
-      }
-
-      .grid,
-      .steps {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding: 58px 0;
-      }
-
-      .brand span {
-        font-size: 14px;
-      }
-
-      .brand img {
-        width: 38px;
-        height: 38px;
-      }
-
-      .nav > .button {
-        min-height: 41px;
-        padding: 0 13px;
-        font-size: 13px;
+      .preview-pane {
+        height: 300px;
       }
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .editor-demo {
-        animation: floating-editor 6s ease-in-out infinite;
-      }
-
-      @keyframes floating-editor {
-        0%, 100% {
-          transform: translateY(0);
-        }
-
-        50% {
-          transform: translateY(-6px);
-        }
-      }
+    @media (max-width: 768px) {
+      .navlinks { display: none; }
+      .hero { padding: 60px 0; }
+      .footer-top { flex-direction: column; }
+      .footer-links-grid { gap: 30px; flex-direction: column; }
     }
   </style>
 
+  <!-- Structured Data / Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -750,696 +600,226 @@
     }
   }
   </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is an online HTML editor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "An online HTML editor is a browser-based environment for writing, editing and previewing HTML without depending entirely on a locally installed editor."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I preview HTML online?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. JS CODE OUTPUT provides a browser-based workflow where HTML can be written and its rendered result can be previewed."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the HTML editor free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "JS CODE OUTPUT provides a free online HTML editing experience."
-        }
-      }
-    ]
-  }
-  </script>
 </head>
-
 <body>
 
-<header>
-  <div class="container nav">
+  <!-- HEADER & NAVIGATION -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/" aria-label="JS CODE OUTPUT home">
+        <img src="/logo.jpeg" alt="JS CODE OUTPUT logo" width="36" height="36">
+        <span>JS CODE OUTPUT</span>
+      </a>
 
-    <a class="brand" href="/" aria-label="JS CODE OUTPUT home">
-      <img
-        src="/logo.png"
-        alt="JS CODE OUTPUT logo"
-        width="42"
-        height="42"
-      >
-      <span>JS CODE OUTPUT</span>
-    </a>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/online-code-editor.html">Code Editor</a>
+        <a href="/css-editor.html">CSS Editor</a>
+        <a href="/javascript-editor.html">JS Editor</a>
+        <a href="/html-playground.html">Playground</a>
+      </nav>
 
-    <nav class="navlinks" aria-label="Primary navigation">
-      <a href="/online-code-editor.html">Online Code Editor</a>
-      <a href="/css-editor.html">CSS Editor</a>
-      <a href="/javascript-editor.html">JavaScript Editor</a>
-      <a href="/html-playground.html">HTML Playground</a>
-    </nav>
-
-    <a class="button primary" href="/">
-      Open Editor
-    </a>
-
-  </div>
-</header>
-
-<main>
-
-  <!-- HERO -->
-
-  <section class="hero">
-
-    <div class="container">
-
-      <div class="eyebrow">
-        ✦ Free Online HTML Editor
+      <div class="nav-actions">
+        <a class="btn" href="https://js-code-output.vercel.app/" target="_blank">Main Website</a>
+        <a class="btn btn-primary" href="/">Open Editor</a>
       </div>
+    </div>
+  </header>
 
-      <h1>
-        Write HTML.
-        <span class="gradient">See It Come Alive.</span>
-      </h1>
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="container">
+        <div class="badge">Online Workspace</div>
+        
+        <h1>
+          Write HTML.<br>
+          <span class="text-gradient-accent">See It Come Alive.</span>
+        </h1>
+        
+        <p>
+          Write, edit and preview HTML directly in your browser with JS CODE OUTPUT's free online editor. Build webpages instantly with zero setup.
+        </p>
 
-      <p class="hero-copy">
-        Write, edit and preview HTML directly in your browser with
-        JS CODE OUTPUT's free online HTML editor. Build webpages,
-        experiment with markup and see your results quickly.
-      </p>
+        <div class="hero-buttons">
+          <a class="btn btn-primary" href="/">Start Coding Free</a>
+          <a class="btn" href="https://js-code-output.vercel.app/" target="_blank">Visit Main App &rarr;</a>
+        </div>
 
-      <div class="actions">
-
-        <a class="button primary" href="/">
-          Start Coding Free →
-        </a>
-
-        <a class="button" href="#how-it-works">
-          How It Works
-        </a>
-
-      </div>
-
-      <!-- Visual editor demonstration -->
-
-      <div class="editor-demo">
-
-        <div class="editor-window">
-
-          <div class="editor-top">
-
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-
-            <span class="editor-title">
-              index.html — HTML Editor
-            </span>
-
-          </div>
-
-          <div class="editor-grid">
-
-            <div class="code-panel">
-
-              <div class="file-label">
-                HTML
+        <!-- MOCKUP EDITOR -->
+        <div class="editor-wrapper">
+          <div class="editor-window">
+            <div class="editor-header">
+              <div class="mac-dots">
+                <div class="mac-dot close"></div>
+                <div class="mac-dot min"></div>
+                <div class="mac-dot max"></div>
               </div>
-
-              <pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
-<span class="tag">&lt;html&gt;</span>
-
-<span class="tag">&lt;head&gt;</span>
-  <span class="tag">&lt;title&gt;</span>
-    <span class="string">My Website</span>
-  <span class="tag">&lt;/title&gt;</span>
-<span class="tag">&lt;/head&gt;</span>
-
-<span class="tag">&lt;body&gt;</span>
-
-  <span class="tag">&lt;h1</span>
-    <span class="attr">class</span>=<span class="string">"hero-title"</span><span class="tag">&gt;</span>
-    <span class="string">Hello, Web!</span>
-  <span class="tag">&lt;/h1&gt;</span>
-
-  <span class="tag">&lt;p&gt;</span>
-    <span class="string">Build your next idea online.</span>
-  <span class="tag">&lt;/p&gt;</span>
-
-<span class="tag">&lt;/body&gt;</span>
-<span class="tag">&lt;/html&gt;</span></pre>
-
+              <div class="editor-title">index.html — JS CODE OUTPUT</div>
             </div>
+            
+            <div class="editor-body">
+              <!-- Code Side -->
+              <div class="code-pane">
+                <div class="pane-label">HTML Editor</div>
+                <pre><code><span class="token tag">&lt;!DOCTYPE html&gt;</span>
+<span class="token tag">&lt;html</span> <span class="token attr">lang</span>=<span class="token string">"en"</span><span class="token tag">&gt;</span>
+<span class="token tag">&lt;head&gt;</span>
+  <span class="token tag">&lt;title&gt;</span><span class="token text">My Website</span><span class="token tag">&lt;/title&gt;</span>
+<span class="token tag">&lt;/head&gt;</span>
+<span class="token tag">&lt;body&gt;</span>
 
-            <div class="preview-panel">
+  <span class="token tag">&lt;h1</span> <span class="token attr">class</span>=<span class="token string">"title"</span><span class="token tag">&gt;</span>
+    <span class="token text">Hello, Web!</span>
+  <span class="token tag">&lt;/h1&gt;</span>
+  
+  <span class="token tag">&lt;p&gt;</span>
+    <span class="token text">Build your next idea online.</span>
+  <span class="token tag">&lt;/p&gt;</span>
 
-              <div class="preview-label">
-                LIVE PREVIEW
+<span class="token tag">&lt;/body&gt;</span>
+<span class="token tag">&lt;/html&gt;</span></code></pre>
               </div>
 
-              <div class="preview">
-
+              <!-- Preview Side -->
+              <div class="preview-pane">
+                <div class="pane-label">Live Preview</div>
                 <div class="preview-content">
-
-                  <h3>Hello, Web!</h3>
-
-                  <p>
-                    Build your next idea online.
-                  </p>
-
-                  <span class="preview-button">
-                    Explore
-                  </span>
-
+                  <h3 style="font-size: 2rem; margin-bottom: 10px; font-family: sans-serif; letter-spacing: -0.03em;">Hello, Web!</h3>
+                  <p style="color: #666; font-family: sans-serif; margin-bottom: 20px;">Build your next idea online.</p>
+                  <button style="padding: 10px 20px; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Explore</button>
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
       </div>
-
-    </div>
-
-  </section>
-
-  <!-- FEATURES -->
-
-  <section id="features">
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          A simple way to build with HTML
-        </h2>
-
-        <p>
-          Everything you need to experiment with HTML and move
-          from an idea to a working webpage.
-        </p>
-
-      </div>
-
-      <div class="grid">
-
-        <article class="card">
-
-          <div class="icon">⌘</div>
-
-          <h3>Write HTML Online</h3>
-
-          <p>
-            Create HTML documents directly in your browser without
-            needing to start with a traditional desktop editor.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">▶</div>
-
-          <h3>Live Preview</h3>
-
-          <p>
-            Preview your webpage output and quickly understand how
-            your HTML structure appears in the browser.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">◇</div>
-
-          <h3>Build Real Pages</h3>
-
-          <p>
-            Use the editor for prototypes, experiments, practice
-            projects and real frontend development workflows.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">⚡</div>
-
-          <h3>Fast Browser Workflow</h3>
-
-          <p>
-            Open the editor from a modern browser and start
-            experimenting with HTML quickly.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">▣</div>
-
-          <h3>Project-Based Coding</h3>
-
-          <p>
-            Organize your work as projects instead of keeping
-            every HTML experiment as an isolated snippet.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">✓</div>
-
-          <h3>Free to Start</h3>
-
-          <p>
-            Start experimenting with HTML online using the
-            JS CODE OUTPUT browser-based workspace.
-          </p>
-
-        </article>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- BENEFITS -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="benefits">
-
-        <article class="large-card">
-
-          <h3>
-            From your first HTML tag to a complete webpage
-          </h3>
-
-          <p>
-            JS CODE OUTPUT gives you a straightforward place to
-            practice HTML, test ideas and build the structure of
-            webpages directly in your browser.
-          </p>
-
-          <ul class="check-list">
-
-            <li>
-              <span class="check">✓</span>
-              Write and edit HTML online
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Preview webpage output
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Combine HTML with CSS and JavaScript
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Experiment with frontend ideas
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Continue your work inside a project
-            </li>
-
-          </ul>
-
-        </article>
-
-        <article class="large-card">
-
-          <h3>
-            HTML is only the beginning
-          </h3>
-
-          <p>
-            Once your page structure is ready, continue with
-            CSS for design and JavaScript for interaction.
-          </p>
-
-          <div class="related">
-
-            <a href="/css-editor.html">
-              CSS Editor
-            </a>
-
-            <a href="/javascript-editor.html">
-              JavaScript Editor
-            </a>
-
-            <a href="/html-css-editor.html">
-              HTML + CSS Editor
-            </a>
-
-            <a href="/html-css-javascript-editor.html">
-              Full Web Editor
-            </a>
-
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>A seamless way to build</h2>
+          <p>Everything you need to experiment with HTML and move from an idea to a working webpage.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+            </div>
+            <h3>Write HTML Online</h3>
+            <p>Create HTML documents directly in your browser without needing to start with a traditional desktop editor.</p>
           </div>
 
-        </article>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- HOW IT WORKS -->
-
-  <section id="how-it-works">
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          How to use the online HTML editor
-        </h2>
-
-        <p>
-          Start with your markup and move toward a working
-          webpage in a few simple steps.
-        </p>
-
-      </div>
-
-      <div class="steps">
-
-        <article class="step">
-
-          <div class="number">
-            01
+          <div class="card">
+            <div class="card-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            </div>
+            <h3>Live Preview</h3>
+            <p>Preview your webpage output instantly and clearly understand how your HTML structure appears in real-time.</p>
           </div>
 
-          <h3>
-            Open the editor
-          </h3>
+          <div class="card">
+            <div class="card-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h3>Fast Browser Workflow</h3>
+            <p>Open the editor from any modern browser and start experimenting with code faster than ever before.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          <p>
-            Open JS CODE OUTPUT and start a new project or
-            continue working on an existing one.
-          </p>
+    <!-- FAQ SECTION -->
+    <section id="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+          <p>Common questions about using our online HTML editor.</p>
+        </div>
 
-        </article>
+        <div class="faq-wrapper">
+          <details>
+            <summary>What is an online HTML editor?</summary>
+            <p>An online HTML editor is a browser-based environment where you can write, edit and preview HTML without depending entirely on a locally installed desktop editor like VS Code or Notepad++.</p>
+          </details>
 
-        <article class="step">
+          <details>
+            <summary>Can I preview HTML online?</summary>
+            <p>Yes. JS CODE OUTPUT provides a browser-based workflow for writing HTML and viewing the resulting webpage side-by-side through its live preview experience.</p>
+          </details>
 
-          <div class="number">
-            02
+          <details>
+            <summary>Is the JS CODE OUTPUT HTML editor free?</summary>
+            <p>Yes, JS CODE OUTPUT provides a completely free online HTML editing experience so you can start experimenting with webpage code in your browser without any cost.</p>
+          </details>
+          
+          <details>
+            <summary>Where can I access the full website?</summary>
+            <p>You can access all our tools and full editor platform by visiting our main website at <a href="https://js-code-output.vercel.app/" target="_blank" style="color: var(--accent-blue);">js-code-output.vercel.app</a>.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Start writing HTML online</h2>
+          <p>Turn your next idea into a working webpage with JS CODE OUTPUT's browser-based coding workspace.</p>
+          <a class="btn btn-primary" href="/" style="height: 48px; padding: 0 32px; font-size: 1.05rem;">Open HTML Editor &rarr;</a>
+          <br><br>
+          <a href="https://js-code-output.vercel.app/" target="_blank" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: underline;">Or go back to Main Website</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="JS CODE OUTPUT home">
+            <img src="/logo.jpeg" alt="JS CODE OUTPUT logo" width="36" height="36">
+            <span>JS CODE OUTPUT</span>
+          </a>
+          <p>Write, edit, and preview your HTML, CSS, and JS code instantly in the browser.</p>
+        </div>
+
+        <div class="footer-links-grid">
+          <div class="footer-col">
+            <h4>Editors</h4>
+            <a href="/online-code-editor.html">Online Code Editor</a>
+            <a href="/css-editor.html">CSS Editor</a>
+            <a href="/javascript-editor.html">JavaScript Editor</a>
+            <a href="/html-playground.html">HTML Playground</a>
+          </div>
+          
+          <div class="footer-col">
+            <h4>Platform</h4>
+            <a href="https://js-code-output.vercel.app/" target="_blank" style="color: var(--accent-blue); font-weight: bold;">Main Website ↗</a>
+            <a href="/about.html">About Us</a>
+            <a href="/contact.html">Contact</a>
           </div>
 
-          <h3>
-            Write your HTML
-          </h3>
-
-          <p>
-            Add your document structure, headings, paragraphs,
-            links, images and other HTML elements.
-          </p>
-
-        </article>
-
-        <article class="step">
-
-          <div class="number">
-            03
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Service</a>
           </div>
-
-          <h3>
-            Preview your page
-          </h3>
-
-          <p>
-            Run your project and inspect the rendered webpage
-            in the live preview.
-          </p>
-
-        </article>
-
+        </div>
       </div>
 
-    </div>
-
-  </section>
-
-  <!-- RELATED PAGES -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          Explore more web development tools
-        </h2>
-
-        <p>
-          Continue building with related JS CODE OUTPUT editors,
-          playgrounds and development pages.
-        </p>
-
+      <div class="footer-bottom">
+        <div>&copy; 2026 JS CODE OUTPUT. All rights reserved.</div>
+        <div>Built for developers.</div>
       </div>
-
-      <div class="related">
-
-        <a href="/online-code-editor.html">
-          Online Code Editor
-        </a>
-
-        <a href="/css-editor.html">
-          Online CSS Editor
-        </a>
-
-        <a href="/javascript-editor.html">
-          Online JavaScript Editor
-        </a>
-
-        <a href="/html-playground.html">
-          HTML Playground
-        </a>
-
-        <a href="/html-live-preview.html">
-          HTML Live Preview
-        </a>
-
-        <a href="/html-compiler.html">
-          HTML Compiler
-        </a>
-
-        <a href="/html-code-tester.html">
-          HTML Code Tester
-        </a>
-
-        <a href="/html-sandbox.html">
-          HTML Sandbox
-        </a>
-
-        <a href="/html-editor-for-beginners.html">
-          HTML Editor for Beginners
-        </a>
-
-        <a href="/learn/html-basics.html">
-          HTML Basics
-        </a>
-
-      </div>
-
     </div>
-
-  </section>
-
-  <!-- FAQ -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          Frequently asked questions
-        </h2>
-
-        <p>
-          Common questions about using an online HTML editor.
-        </p>
-
-      </div>
-
-      <div class="faq">
-
-        <details>
-
-          <summary>
-            What is an online HTML editor?
-          </summary>
-
-          <p>
-            An online HTML editor is a browser-based environment
-            where you can write, edit and preview HTML without
-            depending entirely on a locally installed editor.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I preview HTML online?
-          </summary>
-
-          <p>
-            Yes. JS CODE OUTPUT provides a browser-based workflow
-            for writing HTML and viewing the resulting webpage
-            through its live preview experience.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Is the JS CODE OUTPUT HTML editor free?
-          </summary>
-
-          <p>
-            JS CODE OUTPUT provides a free online HTML editing
-            experience so you can start experimenting with
-            webpage code in your browser.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I use CSS and JavaScript with HTML?
-          </summary>
-
-          <p>
-            Yes. HTML provides the structure of a webpage while
-            CSS can be used for styling and JavaScript can add
-            interactive behavior.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I use the HTML editor on mobile?
-          </summary>
-
-          <p>
-            Yes. This page is responsive and designed to be
-            comfortable to access from modern desktop and
-            mobile browsers.
-          </p>
-
-        </details>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- FINAL CTA -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="cta">
-
-        <h2>
-          Start writing HTML online
-        </h2>
-
-        <p>
-          Turn your next idea into a working webpage with
-          JS CODE OUTPUT's browser-based coding workspace.
-        </p>
-
-        <a class="button primary" href="/">
-          Open HTML Editor →
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-
-  <div class="container footer-inner">
-
-    <div>
-      © 2026 JS CODE OUTPUT. All rights reserved.
-    </div>
-
-    <div class="footer-links">
-
-      <a href="/">
-        Home
-      </a>
-
-      <a href="/online-code-editor.html">
-        Online Code Editor
-      </a>
-
-      <a href="/about.html">
-        About
-      </a>
-
-      <a href="/contact.html">
-        Contact
-      </a>
-
-      <a href="/privacy.html">
-        Privacy
-      </a>
-
-      <a href="/terms.html">
-        Terms
-      </a>
-
-    </div>
-
-  </div>
-
-</footer>
+  </footer>
 
 </body>
 </html>
