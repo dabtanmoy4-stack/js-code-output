@@ -2,63 +2,1761 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Code Editor with Preview</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>JS CODE OUTPUT - Live Code Editor & Preview</title>
+
+    <meta name="description"
+          content="JS CODE OUTPUT - Write HTML, CSS and JavaScript code and instantly see the live preview online.">
+
+    <meta name="keywords"
+          content="JS CODE OUTPUT, online code editor, HTML editor, CSS editor, JavaScript editor, live preview, web builder, online coding">
+
+    <meta name="author"
+          content="Tanmoy Dab">
+
+    <meta name="robots"
+          content="index, follow">
+
+    <link rel="canonical"
+          href="https://js-code-output.vercel.app/">
+
+    <!-- Favicon -->
+    <link rel="icon"
+          type="image/jpeg"
+          href="logo.jpeg">
+
+    <!-- Open Graph -->
+    <meta property="og:title"
+          content="JS CODE OUTPUT - Live Code Editor">
+
+    <meta property="og:description"
+          content="Write HTML, CSS and JavaScript and instantly preview your website.">
+
+    <meta property="og:type"
+          content="website">
+
+    <meta property="og:url"
+          content="https://js-code-output.vercel.app/">
+
+    <meta property="og:image"
+          content="logo.jpeg">
+
+    <!-- Twitter -->
+    <meta name="twitter:card"
+          content="summary_large_image">
+
+    <meta name="twitter:title"
+          content="JS CODE OUTPUT - Live Code Editor">
+
+    <meta name="twitter:description"
+          content="Build and preview HTML, CSS and JavaScript instantly.">
+
+    <meta name="twitter:image"
+          content="logo.jpeg">
+
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background: #f4f4f9;}
-        .header { background: #20232a; color: #61dafb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .editor-container { display: flex; flex: 1; }
-        .code-panels { display: flex; flex-direction: column; width: 40%; background: #282c34; border-right: 4px solid #20232a;}
-        .panel { display: flex; flex-direction: column; flex: 1; border-bottom: 2px solid #20232a; }
-        .panel-title { background: #32363e; color: #abb2bf; padding: 5px 10px; font-size: 13px; font-weight: bold; }
-        textarea { flex: 1; background: transparent; color: #fff; font-family: 'Consolas', monospace; padding: 10px; border: none; resize: none; outline: none; font-size: 15px;}
-        iframe { width: 60%; border: none; background: #fff; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h2 style="margin:0;">Live Web Editor</h2>
-        <span>Type to see Live Preview</span>
-    </div>
-    <div class="editor-container">
-        <div class="code-panels">
-            <div class="panel">
-                <div class="panel-title">HTML</div>
-                <textarea id="html-code" onkeyup="runCode()"></textarea>
-            </div>
-            <div class="panel">
-                <div class="panel-title">CSS</div>
-                <textarea id="css-code" onkeyup="runCode()"></textarea>
-            </div>
-            <div class="panel">
-                <div class="panel-title">JS</div>
-                <textarea id="js-code" onkeyup="runCode()"></textarea>
-            </div>
-        </div>
-        <iframe id="output"></iframe>
-    </div>
 
-    <script>
-        function runCode() {
-            let htmlCode = document.getElementById("html-code").value;
-            let cssCode = "<style>" + document.getElementById("css-code").value + "</style>";
-            let jsCode = document.getElementById("js-code").value;
-            let iframe = document.getElementById("output");
-            
-            // Writing to Iframe
-            iframe.contentDocument.open();
-            iframe.contentDocument.write(htmlCode + cssCode);
-            iframe.contentDocument.close();
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-            // Running JS safely
-            try {
-                if(jsCode.trim() !== ""){
-                    iframe.contentWindow.eval(jsCode);
-                }
-            } catch (e) {
-                // Error ignore korbe typing er somoy
+        :root {
+            --bg: #07070a;
+            --panel: #0d0d12;
+            --panel2: #111118;
+            --border: rgba(255,255,255,.09);
+            --text: #f5f5f7;
+            --muted: #9999a8;
+            --accent: #7c3aed;
+            --accent2: #a855f7;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 20% 0%,
+                    rgba(124,58,237,.15),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(168,85,247,.08),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            overflow: hidden;
+        }
+
+        /* =========================
+           TOP NAVBAR
+        ========================= */
+
+        .navbar {
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 20px;
+
+            border-bottom: 1px solid var(--border);
+
+            background: rgba(8,8,12,.92);
+
+            backdrop-filter: blur(20px);
+
+            position: relative;
+            z-index: 50;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            object-fit: cover;
+
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,.1),
+                0 8px 25px rgba(124,58,237,.25);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.05;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .nav-btn {
+            border: 1px solid var(--border);
+
+            background: rgba(255,255,255,.04);
+
+            color: #ddd;
+
+            padding: 9px 13px;
+
+            border-radius: 9px;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+
+            text-decoration: none;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(124,58,237,.14);
+            border-color: rgba(168,85,247,.35);
+            color: white;
+        }
+
+        .nav-primary {
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #9333ea
+                );
+
+            border-color: transparent;
+
+            color: white;
+
+            box-shadow:
+                0 5px 20px rgba(124,58,237,.25);
+        }
+
+        .nav-primary:hover {
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b5cf6,
+                    #a855f7
+                );
+        }
+
+        /* =========================
+           TOOLBAR
+        ========================= */
+
+        .toolbar {
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 14px;
+
+            background: #0b0b10;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar-left,
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .project-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding-right: 10px;
+
+            color: #d8d8df;
+
+            font-size: 12px;
+
+            border-right: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 12px rgba(34,197,94,.6);
+        }
+
+        .tool-btn {
+            height: 32px;
+
+            padding: 0 10px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+
+            border-radius: 7px;
+
+            border: 1px solid var(--border);
+
+            background: rgba(255,255,255,.035);
+
+            color: #bdbdc8;
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            transition: .18s ease;
+        }
+
+        .tool-btn:hover {
+            color: white;
+
+            background:
+                rgba(124,58,237,.14);
+
+            border-color:
+                rgba(168,85,247,.35);
+        }
+
+        .run-btn {
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c3aed,
+                    #9333ea
+                );
+
+            border-color: transparent;
+
+            color: white;
+
+            font-weight: 700;
+        }
+
+        .run-btn:hover {
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b5cf6,
+                    #a855f7
+                );
+        }
+
+        /* =========================
+           MAIN WORKSPACE
+        ========================= */
+
+        .workspace {
+            height: calc(100vh - 116px);
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(380px, 44%)
+                1fr;
+
+            min-height: 0;
+        }
+
+        /* =========================
+           EDITOR SIDE
+        ========================= */
+
+        .editor-side {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #09090d;
+
+            border-right:
+                1px solid var(--border);
+        }
+
+        .editor-tabs {
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+
+            background: #0d0d12;
+
+            border-bottom:
+                1px solid var(--border);
+
+            padding-left: 8px;
+
+            gap: 3px;
+        }
+
+        .editor-tab {
+            height: 32px;
+
+            padding: 0 13px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            border-radius: 6px 6px 0 0;
+
+            color: #858591;
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            border: none;
+
+            background: transparent;
+        }
+
+        .editor-tab.active {
+            color: white;
+
+            background:
+                rgba(255,255,255,.06);
+        }
+
+        .tab-html {
+            color: #f97316;
+        }
+
+        .tab-css {
+            color: #3b82f6;
+        }
+
+        .tab-js {
+            color: #eab308;
+        }
+
+        .code-panels {
+            flex: 1;
+
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 1px;
+
+            background: #050507;
+        }
+
+        .panel {
+            flex: 1;
+
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #0c0c11;
+        }
+
+        .panel-header {
+            height: 34px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 11px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #111117,
+                    #0e0e13
+                );
+
+            border-bottom:
+                1px solid rgba(255,255,255,.055);
+
+            font-size: 11px;
+
+            color: #aaaab5;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .language-icon {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .html-dot {
+            background: #f97316;
+        }
+
+        .css-dot {
+            background: #3b82f6;
+        }
+
+        .js-dot {
+            background: #eab308;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .mini-btn {
+            background: transparent;
+
+            border: none;
+
+            color: #777783;
+
+            cursor: pointer;
+
+            font-size: 10px;
+
+            padding: 3px 5px;
+
+            border-radius: 4px;
+        }
+
+        .mini-btn:hover {
+            background: rgba(255,255,255,.07);
+            color: white;
+        }
+
+        textarea {
+            flex: 1;
+
+            width: 100%;
+
+            min-height: 0;
+
+            border: none;
+
+            outline: none;
+
+            resize: none;
+
+            padding: 13px;
+
+            background:
+                #0a0a0f;
+
+            color: #e6e6eb;
+
+            font-family:
+                "Cascadia Code",
+                "Fira Code",
+                Consolas,
+                monospace;
+
+            font-size: 13px;
+
+            line-height: 1.65;
+
+            tab-size: 2;
+
+            caret-color: #a855f7;
+
+            white-space: pre;
+
+            overflow: auto;
+        }
+
+        textarea::selection {
+            background: rgba(124,58,237,.35);
+        }
+
+        textarea::-webkit-scrollbar,
+        .preview-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        textarea::-webkit-scrollbar-thumb,
+        .preview-container::-webkit-scrollbar-thumb {
+            background: #282832;
+            border-radius: 10px;
+        }
+
+        textarea::-webkit-scrollbar-track,
+        .preview-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* =========================
+           PREVIEW SIDE
+        ========================= */
+
+        .preview-side {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #08080c;
+        }
+
+        .preview-header {
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 11px;
+
+            background: #0d0d12;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            color: #c8c8d0;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .preview-live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            color: #777783;
+
+            font-size: 10px;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 8px rgba(34,197,94,.8);
+        }
+
+        .preview-container {
+            flex: 1;
+
+            min-height: 0;
+
+            position: relative;
+
+            background: white;
+
+            overflow: auto;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+
+            border: none;
+
+            display: block;
+
+            background: white;
+        }
+
+        /* =========================
+           CONSOLE
+        ========================= */
+
+        .console {
+            height: 0;
+
+            overflow: hidden;
+
+            background: #08080d;
+
+            border-top:
+                1px solid var(--border);
+
+            transition:
+                height .25s ease;
+        }
+
+        .console.open {
+            height: 150px;
+        }
+
+        .console-header {
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 12px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            color: #aaaab4;
+
+            font-size: 11px;
+        }
+
+        .console-output {
+            height: calc(100% - 34px);
+
+            overflow: auto;
+
+            padding: 8px 12px;
+
+            font-family:
+                Consolas,
+                monospace;
+
+            font-size: 11px;
+
+            color: #aaaab4;
+        }
+
+        .console-error {
+            color: #f87171;
+        }
+
+        .console-success {
+            color: #4ade80;
+        }
+
+        /* =========================
+           EMPTY / MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            body {
+                overflow: auto;
+            }
+
+            .navbar {
+                height: auto;
+                min-height: 64px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .toolbar {
+                overflow-x: auto;
+            }
+
+            .workspace {
+                height: auto;
+                min-height: calc(100vh - 116px);
+
+                display: flex;
+                flex-direction: column;
+            }
+
+            .editor-side {
+                height: 600px;
+
+                min-height: 600px;
+
+                border-right: none;
+
+                border-bottom:
+                    1px solid var(--border);
+            }
+
+            .preview-side {
+                height: 500px;
+
+                min-height: 500px;
             }
         }
+
+        @media (max-width: 550px) {
+
+            .navbar {
+                padding: 0 10px;
+            }
+
+            .brand-name {
+                font-size: 14px;
+            }
+
+            .brand-logo {
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-right .nav-btn:not(.nav-primary) {
+                display: none;
+            }
+
+            .toolbar {
+                padding: 0 8px;
+            }
+
+            .project-label {
+                display: none;
+            }
+
+            .tool-btn {
+                padding: 0 8px;
+            }
+
+            textarea {
+                font-size: 12px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <header class="navbar">
+
+        <a
+            href="https://js-code-output.vercel.app/"
+            class="brand"
+            title="Open JS CODE OUTPUT">
+
+            <img
+                src="logo.jpeg"
+                class="brand-logo"
+                alt="JS CODE OUTPUT Logo">
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    JS CODE OUTPUT
+                </div>
+
+                <div class="brand-subtitle">
+                    Online Code Editor & Web Builder
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <div class="nav-right">
+
+            <a
+                href="https://js-code-output.vercel.app/"
+                class="nav-btn">
+
+                <span>⌂</span>
+                <span>Home</span>
+
+            </a>
+
+            <a
+                href="https://js-code-output.vercel.app/"
+                class="nav-btn nav-primary">
+
+                <span>↗</span>
+                <span>Open Main Website</span>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         TOOLBAR
+    ========================== -->
+
+    <div class="toolbar">
+
+        <div class="toolbar-left">
+
+            <div class="project-label">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Live Editor
+                </span>
+
+            </div>
+
+            <button
+                class="tool-btn run-btn"
+                onclick="runCode()">
+
+                ▶ Run
+
+            </button>
+
+            <button
+                class="tool-btn"
+                onclick="resetCode()">
+
+                ↻ Reset
+
+            </button>
+
+            <button
+                class="tool-btn"
+                onclick="toggleConsole()">
+
+                ◉ Console
+
+            </button>
+
+        </div>
+
+
+        <div class="toolbar-right">
+
+            <button
+                class="tool-btn"
+                onclick="copyAllCode()">
+
+                ⧉ Copy
+
+            </button>
+
+            <button
+                class="tool-btn"
+                onclick="openFullscreen()">
+
+                ⛶ Fullscreen
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         WORKSPACE
+    ========================== -->
+
+    <main class="workspace">
+
+
+        <!-- =========================
+             EDITOR
+        ========================== -->
+
+        <section class="editor-side">
+
+            <div class="editor-tabs">
+
+                <button class="editor-tab active">
+                    <span class="tab-html">●</span>
+                    HTML
+                </button>
+
+                <button class="editor-tab">
+                    <span class="tab-css">●</span>
+                    CSS
+                </button>
+
+                <button class="editor-tab">
+                    <span class="tab-js">●</span>
+                    JavaScript
+                </button>
+
+            </div>
+
+
+            <div class="code-panels">
+
+
+                <!-- HTML -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div class="panel-title">
+
+                            <span class="language-icon html-dot"></span>
+
+                            HTML
+
+                        </div>
+
+                        <div class="panel-actions">
+
+                            <button
+                                class="mini-btn"
+                                onclick="clearEditor('html-code')">
+
+                                Clear
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <textarea
+                        id="html-code"
+                        spellcheck="false"
+                        oninput="scheduleRun()"
+                        placeholder="Write your HTML here..."><div class="demo">
+    <h1>Hello, JS CODE OUTPUT!</h1>
+    <p>Write HTML, CSS and JavaScript and see the result instantly.</p>
+    <button onclick="showMessage()">Click Me</button>
+    <div id="message"></div>
+</div></textarea>
+
+                </div>
+
+
+                <!-- CSS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div class="panel-title">
+
+                            <span class="language-icon css-dot"></span>
+
+                            CSS
+
+                        </div>
+
+                        <div class="panel-actions">
+
+                            <button
+                                class="mini-btn"
+                                onclick="clearEditor('css-code')">
+
+                                Clear
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <textarea
+                        id="css-code"
+                        spellcheck="false"
+                        oninput="scheduleRun()"
+                        placeholder="Write your CSS here...">body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.demo {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+h1 {
+    color: #7c3aed;
+}
+
+p {
+    color: #555;
+}
+
+button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: #7c3aed;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #9333ea;
+}
+
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+}</textarea>
+
+                </div>
+
+
+                <!-- JAVASCRIPT -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div class="panel-title">
+
+                            <span class="language-icon js-dot"></span>
+
+                            JavaScript
+
+                        </div>
+
+                        <div class="panel-actions">
+
+                            <button
+                                class="mini-btn"
+                                onclick="clearEditor('js-code')">
+
+                                Clear
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <textarea
+                        id="js-code"
+                        spellcheck="false"
+                        oninput="scheduleRun()"
+                        placeholder="Write your JavaScript here...">function showMessage() {
+    document.getElementById("message").textContent =
+        "JavaScript is working! 🚀";
+}</textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             PREVIEW
+        ========================== -->
+
+        <section class="preview-side">
+
+
+            <div class="preview-header">
+
+                <div class="preview-title">
+
+                    <span>◈</span>
+
+                    Live Preview
+
+                </div>
+
+
+                <div class="preview-live">
+
+                    <span class="live-dot"></span>
+
+                    Live
+
+                </div>
+
+            </div>
+
+
+            <div class="preview-container">
+
+                <iframe
+                    id="output"
+                    title="Live Code Preview"
+                    sandbox="allow-scripts allow-forms allow-modals allow-popups">
+                </iframe>
+
+            </div>
+
+
+            <div
+                id="console"
+                class="console">
+
+                <div class="console-header">
+
+                    <span>
+                        Developer Console
+                    </span>
+
+                    <button
+                        class="mini-btn"
+                        onclick="clearConsole()">
+
+                        Clear
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="console-output"
+                    class="console-output">
+
+                    <div class="console-success">
+                        Ready.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        /* =========================
+           DEFAULT CODE
+        ========================== */
+
+        const defaultHTML =
+`<div class="demo">
+    <h1>Hello, JS CODE OUTPUT!</h1>
+    <p>Write HTML, CSS and JavaScript and see the result instantly.</p>
+    <button onclick="showMessage()">Click Me</button>
+    <div id="message"></div>
+</div>`;
+
+
+        const defaultCSS =
+`body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.demo {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+h1 {
+    color: #7c3aed;
+}
+
+p {
+    color: #555;
+}
+
+button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: #7c3aed;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #9333ea;
+}
+
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+}`;
+
+
+        const defaultJS =
+`function showMessage() {
+    document.getElementById("message").textContent =
+        "JavaScript is working! 🚀";
+}`;
+
+
+        /* =========================
+           RUN CODE
+        ========================== */
+
+        let runTimer;
+
+
+        function scheduleRun() {
+
+            clearTimeout(runTimer);
+
+            runTimer = setTimeout(
+                runCode,
+                250
+            );
+
+        }
+
+
+        function runCode() {
+
+            const html =
+                document.getElementById(
+                    "html-code"
+                ).value;
+
+            const css =
+                document.getElementById(
+                    "css-code"
+                ).value;
+
+            const js =
+                document.getElementById(
+                    "js-code"
+                ).value;
+
+
+            const iframe =
+                document.getElementById(
+                    "output"
+                );
+
+
+            const documentContent = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<style>
+
+${css}
+
+</style>
+
+</head>
+
+<body>
+
+${html}
+
+<script>
+
+(function(){
+
+    const originalLog = console.log;
+
+    console.log = function(...args) {
+
+        originalLog.apply(console, args);
+
+        try {
+
+            parent.postMessage({
+                type: "log",
+                data: args.map(
+                    x => typeof x === "object"
+                    ? JSON.stringify(x)
+                    : String(x)
+                ).join(" ")
+            }, "*");
+
+        } catch(e) {}
+
+    };
+
+
+    window.onerror = function(
+        message,
+        source,
+        lineno,
+        colno
+    ) {
+
+        parent.postMessage({
+            type: "error",
+            data: message
+        }, "*");
+
+    };
+
+
+    try {
+
+        ${js}
+
+    } catch(error) {
+
+        parent.postMessage({
+            type: "error",
+            data: error.message
+        }, "*");
+
+    }
+
+})();
+
+<\/script>
+
+</body>
+
+</html>
+
+`;
+
+
+            iframe.srcdoc =
+                documentContent;
+
+
+            addConsole(
+                "Preview updated successfully.",
+                "success"
+            );
+
+        }
+
+
+        /* =========================
+           CONSOLE
+        ========================== */
+
+        function addConsole(
+            message,
+            type = "log"
+        ) {
+
+            const output =
+                document.getElementById(
+                    "console-output"
+                );
+
+
+            const line =
+                document.createElement(
+                    "div"
+                );
+
+
+            line.className =
+                type === "error"
+                ? "console-error"
+                : "console-success";
+
+
+            line.textContent =
+                "› " + message;
+
+
+            output.appendChild(line);
+
+            output.scrollTop =
+                output.scrollHeight;
+
+        }
+
+
+        window.addEventListener(
+            "message",
+            function(event) {
+
+                if (!event.data)
+                    return;
+
+
+                if (
+                    event.data.type === "error"
+                ) {
+
+                    addConsole(
+                        event.data.data,
+                        "error"
+                    );
+
+                }
+
+
+                if (
+                    event.data.type === "log"
+                ) {
+
+                    addConsole(
+                        event.data.data,
+                        "log"
+                    );
+
+                }
+
+            }
+        );
+
+
+        function toggleConsole() {
+
+            document
+                .getElementById("console")
+                .classList.toggle("open");
+
+        }
+
+
+        function clearConsole() {
+
+            document
+                .getElementById("console-output")
+                .innerHTML =
+                '<div class="console-success">Console cleared.</div>';
+
+        }
+
+
+        /* =========================
+           CLEAR EDITOR
+        ========================== */
+
+        function clearEditor(id) {
+
+            document
+                .getElementById(id)
+                .value = "";
+
+            runCode();
+
+        }
+
+
+        /* =========================
+           RESET
+        ========================== */
+
+        function resetCode() {
+
+            document.getElementById(
+                "html-code"
+            ).value = defaultHTML;
+
+
+            document.getElementById(
+                "css-code"
+            ).value = defaultCSS;
+
+
+            document.getElementById(
+                "js-code"
+            ).value = defaultJS;
+
+
+            runCode();
+
+            addConsole(
+                "Editor reset.",
+                "success"
+            );
+
+        }
+
+
+        /* =========================
+           COPY ALL
+        ========================== */
+
+        async function copyAllCode() {
+
+            const html =
+                document.getElementById(
+                    "html-code"
+                ).value;
+
+
+            const css =
+                document.getElementById(
+                    "css-code"
+                ).value;
+
+
+            const js =
+                document.getElementById(
+                    "js-code"
+                ).value;
+
+
+            const fullCode =
+`<!-- HTML -->
+
+${html}
+
+
+/* CSS */
+
+<style>
+
+${css}
+
+</style>
+
+
+/* JavaScript */
+
+<script>
+
+${js}
+
+<\/script>`;
+
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    fullCode
+                );
+
+
+                addConsole(
+                    "All code copied to clipboard.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                addConsole(
+                    "Could not copy code.",
+                    "error"
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           FULLSCREEN
+        ========================== */
+
+        function openFullscreen() {
+
+            const preview =
+                document.getElementById(
+                    "output"
+                );
+
+
+            if (
+                preview.requestFullscreen
+            ) {
+
+                preview.requestFullscreen();
+
+            }
+
+        }
+
+
+        /* =========================
+           TAB SHORTCUT
+        ========================== */
+
+        document.querySelectorAll(
+            "textarea"
+        ).forEach(
+            textarea => {
+
+                textarea.addEventListener(
+                    "keydown",
+                    function(event) {
+
+                        if (
+                            event.key === "Tab"
+                        ) {
+
+                            event.preventDefault();
+
+                            const start =
+                                this.selectionStart;
+
+                            const end =
+                                this.selectionEnd;
+
+
+                            this.value =
+                                this.value.substring(
+                                    0,
+                                    start
+                                ) +
+                                "  " +
+                                this.value.substring(
+                                    end
+                                );
+
+
+                            this.selectionStart =
+                                this.selectionEnd =
+                                start + 2;
+
+
+                            scheduleRun();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================
+           START
+        ========================== */
+
+        window.addEventListener(
+            "load",
+            function() {
+
+                runCode();
+
+            }
+        );
+
     </script>
+
 </body>
 </html>
