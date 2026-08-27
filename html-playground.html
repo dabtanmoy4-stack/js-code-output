@@ -3,40 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML & CSS Playground</title>
+    <title>JS Code Output | HTML & CSS Playground</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #fff;}
-        .header { background: #2d2d2d; padding: 15px; text-align: center; border-bottom: 2px solid #007acc;}
-        .container { display: flex; flex: 1; overflow: hidden; }
-        .editors { display: flex; flex-direction: column; width: 50%; border-right: 5px solid #2d2d2d; }
-        textarea { flex: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 16px; padding: 10px; border: none; border-bottom: 2px solid #2d2d2d; resize: none; outline: none;}
-        iframe { width: 50%; background: #ffffff; border: none; }
-        .label { background: #007acc; font-size: 12px; padding: 3px 10px; display: inline-block; }
+        /* বেসিক রিসেট এবং ফন্ট সেটিং */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a; /* আধুনিক ডার্ক ব্লু/গ্রে কালার */
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* হেডার বা নেভিগেশন বার এর ডিজাইন */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e293b;
+            padding: 12px 24px;
+            border-bottom: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            height: 36px;
+            width: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #3b82f6;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            letter-spacing: 0.5px;
+        }
+
+        /* মূল ওয়েবসাইটে যাওয়ার বাটন */
+        .back-btn {
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* এডিটর এবং আউটপুট এরিয়া */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .editors-panel {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            border-right: 1px solid #334155;
+            background-color: #0f172a;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border-bottom: 1px solid #334155;
+        }
+
+        .editor-container:last-child {
+            border-bottom: none;
+        }
+
+        .editor-header {
+            background-color: #1e293b;
+            padding: 8px 16px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        /* কোড লেখার জায়গা (Textarea) */
+        textarea {
+            flex: 1;
+            background-color: #0f172a;
+            color: #38bdf8; /* HTML ট্যাগ কালার এর মতো */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            padding: 16px;
+            border: none;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        #css-code {
+            color: #a78bfa; /* CSS প্রপার্টি কালার এর মতো */
+        }
+
+        /* স্ক্রলবার ডিজাইন */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        /* ডানদিকের আউটপুট এরিয়া */
+        .output-panel {
+            width: 50%;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+
+        /* রেস্পন্সিভ ডিজাইন (মোবাইলের জন্য) */
+        @media (max-width: 768px) {
+            .workspace {
+                flex-direction: column;
+            }
+            .editors-panel, .output-panel {
+                width: 100%;
+                height: 50%;
+            }
+            .brand-title {
+                display: none; /* মোবাইলে শুধু লোগো দেখাবে জায়গা বাঁচাতে */
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>HTML & CSS Editor</h2>
-    </div>
-    <div class="container">
-        <div class="editors">
-            <span class="label">HTML</span>
-            <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
-            <span class="label">CSS</span>
-            <textarea id="css-code" placeholder="h1 { color: red; }"></textarea>
+
+    <!-- হেডার সেকশন -->
+    <nav class="navbar">
+        <div class="brand-section">
+            <img src="logo.jpeg" alt="JS Code Output Logo" class="logo">
+            <h1 class="brand-title">JS Code Output Playground</h1>
         </div>
-        <iframe id="output"></iframe>
+        <a href="https://js-code-output.vercel.app" class="back-btn" target="_blank">
+            <span>&#8592;</span> Back to Main Site
+        </a>
+    </nav>
+
+    <!-- মূল ওয়ার্কস্পেস -->
+    <div class="workspace">
+        
+        <!-- বামদিক: কোড এডিটর -->
+        <div class="editors-panel">
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span class="lang-label">HTML</span>
+                </div>
+                <textarea id="html-code" spellcheck="false" placeholder="<!-- Write your HTML here -->&#10;<h1>Hello JS Code Output</h1>&#10;<p>Welcome to the live editor!</p>"></textarea>
+            </div>
+            
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span class="lang-label">CSS</span>
+                </div>
+                <textarea id="css-code" spellcheck="false" placeholder="/* Write your CSS here */&#10;h1 {&#10;  color: #3b82f6;&#10;  font-family: sans-serif;&#10;}&#10;p {&#10;  color: #333;&#10;}"></textarea>
+            </div>
+        </div>
+
+        <!-- ডানদিক: লাইভ আউটপুট -->
+        <div class="output-panel">
+            <iframe id="output" title="Live Preview"></iframe>
+        </div>
+        
     </div>
 
+    <!-- জাভাস্ক্রিপ্ট লজিক -->
     <script>
         function runCode() {
             let html = document.getElementById("html-code").value;
             let css = "<style>" + document.getElementById("css-code").value + "</style>";
             let output = document.getElementById("output");
+            
+            // iframe এর কন্টেন্ট আপডেট করা
             output.contentDocument.body.innerHTML = html + css;
         }
-        document.getElementById("html-code").addEventListener("keyup", runCode);
-        document.getElementById("css-code").addEventListener("keyup", runCode);
+
+        // টাইপ করার সাথে সাথে আউটপুট আপডেট হবে
+        document.getElementById("html-code").addEventListener("input", runCode);
+        document.getElementById("css-code").addEventListener("input", runCode);
+
+        // পেজ লোড হওয়ার পর একবার রান করে ডিফল্ট টেক্সট দেখাবে
+        window.onload = function() {
+            // Placeholder এর টেক্সট শুরুতে বক্সে দিয়ে দেওয়া যাতে সুন্দর দেখায়
+            document.getElementById("html-code").value = "<h1>Hello JS Code Output</h1>\n<p>Welcome to the live editor!</p>";
+            document.getElementById("css-code").value = "body {\n  font-family: sans-serif;\n  padding: 20px;\n}\nh1 {\n  color: #3b82f6;\n}\np {\n  color: #555;\n}";
+            runCode();
+        };
     </script>
 </body>
 </html>
