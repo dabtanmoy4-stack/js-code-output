@@ -3,29 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML CODE Playground</title>
+    <title>JS CODE OUTPUT - Playground</title>
+    <!-- Favicon (Browser Tab Logo) -->
+    <link rel="icon" href="logo.jpeg" type="image/jpeg">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #fff;}
-        .header { background: #2d2d2d; padding: 15px; text-align: center; border-bottom: 2px solid #007acc;}
-        .container { display: flex; flex: 1; overflow: hidden; }
-        .editors { display: flex; flex-direction: column; width: 50%; border-right: 5px solid #2d2d2d; }
-        textarea { flex: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 16px; padding: 10px; border: none; border-bottom: 2px solid #2d2d2d; resize: none; outline: none;}
-        iframe { width: 50%; background: #ffffff; border: none; }
-        .label { background: #007acc; font-size: 12px; padding: 3px 10px; display: inline-block; }
+        :root {
+            --bg-color: #1e1e1e;
+            --header-bg: #252526;
+            --border-color: #333333;
+            --text-color: #d4d4d4;
+            --accent-color: #007acc;
+            --accent-hover: #005f9e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--header-bg);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .brand h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .main-site-btn {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .main-site-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Workspace Styles */
+        .container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+        }
+
+        .editors {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            border-right: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
+
+        .editor-section {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .editor-section:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            background-color: var(--header-bg);
+            color: #858585;
+            font-size: 12px;
+            padding: 8px 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        textarea {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            padding: 15px;
+            border: none;
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus {
+            box-shadow: inset 0 0 0 1px var(--accent-color);
+        }
+
+        /* Custom Scrollbar for Textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #424242;
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #4f4f4f;
+        }
+
+        /* Output Frame Styles */
+        .output-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+        }
+
+        .output-label {
+            background-color: var(--header-bg);
+            color: #858585;
+            font-size: 12px;
+            padding: 8px 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>HTML CODE Editor</h2>
+        <div class="brand">
+            <!-- Header Logo -->
+            <img src="logo.jpeg" alt="JS Code Output Logo">
+            <h2>JS CODE Playground</h2>
+        </div>
+        <!-- Link to your main website -->
+        <a href="https://js-code-output.vercel.app" class="main-site-btn" target="_blank">Go to Main Website</a>
     </div>
+
     <div class="container">
         <div class="editors">
-            <span class="label">HTML</span>
-            <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
-            <span class="label">CSS</span>
-            <textarea id="css-code" placeholder="h1 { color: red; }"></textarea>
+            <div class="editor-section">
+                <div class="label">HTML</div>
+                <textarea id="html-code" placeholder="<!-- Write your HTML here -->&#10;<h1>Hello World</h1>"></textarea>
+            </div>
+            
+            <div class="editor-section">
+                <div class="label">CSS</div>
+                <textarea id="css-code" placeholder="/* Write your CSS here */&#10;h1 { color: #007acc; }"></textarea>
+            </div>
         </div>
-        <iframe id="output"></iframe>
+
+        <div class="output-container">
+            <div class="output-label">Live Output</div>
+            <iframe id="output"></iframe>
+        </div>
     </div>
 
     <script>
@@ -33,10 +208,19 @@
             let html = document.getElementById("html-code").value;
             let css = "<style>" + document.getElementById("css-code").value + "</style>";
             let output = document.getElementById("output");
-            output.contentDocument.body.innerHTML = html + css;
+            
+            // Writing to iframe carefully to ensure scripts and styles are parsed correctly
+            let outputDocument = output.contentDocument || output.contentWindow.document;
+            outputDocument.open();
+            outputDocument.write(html + css);
+            outputDocument.close();
         }
-        document.getElementById("html-code").addEventListener("keyup", runCode);
-        document.getElementById("css-code").addEventListener("keyup", runCode);
+
+        document.getElementById("html-code").addEventListener("input", runCode);
+        document.getElementById("css-code").addEventListener("input", runCode);
+
+        // Run once on load to show placeholder styles if user types something immediately
+        runCode();
     </script>
 </body>
 </html>
