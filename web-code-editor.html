@@ -3,41 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Code Editor with Preview</title>
+    <title>Live Code Editor | JS Code Output</title>
+    
+    <!-- Google Tab/Browser Favicon -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background: #f4f4f9;}
-        .header { background: #20232a; color: #61dafb; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .editor-container { display: flex; flex: 1; }
-        .code-panels { display: flex; flex-direction: column; width: 40%; background: #282c34; border-right: 4px solid #20232a;}
-        .panel { display: flex; flex-direction: column; flex: 1; border-bottom: 2px solid #20232a; }
-        .panel-title { background: #32363e; color: #abb2bf; padding: 5px 10px; font-size: 13px; font-weight: bold; }
-        textarea { flex: 1; background: transparent; color: #fff; font-family: 'Consolas', monospace; padding: 10px; border: none; resize: none; outline: none; font-size: 15px;}
-        iframe { width: 60%; border: none; background: #fff; }
+        /* Modern Color Palette */
+        :root {
+            --bg-main: #121212;
+            --bg-panel: #1e1e1e;
+            --bg-header: #252526;
+            --text-main: #e0e0e0;
+            --border-color: #333;
+            --brand-color: #007acc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        /* Header / Navbar Styling */
+        .header {
+            background-color: var(--bg-header);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Logo Image Styling */
+        .brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .brand h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .live-status {
+            font-size: 13px;
+            color: #4ec9b0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Main Website Button Styling */
+        .main-site-btn {
+            background-color: var(--brand-color);
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .main-site-btn:hover {
+            background-color: #005f9e;
+            transform: translateY(-1px);
+        }
+
+        /* Editor Workspace */
+        .editor-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 61px);
+        }
+
+        .code-panels {
+            display: flex;
+            flex-direction: column;
+            width: 35%; /* Left side width */
+            background-color: var(--bg-panel);
+            border-right: 2px solid var(--border-color);
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .panel:last-child {
+            border-bottom: none;
+        }
+
+        .panel-title {
+            background: #2d2d2d;
+            color: #d4d4d4;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        textarea {
+            flex: 1;
+            background: var(--bg-panel);
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Courier New', monospace;
+            padding: 15px;
+            border: none;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Code text colors */
+        #html-code { color: #e34c26; } /* HTML Orange */
+        #css-code { color: #569cd6; } /* CSS Blue */
+        #js-code { color: #f1e05a; } /* JS Yellow */
+
+        /* Custom Scrollbar for textareas */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: var(--bg-panel); }
+        textarea::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Output iframe */
+        .output-wrapper {
+            flex: 1;
+            background: #fff;
+            position: relative;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 style="margin:0;">Live Web Editor</h2>
-        <span>Type to see Live Preview</span>
-    </div>
+
+    <!-- Top Header -->
+    <header class="header">
+        <div class="brand">
+            <!-- Your Logo -->
+            <img src="logo.jpeg" alt="JS Code Output Logo">
+            <h2>JS Code Output</h2>
+        </div>
+        
+        <div class="nav-links">
+            <span class="live-status">⚡ Auto-updating</span>
+            <!-- Link to Main Website -->
+            <a href="https://js-code-output.vercel.app" target="_blank" class="main-site-btn">
+                🏠 Go to Main Website
+            </a>
+        </div>
+    </header>
+
+    <!-- Code Editor Section -->
     <div class="editor-container">
         <div class="code-panels">
             <div class="panel">
                 <div class="panel-title">HTML</div>
-                <textarea id="html-code" onkeyup="runCode()"></textarea>
+                <textarea id="html-code" oninput="runCode()" placeholder="<h1>Hello World</h1>"></textarea>
             </div>
             <div class="panel">
                 <div class="panel-title">CSS</div>
-                <textarea id="css-code" onkeyup="runCode()"></textarea>
+                <textarea id="css-code" oninput="runCode()" placeholder="body { background: #f4f4f9; }"></textarea>
             </div>
             <div class="panel">
-                <div class="panel-title">JS</div>
-                <textarea id="js-code" onkeyup="runCode()"></textarea>
+                <div class="panel-title">JavaScript</div>
+                <textarea id="js-code" oninput="runCode()" placeholder="console.log('Running...');"></textarea>
             </div>
         </div>
-        <iframe id="output"></iframe>
+        
+        <!-- Live Output Section -->
+        <div class="output-wrapper">
+            <iframe id="output"></iframe>
+        </div>
     </div>
 
+    <!-- Script for Live Execution -->
     <script>
         function runCode() {
             let htmlCode = document.getElementById("html-code").value;
@@ -56,9 +238,12 @@
                     iframe.contentWindow.eval(jsCode);
                 }
             } catch (e) {
-                // Error ignore korbe typing er somoy
+                // Typing এর সময় error ignore করবে
             }
         }
+        
+        // Initial run to clear the iframe properly on load
+        runCode();
     </script>
 </body>
 </html>
