@@ -3,45 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Playground</title>
+    <title>JS Code Output - Playground</title>
+    
+    <!-- Google Tab/Browser Icon (Favicon) -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    
+    <!-- Google Fonts for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Courier New', Courier, monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #272822; color: #f8f8f2;}
-        .header { background: #1e1f1c; padding: 15px; text-align: center; border-bottom: 2px solid #e6db74;}
-        .container { display: flex; flex-direction: column; flex: 1; }
-        textarea { flex: 2; background: #272822; color: #a6e22e; font-size: 18px; padding: 15px; border: none; resize: none; outline: none; }
-        .output-box { flex: 1; background: #1e1f1c; padding: 15px; border-top: 5px solid #464741; overflow-y: auto;}
-        button { background: #e6db74; color: #000; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-weight: bold;}
+        :root {
+            --bg-main: #121212;
+            --bg-panel: #1e1e1e;
+            --bg-header: #181818;
+            --text-main: #e0e0e0;
+            --accent: #f7df1e; /* JS Yellow */
+            --accent-hover: #d4be10;
+            --border-color: #333;
+            --error-color: #ff5555;
+            --success-color: #50fa7b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--bg-header);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-section img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .brand-section h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .link-btn {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .link-btn:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .run-btn {
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .run-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Main Workspace Styles */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .pane:last-child {
+            border-right: none;
+        }
+
+        .pane-header {
+            background-color: var(--bg-panel);
+            padding: 8px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        textarea {
+            flex: 1;
+            background-color: var(--bg-main);
+            color: #a6e22e; /* Monokai Green for code */
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            padding: 15px;
+            border: none;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .output-box {
+            flex: 1;
+            background-color: var(--bg-main);
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .log-line {
+            color: #e0e0e0;
+            border-bottom: 1px dashed #333;
+            padding: 4px 0;
+        }
+
+        .error-line {
+            color: var(--error-color);
+            border-bottom: 1px dashed #333;
+            padding: 4px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .workspace {
+                flex-direction: column;
+            }
+            .pane {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .header-actions {
+                gap: 10px;
+            }
+            .brand-section h1 {
+                display: none; /* Hide title on small screens */
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>Online JS Editor</h2>
-        <button onclick="runJS()">Run Code ▶</button>
-    </div>
-    <div class="container">
-        <textarea id="js-code" placeholder="console.log('Hello JavaScript!');"></textarea>
-        <div class="output-box" id="js-output">
-            <strong style="color:#fd971f;">Console Output:</strong><br><br>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="brand-section">
+            <img src="logo.jpeg" alt="JS Code Output Logo">
+            <h1>JS Code Output</h1>
         </div>
-    </div>
+        <div class="header-actions">
+            <a href="https://js-code-output.vercel.app" target="_blank" class="link-btn">Go to Main Website ↗</a>
+            <button onclick="runJS()" class="run-btn">▶ Run Code</button>
+        </div>
+    </header>
 
+    <!-- Main Editor Area -->
+    <main class="workspace">
+        
+        <!-- Code Editor Pane -->
+        <div class="pane">
+            <div class="pane-header">index.js</div>
+            <textarea id="js-code" spellcheck="false" placeholder="// Write your JavaScript code here...&#10;&#10;console.log('Hello from JS Code Output!');"></textarea>
+        </div>
+
+        <!-- Output Console Pane -->
+        <div class="pane">
+            <div class="pane-header">Console Output</div>
+            <div class="output-box" id="js-output"></div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Logic -->
     <script>
-        function runJS() {
-            let code = document.getElementById("js-code").value;
-            let outputBox = document.getElementById("js-output");
-            outputBox.innerHTML = '<strong style="color:#fd971f;">Console Output:</strong><br><br>';
-            
-            // Overriding console.log temporarily to show in our box
-            let oldLog = console.log;
-            console.log = function(...args) {
-                outputBox.innerHTML += args.join(' ') + '<br>';
-                oldLog.apply(console, args);
-            };
+        const outputBox = document.getElementById("js-output");
+        
+        // Save original console methods
+        const originalLog = console.log;
+        const originalError = console.error;
 
+        // Override console.log
+        console.log = function(...args) {
+            const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg).join(' ');
+            outputBox.innerHTML += `<div class="log-line">❯ ${message}</div>`;
+            originalLog.apply(console, args);
+            scrollToBottom();
+        };
+
+        // Override console.error
+        console.error = function(...args) {
+            const message = args.join(' ');
+            outputBox.innerHTML += `<div class="error-line">✖ ${message}</div>`;
+            originalError.apply(console, args);
+            scrollToBottom();
+        };
+
+        // Function to scroll output to bottom
+        function scrollToBottom() {
+            outputBox.scrollTop = outputBox.scrollHeight;
+        }
+
+        // Run Code Function
+        function runJS() {
+            const code = document.getElementById("js-code").value;
+            outputBox.innerHTML = ''; // Clear previous output
+            
             try {
-                eval(code);
+                // Using new Function() is cleaner than eval() for this purpose
+                const executeCode = new Function(code);
+                executeCode();
             } catch (error) {
-                outputBox.innerHTML += '<span style="color:#f92672;">' + error + '</span><br>';
+                console.error(error.message || error);
             }
         }
     </script>
