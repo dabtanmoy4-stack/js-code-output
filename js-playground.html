@@ -3,25 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Playground</title>
+    <title>JS Code Output - Playground</title>
+    
+    <!-- Google tab/browser favicon hisebe logo -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    
     <style>
-        body { font-family: 'Courier New', Courier, monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #272822; color: #f8f8f2;}
-        .header { background: #1e1f1c; padding: 15px; text-align: center; border-bottom: 2px solid #e6db74;}
-        .container { display: flex; flex-direction: column; flex: 1; }
-        textarea { flex: 2; background: #272822; color: #a6e22e; font-size: 18px; padding: 15px; border: none; resize: none; outline: none; }
-        .output-box { flex: 1; background: #1e1f1c; padding: 15px; border-top: 5px solid #464741; overflow-y: auto;}
-        button { background: #e6db74; color: #000; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-weight: bold;}
+        :root {
+            --bg-main: #1e1e1e;
+            --bg-panel: #252526;
+            --bg-header: #333333;
+            --border-color: #444444;
+            --accent: #007acc;
+            --accent-hover: #005f9e;
+            --text-main: #d4d4d4;
+            --text-highlight: #4eca30;
+            --text-error: #f14c4c;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+            --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: var(--font-sans); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: var(--bg-main); 
+            color: var(--text-main);
+        }
+
+        /* Header Styles */
+        .header { 
+            background: var(--bg-header); 
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-main-site {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-main-site:hover {
+            background: var(--border-color);
+            color: #ffffff;
+        }
+
+        .btn-run {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .btn-run:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Container Styles */
+        .container { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .editor-section, .output-section {
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--bg-panel);
+        }
+
+        .editor-section {
+            flex: 3;
+        }
+
+        .output-section {
+            flex: 2;
+        }
+
+        .section-header {
+            background: var(--bg-header);
+            padding: 8px 15px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888888;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        textarea { 
+            width: 100%;
+            height: 100%;
+            background: var(--bg-panel); 
+            color: #9cdcfe; 
+            font-family: var(--font-mono);
+            font-size: 16px; 
+            padding: 15px; 
+            border: none; 
+            resize: none; 
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .output-box { 
+            padding: 15px; 
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 15px;
+            height: 100%;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>Online JS Editor</h2>
-        <button onclick="runJS()">Run Code ▶</button>
+        <div class="header-left">
+            <!-- Header Logo -->
+            <img src="logo.jpeg" alt="Logo" class="logo" onerror="this.style.display='none'">
+            <h2>JS Code Output</h2>
+        </div>
+        <div class="header-right">
+            <!-- Main Website Link -->
+            <a href="https://js-code-output.vercel.app" target="_blank" class="btn btn-main-site">
+                🏠 Main Website
+            </a>
+            <!-- Run Button -->
+            <button class="btn btn-run" onclick="runJS()">
+                ▶ Run Code
+            </button>
+        </div>
     </div>
+    
     <div class="container">
-        <textarea id="js-code" placeholder="console.log('Hello JavaScript!');"></textarea>
-        <div class="output-box" id="js-output">
-            <strong style="color:#fd971f;">Console Output:</strong><br><br>
+        <!-- Editor Area -->
+        <div class="editor-section">
+            <div class="section-header">JavaScript Editor</div>
+            <textarea id="js-code" placeholder="// Write your JavaScript code here...&#10;console.log('Hello JavaScript!');"></textarea>
+        </div>
+        
+        <!-- Output Area -->
+        <div class="output-section">
+            <div class="section-header">Console Output</div>
+            <div class="output-box" id="js-output">
+                <!-- Output will appear here -->
+            </div>
         </div>
     </div>
 
@@ -29,20 +214,39 @@
         function runJS() {
             let code = document.getElementById("js-code").value;
             let outputBox = document.getElementById("js-output");
-            outputBox.innerHTML = '<strong style="color:#fd971f;">Console Output:</strong><br><br>';
+            
+            // Clear previous output
+            outputBox.innerHTML = '';
             
             // Overriding console.log temporarily to show in our box
             let oldLog = console.log;
             console.log = function(...args) {
-                outputBox.innerHTML += args.join(' ') + '<br>';
+                // Convert objects to strings nicely
+                let formattedArgs = args.map(arg => {
+                    if (typeof arg === 'object') {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return arg;
+                });
+                
+                outputBox.innerHTML += `<div class="log-entry" style="color: var(--text-highlight);">${formattedArgs.join(' ')}</div>`;
                 oldLog.apply(console, args);
             };
 
             try {
-                eval(code);
+                // Execute the code
+                let result = eval(code);
+                
+                // If eval returns a value and there was no console.log, print the return value
+                if (result !== undefined && !code.includes('console.log')) {
+                    outputBox.innerHTML += `<div class="log-entry" style="color: #9cdcfe;">${result}</div>`;
+                }
             } catch (error) {
-                outputBox.innerHTML += '<span style="color:#f92672;">' + error + '</span><br>';
+                outputBox.innerHTML += `<div class="log-entry" style="color: var(--text-error);">❌ ${error.name}: ${error.message}</div>`;
             }
+
+            // Restore original console.log
+            console.log = oldLog;
         }
     </script>
 </body>
