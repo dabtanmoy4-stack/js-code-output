@@ -13,7 +13,24 @@
 
     <link rel="canonical" href="https://js-code-output.vercel.app/about.html">
 
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <!-- ✅ Favicon & Apple Touch Icon (Tab এবং Mobile-এর জন্য) -->
+    <link rel="icon" href="/logo.jepg">
+    <link rel="apple-touch-icon" href="/logo.jepg">
+
+    <!-- ✅ Social Media ও Google Search প্রিভিউর জন্য লোগো (Open Graph) -->
+    <meta property="og:image" content="https://js-code-output.vercel.app/logo.jepg">
+    <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jepg">
+
+    <!-- ✅ Google-কে লোগো চেনানোর জন্য Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "JS CODE OUTPUT",
+      "url": "https://js-code-output.vercel.app/",
+      "logo": "https://js-code-output.vercel.app/logo.jepg"
+    }
+    </script>
 
     <meta name="theme-color" content="#0f172a">
 
