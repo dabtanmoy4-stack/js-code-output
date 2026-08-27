@@ -1,1793 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <title>Free Online CSS Editor & Live Preview | JS CODE OUTPUT</title>
-
-  <meta
-    name="description"
-    content="Write, edit and preview CSS online with JS CODE OUTPUT's free online CSS editor. Style webpages directly in your browser with live preview."
-  >
-
-  <link
-    rel="canonical"
-    href="https://js-code-output.vercel.app/css-editor.html"
-  >
-  <link rel="icon" type="image/png" href="/logo.png">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="index, follow, max-image-preview:large">
-
-  <meta property="og:type" content="website">
-  <meta
-    property="og:title"
-    content="Free Online CSS Editor & Live Preview | JS CODE OUTPUT"
-  >
-  <meta
-    property="og:description"
-    content="Write, edit and preview CSS online with JS CODE OUTPUT's free browser-based CSS editor."
-  >
-  <meta
-    property="og:url"
-    content="https://js-code-output.vercel.app/css-editor.html"
-  >
-  <meta
-    property="og:image"
-    content="https://js-code-output.vercel.app/logo.png"
-  >
-  <meta property="og:site_name" content="JS CODE OUTPUT">
-
-  <meta name="twitter:card" content="summary">
-  <meta
-    name="twitter:title"
-    content="Free Online CSS Editor | JS CODE OUTPUT"
-  >
-  <meta
-    name="twitter:description"
-    content="Write, edit and preview CSS online with JS CODE OUTPUT."
-  >
-  <meta
-    name="twitter:image"
-    content="https://js-code-output.vercel.app/logo.png"
-  >
-
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.png">
-
-  <style>
-    :root {
-      --bg: #070b14;
-      --bg2: #0d1321;
-      --card: rgba(18, 26, 42, .78);
-      --border: rgba(255,255,255,.10);
-      --text: #f7f9fc;
-      --muted: #a9b4c7;
-      --blue: #5b8cff;
-      --purple: #7c5cff;
-      --gold: #e7c978;
-      --green: #6ee7b7;
-      --max: 1180px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      color: var(--text);
-      background:
-        radial-gradient(
-          circle at 12% 8%,
-          rgba(91,140,255,.18),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 88% 12%,
-          rgba(124,92,255,.16),
-          transparent 30%
-        ),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      line-height: 1.65;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .container {
-      width: min(var(--max), calc(100% - 32px));
-      margin: auto;
-    }
-
-    /* NAVIGATION */
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-
-      backdrop-filter: blur(18px);
-
-      background: rgba(7,11,20,.80);
-
-      border-bottom:
-        1px solid var(--border);
-    }
-
-    .nav {
-      min-height: 72px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-
-      gap: 11px;
-
-      font-weight: 800;
-      letter-spacing: -.025em;
-
-      white-space: nowrap;
-    }
-
-    .brand img {
-      width: 42px;
-      height: 42px;
-
-      object-fit: contain;
-
-      border-radius: 11px;
-    }
-
-    .navlinks {
-      display: flex;
-      align-items: center;
-
-      gap: 20px;
-
-      color: var(--muted);
-
-      font-size: 14px;
-    }
-
-    .navlinks a {
-      transition: color .2s ease;
-    }
-
-    .navlinks a:hover {
-      color: white;
-    }
-
-    .button {
-      min-height: 46px;
-
-      padding: 0 20px;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 12px;
-
-      border:
-        1px solid var(--border);
-
-      font-weight: 750;
-
-      transition:
-        transform .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-
-      border-color:
-        rgba(255,255,255,.22);
-    }
-
-    .button.primary {
-      border: 0;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--purple)
-        );
-
-      box-shadow:
-        0 14px 38px rgba(91,140,255,.23);
-    }
-
-    /* HERO */
-
-    .hero {
-      padding: 88px 0 70px;
-
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-
-      gap: 8px;
-
-      padding:
-        7px 13px;
-
-      border-radius: 999px;
-
-      border:
-        1px solid rgba(231,201,120,.25);
-
-      background:
-        rgba(231,201,120,.07);
-
-      color: #f2d990;
-
-      font-size: 13px;
-      font-weight: 750;
-    }
-
-    h1 {
-      max-width: 900px;
-
-      margin:
-        20px auto 18px;
-
-      font-size:
-        clamp(42px, 7vw, 76px);
-
-      line-height: 1.03;
-
-      letter-spacing: -.055em;
-    }
-
-    .gradient {
-      background:
-        linear-gradient(
-          90deg,
-          #fff,
-          #a9c4ff 45%,
-          #cbbaff
-        );
-
-      -webkit-background-clip: text;
-      background-clip: text;
-
-      color: transparent;
-    }
-
-    .hero-copy {
-      max-width: 750px;
-
-      margin:
-        0 auto 29px;
-
-      color: var(--muted);
-
-      font-size:
-        clamp(17px, 2.2vw, 20px);
-    }
-
-    .actions {
-      display: flex;
-
-      justify-content: center;
-      align-items: center;
-
-      flex-wrap: wrap;
-
-      gap: 12px;
-    }
-
-    /* CSS EDITOR DEMO */
-
-    .editor-demo {
-      margin: 38px auto 0;
-
-      padding: 1px;
-
-      max-width: 1080px;
-
-      border-radius: 23px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(91,140,255,.58),
-          rgba(124,92,255,.20),
-          rgba(231,201,120,.28)
-        );
-
-      box-shadow:
-        0 35px 100px rgba(0,0,0,.40);
-    }
-
-    .editor-window {
-      overflow: hidden;
-
-      border-radius: 22px;
-
-      background: #0a0f19;
-
-      border:
-        1px solid rgba(255,255,255,.06);
-    }
-
-    .editor-top {
-      height: 50px;
-
-      display: flex;
-      align-items: center;
-
-      gap: 7px;
-
-      padding: 0 16px;
-
-      border-bottom:
-        1px solid var(--border);
-
-      color: #8f9bb0;
-
-      font-size: 13px;
-    }
-
-    .dot {
-      width: 9px;
-      height: 9px;
-
-      border-radius: 50%;
-
-      background: #4e596c;
-    }
-
-    .editor-title {
-      margin-left: 8px;
-    }
-
-    .editor-grid {
-      display: grid;
-
-      grid-template-columns:
-        1fr 1fr;
-
-      min-height: 390px;
-    }
-
-    .code-panel {
-      padding: 25px;
-
-      text-align: left;
-
-      border-right:
-        1px solid var(--border);
-
-      overflow: auto;
-    }
-
-    .file-label {
-      color: #8f9bb0;
-
-      font-size: 12px;
-
-      margin-bottom: 13px;
-
-      font-weight: 700;
-    }
-
-    pre {
-      margin: 0;
-
-      white-space: pre-wrap;
-
-      font:
-        14px/1.8
-        Consolas,
-        Monaco,
-        "Courier New",
-        monospace;
-
-      color: #dce6f6;
-    }
-
-    .selector {
-      color: #7db3ff;
-    }
-
-    .property {
-      color: #d7b8ff;
-    }
-
-    .value {
-      color: #8fe3b6;
-    }
-
-    .comment {
-      color: #69758a;
-    }
-
-    .preview-panel {
-      padding: 22px;
-
-      background: #eef2f7;
-
-      color: #182033;
-    }
-
-    .preview-label {
-      color: #667085;
-
-      font-size: 12px;
-
-      font-weight: 700;
-
-      margin-bottom: 13px;
-    }
-
-    .preview {
-      min-height: 320px;
-
-      height:
-        calc(100% - 30px);
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      padding: 25px;
-
-      border-radius: 15px;
-
-      background: white;
-
-      box-shadow:
-        0 16px 40px rgba(0,0,0,.13);
-    }
-
-    .preview-card {
-      width: min(100%, 370px);
-
-      padding: 28px;
-
-      border-radius: 18px;
-
-      text-align: center;
-
-      background:
-        linear-gradient(
-          145deg,
-          #f5f7ff,
-          #ffffff
-        );
-
-      box-shadow:
-        0 12px 35px rgba(31,41,55,.12);
-    }
-
-    .preview-card h3 {
-      margin: 0 0 8px;
-
-      font-size: 29px;
-
-      letter-spacing: -.04em;
-
-      color: #172033;
-    }
-
-    .preview-card p {
-      margin: 0 0 19px;
-
-      color: #667085;
-    }
-
-    .preview-button {
-      display: inline-flex;
-
-      padding: 9px 17px;
-
-      border-radius: 9px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #5b8cff,
-          #7c5cff
-        );
-
-      color: white;
-
-      font-size: 13px;
-
-      font-weight: 750;
-    }
-
-    /* SECTIONS */
-
-    section {
-      padding: 78px 0;
-    }
-
-    .section-title {
-      max-width: 720px;
-
-      margin:
-        0 auto 42px;
-
-      text-align: center;
-    }
-
-    .section-title h2 {
-      margin:
-        0 0 11px;
-
-      font-size:
-        clamp(31px, 5vw, 47px);
-
-      line-height: 1.1;
-
-      letter-spacing: -.045em;
-    }
-
-    .section-title p {
-      margin: 0;
-
-      color: var(--muted);
-    }
-
-    .grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 18px;
-    }
-
-    .card {
-      padding: 26px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 18px;
-
-      background: var(--card);
-
-      box-shadow:
-        0 15px 45px rgba(0,0,0,.16);
-    }
-
-    .icon {
-      width: 44px;
-      height: 44px;
-
-      display: grid;
-      place-items: center;
-
-      margin-bottom: 16px;
-
-      border-radius: 12px;
-
-      background:
-        rgba(91,140,255,.12);
-
-      border:
-        1px solid rgba(91,140,255,.15);
-
-      font-size: 19px;
-    }
-
-    .card h3 {
-      margin:
-        0 0 8px;
-
-      font-size: 19px;
-    }
-
-    .card p {
-      margin: 0;
-
-      color: var(--muted);
-
-      font-size: 14px;
-    }
-
-    /* BENEFITS */
-
-    .benefits {
-      display: grid;
-
-      grid-template-columns:
-        1.05fr .95fr;
-
-      gap: 22px;
-    }
-
-    .large-card {
-      padding: 32px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 20px;
-
-      background:
-        radial-gradient(
-          circle at 90% 10%,
-          rgba(91,140,255,.12),
-          transparent 38%
-        ),
-        var(--card);
-    }
-
-    .large-card h3 {
-      margin:
-        0 0 13px;
-
-      font-size: 27px;
-
-      letter-spacing: -.035em;
-    }
-
-    .large-card p {
-      color: var(--muted);
-
-      margin:
-        0 0 18px;
-    }
-
-    .check-list {
-      padding: 0;
-      margin: 0;
-
-      list-style: none;
-    }
-
-    .check-list li {
-      display: flex;
-
-      gap: 10px;
-
-      padding: 8px 0;
-
-      color: #d8e0ed;
-
-      font-size: 14px;
-    }
-
-    .check {
-      color: var(--green);
-
-      font-weight: 900;
-    }
-
-    /* STEPS */
-
-    .steps {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 18px;
-    }
-
-    .step {
-      padding: 27px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 18px;
-
-      background:
-        rgba(255,255,255,.035);
-    }
-
-    .number {
-      width: 38px;
-      height: 38px;
-
-      display: grid;
-      place-items: center;
-
-      margin-bottom: 16px;
-
-      border-radius: 11px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--purple)
-        );
-
-      font-size: 13px;
-
-      font-weight: 850;
-    }
-
-    .step h3 {
-      margin:
-        0 0 7px;
-
-      font-size: 18px;
-    }
-
-    .step p {
-      margin: 0;
-
-      color: var(--muted);
-
-      font-size: 14px;
-    }
-
-    /* RELATED */
-
-    .related {
-      display: flex;
-
-      flex-wrap: wrap;
-
-      gap: 10px;
-
-      justify-content: center;
-    }
-
-    .related a {
-      padding:
-        10px 14px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 10px;
-
-      background:
-        rgba(255,255,255,.03);
-
-      color: #cbd6e8;
-
-      font-size: 14px;
-
-      transition: .2s ease;
-    }
-
-    .related a:hover {
-      color: white;
-
-      border-color:
-        rgba(91,140,255,.5);
-
-      transform:
-        translateY(-2px);
-    }
-
-    /* FAQ */
-
-    .faq {
-      max-width: 830px;
-
-      margin: auto;
-    }
-
-    details {
-      margin-bottom: 12px;
-
-      padding:
-        17px 19px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 14px;
-
-      background:
-        rgba(255,255,255,.025);
-    }
-
-    summary {
-      cursor: pointer;
-
-      font-weight: 750;
-    }
-
-    details p {
-      margin:
-        12px 0 0;
-
-      color: var(--muted);
-    }
-
-    /* CTA */
-
-    .cta {
-      padding:
-        62px 26px;
-
-      border-radius: 24px;
-
-      text-align: center;
-
-      border:
-        1px solid var(--border);
-
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          rgba(91,140,255,.21),
-          transparent 48%
-        ),
-        rgba(255,255,255,.035);
-    }
-
-    .cta h2 {
-      margin:
-        0 0 10px;
-
-      font-size:
-        clamp(31px, 5vw, 46px);
-
-      letter-spacing: -.045em;
-    }
-
-    .cta p {
-      max-width: 650px;
-
-      margin:
-        0 auto 23px;
-
-      color: var(--muted);
-    }
-
-    /* FOOTER */
-
-    footer {
-      padding: 32px 0;
-
-      border-top:
-        1px solid var(--border);
-
-      color: var(--muted);
-
-      font-size: 13px;
-    }
-
-    .footer-inner {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 20px;
-
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-
-      flex-wrap: wrap;
-
-      gap: 15px;
-    }
-
-    .footer-links a:hover {
-      color: white;
-    }
-
-    /* RESPONSIVE */
-
-    @media (max-width: 900px) {
-
-      .navlinks {
-        display: none;
-      }
-
-      .grid,
-      .steps {
-        grid-template-columns:
-          1fr 1fr;
-      }
-
-      .benefits {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 700px) {
-
-      .container {
-        width:
-          min(
-            var(--max),
-            calc(100% - 22px)
-          );
-      }
-
-      .hero {
-        padding:
-          65px 0 52px;
-      }
-
-      .editor-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .code-panel {
-        border-right: 0;
-
-        border-bottom:
-          1px solid var(--border);
-      }
-
-      .preview-panel {
-        min-height: 360px;
-      }
-
-      .grid,
-      .steps {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding:
-          58px 0;
-      }
-
-      .brand span {
-        font-size: 14px;
-      }
-
-      .brand img {
-        width: 38px;
-        height: 38px;
-      }
-
-      .nav > .button {
-        min-height: 41px;
-
-        padding:
-          0 13px;
-
-        font-size: 13px;
-      }
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-
-      .editor-demo {
-        animation:
-          floating-editor 6s ease-in-out infinite;
-      }
-
-      @keyframes floating-editor {
-
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-
-        50% {
-          transform: translateY(-6px);
-        }
-      }
-    }
-  </style>
-
-  <!-- SEO STRUCTURED DATA -->
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "JS CODE OUTPUT CSS Editor",
-    "url": "https://js-code-output.vercel.app/css-editor.html",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Web Browser",
-    "description": "Free online CSS editor with live preview for writing and testing CSS in a browser.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is an online CSS editor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "An online CSS editor is a browser-based environment where you can write, edit and test CSS without depending entirely on a locally installed editor."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I preview CSS online?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. JS CODE OUTPUT provides a browser-based workflow for writing CSS and viewing its effect on webpage content through a live preview."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the CSS editor free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "JS CODE OUTPUT provides a free online CSS editing experience."
-        }
-      }
-    ]
-  }
-  </script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Free Online CSS Editor & Live Preview | JS CODE OUTPUT</title>
+<meta name="description" content="Write, edit and preview CSS online with JS CODE OUTPUT's free online CSS editor.">
+<meta name="keywords" content="online CSS editor, CSS playground, CSS live preview, CSS tester, web editor, JS CODE OUTPUT">
+<meta name="author" content="Tanmoy Dab">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://js-code-output.vercel.app/css-editor.html">
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<link rel="apple-touch-icon" href="logo.jpeg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Online CSS Editor & Live Preview | JS CODE OUTPUT">
+<meta property="og:description" content="Write, edit and preview CSS directly in your browser with JS CODE OUTPUT.">
+<meta property="og:url" content="https://js-code-output.vercel.app/css-editor.html">
+<meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
+<meta property="og:site_name" content="JS CODE OUTPUT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Online CSS Editor | JS CODE OUTPUT">
+<meta name="twitter:description" content="Write, edit and preview CSS with JS CODE OUTPUT.">
+<meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
+
+<style>
+:root{--bg:#070b14;--bg2:#0d1321;--card:rgba(18,26,42,.78);--border:rgba(255,255,255,.10);--text:#f7f9fc;--muted:#a9b4c7;--blue:#5b8cff;--purple:#7c5cff;--gold:#e7c978;--green:#6ee7b7;--max:1180px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--text);background:radial-gradient(circle at 12% 8%,rgba(91,140,255,.18),transparent 28%),radial-gradient(circle at 88% 12%,rgba(124,92,255,.16),transparent 30%),linear-gradient(180deg,var(--bg),var(--bg2));font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:inherit;text-decoration:none}.container{width:min(var(--max),calc(100% - 32px));margin:auto}
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(7,11,20,.82);border-bottom:1px solid var(--border)}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.025em;white-space:nowrap}
+.brand img{width:42px;height:42px;object-fit:contain;border-radius:11px}
+.navlinks{display:flex;align-items:center;gap:20px;color:var(--muted);font-size:14px}
+.navlinks a{transition:.2s}.navlinks a:hover{color:#fff}
+.button{min-height:44px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1px solid var(--border);font-weight:750;transition:.2s}
+.button:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
+.button.primary{border:0;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 14px 38px rgba(91,140,255,.23)}
+.hero{padding:74px 0 48px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;border:1px solid rgba(231,201,120,.25);background:rgba(231,201,120,.07);color:#f2d990;font-size:13px;font-weight:750}
+h1{max-width:900px;margin:20px auto 16px;font-size:clamp(40px,6vw,68px);line-height:1.04;letter-spacing:-.055em}
+.gradient{background:linear-gradient(90deg,#fff,#a9c4ff 45%,#cbbaff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy{max-width:750px;margin:0 auto 25px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:11px}
+.editor-shell{margin:36px auto 0;max-width:1160px;padding:1px;border-radius:23px;background:linear-gradient(135deg,rgba(91,140,255,.58),rgba(124,92,255,.2),rgba(231,201,120,.28));box-shadow:0 35px 100px rgba(0,0,0,.4)}
+.editor-window{overflow:hidden;border-radius:22px;background:#080c14;border:1px solid rgba(255,255,255,.06)}
+.editor-top{height:54px;display:flex;align-items:center;gap:7px;padding:0 16px;border-bottom:1px solid var(--border);background:#0b101b}
+.dot{width:9px;height:9px;border-radius:50%;background:#566174}.editor-title{margin-left:8px;color:#9ba8bc;font-size:12px}
+.editor-controls{margin-left:auto;display:flex;gap:7px}.control{border:1px solid var(--border);background:rgba(255,255,255,.04);color:#cbd5e1;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px}.control.primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;border:0}
+.workspace{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+.editor-pane{min-width:0;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.pane-tabs{display:flex;height:43px;border-bottom:1px solid var(--border);background:#0d1320}
+.tab{border:0;background:transparent;color:#8490a4;padding:0 16px;font-weight:700;font-size:11px}.tab.active{color:#fff;border-bottom:2px solid var(--blue)}
+.code-wrap{flex:1;display:flex;min-height:0;background:#080c13}
+.line-numbers{width:42px;padding:16px 9px;text-align:right;color:#485367;font:12px/1.8 Consolas,monospace;user-select:none;border-right:1px solid rgba(255,255,255,.045)}
+#css-code{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:#dce6f6;padding:16px;font:13px/1.8 Consolas,Monaco,monospace;tab-size:2}
+.preview-pane{display:flex;flex-direction:column;min-width:0;background:#0a0f19}
+.preview-head{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid var(--border);color:#aab5c7;font-size:11px;font-weight:700}
+.live{display:flex;align-items:center;gap:6px;color:#7e8a9f;font-size:10px}.live i{width:6px;height:6px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 9px rgba(110,231,183,.8)}
+.preview-frame{flex:1;background:#eef2f7;padding:18px;min-height:0}
+#preview{width:100%;height:100%;min-height:430px;border:0;border-radius:13px;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.18)}
+.console{height:0;overflow:hidden;background:#070a10;border-top:1px solid var(--border);transition:.25s}.console.open{height:145px}.console-head{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#9aa6b9;font-size:11px}.console-body{height:calc(100% - 34px);overflow:auto;padding:7px 12px;font:11px Consolas,monospace}.ok{color:#6ee7b7}.err{color:#f87171}
+section{padding:72px 0}.section-title{max-width:720px;margin:0 auto 38px;text-align:center}.section-title h2{margin:0 0 10px;font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:-.045em}.section-title p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card,.large{padding:25px;border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:0 15px 45px rgba(0,0,0,.16)}
+.icon{width:43px;height:43px;display:grid;place-items:center;margin-bottom:15px;border-radius:12px;background:rgba(91,140,255,.12);border:1px solid rgba(91,140,255,.15);font-size:18px}.card h3,.large h3{margin:0 0 7px;font-size:18px}.card p,.large p{margin:0;color:var(--muted);font-size:14px}
+.benefits{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}.check-list{list-style:none;padding:0;margin:16px 0 0}.check-list li{display:flex;gap:10px;padding:7px 0;color:#d8e0ed;font-size:14px}.check{color:var(--green);font-weight:900}
+.related{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.related a{padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.03);color:#cbd6e8;font-size:14px;transition:.2s}.related a:hover{color:#fff;border-color:rgba(91,140,255,.5);transform:translateY(-2px)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{padding:25px;border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.035)}.number{width:37px;height:37px;display:grid;place-items:center;margin-bottom:14px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));font-size:12px;font-weight:850}.step h3{margin:0 0 7px;font-size:18px}.step p{margin:0;color:var(--muted);font-size:14px}
+.faq{max-width:830px;margin:auto}details{margin-bottom:11px;padding:16px 18px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.025)}summary{cursor:pointer;font-weight:750}details p{margin:11px 0 0;color:var(--muted)}
+.cta{padding:58px 25px;border-radius:24px;text-align:center;border:1px solid var(--border);background:radial-gradient(circle at 50% 0%,rgba(91,140,255,.21),transparent 48%),rgba(255,255,255,.035)}.cta h2{margin:0 0 9px;font-size:clamp(30px,5vw,45px);letter-spacing:-.045em}.cta p{max-width:650px;margin:0 auto 21px;color:var(--muted)}
+footer{padding:30px 0;border-top:1px solid var(--border);color:var(--muted);font-size:13px}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer-links{display:flex;flex-wrap:wrap;gap:15px}.footer-links a:hover{color:#fff}
+@media(max-width:900px){.navlinks{display:none}.grid,.steps{grid-template-columns:1fr 1fr}.benefits{grid-template-columns:1fr}}
+@media(max-width:700px){.container{width:min(var(--max),calc(100% - 22px))}.hero{padding:58px 0 38px}.workspace{grid-template-columns:1fr}.editor-pane{border-right:0;border-bottom:1px solid var(--border);min-height:420px}.preview-pane{min-height:500px}.grid,.steps{grid-template-columns:1fr}.editor-controls .control:not(.primary){display:none}.brand span{font-size:14px}.brand img{width:38px;height:38px}}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"JS CODE OUTPUT CSS Editor","url":"https://js-code-output.vercel.app/css-editor.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web Browser","description":"Free online CSS editor with live preview.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an online CSS editor?","acceptedAnswer":{"@type":"Answer","text":"An online CSS editor is a browser-based environment where you can write, edit and test CSS."}},{"@type":"Question","name":"Can I preview CSS online?","acceptedAnswer":{"@type":"Answer","text":"Yes. JS CODE OUTPUT provides a browser-based live preview workflow for testing CSS."}},{"@type":"Question","name":"Is the CSS editor free?","acceptedAnswer":{"@type":"Answer","text":"JS CODE OUTPUT provides a free online CSS editing experience."}}]}
+</script>
 </head>
 
 <body>
-
 <header>
-
-  <div class="container nav">
-
-    <a
-      class="brand"
-      href="/"
-      aria-label="JS CODE OUTPUT home"
-    >
-
-      <img
-        src="/logo.png"
-        alt="JS CODE OUTPUT logo"
-        width="42"
-        height="42"
-      >
-
-      <span>
-        JS CODE OUTPUT
-      </span>
-
-    </a>
-
-    <nav
-      class="navlinks"
-      aria-label="Primary navigation"
-    >
-
-      <a href="/online-code-editor.html">
-        Online Code Editor
-      </a>
-
-      <a href="/html-editor.html">
-        HTML Editor
-      </a>
-
-      <a href="/javascript-editor.html">
-        JavaScript Editor
-      </a>
-
-      <a href="/css-playground.html">
-        CSS Playground
-      </a>
-
-    </nav>
-
-    <a
-      class="button primary"
-      href="/"
-    >
-      Open Editor
-    </a>
-
-  </div>
-
+<div class="container nav">
+<a class="brand" href="https://js-code-output.vercel.app/" aria-label="JS CODE OUTPUT home">
+<img src="logo.jpeg" alt="JS CODE OUTPUT logo" width="42" height="42">
+<span>JS CODE OUTPUT</span>
+</a>
+<nav class="navlinks">
+<a href="https://js-code-output.vercel.app/">Home</a>
+<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
+<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
+<a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
+<a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a>
+</nav>
+<a class="button primary" href="https://js-code-output.vercel.app/">Open Main Website</a>
+</div>
 </header>
 
 <main>
-
-  <!-- HERO -->
-
-  <section class="hero">
-
-    <div class="container">
-
-      <div class="eyebrow">
-        ✦ Free Online CSS Editor
-      </div>
-
-      <h1>
-        Style Your Web.
-        <span class="gradient">
-          See Every Change.
-        </span>
-      </h1>
-
-      <p class="hero-copy">
-        Write, edit and preview CSS directly in your browser
-        with JS CODE OUTPUT's free online CSS editor.
-        Experiment with layouts, colors, spacing and responsive
-        designs without leaving your browser.
-      </p>
-
-      <div class="actions">
-
-        <a
-          class="button primary"
-          href="/"
-        >
-          Start Coding Free →
-        </a>
-
-        <a
-          class="button"
-          href="#how-it-works"
-        >
-          How It Works
-        </a>
-
-      </div>
-
-      <!-- CSS EDITOR VISUAL -->
-
-      <div class="editor-demo">
-
-        <div class="editor-window">
-
-          <div class="editor-top">
-
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-
-            <span class="editor-title">
-              style.css — CSS Editor
-            </span>
-
-          </div>
-
-          <div class="editor-grid">
-
-            <div class="code-panel">
-
-              <div class="file-label">
-                CSS
-              </div>
-
-              <pre><span class="comment">/* Style your webpage */</span>
-
-<span class="selector">.hero-card</span> {
-
-  <span class="property">background</span>:
-    <span class="value">linear-gradient(
-      135deg,
-      #5b8cff,
-      #7c5cff
-    )</span>;
-
-  <span class="property">border-radius</span>:
-    <span class="value">20px</span>;
-
-  <span class="property">padding</span>:
-    <span class="value">32px</span>;
-
-  <span class="property">color</span>:
-    <span class="value">white</span>;
-
-  <span class="property">box-shadow</span>:
-    <span class="value">0 20px 50px
-    rgba(0,0,0,.2)</span>;
-}</pre>
-
-            </div>
-
-            <div class="preview-panel">
-
-              <div class="preview-label">
-                LIVE PREVIEW
-              </div>
-
-              <div class="preview">
-
-                <div class="preview-card">
-
-                  <h3>
-                    Beautiful CSS
-                  </h3>
-
-                  <p>
-                    Change your styles and see
-                    the result in the preview.
-                  </p>
-
-                  <span class="preview-button">
-                    Styled with CSS
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- FEATURES -->
-
-  <section id="features">
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          Build better styles directly in your browser
-        </h2>
-
-        <p>
-          Experiment with CSS properties, layouts and visual
-          ideas while keeping your coding workflow simple.
-        </p>
-
-      </div>
-
-      <div class="grid">
-
-        <article class="card">
-
-          <div class="icon">
-            ◈
-          </div>
-
-          <h3>
-            Write CSS Online
-          </h3>
-
-          <p>
-            Create and edit stylesheets directly in your
-            browser for quick experiments and web projects.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">
-            ▶
-          </div>
-
-          <h3>
-            Live Preview
-          </h3>
-
-          <p>
-            See how your CSS affects webpage elements through
-            a convenient browser-based preview workflow.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">
-            ✦
-          </div>
-
-          <h3>
-            Experiment with Design
-          </h3>
-
-          <p>
-            Test colors, spacing, borders, typography,
-            backgrounds and other CSS properties.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">
-            ⚡
-          </div>
-
-          <h3>
-            Fast Workflow
-          </h3>
-
-          <p>
-            Open your browser and start working with CSS
-            without needing a separate desktop stylesheet editor.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">
-            ▣
-          </div>
-
-          <h3>
-            Project-Based Work
-          </h3>
-
-          <p>
-            Keep your styling work connected with your HTML
-            and JavaScript inside your development projects.
-          </p>
-
-        </article>
-
-        <article class="card">
-
-          <div class="icon">
-            ✓
-          </div>
-
-          <h3>
-            Free to Start
-          </h3>
-
-          <p>
-            Begin experimenting with CSS online using the
-            JS CODE OUTPUT browser-based workspace.
-          </p>
-
-        </article>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- WHY CSS EDITOR -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="benefits">
-
-        <article class="large-card">
-
-          <h3>
-            Turn plain HTML into polished webpages
-          </h3>
-
-          <p>
-            HTML provides the structure. CSS gives that
-            structure its visual personality. Use the CSS
-            editor to experiment with the design layer of
-            your webpage.
-          </p>
-
-          <ul class="check-list">
-
-            <li>
-              <span class="check">✓</span>
-              Style HTML elements
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Experiment with colors and backgrounds
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Test spacing and layouts
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Create responsive design ideas
-            </li>
-
-            <li>
-              <span class="check">✓</span>
-              Combine CSS with HTML and JavaScript
-            </li>
-
-          </ul>
-
-        </article>
-
-        <article class="large-card">
-
-          <h3>
-            Keep your complete web workflow together
-          </h3>
-
-          <p>
-            CSS works best alongside HTML and JavaScript.
-            Explore the related editors to build complete
-            frontend projects.
-          </p>
-
-          <div class="related">
-
-            <a href="/html-editor.html">
-              HTML Editor
-            </a>
-
-            <a href="/javascript-editor.html">
-              JavaScript Editor
-            </a>
-
-            <a href="/html-css-editor.html">
-              HTML + CSS Editor
-            </a>
-
-            <a href="/html-css-javascript-editor.html">
-              Full Web Editor
-            </a>
-
-          </div>
-
-        </article>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- HOW IT WORKS -->
-
-  <section id="how-it-works">
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          How to use the online CSS editor
-        </h2>
-
-        <p>
-          Start with your webpage structure and transform it
-          with CSS in a simple browser-based workflow.
-        </p>
-
-      </div>
-
-      <div class="steps">
-
-        <article class="step">
-
-          <div class="number">
-            01
-          </div>
-
-          <h3>
-            Open your project
-          </h3>
-
-          <p>
-            Start JS CODE OUTPUT and create a project or
-            continue with an existing webpage.
-          </p>
-
-        </article>
-
-        <article class="step">
-
-          <div class="number">
-            02
-          </div>
-
-          <h3>
-            Write your CSS
-          </h3>
-
-          <p>
-            Add selectors and properties to control colors,
-            spacing, typography, layout and more.
-          </p>
-
-        </article>
-
-        <article class="step">
-
-          <div class="number">
-            03
-          </div>
-
-          <h3>
-            Preview the result
-          </h3>
-
-          <p>
-            Run your project and inspect the visual result
-            of your CSS in the preview.
-          </p>
-
-        </article>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- RELATED SEO PAGES -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          Explore more web development tools
-        </h2>
-
-        <p>
-          Continue exploring related editors and playgrounds
-          from JS CODE OUTPUT.
-        </p>
-
-      </div>
-
-      <div class="related">
-
-        <a href="/online-code-editor.html">
-          Online Code Editor
-        </a>
-
-        <a href="/html-editor.html">
-          Online HTML Editor
-        </a>
-
-        <a href="/javascript-editor.html">
-          Online JavaScript Editor
-        </a>
-
-        <a href="/css-playground.html">
-          CSS Playground
-        </a>
-
-        <a href="/css-live-preview.html">
-          CSS Live Preview
-        </a>
-
-        <a href="/css-sandbox.html">
-          CSS Sandbox
-        </a>
-
-        <a href="/css-tester.html">
-          CSS Tester
-        </a>
-
-        <a href="/html-css-editor.html">
-          HTML CSS Editor
-        </a>
-
-        <a href="/responsive-css-editor.html">
-          Responsive CSS Editor
-        </a>
-
-        <a href="/learn/css-basics.html">
-          CSS Basics
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- FAQ -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="section-title">
-
-        <h2>
-          Frequently asked questions
-        </h2>
-
-        <p>
-          Common questions about using an online CSS editor.
-        </p>
-
-      </div>
-
-      <div class="faq">
-
-        <details>
-
-          <summary>
-            What is an online CSS editor?
-          </summary>
-
-          <p>
-            An online CSS editor is a browser-based environment
-            where you can write, edit and test CSS without
-            depending entirely on a locally installed editor.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I write CSS online for free?
-          </summary>
-
-          <p>
-            JS CODE OUTPUT provides a free browser-based CSS
-            editing experience for experimenting with styles
-            and frontend development.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I preview CSS online?
-          </summary>
-
-          <p>
-            Yes. You can use a browser-based workflow to apply
-            CSS to webpage content and inspect the visual result
-            through a live preview.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can CSS be used with HTML?
-          </summary>
-
-          <p>
-            Yes. CSS is commonly used with HTML to control the
-            visual presentation and layout of webpage content.
-          </p>
-
-        </details>
-
-        <details>
-
-          <summary>
-            Can I use the CSS editor on mobile?
-          </summary>
-
-          <p>
-            Yes. This page is responsive and can be accessed
-            from modern desktop and mobile browsers.
-          </p>
-
-        </details>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- FINAL CTA -->
-
-  <section>
-
-    <div class="container">
-
-      <div class="cta">
-
-        <h2>
-          Give your webpage a better design
-        </h2>
-
-        <p>
-          Open JS CODE OUTPUT and start experimenting with
-          CSS directly in your browser.
-        </p>
-
-        <a
-          class="button primary"
-          href="/"
-        >
-          Open CSS Editor →
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
+<section class="hero">
+<div class="container">
+<div class="eyebrow">✦ Free Online CSS Editor</div>
+<h1>Style Your Web.<br><span class="gradient">See Every Change.</span></h1>
+<p class="hero-copy">Write, edit and preview CSS directly in your browser with JS CODE OUTPUT. Experiment with layouts, colors, spacing and responsive designs.</p>
+<div class="actions">
+<a class="button primary" href="#editor">Start Coding Free →</a>
+<a class="button" href="#how-it-works">How It Works</a>
+<a class="button" href="https://js-code-output.vercel.app/">Visit JS CODE OUTPUT ↗</a>
+</div>
+
+<div class="editor-shell" id="editor">
+<div class="editor-window">
+<div class="editor-top">
+<span class="dot"></span><span class="dot"></span><span class="dot"></span>
+<span class="editor-title">css-editor.html — JS CODE OUTPUT</span>
+<div class="editor-controls">
+<button class="control" onclick="resetEditor()">Reset</button>
+<button class="control" onclick="toggleConsole()">Console</button>
+<button class="control primary" onclick="runCode()">▶ Run</button>
+</div>
+</div>
+
+<div class="workspace">
+<div class="editor-pane">
+<div class="pane-tabs">
+<button class="tab active">CSS Editor</button>
+</div>
+<div class="code-wrap">
+<div class="line-numbers" id="numbers">1</div>
+<textarea id="css-code" spellcheck="false" aria-label="CSS code editor" oninput="scheduleRun()" onscroll="syncScroll()" onkeydown="handleTab(event)"></textarea>
+</div>
+</div>
+
+<div class="preview-pane">
+<div class="preview-head">
+<span>LIVE PREVIEW</span>
+<span class="live"><i></i> Live</span>
+</div>
+<div class="preview-frame">
+<iframe id="preview" title="CSS live preview" sandbox="allow-scripts"></iframe>
+</div>
+</div>
+</div>
+
+<div class="console" id="console">
+<div class="console-head"><span>Developer Console</span><button class="control" onclick="clearConsole()">Clear</button></div>
+<div class="console-body" id="console-body"><div class="ok">› Ready.</div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="features">
+<div class="container">
+<div class="section-title"><h2>Build better styles directly in your browser</h2><p>Experiment with CSS properties, layouts and visual ideas while keeping your workflow simple.</p></div>
+<div class="grid">
+<article class="card"><div class="icon">◈</div><h3>Write CSS Online</h3><p>Create and edit styles directly in your browser for quick experiments and frontend projects.</p></article>
+<article class="card"><div class="icon">▶</div><h3>Live Preview</h3><p>See your CSS changes immediately inside the built-in preview.</p></article>
+<article class="card"><div class="icon">✦</div><h3>Design Experiments</h3><p>Test colors, spacing, borders, typography, backgrounds and layouts.</p></article>
+<article class="card"><div class="icon">⚡</div><h3>Fast Workflow</h3><p>Open the browser and start working without a separate stylesheet editor.</p></article>
+<article class="card"><div class="icon">▣</div><h3>Project Friendly</h3><p>Use your CSS alongside HTML and JavaScript in frontend projects.</p></article>
+<article class="card"><div class="icon">✓</div><h3>Free to Start</h3><p>Begin experimenting with CSS using the JS CODE OUTPUT workspace.</p></article>
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+<div class="benefits">
+<article class="large">
+<h3>Turn plain HTML into polished webpages</h3>
+<p>HTML provides the structure. CSS gives that structure its visual personality. Experiment with the design layer of your webpage.</p>
+<ul class="check-list">
+<li><span class="check">✓</span> Style HTML elements</li>
+<li><span class="check">✓</span> Experiment with colors and backgrounds</li>
+<li><span class="check">✓</span> Test spacing and layouts</li>
+<li><span class="check">✓</span> Create responsive design ideas</li>
+<li><span class="check">✓</span> Combine CSS with HTML and JavaScript</li>
+</ul>
+</article>
+<article class="large">
+<h3>Keep your complete web workflow together</h3>
+<p>CSS works best alongside HTML and JavaScript. Explore the related editors to build complete frontend projects.</p>
+<div class="related">
+<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
+<a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
+<a href="https://js-code-output.vercel.app/html-css-editor.html">HTML + CSS Editor</a>
+<a href="https://js-code-output.vercel.app/html-css-javascript-editor.html">Full Web Editor</a>
+</div>
+</article>
+</div>
+</div>
+</section>
+
+<section id="how-it-works">
+<div class="container">
+<div class="section-title"><h2>How to use the online CSS editor</h2><p>Start with your webpage and transform its design with a simple browser-based workflow.</p></div>
+<div class="steps">
+<article class="step"><div class="number">01</div><h3>Open the editor</h3><p>Start JS CODE OUTPUT and open this CSS editor page.</p></article>
+<article class="step"><div class="number">02</div><h3>Write your CSS</h3><p>Add selectors and properties to control colors, spacing, typography and layout.</p></article>
+<article class="step"><div class="number">03</div><h3>Preview the result</h3><p>Run your code and inspect the visual result in the live preview.</p></article>
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+<div class="section-title"><h2>Explore more web development tools</h2><p>Continue exploring related editors and playgrounds from JS CODE OUTPUT.</p></div>
+<div class="related">
+<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
+<a href="https://js-code-output.vercel.app/html-editor.html">Online HTML Editor</a>
+<a href="https://js-code-output.vercel.app/javascript-editor.html">Online JavaScript Editor</a>
+<a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a>
+<a href="https://js-code-output.vercel.app/css-live-preview.html">CSS Live Preview</a>
+<a href="https://js-code-output.vercel.app/css-sandbox.html">CSS Sandbox</a>
+<a href="https://js-code-output.vercel.app/css-tester.html">CSS Tester</a>
+<a href="https://js-code-output.vercel.app/html-css-editor.html">HTML CSS Editor</a>
+<a href="https://js-code-output.vercel.app/responsive-css-editor.html">Responsive CSS Editor</a>
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+<div class="section-title"><h2>Frequently asked questions</h2><p>Common questions about using an online CSS editor.</p></div>
+<div class="faq">
+<details><summary>What is an online CSS editor?</summary><p>An online CSS editor is a browser-based environment where you can write, edit and test CSS.</p></details>
+<details><summary>Can I write CSS online for free?</summary><p>Yes. JS CODE OUTPUT provides a free browser-based CSS editing experience.</p></details>
+<details><summary>Can I preview CSS online?</summary><p>Yes. Apply CSS to webpage content and inspect the visual result through the live preview.</p></details>
+<details><summary>Can CSS be used with HTML?</summary><p>Yes. CSS is commonly used with HTML to control the visual presentation and layout of webpage content.</p></details>
+<details><summary>Can I use this page on mobile?</summary><p>Yes. The page is responsive and works with modern desktop and mobile browsers.</p></details>
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+<div class="cta">
+<h2>Give your webpage a better design</h2>
+<p>Open JS CODE OUTPUT and start experimenting with CSS directly in your browser.</p>
+<a class="button primary" href="https://js-code-output.vercel.app/">Open JS CODE OUTPUT →</a>
+</div>
+</div>
+</section>
 </main>
 
 <footer>
-
-  <div class="container footer-inner">
-
-    <div>
-      © 2026 JS CODE OUTPUT. All rights reserved.
-    </div>
-
-    <div class="footer-links">
-
-      <a href="/">
-        Home
-      </a>
-
-      <a href="/online-code-editor.html">
-        Online Code Editor
-      </a>
-
-      <a href="/html-editor.html">
-        HTML Editor
-      </a>
-
-      <a href="/about.html">
-        About
-      </a>
-
-      <a href="/contact.html">
-        Contact
-      </a>
-
-      <a href="/privacy.html">
-        Privacy
-      </a>
-
-      <a href="/terms.html">
-        Terms
-      </a>
-
-    </div>
-
-  </div>
-
+<div class="container footer-inner">
+<div>© 2026 JS CODE OUTPUT. All rights reserved.</div>
+<div class="footer-links">
+<a href="https://js-code-output.vercel.app/">Home</a>
+<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
+<a href="https://js-code-output.vercel.app/about.html">About</a>
+<a href="https://js-code-output.vercel.app/contact.html">Contact</a>
+<a href="https://js-code-output.vercel.app/privacy.html">Privacy</a>
+<a href="https://js-code-output.vercel.app/terms.html">Terms</a>
+</div>
+</div>
 </footer>
 
+<script>
+const defaultCSS=`body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.demo {
+  width: min(90%, 520px);
+  padding: 34px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 55px rgba(0,0,0,.12);
+}
+.demo h2 {
+  margin-top: 0;
+  color: #172033;
+}
+.demo p {
+  color: #667085;
+}
+.demo button {
+  border: 0;
+  padding: 11px 18px;
+  border-radius: 10px;
+  color: white;
+  background: linear-gradient(135deg,#5b8cff,#7c5cff);
+  cursor: pointer;
+}`;
+const html=`<div class="demo">
+  <h2>Beautiful CSS</h2>
+  <p>Edit the CSS on the left and watch the preview update.</p>
+  <button onclick="this.textContent='CSS is working! ✓'">Test Button</button>
+</div>`;
+let timer;
+const editor=document.getElementById('css-code');
+editor.value=defaultCSS;
+function runCode(){
+  const css=editor.value.replace(/<\/style/gi,'<\\/style');
+  document.getElementById('preview').srcdoc='<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+css+'</style></head><body>'+html+'</body></html>';
+  updateNumbers();
+  log('Preview updated successfully.','ok');
+}
+function scheduleRun(){clearTimeout(timer);timer=setTimeout(runCode,180);updateNumbers()}
+function updateNumbers(){
+  const n=Math.max(1,editor.value.split('\n').length);
+  document.getElementById('numbers').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');
+}
+function syncScroll(){document.getElementById('numbers').scrollTop=editor.scrollTop}
+function handleTab(e){
+  if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,e2=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'  '+editor.value.slice(e2);editor.selectionStart=editor.selectionEnd=s+2;scheduleRun()}
+}
+function resetEditor(){editor.value=defaultCSS;runCode();log('Editor reset.','ok')}
+function toggleConsole(){document.getElementById('console').classList.toggle('open')}
+function clearConsole(){document.getElementById('console-body').innerHTML=''}
+function log(text,type){const b=document.getElementById('console-body');const d=document.createElement('div');d.className=type||'ok';d.textContent='› '+text;b.appendChild(d);b.scrollTop=b.scrollHeight}
+runCode();
+</script>
 </body>
 </html>
