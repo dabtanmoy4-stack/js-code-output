@@ -1,42 +1,1244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> CSS Playground</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #fff;}
-        .header { background: #2d2d2d; padding: 15px; text-align: center; border-bottom: 2px solid #007acc;}
-        .container { display: flex; flex: 1; overflow: hidden; }
-        .editors { display: flex; flex-direction: column; width: 50%; border-right: 5px solid #2d2d2d; }
-        textarea { flex: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 16px; padding: 10px; border: none; border-bottom: 2px solid #2d2d2d; resize: none; outline: none;}
-        iframe { width: 50%; background: #ffffff; border: none; }
-        .label { background: #007acc; font-size: 12px; padding: 3px 10px; display: inline-block; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CSS Playground & Live Editor | JS CODE OUTPUT</title>
+<meta name="description" content="Free online CSS Playground by JS CODE OUTPUT. Write HTML and CSS, edit your styles, and see the result instantly with live preview.">
+<meta name="keywords" content="CSS Playground, online CSS editor, CSS live preview, HTML CSS editor, CSS tester, CSS sandbox, JS CODE OUTPUT">
+<meta name="author" content="Tanmoy Dab">
+<meta name="robots" content="index, follow, max-image-preview:large">
+
+<link rel="canonical" href="https://js-code-output.vercel.app/css-playground.html">
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<link rel="apple-touch-icon" href="logo.jpeg">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JS CODE OUTPUT">
+<meta property="og:title" content="CSS Playground & Live Editor | JS CODE OUTPUT">
+<meta property="og:description" content="Write HTML and CSS online and see your changes instantly with JS CODE OUTPUT's CSS Playground.">
+<meta property="og:url" content="https://js-code-output.vercel.app/css-playground.html">
+<meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS Playground | JS CODE OUTPUT">
+<meta name="twitter:description" content="Free online HTML and CSS playground with live preview.">
+<meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"WebApplication",
+ "name":"JS CODE OUTPUT CSS Playground",
+ "url":"https://js-code-output.vercel.app/css-playground.html",
+ "applicationCategory":"DeveloperApplication",
+ "operatingSystem":"Web Browser",
+ "description":"Free online CSS playground with HTML and CSS live preview.",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
+}
+</script>
+
+<style>
+:root{
+    --bg:#070b14;
+    --bg2:#0c1220;
+    --panel:#0c121e;
+    --panel2:#101827;
+    --border:rgba(255,255,255,.09);
+    --text:#f7f9ff;
+    --muted:#9da9bc;
+    --blue:#5b8cff;
+    --purple:#7c5cff;
+    --green:#62e6ae;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 10% 0%,rgba(91,140,255,.18),transparent 28%),
+        radial-gradient(circle at 90% 5%,rgba(124,92,255,.16),transparent 30%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+}
+
+body{overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+.container{
+    width:min(1180px,calc(100% - 32px));
+    margin:auto;
+}
+
+/* NAVIGATION */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(7,11,20,.84);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+}
+
+.nav{
+    min-height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    font-weight:850;
+    letter-spacing:-.03em;
+    white-space:nowrap;
+}
+
+.brand img{
+    width:42px;
+    height:42px;
+    border-radius:11px;
+    object-fit:contain;
+    box-shadow:0 8px 28px rgba(91,140,255,.18);
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.nav-links a{transition:.2s}
+.nav-links a:hover{color:#fff}
+
+.button{
+    min-height:43px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:0 17px;
+    border-radius:11px;
+    border:1px solid var(--border);
+    color:#dce5f4;
+    background:rgba(255,255,255,.035);
+    font-size:13px;
+    font-weight:750;
+    transition:.2s;
+}
+
+.button:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,.2);
+}
+
+.button.primary{
+    border:0;
+    color:white;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    box-shadow:0 14px 38px rgba(91,140,255,.22);
+}
+
+/* HERO */
+
+.hero{
+    padding:65px 0 42px;
+    text-align:center;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 13px;
+    border-radius:999px;
+    border:1px solid rgba(124,92,255,.28);
+    background:rgba(124,92,255,.08);
+    color:#cbbfff;
+    font-size:12px;
+    font-weight:800;
+}
+
+.badge-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px rgba(98,230,174,.8);
+}
+
+h1{
+    margin:19px auto 14px;
+    max-width:850px;
+    font-size:clamp(40px,6vw,67px);
+    line-height:1.04;
+    letter-spacing:-.06em;
+}
+
+.gradient{
+    background:linear-gradient(90deg,#fff,#a9c6ff 45%,#c7b8ff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.hero-text{
+    max-width:720px;
+    margin:0 auto 23px;
+    color:var(--muted);
+    font-size:17px;
+}
+
+.hero-actions{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+/* EDITOR */
+
+.editor-card{
+    max-width:1160px;
+    margin:34px auto 0;
+    padding:1px;
+    border-radius:22px;
+    background:linear-gradient(
+        135deg,
+        rgba(91,140,255,.58),
+        rgba(124,92,255,.25),
+        rgba(255,255,255,.08)
+    );
+    box-shadow:0 35px 100px rgba(0,0,0,.42);
+}
+
+.editor-window{
+    overflow:hidden;
+    border-radius:21px;
+    background:#080d16;
+}
+
+.editor-bar{
+    height:55px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:0 15px;
+    border-bottom:1px solid var(--border);
+    background:#0b111c;
+}
+
+.window-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#566174;
+}
+
+.file-name{
+    margin-left:8px;
+    color:#929fb4;
+    font:11px Consolas,monospace;
+}
+
+.editor-actions{
+    margin-left:auto;
+    display:flex;
+    gap:7px;
+}
+
+.editor-btn{
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.035);
+    color:#bfc9d9;
+    border-radius:8px;
+    padding:7px 10px;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:700;
+}
+
+.editor-btn:hover{
+    color:#fff;
+    border-color:rgba(255,255,255,.2);
+}
+
+.editor-btn.primary{
+    border:0;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+}
+
+.workspace{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:530px;
+}
+
+.editors{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    background:#080c14;
+    border-right:1px solid var(--border);
+}
+
+.editor-tabs{
+    height:43px;
+    display:flex;
+    align-items:center;
+    background:#0d1320;
+    border-bottom:1px solid var(--border);
+}
+
+.tab{
+    height:43px;
+    padding:0 16px;
+    border:0;
+    background:transparent;
+    color:#7e8a9e;
+    font-size:11px;
+    font-weight:750;
+    cursor:pointer;
+}
+
+.tab.active{
+    color:#fff;
+    border-bottom:2px solid var(--blue);
+}
+
+.panel{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.panel:last-child{border-bottom:0}
+
+.panel-head{
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 11px;
+    background:#0d121c;
+    color:#aeb8c9;
+    font-size:10px;
+    font-weight:750;
+}
+
+.language{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.lang-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+}
+
+.html-dot{background:#ff7b3d}
+.css-dot{background:#4b8dff}
+
+.clear{
+    border:0;
+    background:transparent;
+    color:#707b8d;
+    cursor:pointer;
+    font-size:10px;
+}
+
+.clear:hover{color:#fff}
+
+textarea{
+    flex:1;
+    width:100%;
+    min-height:0;
+    resize:none;
+    outline:0;
+    border:0;
+    padding:13px;
+    background:#080c13;
+    color:#dbe5f5;
+    font:13px/1.65 Consolas,"Fira Code",Monaco,monospace;
+    tab-size:2;
+}
+
+textarea::selection{
+    background:rgba(91,140,255,.35);
+}
+
+/* PREVIEW */
+
+.preview{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    background:#090e17;
+}
+
+.preview-head{
+    height:43px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 13px;
+    border-bottom:1px solid var(--border);
+    color:#aeb9ca;
+    font-size:10px;
+    font-weight:800;
+}
+
+.live{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#78869b;
+    font-size:10px;
+}
+
+.live i{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 9px rgba(98,230,174,.85);
+}
+
+.preview-area{
+    flex:1;
+    min-height:0;
+    padding:17px;
+    background:#e9eef6;
+}
+
+iframe{
+    display:block;
+    width:100%;
+    height:100%;
+    min-height:440px;
+    border:0;
+    border-radius:12px;
+    background:white;
+    box-shadow:0 14px 40px rgba(0,0,0,.18);
+}
+
+/* CONSOLE */
+
+.console{
+    height:0;
+    overflow:hidden;
+    background:#070a10;
+    border-top:1px solid var(--border);
+    transition:.25s;
+}
+
+.console.open{height:145px}
+
+.console-head{
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 12px;
+    color:#9da9bb;
+    font-size:10px;
+    font-weight:750;
+}
+
+.console-body{
+    height:calc(100% - 34px);
+    overflow:auto;
+    padding:7px 12px;
+    font:11px Consolas,monospace;
+}
+
+.console-ok{color:#62e6ae}
+.console-error{color:#f87171}
+
+/* CONTENT */
+
+section{padding:70px 0}
+
+.section-head{
+    max-width:720px;
+    margin:0 auto 35px;
+    text-align:center;
+}
+
+.section-head h2{
+    margin:0 0 10px;
+    font-size:clamp(30px,5vw,45px);
+    line-height:1.1;
+    letter-spacing:-.05em;
+}
+
+.section-head p{
+    margin:0;
+    color:var(--muted);
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:17px;
+}
+
+.card{
+    padding:24px;
+    border:1px solid var(--border);
+    border-radius:17px;
+    background:rgba(16,24,39,.68);
+    box-shadow:0 15px 45px rgba(0,0,0,.14);
+}
+
+.icon{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    margin-bottom:14px;
+    border-radius:11px;
+    background:rgba(91,140,255,.1);
+    border:1px solid rgba(91,140,255,.15);
+}
+
+.card h3{
+    margin:0 0 7px;
+    font-size:17px;
+}
+
+.card p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.info-box{
+    padding:25px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:rgba(255,255,255,.025);
+}
+
+.info-box h3{
+    margin:0 0 8px;
+    font-size:19px;
+}
+
+.info-box p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+}
+
+.checks{
+    margin:15px 0 0;
+    padding:0;
+    list-style:none;
+}
+
+.checks li{
+    padding:6px 0;
+    color:#d6deeb;
+    font-size:13px;
+}
+
+.checks b{
+    color:var(--green);
+    margin-right:7px;
+}
+
+.related{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:9px;
+}
+
+.related a{
+    padding:9px 13px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:rgba(255,255,255,.03);
+    color:#cbd5e5;
+    font-size:13px;
+    transition:.2s;
+}
+
+.related a:hover{
+    color:#fff;
+    border-color:rgba(91,140,255,.45);
+    transform:translateY(-2px);
+}
+
+.steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:17px;
+}
+
+.step{
+    padding:24px;
+    border:1px solid var(--border);
+    border-radius:17px;
+    background:rgba(255,255,255,.025);
+}
+
+.number{
+    width:37px;
+    height:37px;
+    display:grid;
+    place-items:center;
+    margin-bottom:13px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    font-size:11px;
+    font-weight:850;
+}
+
+.step h3{
+    margin:0 0 6px;
+    font-size:17px;
+}
+
+.step p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.faq{
+    max-width:820px;
+    margin:auto;
+}
+
+details{
+    margin-bottom:10px;
+    padding:15px 17px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:rgba(255,255,255,.025);
+}
+
+summary{
+    cursor:pointer;
+    font-size:14px;
+    font-weight:750;
+}
+
+details p{
+    margin:10px 0 0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.cta{
+    padding:55px 25px;
+    border-radius:23px;
+    text-align:center;
+    border:1px solid var(--border);
+    background:
+        radial-gradient(circle at 50% 0%,rgba(91,140,255,.2),transparent 50%),
+        rgba(255,255,255,.03);
+}
+
+.cta h2{
+    margin:0 0 8px;
+    font-size:clamp(30px,5vw,44px);
+    letter-spacing:-.05em;
+}
+
+.cta p{
+    max-width:640px;
+    margin:0 auto 20px;
+    color:var(--muted);
+}
+
+footer{
+    padding:28px 0;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+}
+
+.footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+}
+
+.footer-links a:hover{color:#fff}
+
+/* RESPONSIVE */
+
+@media(max-width:950px){
+    .nav-links{display:none}
+    .cards{grid-template-columns:1fr 1fr}
+    .info-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+}
+
+@media(max-width:720px){
+    .container{width:min(1180px,calc(100% - 22px))}
+    .hero{padding-top:52px}
+    .workspace{grid-template-columns:1fr}
+    .editors{
+        min-height:500px;
+        border-right:0;
+        border-bottom:1px solid var(--border);
+    }
+    .preview{min-height:500px}
+    .cards{grid-template-columns:1fr}
+    .nav{min-height:64px}
+    .brand img{width:38px;height:38px}
+    .brand{font-size:14px}
+    .editor-actions .editor-btn:not(.primary){display:none}
+}
+
+@media(max-width:480px){
+    .hero-text{font-size:15px}
+    .hero-actions .button{width:100%}
+    .editor-bar{padding:0 10px}
+    .file-name{font-size:10px}
+    .preview-area{padding:10px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="container nav">
+
+<a class="brand" href="https://js-code-output.vercel.app/" aria-label="JS CODE OUTPUT Home">
+<img src="logo.jpeg" alt="JS CODE OUTPUT logo" width="42" height="42">
+<span>JS CODE OUTPUT</span>
+</a>
+
+<nav class="nav-links" aria-label="Main navigation">
+<a href="https://js-code-output.vercel.app/">Home</a>
+<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
+<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
+<a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
+<a href="https://js-code-output.vercel.app/css-editor.html">CSS Editor</a>
+</nav>
+
+<a class="button primary" href="https://js-code-output.vercel.app/">
+↗ Open Main Website
+</a>
+
+</div>
+</header>
+
+<main>
+
+<section class="hero">
+<div class="container">
+
+<div class="badge">
+<span class="badge-dot"></span>
+Free CSS Playground
+</div>
+
+<h1>
+Experiment With CSS.<br>
+<span class="gradient">See It Live.</span>
+</h1>
+
+<p class="hero-text">
+Write HTML and CSS in your browser and instantly see how your design looks.
+A simple CSS Playground for learning, testing and building web designs.
+</p>
+
+<div class="hero-actions">
+<a class="button primary" href="#playground">Start Coding Free →</a>
+<a class="button" href="https://js-code-output.vercel.app/">Visit JS CODE OUTPUT ↗</a>
+</div>
+
+<div class="editor-card" id="playground">
+<div class="editor-window">
+
+<div class="editor-bar">
+<span class="window-dot"></span>
+<span class="window-dot"></span>
+<span class="window-dot"></span>
+<span class="file-name">css-playground.html — JS CODE OUTPUT</span>
+
+<div class="editor-actions">
+<button class="editor-btn" onclick="resetCode()">Reset</button>
+<button class="editor-btn" onclick="toggleConsole()">Console</button>
+<button class="editor-btn primary" onclick="runCode()">▶ Run</button>
+</div>
+</div>
+
+<div class="workspace">
+
+<div class="editors">
+
+<div class="editor-tabs">
+<button class="tab active">HTML + CSS</button>
+</div>
+
+<div class="panel">
+<div class="panel-head">
+<div class="language">
+<span class="lang-dot html-dot"></span>
+HTML
+</div>
+<button class="clear" onclick="clearEditor('html-code')">Clear</button>
+</div>
+
+<textarea
+id="html-code"
+spellcheck="false"
+aria-label="HTML editor"
+oninput="scheduleRun()"
+onkeydown="handleTab(event)"
+placeholder="<h1>Hello World</h1>"></textarea>
+</div>
+
+<div class="panel">
+<div class="panel-head">
+<div class="language">
+<span class="lang-dot css-dot"></span>
+CSS
+</div>
+<button class="clear" onclick="clearEditor('css-code')">Clear</button>
+</div>
+
+<textarea
+id="css-code"
+spellcheck="false"
+aria-label="CSS editor"
+oninput="scheduleRun()"
+onkeydown="handleTab(event)"
+placeholder="h1 { color: #5b8cff; }"></textarea>
+</div>
+
+</div>
+
+<div class="preview">
+
+<div class="preview-head">
+<span>LIVE PREVIEW</span>
+<span class="live"><i></i> Live</span>
+</div>
+
+<div class="preview-area">
+<iframe
+id="output"
+title="CSS Playground Live Preview"
+sandbox="allow-scripts allow-forms allow-modals allow-popups">
+</iframe>
+</div>
+
+</div>
+
+</div>
+
+<div class="console" id="console">
+<div class="console-head">
+<span>Developer Console</span>
+<button class="editor-btn" onclick="clearConsole()">Clear</button>
+</div>
+<div class="console-body" id="console-body">
+<div class="console-ok">› Ready.</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div class="section-head">
+<h2>A simple CSS Playground for modern web development</h2>
+<p>Test your ideas quickly without leaving your browser.</p>
+</div>
+
+<div class="cards">
+
+<article class="card">
+<div class="icon">🎨</div>
+<h3>Experiment With CSS</h3>
+<p>Try colors, backgrounds, borders, typography, spacing and other CSS properties.</p>
+</article>
+
+<article class="card">
+<div class="icon">⚡</div>
+<h3>Live Preview</h3>
+<p>Run your HTML and CSS and instantly inspect the result in the built-in preview.</p>
+</article>
+
+<article class="card">
+<div class="icon">◈</div>
+<h3>Easy to Use</h3>
+<p>A clean browser-based interface designed for quick coding and experimentation.</p>
+</article>
+
+<article class="card">
+<div class="icon">📱</div>
+<h3>Responsive Designs</h3>
+<p>Experiment with layouts and styles that can be used in responsive websites.</p>
+</article>
+
+<article class="card">
+<div class="icon">💻</div>
+<h3>Frontend Practice</h3>
+<p>Practice HTML and CSS concepts by building small designs and interface ideas.</p>
+</article>
+
+<article class="card">
+<div class="icon">✓</div>
+<h3>Free to Start</h3>
+<p>Open the playground and start experimenting with web styling directly in your browser.</p>
+</article>
+
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div class="info-grid">
+
+<div class="info-box">
+<h3>What can you test?</h3>
+<p>
+Use the CSS Playground to experiment with the visual layer of your webpages.
+</p>
+
+<ul class="checks">
+<li><b>✓</b> Colors and gradients</li>
+<li><b>✓</b> Fonts and typography</li>
+<li><b>✓</b> Padding and margins</li>
+<li><b>✓</b> Flexbox and layout ideas</li>
+<li><b>✓</b> Borders, shadows and effects</li>
+<li><b>✓</b> Buttons and cards</li>
+</ul>
+</div>
+
+<div class="info-box">
+<h3>Build complete frontend projects</h3>
+<p>
+The CSS Playground works especially well when combined with the other JS CODE OUTPUT tools.
+</p>
+
+<ul class="checks">
+<li><b>✓</b> Start with HTML structure</li>
+<li><b>✓</b> Style it with CSS</li>
+<li><b>✓</b> Add JavaScript interactions</li>
+<li><b>✓</b> Preview the final result</li>
+</ul>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<section id="how-it-works">
+<div class="container">
+
+<div class="section-head">
+<h2>How to use the CSS Playground</h2>
+<p>Three simple steps to start experimenting.</p>
+</div>
+
+<div class="steps">
+
+<article class="step">
+<div class="number">01</div>
+<h3>Write HTML</h3>
+<p>Add the elements you want to style in the HTML editor.</p>
+</article>
+
+<article class="step">
+<div class="number">02</div>
+<h3>Add CSS</h3>
+<p>Write your CSS rules and customize the appearance of your webpage.</p>
+</article>
+
+<article class="step">
+<div class="number">03</div>
+<h3>See the Result</h3>
+<p>Run the playground and inspect your design in the live preview.</p>
+</article>
+
+</div>
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div class="section-head">
+<h2>Explore more JS CODE OUTPUT tools</h2>
+<p>Use the related editors to continue building your web projects.</p>
+</div>
+
+<div class="related">
+<a href="https://js-code-output.vercel.app/">JS CODE OUTPUT Home</a>
+<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
+<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
+<a href="https://js-code-output.vercel.app/css-editor.html">CSS Editor</a>
+<a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
+<a href="https://js-code-output.vercel.app/html-css-editor.html">HTML CSS Editor</a>
+<a href="https://js-code-output.vercel.app/css-live-preview.html">CSS Live Preview</a>
+<a href="https://js-code-output.vercel.app/css-sandbox.html">CSS Sandbox</a>
+<a href="https://js-code-output.vercel.app/css-tester.html">CSS Tester</a>
+</div>
+
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div class="section-head">
+<h2>CSS Playground FAQ</h2>
+<p>Some common questions about online CSS editing.</p>
+</div>
+
+<div class="faq">
+
+<details>
+<summary>What is a CSS Playground?</summary>
+<p>A CSS Playground is a browser-based environment where you can experiment with HTML and CSS and preview the result.</p>
+</details>
+
+<details>
+<summary>Can I write CSS online?</summary>
+<p>Yes. You can write CSS directly inside the playground and see its effect on the preview.</p>
+</details>
+
+<details>
+<summary>Is this CSS Playground free?</summary>
+<p>Yes. The playground is designed as a free browser-based tool from JS CODE OUTPUT.</p>
+</details>
+
+<details>
+<summary>Can I use HTML with CSS?</summary>
+<p>Yes. This page provides separate HTML and CSS editors so you can build and style webpage content together.</p>
+</details>
+
+<details>
+<summary>Can I use the playground on mobile?</summary>
+<p>Yes. The interface is responsive and adapts to smaller screens.</p>
+</details>
+
+</div>
+
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div class="cta">
+<h2>Ready to experiment?</h2>
+<p>
+Open JS CODE OUTPUT and continue building your next web project with browser-based coding tools.
+</p>
+<a class="button primary" href="https://js-code-output.vercel.app/">
+Open JS CODE OUTPUT →
+</a>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="container footer">
+
+<div>
+© 2026 JS CODE OUTPUT. All rights reserved.
+</div>
+
+<div class="footer-links">
+<a href="https://js-code-output.vercel.app/">Home</a>
+<a href="https://js-code-output.vercel.app/about.html">About</a>
+<a href="https://js-code-output.vercel.app/contact.html">Contact</a>
+<a href="https://js-code-output.vercel.app/privacy.html">Privacy</a>
+<a href="https://js-code-output.vercel.app/terms.html">Terms</a>
+</div>
+
+</div>
+</footer>
+
+<script>
+const defaultHTML = `<div class="demo">
+  <h1>CSS Playground</h1>
+  <p>Edit the HTML and CSS to create your own design.</p>
+  <button onclick="this.textContent='It works! ✓'">Test Button</button>
+</div>`;
+
+const defaultCSS = `body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+}
+
+.demo {
+  width: min(90%, 520px);
+  padding: 35px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 55px rgba(0,0,0,.12);
+}
+
+h1 {
+  color: #5b8cff;
+  margin-top: 0;
+}
+
+p {
+  color: #667085;
+}
+
+button {
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: white;
+  background: linear-gradient(135deg,#5b8cff,#7c5cff);
+  cursor: pointer;
+}`;
+
+const htmlEditor = document.getElementById("html-code");
+const cssEditor = document.getElementById("css-code");
+const output = document.getElementById("output");
+
+htmlEditor.value = defaultHTML;
+cssEditor.value = defaultCSS;
+
+let timer;
+
+function runCode(){
+    const html = htmlEditor.value;
+    const css = cssEditor.value
+        .replace(/<\/style/gi, "<\\/style");
+
+    const documentCode = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>${css}</style>
 </head>
 <body>
-    <div class="header">
-        <h2> CSS Editor</h2>
-    </div>
-    <div class="container">
-        <div class="editors">
-            <span class="label">HTML</span>
-            <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
-            <span class="label">CSS</span>
-            <textarea id="css-code" placeholder="h1 { color: red; }"></textarea>
-        </div>
-        <iframe id="output"></iframe>
-    </div>
+${html}
+</body>
+</html>`;
 
-    <script>
-        function runCode() {
-            let html = document.getElementById("html-code").value;
-            let css = "<style>" + document.getElementById("css-code").value + "</style>";
-            let output = document.getElementById("output");
-            output.contentDocument.body.innerHTML = html + css;
-        }
-        document.getElementById("html-code").addEventListener("keyup", runCode);
-        document.getElementById("css-code").addEventListener("keyup", runCode);
-    </script>
+    output.srcdoc = documentCode;
+
+    addConsole("Preview updated successfully.", "console-ok");
+}
+
+function scheduleRun(){
+    clearTimeout(timer);
+    timer = setTimeout(runCode, 180);
+}
+
+function clearEditor(id){
+    document.getElementById(id).value = "";
+    runCode();
+}
+
+function resetCode(){
+    htmlEditor.value = defaultHTML;
+    cssEditor.value = defaultCSS;
+    runCode();
+    addConsole("Editor reset.", "console-ok");
+}
+
+function handleTab(event){
+    if(event.key === "Tab"){
+        event.preventDefault();
+
+        const editor = event.target;
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+
+        editor.value =
+            editor.value.substring(0,start) +
+            "  " +
+            editor.value.substring(end);
+
+        editor.selectionStart =
+        editor.selectionEnd =
+            start + 2;
+
+        scheduleRun();
+    }
+}
+
+function toggleConsole(){
+    document.getElementById("console")
+        .classList.toggle("open");
+}
+
+function clearConsole(){
+    document.getElementById("console-body").innerHTML = "";
+}
+
+function addConsole(message,type){
+    const body = document.getElementById("console-body");
+    const line = document.createElement("div");
+
+    line.className = type || "console-ok";
+    line.textContent = "› " + message;
+
+    body.appendChild(line);
+    body.scrollTop = body.scrollHeight;
+}
+
+runCode();
+</script>
+
 </body>
 </html>
