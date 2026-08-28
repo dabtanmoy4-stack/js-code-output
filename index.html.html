@@ -183,6 +183,11 @@
   
   /* HIGH-CONTRAST PURE BLACK CODEMIRROR THEME & HIGHLIGHTS */
   .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#000000!important;color:#f8fafc!important; }
+  /* Fix desktop editor input/focus layering without changing editor features. */
+  .editor-panel, .editor-container-wrapper, .editor-content, .code-pane { position:relative; z-index:1; }
+  .CodeMirror { position:relative; z-index:2; pointer-events:auto !important; }
+  .CodeMirror-scroll, .CodeMirror-code, .CodeMirror textarea { pointer-events:auto !important; }
+  .CodeMirror textarea { user-select:text !important; -webkit-user-select:text !important; }
   .CodeMirror-gutters { background:#050b14!important; border-right:1px solid #1e293b!important; }
   .CodeMirror-linenumber { color:#64748b!important; }
   .CodeMirror-cursor { border-left:2px solid #38bdf8!important; }
@@ -192,9 +197,6 @@
   .cm-searching { background: rgba(236, 72, 153, 0.6) !important; border-radius:3px; color:#fff !important; }
   .CodeMirror-matchingbracket { background: #0284c7 !important; color: #fff !important; font-weight: bold; border-radius: 2px; }
   .CodeMirror-matchingtag { background: rgba(168, 85, 247, 0.45) !important; border-bottom: 2px solid #a855f7; }
-  /* Keep the CodeMirror input surface editable/clickable. */
-  .CodeMirror, .CodeMirror-scroll, .CodeMirror-code, .CodeMirror textarea { pointer-events:auto !important; }
-  .CodeMirror textarea { -webkit-user-select:text !important; user-select:text !important; }
   
   /* High contrast syntax tokens */
   .cm-s-dracula .cm-keyword { color: #ff79c6 !important; font-weight: bold; }
@@ -2936,33 +2938,13 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   window.editor = editor;
 
-  // Ensure the hidden CodeMirror input is actually editable and receives focus.
-  // This only repairs editor input/focus; it does not alter any editor features.
-  function ensureEditorInputReady() {
-    if (!editor) return;
-    const input = editor.getInputField && editor.getInputField();
-    if (input) {
-      input.readOnly = false;
-      input.removeAttribute('readonly');
-      input.disabled = false;
-      input.removeAttribute('disabled');
-      input.tabIndex = 0;
-    }
-    editor.setOption('readOnly', false);
-  }
-
-  const codeMirrorSurface = document.querySelector('#wrapper-editor');
-  if (codeMirrorSurface) {
-    codeMirrorSurface.addEventListener('mousedown', () => {
-      ensureEditorInputReady();
-      editor.focus();
+  /* Desktop mouse click -> guaranteed CodeMirror focus. */
+  const editorSurface = document.getElementById("wrapper-editor");
+  if (editorSurface) {
+    editorSurface.addEventListener("click", () => {
+      if (editor && !editor.getOption("readOnly")) editor.focus();
     });
-    codeMirrorSurface.addEventListener('touchstart', () => {
-      ensureEditorInputReady();
-      editor.focus();
-    }, {passive:true});
   }
-  ensureEditorInputReady();
 
   if(typeof emmetCodeMirror !== 'undefined') {
     emmetCodeMirror(editor);
@@ -2994,8 +2976,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if(editor) {
       editor.refresh();
-      if (typeof ensureEditorInputReady === 'function') ensureEditorInputReady();
-      editor.focus();
+      if (!editor.getOption("readOnly")) editor.focus();
     }
   }, 100);
 });
