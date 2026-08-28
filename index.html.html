@@ -282,60 +282,77 @@ body{overflow-x:hidden}.hidden{display:none!important}
   .preview-toolbar .screen-btn[title="Refresh"] { display:inline-flex; }
   .console-panel { height: 120px; }
 }
+
   /* ====================================================
-   PROFESSIONAL ONBOARDING SYSTEM CSS (NEW)
-==================================================== */
-.onboarding-overlay { position: fixed; inset: 0; z-index: 99999; background: rgba(2, 8, 23, 0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-.onboarding-overlay.active { opacity: 1; pointer-events: auto; }
-.onboarding-card { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; width: min(480px, 90vw); min-height: 380px; padding: 45px 35px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; transform: translateY(40px) scale(0.95); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; overflow: hidden; }
-.onboarding-overlay.active .onboarding-card { transform: translateY(0) scale(1); }
-.onboarding-slide { display: none; flex-direction: column; align-items: center; text-align: center; animation: slideFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; height: 100%; justify-content: center; }
-.onboarding-slide.active { display: flex; }
-@keyframes slideFadeIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
-.onboarding-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(20, 86, 184, 0.1); display: grid; place-items: center; font-size: 34px; margin-bottom: 25px; animation: bounceFloat 3s infinite ease-in-out; border: 1px solid rgba(20, 86, 184, 0.2); }
-@keyframes bounceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); box-shadow: 0 15px 25px rgba(20, 86, 184, 0.15); } }
-.onboarding-dots { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: auto; }
-.onboarding-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-.onboarding-dot.active { background: var(--brand); width: 28px; border-radius: 8px; }
-.onboarding-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; width: 100%; }
-.btn-skip { color: var(--muted); font-size: 13px; font-weight: 700; background: transparent; border: none; cursor: pointer; padding: 10px 15px; border-radius: 10px; transition: 0.2s; }
-.btn-skip:hover { color: var(--ink); background: var(--surface2); }
+     INTERACTIVE WORKSPACE SPOTLIGHT TOUR
+  ==================================================== */
+  #workspaceTour{position:fixed;inset:0;z-index:99998;display:none;pointer-events:none}
+  #workspaceTour.active{display:block}
+  .tour-shade{display:none}
+  .tour-spotlight{position:fixed;z-index:2;border:2px solid #6ea8ff;border-radius:14px;box-shadow:0 0 0 4px rgba(110,168,255,.16),0 0 28px rgba(79,143,232,.75),0 0 0 9999px rgba(2,8,23,.70);pointer-events:none;opacity:0;transform:scale(.96);transition:left .48s cubic-bezier(.16,1,.3,1),top .48s cubic-bezier(.16,1,.3,1),width .48s cubic-bezier(.16,1,.3,1),height .48s cubic-bezier(.16,1,.3,1),border-radius .3s ease,opacity .25s ease,transform .4s cubic-bezier(.16,1,.3,1)}
+  .tour-spotlight.show{opacity:1;transform:scale(1)}
+  .tour-spotlight::before{content:"";position:absolute;inset:-7px;border:1px solid rgba(110,168,255,.45);border-radius:inherit;animation:tourPulse 1.8s ease-in-out infinite}
+  @keyframes tourPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.025)}}
+  .tour-tooltip{position:fixed;z-index:4;width:min(360px,calc(100vw - 28px));background:rgba(12,22,36,.97);color:#f8fafc;border:1px solid rgba(110,168,255,.30);border-radius:18px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 30px rgba(79,143,232,.12);pointer-events:auto;opacity:0;transform:translateY(10px) scale(.97);transition:left .48s cubic-bezier(.16,1,.3,1),top .48s cubic-bezier(.16,1,.3,1),opacity .25s ease,transform .4s cubic-bezier(.16,1,.3,1)}
+  .tour-tooltip.show{opacity:1;transform:translateY(0) scale(1)}
+  .tour-tooltip::after{content:"";position:absolute;width:12px;height:12px;background:rgba(12,22,36,.97);border-left:1px solid rgba(110,168,255,.30);border-top:1px solid rgba(110,168,255,.30);transform:rotate(45deg);display:none}
+  .tour-tooltip[data-arrow="top"]::after{display:block;bottom:-7px;left:30px;transform:rotate(225deg)}
+  .tour-tooltip[data-arrow="bottom"]::after{display:block;top:-7px;left:30px}
+  .tour-tooltip[data-arrow="left"]::after{display:block;right:-7px;top:28px;transform:rotate(135deg)}
+  .tour-tooltip[data-arrow="right"]::after{display:block;left:-7px;top:28px;transform:rotate(315deg)}
+  .tour-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .tour-step-badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#9bc3ff;font-weight:900}
+  .tour-title{font-size:17px;font-weight:900;letter-spacing:-.02em;margin:0 0 6px}
+  .tour-text{font-size:12px;line-height:1.65;color:#aebbd0;margin:0}
+  .tour-progress{height:4px;background:#1d2b40;border-radius:999px;overflow:hidden;margin:15px 0 14px}
+  .tour-progress span{display:block;height:100%;width:0;background:#6ea8ff;border-radius:inherit;transition:width .4s ease}
+  .tour-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}.tour-actions-left,.tour-actions-right{display:flex;align-items:center;gap:7px}
+  .tour-btn{border:1px solid #2a3b54;background:#142033;color:#dbeafe;border-radius:9px;padding:8px 11px;font-size:10px;font-weight:800;transition:.2s;cursor:pointer;}.tour-btn:hover{border-color:#6ea8ff;transform:translateY(-1px)}
+  .tour-btn.primary{background:#6ea8ff;color:#07101d;border-color:#6ea8ff;box-shadow:0 8px 22px rgba(110,168,255,.22)}
+  .tour-btn.ghost{background:transparent;color:#8494aa;border-color:transparent}.tour-btn.ghost:hover{background:#111d2d;color:#dbeafe;border-color:#223149}
+  .tour-floating-label{position:fixed;z-index:3;pointer-events:none;display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:#6ea8ff;color:#07101d;font-size:9px;font-weight:950;letter-spacing:.04em;box-shadow:0 8px 24px rgba(110,168,255,.28);opacity:0;transition:opacity .2s ease}.tour-floating-label.show{opacity:1}
+  .tour-finish{position:fixed;inset:0;z-index:5;display:none;place-items:center;padding:20px;pointer-events:auto;background:rgba(2,8,23,.78);backdrop-filter:blur(10px);opacity:0;transition:opacity .35s ease}
+  .tour-finish.show{display:grid;opacity:1}
+  .tour-finish-card{width:min(460px,94vw);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:24px;padding:30px;text-align:center;box-shadow:0 35px 100px rgba(0,0,0,.5);transform:translateY(18px) scale(.97);transition:.45s cubic-bezier(.16,1,.3,1)}.tour-finish.show .tour-finish-card{transform:none}
+  .tour-finish-icon{width:68px;height:68px;border-radius:20px;margin:0 auto 16px;display:grid;place-items:center;background:rgba(20,86,184,.12);color:var(--brand);font-size:28px}.tour-finish h3{margin:0 0 8px;font-size:23px;font-weight:950;letter-spacing:-.04em}.tour-finish p{margin:0 auto 20px;max-width:340px;color:var(--muted);font-size:12px;line-height:1.7}
+  @media(max-width:700px){.tour-tooltip{width:min(340px,calc(100vw - 20px));padding:16px;border-radius:16px}.tour-title{font-size:16px}.tour-text{font-size:11px}.tour-actions{gap:5px}.tour-btn{padding:8px 9px;font-size:9px}}
 </style>
 
 </head>
 <body>
-<div id="onboardingSystem" class="onboarding-overlay">
-  <div class="onboarding-card">
-    
-    <div class="onboarding-slide active" id="ob-slide-0">
-      <div class="onboarding-icon" style="color: #6ea8ff;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Welcome to<br><span style="color: var(--brand);">JS CODE OUTPUT</span></h2>
-      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Experience a world-class code editor right in your browser. Build, preview, and share your projects seamlessly.</p>
+
+<!-- WORKSPACE INTERACTIVE SPOTLIGHT TOUR HTML -->
+<div id="workspaceTour" aria-hidden="true">
+  <div class="tour-shade"></div>
+  <div id="tourSpotlight" class="tour-spotlight"></div>
+  <div id="tourFloatingLabel" class="tour-floating-label"><i class="fa-solid fa-sparkles"></i><span>FEATURE</span></div>
+  <div id="tourTooltip" class="tour-tooltip" data-arrow="bottom" role="dialog" aria-live="polite">
+    <div class="tour-topline">
+      <span id="tourStepBadge" class="tour-step-badge">STEP 1 OF 1</span>
+      <button class="tour-btn ghost" id="tourSkipBtn" type="button">Skip tour</button>
     </div>
-    
-    <div class="onboarding-slide" id="ob-slide-1">
-      <div class="onboarding-icon" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2);"><i class="fa-solid fa-bolt"></i></div>
-      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Instant Live Output</h2>
-      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Watch your code come to life in real-time. Code HTML, CSS, and JS side-by-side without ever leaving the tab.</p>
-    </div>
-    
-    <div class="onboarding-slide" id="ob-slide-2">
-      <div class="onboarding-icon" style="color: #34d399; background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.2);"><i class="fa-solid fa-cloud"></i></div>
-      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Cloud Workspaces</h2>
-      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Sign in with Google to auto-save isolated projects securely in the cloud, or use it locally. The choice is yours.</p>
-    </div>
-    
-    <div class="onboarding-actions">
-      <button class="btn-skip" id="btn-ob-skip">Skip</button>
-      <div class="onboarding-dots" id="ob-dots">
-        <div class="onboarding-dot active"></div>
-        <div class="onboarding-dot"></div>
-        <div class="onboarding-dot"></div>
+    <h3 id="tourTitle" class="tour-title">Welcome</h3>
+    <p id="tourText" class="tour-text">Let's take a quick look around your workspace.</p>
+    <div class="tour-progress"><span id="tourProgressBar"></span></div>
+    <div class="tour-actions">
+      <div class="tour-actions-left">
+        <button id="tourBack" class="tour-btn" type="button">← Back</button>
       </div>
-      <button class="primary-btn" id="ob-next-btn" style="margin: 0; box-shadow: 0 10px 20px rgba(20,86,184,0.3);">Next <i class="fa-solid fa-arrow-right ml-1"></i></button>
+      <div class="tour-actions-right">
+        <button id="tourNext" class="tour-btn primary" type="button">Next →</button>
+      </div>
+    </div>
+  </div>
+  <div id="tourFinish" class="tour-finish">
+    <div class="tour-finish-card">
+      <div class="tour-finish-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <h3>You're ready to build.</h3>
+      <p>That's the complete workspace tour. You can now explore everything freely and start creating.</p>
+      <button id="tourFinishBtn" class="tour-btn primary" type="button">Start Building <i class="fa-solid fa-arrow-right ml-1"></i></button>
     </div>
   </div>
 </div>
+
 <!-- 1. FULL RICH LANDING PAGE -->
 <div id="landingPage" class="landing">
   <div class="wire-bg">
@@ -720,7 +737,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <header id="topHeader">
     <div class="header-left">
       <!-- NEW: Mobile menu trigger -->
-      <button class="app-btn mobile-explorer-toggle" onclick="toggleExplorerMenu()" title="Toggle Files"><i class="fa-solid fa-folder-tree"></i></button>
+      <button class="app-btn mobile-explorer-toggle" data-tour="mobile-explorer" onclick="toggleExplorerMenu()" title="Toggle Files"><i class="fa-solid fa-folder-tree"></i></button>
       
       <div class="app-brand cursor-pointer hidden sm:flex" onclick="openProjectsPage()">
   <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-6 h-6 rounded-md shadow-sm object-cover">
@@ -731,7 +748,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
       </div>
       
       <div class="project-switcher ml-1 sm:ml-4">
-        <button id="currentProjectButton" class="current-project" onclick="toggleProjectSwitcher(event)">
+        <button id="currentProjectButton" class="current-project" data-tour="project-switcher" onclick="toggleProjectSwitcher(event)">
           <i class="fa-solid fa-folder-open text-blue-500"></i>
           <span id="currentProjectName">Untitled Project</span>
           <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
@@ -755,14 +772,14 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer" title="Auto run on change">
         <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
       </label>
-      <button class="app-btn run" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
+      <button class="app-btn run" data-tour="run-button" onclick="updatePreview(true)"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
       
-      <button class="app-btn" onclick="formatCode()" title="Format Code (Prettier)"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> <span class="btn-text">Format</span></button>
-      <button class="app-btn" onclick="toggleConsoleUI()" title="Toggle Console"><i class="fa-solid fa-terminal text-green-400"></i> <span class="btn-text">Console</span></button>
-      <button class="app-btn" onclick="shareProjectLink()" title="Share live link"><i class="fa-solid fa-share-nodes text-blue-400"></i> <span class="btn-text">Share</span></button>
+      <button class="app-btn" data-tour="format-button" onclick="formatCode()" title="Format Code (Prettier)"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> <span class="btn-text">Format</span></button>
+      <button class="app-btn" data-tour="console-button" onclick="toggleConsoleUI()" title="Toggle Console"><i class="fa-solid fa-terminal text-green-400"></i> <span class="btn-text">Console</span></button>
+      <button class="app-btn" data-tour="share-button" onclick="shareProjectLink()" title="Share live link"><i class="fa-solid fa-share-nodes text-blue-400"></i> <span class="btn-text">Share</span></button>
 
-      <button class="app-btn" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
-      <button class="app-btn" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
+      <button class="app-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
+      <button class="app-btn" data-tour="download-button" onclick="openDownloadMenu()" title="Download"><i class="fa-solid fa-download"></i></button>
       <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span></button>
       <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
     </div>
@@ -772,7 +789,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
     <!-- NEW: Mobile Overlay for Explorer -->
     <div id="explorer-overlay" class="hidden absolute inset-0 bg-black/60 z-50 backdrop-blur-sm transition-opacity" onclick="toggleExplorerMenu()"></div>
     
-    <aside class="explorer">
+    <aside class="explorer" data-tour="explorer">
       <div class="explorer-head">
         <span>EXPLORER</span>
         <div class="flex gap-1">
@@ -783,7 +800,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <div class="explorer-body" id="fileExplorer">
         <!-- Tree renders here -->
       </div>
-      <div class="explorer-actions">
+      <div class="explorer-actions" data-tour="file-actions">
         <div class="action-row">
             <button onclick="createNewFile()"><i class="fa-solid fa-file-circle-plus"></i> File</button>
             <button onclick="createNewFolder()"><i class="fa-solid fa-folder-plus"></i> Folder</button>
@@ -800,19 +817,19 @@ body{overflow-x:hidden}.hidden{display:none!important}
 
 <div class="main-area">
   <!-- Editor Panel -->
-  <section class="editor-panel">
-    <div class="editor-tabs">
+  <section class="editor-panel" data-tour="editor-panel">
+    <div class="editor-tabs" data-tour="editor-tabs">
       <div id="tabs" class="tabs"></div>
 
       <div class="flex gap-1">
-        <button onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button data-tour="search-code" onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
         <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
       </div>
 
     </div>
     <div class="editor-container-wrapper">
       <div class="editor-content">
-  <div id="wrapper-editor" class="code-pane"></div>
+  <div id="wrapper-editor" class="code-pane" data-tour="code-editor"></div>
   
   <!-- Image Viewer Overlay -->
   <div id="image-viewer" class="hidden" style="position:absolute; inset:0; background:#1e1e2e; z-index:10; flex-direction:column; align-items:center; justify-content:center; padding:20px; overflow:auto;">
@@ -824,8 +841,8 @@ body{overflow-x:hidden}.hidden{display:none!important}
   </section>
 
   <!-- Live Preview Panel -->
-  <section class="preview-panel">
-    <div class="preview-toolbar">
+  <section class="preview-panel" data-tour="preview-panel">
+    <div class="preview-toolbar" data-tour="preview-toolbar">
       <div class="flex items-center gap-2 text-[10px] font-bold">
         <span class="text-red-500">●</span><span class="text-yellow-500">●</span><span class="text-green-500">●</span>
         <span class="text-gray-400 ml-1">LIVE OUTPUT</span>
@@ -838,7 +855,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
         <button class="screen-btn" onclick="updatePreview(true)" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
       </div>
     </div>
-    <div id="iframeContainer">
+    <div id="iframeContainer" data-tour="live-output">
       <div id="placeholderView" class="placeholder-view">
         <div class="pulse-ring">
           <i class="fa-solid fa-bolt text-blue-400 text-2xl"></i>
@@ -850,7 +867,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
       <iframe id="outputIframe" sandbox="allow-scripts allow-modals allow-forms allow-same-origin"></iframe>
     </div>
     
-    <div id="consolePanel" class="console-panel hidden">
+    <div id="consolePanel" class="console-panel hidden" data-tour="console-panel">
         <div class="console-header">
             <span><i class="fa-solid fa-terminal mr-2"></i> Developer Console</span>
             <button onclick="clearConsole()" class="text-gray-400 hover:text-white" title="Clear Console"><i class="fa-solid fa-ban"></i></button>
@@ -993,50 +1010,199 @@ onAuthStateChanged(auth, user => {
 "use strict";
 
 /* ====================================================
-   PROFESSIONAL ONBOARDING SYSTEM JS (FIXED)
+   INTERACTIVE WORKSPACE SPOTLIGHT TOUR (JS FIXED)
 ==================================================== */
-let currentObSlide = 0;
-const totalObSlides = 3;
-
-function initOnboarding() {
-  const hasSeenOnboarding = localStorage.getItem("jco_onboarding_seen");
-  if (!hasSeenOnboarding) {
+(function(){
+  const TOUR_KEY = "jco_workspace_tour_seen_v3";
+  const tour = [
+    {key:"project-switcher",title:"Project Switcher",text:"Switch between your projects from here. Your current project is always shown at the top.",label:"PROJECTS",prefer:"bottom"},
+    {key:"explorer",mobileKey:"mobile-explorer",title:"File Explorer",text:"Manage your project files and folders here. On mobile, use the folder button to open this panel.",label:"FILES",prefer:"right"},
+    {key:"file-actions",title:"Create & Upload",text:"Create files or folders, or upload existing files and folders into the current project.",label:"FILE TOOLS",prefer:"right"},
+    {key:"editor-tabs",title:"Editor Tabs",text:"Your project files appear as tabs here, so you can move between files quickly.",label:"TABS",prefer:"bottom"},
+    {key:"search-code",title:"Search Code",text:"Find code inside the active file instantly with the search tool.",label:"SEARCH",prefer:"bottom"},
+    {key:"code-editor",title:"Code Editor",text:"This is your main coding area. Write HTML, CSS, JavaScript and supported file types here.",label:"EDITOR",prefer:"right"},
+    {key:"run-button",title:"Run Project",text:"Run the project manually whenever you want to refresh the live result.",label:"RUN",prefer:"bottom"},
+    {key:"preview-toolbar",title:"Preview Controls",text:"Switch viewport sizes, refresh the output, or open the live preview fullscreen from here.",label:"PREVIEW",prefer:"bottom"},
+    {key:"live-output",title:"Live Output",text:"Your website renders here. With Auto enabled, changes can appear while you code.",label:"LIVE OUTPUT",prefer:"left"},
+    {key:"console-button",title:"Developer Console",text:"Open the console to inspect logs, warnings and JavaScript errors from your project.",label:"CONSOLE",prefer:"bottom"},
+    {key:"format-button",title:"Format Code",text:"Format the active supported code file with Prettier in one click.",label:"FORMAT",prefer:"bottom"},
+    {key:"share-button",title:"Share",text:"Copy a shareable project link when the project is saved to the cloud.",label:"SHARE",prefer:"bottom"},
+    {key:"libraries-button",title:"Libraries",text:"Turn supported CDN libraries such as Tailwind CSS, Font Awesome, Three.js and Chart.js on or off.",label:"LIBRARIES",prefer:"bottom"},
+    {key:"download-button",title:"Export Project",text:"Export your project as a complete ZIP or as a single HTML file.",label:"EXPORT",prefer:"bottom"}
+  ];
+  
+  let index = 0, active = false, resizeTimer = null;
+  const $ = id => document.getElementById(id);
+  
+  function isVisible(el){
+    if(!el) return false;
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    return cs.display !== "none" && cs.visibility !== "hidden" && parseFloat(cs.opacity || "1") > 0 && r.width > 1 && r.height > 1;
+  }
+  
+  function targetFor(step){
+    const mobile = innerWidth <= 1000;
+    if(mobile && step.mobileKey){
+      const m = document.querySelector(`[data-tour="${step.mobileKey}"]`);
+      if(isVisible(m)) return m;
+    }
+    const el = document.querySelector(`[data-tour="${step.key}"]`);
+    return isVisible(el) ? el : null;
+  }
+  
+  function ensureTargetVisible(step){
+    if(innerWidth <= 1000 && (step.key === "explorer" || step.key === "file-actions")){
+      const exp = document.querySelector('.explorer');
+      if(exp && !exp.classList.contains('open') && typeof window.toggleExplorerMenu === 'function') window.toggleExplorerMenu();
+    }
+  }
+  
+  function visibleSteps(){
+    return tour.filter(step => !(step.key === "preview-toolbar" && innerWidth <= 700));
+  }
+  
+  function positionTooltip(target, prefer){
+    const tip = $("tourTooltip"), pad = 12, gap = 18, r = target.getBoundingClientRect(), tw = Math.min(360, innerWidth - 28), th = tip.offsetHeight || 190;
+    let left = 0, top = 0, arrow = "bottom";
+    const bottom = innerHeight - r.bottom - gap >= th, topok = r.top - gap >= th, right = innerWidth - r.right - gap >= tw, leftok = r.left - gap >= tw;
+    
+    if(prefer === "right" && right){ left = r.right + gap; top = r.top; arrow = "right"; }
+    else if(prefer === "left" && leftok){ left = r.left - tw - gap; top = r.top; arrow = "left"; }
+    else if(prefer === "top" && topok){ left = r.left; top = r.top - th - gap; arrow = "top"; }
+    else if(bottom){ left = r.left; top = r.bottom + gap; arrow = "bottom"; }
+    else if(topok){ left = r.left; top = r.top - th - gap; arrow = "top"; }
+    else if(right){ left = r.right + gap; top = Math.max(pad, Math.min(r.top, innerHeight - th - pad)); arrow = "right"; }
+    else { left = Math.max(pad, r.left - tw - gap); top = Math.max(pad, Math.min(r.bottom + gap, innerHeight - th - pad)); arrow = "left"; }
+    
+    left = Math.max(pad, Math.min(left, innerWidth - tw - pad));
+    top = Math.max(pad, Math.min(top, innerHeight - th - pad));
+    tip.style.width = tw + "px";
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+    tip.dataset.arrow = arrow;
+  }
+  
+  function render(){
+    if(!active) return;
+    const steps = visibleSteps();
+    if(index >= steps.length){ showFinish(); return; }
+    
+    const step = steps[index];
+    ensureTargetVisible(step);
+    let target = targetFor(step);
+    if(!target){ index++; render(); return; }
+    
+    try { target.scrollIntoView({block:"nearest", inline:"nearest"}); } catch(e){}
+    
     setTimeout(() => {
-      const ob = document.getElementById("onboardingSystem");
-      if (ob) ob.classList.add("active");
-    }, 1000);
+      target = targetFor(step);
+      if(!target){ index++; render(); return; }
+      
+      const r = target.getBoundingClientRect(), spot = $("tourSpotlight"), pad = 6;
+      spot.style.left = (r.left - pad) + "px";
+      spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad * 2) + "px";
+      spot.style.height = (r.height + pad * 2) + "px";
+      spot.style.borderRadius = Math.min(16, Math.max(8, parseFloat(getComputedStyle(target).borderRadius) || 10)) + "px";
+      
+      $("tourStepBadge").textContent = `STEP ${index + 1} OF ${steps.length}`;
+      $("tourTitle").textContent = step.title;
+      $("tourText").textContent = step.text;
+      $("tourProgressBar").style.width = ((index + 1) / steps.length * 100) + "%";
+      $("tourNext").innerHTML = index === steps.length - 1 ? "Finish →" : "Next →";
+      $("tourBack").style.visibility = index === 0 ? "hidden" : "visible";
+      
+      const fl = $("tourFloatingLabel");
+      fl.querySelector("span").textContent = step.label;
+      fl.style.left = Math.max(8, Math.min(r.left, innerWidth - 120)) + "px";
+      fl.style.top = Math.max(8, r.top - 32) + "px";
+      
+      positionTooltip(target, step.prefer);
+      spot.classList.add("show");
+      $("tourTooltip").classList.add("show");
+      fl.classList.add("show");
+    }, 90);
   }
-}
+  
+  function showFinish(){
+    $("tourSpotlight").classList.remove("show");
+    $("tourTooltip").classList.remove("show");
+    $("tourFloatingLabel").classList.remove("show");
+    $("tourFinish").classList.add("show");
+  }
+  
+  function start(){
+    if(active || localStorage.getItem(TOUR_KEY) === "true") return;
+    const app = $("app");
+    if(!app || app.classList.contains("hidden")) return;
+    
+    active = true;
+    index = 0;
+    $("tourFinish").classList.remove("show");
+    $("workspaceTour").classList.add("active");
+    $("workspaceTour").setAttribute("aria-hidden", "false");
+    setTimeout(render, 220);
+  }
+  
+  window.startWorkspaceTour = start;
+  
+  window.workspaceTourNext = function(){
+    const steps = visibleSteps();
+    if(index < steps.length - 1){
+      index++;
+      render();
+    } else {
+      showFinish();
+    }
+  };
+  
+  window.workspaceTourBack = function(){
+    if(index > 0){
+      index--;
+      render();
+    }
+  };
+  
+  window.skipWorkspaceTour = function(){
+    active = false;
+    localStorage.setItem(TOUR_KEY, "true");
+    $("workspaceTour").classList.remove("active");
+    $("workspaceTour").setAttribute("aria-hidden", "true");
+    $("tourFinish").classList.remove("show");
+    const exp = document.querySelector('.explorer');
+    if(innerWidth <= 1000 && exp?.classList.contains('open') && typeof window.toggleExplorerMenu === 'function'){
+      window.toggleExplorerMenu();
+    }
+  };
+  
+  window.finishWorkspaceTour = window.skipWorkspaceTour;
+  
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if(active) render(); }, 120);
+  });
+  
+  window.addEventListener("scroll", () => { if(active) render(); }, {passive:true});
+  
+  window.__maybeStartWorkspaceTour = () => {
+    if(localStorage.getItem(TOUR_KEY) !== "true" && $("app") && !$("app").classList.contains("hidden")){
+      setTimeout(start, 650);
+    }
+  };
 
-window.nextOnboardingSlide = function() {
-  const currentSlide = document.getElementById(`ob-slide-${currentObSlide}`);
-  const dots = document.getElementById("ob-dots");
-  
-  if (currentSlide) currentSlide.classList.remove("active");
-  if (dots && dots.children[currentObSlide]) dots.children[currentObSlide].classList.remove("active");
-  
-  currentObSlide++;
-  
-  if (currentObSlide >= totalObSlides) {
-    window.closeOnboarding();
-    return;
-  }
-  
-  const nextSlide = document.getElementById(`ob-slide-${currentObSlide}`);
-  if (nextSlide) nextSlide.classList.add("active");
-  if (dots && dots.children[currentObSlide]) dots.children[currentObSlide].classList.add("active");
-  
-  if (currentObSlide === totalObSlides - 1) {
-    const btn = document.getElementById("ob-next-btn");
-    if (btn) btn.innerHTML = "Let's Build! <i class='fa-solid fa-rocket ml-1'></i>";
-  }
-};
+  // Direct Event Binding for Tour Buttons
+  window.addEventListener("DOMContentLoaded", () => {
+    const nextBtn = document.getElementById("tourNext");
+    const backBtn = document.getElementById("tourBack");
+    const skipBtn = document.getElementById("tourSkipBtn");
+    const finishBtn = document.getElementById("tourFinishBtn");
 
-window.closeOnboarding = function() {
-  const ob = document.getElementById("onboardingSystem");
-  if (ob) ob.classList.remove("active");
-  localStorage.setItem("jco_onboarding_seen", "true");
-};
+    if (nextBtn) nextBtn.addEventListener("click", window.workspaceTourNext);
+    if (backBtn) backBtn.addEventListener("click", window.workspaceTourBack);
+    if (skipBtn) skipBtn.addEventListener("click", window.skipWorkspaceTour);
+    if (finishBtn) finishBtn.addEventListener("click", window.finishWorkspaceTour);
+  });
+})();
 
 let files = {};
 let activeFile = null;
@@ -1690,6 +1856,11 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
     isSwitchingProject = false;
     window.isSwitchingProject = false;
   }, 100);
+
+  // First-time workspace spotlight tour trigger
+  setTimeout(() => {
+    try { window.__maybeStartWorkspaceTour?.(); } catch(e) { console.warn("Workspace tour skipped:", e); }
+  }, 750);
 }
 
 function renderFileExplorer(){
@@ -2418,18 +2589,9 @@ window.addEventListener("popstate", (e) => {
   }
 });
 
-// Initialize CodeMirror & Onboarding
+// Initialize CodeMirror
 window.addEventListener("DOMContentLoaded", () => {
 document.documentElement.classList.add("dark");
-
-// Event listeners for onboarding
-const nextBtn = document.getElementById("ob-next-btn");
-const skipBtn = document.getElementById("btn-ob-skip");
-
-if (nextBtn) nextBtn.addEventListener("click", window.nextOnboardingSlide);
-if (skipBtn) skipBtn.addEventListener("click", window.closeOnboarding);
-
-initOnboarding();
 
 let initialId = localStorage.getItem("js-code-output-active-project-id");
 if(initialId && initialId.startsWith("local_proj_")) {
