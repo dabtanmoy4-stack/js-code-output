@@ -192,6 +192,9 @@
   .cm-searching { background: rgba(236, 72, 153, 0.6) !important; border-radius:3px; color:#fff !important; }
   .CodeMirror-matchingbracket { background: #0284c7 !important; color: #fff !important; font-weight: bold; border-radius: 2px; }
   .CodeMirror-matchingtag { background: rgba(168, 85, 247, 0.45) !important; border-bottom: 2px solid #a855f7; }
+  /* Keep the actual CodeMirror input layer interactive. */
+  .CodeMirror, .CodeMirror-scroll, .CodeMirror textarea, .CodeMirror textarea.CodeMirror-input { pointer-events:auto !important; }
+  .CodeMirror textarea.CodeMirror-input { user-select:text !important; -webkit-user-select:text !important; cursor:text !important; }
   
   /* High contrast syntax tokens */
   .cm-s-dracula .cm-keyword { color: #ff79c6 !important; font-weight: bold; }
@@ -293,9 +296,6 @@
   .context-menu button { text-align: left; padding: 8px 12px; font-size: 11px; border-radius: 4px; border: none; background: transparent; color: var(--ink); display: flex; align-items: center; gap: 8px; }
   .context-menu button:hover { background: var(--surface2); color: var(--brand); }
   .CodeMirror-lint-marker-error { background:#ef4444!important;border-radius:50%;width:8px;height:8px; }
-  /* Editor input interaction fix */
-  .CodeMirror, .CodeMirror-scroll, .CodeMirror textarea, .CodeMirror textarea.CodeMirror-input { pointer-events:auto !important; }
-  .CodeMirror textarea.CodeMirror-input { user-select:text !important; -webkit-user-select:text !important; cursor:text !important; }
   .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
   .CodeMirror-hints { background:#090d16!important;border:1px solid #1e293b!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
   .CodeMirror-hint-active { background:#1e293b!important;color:#38bdf8!important;border-radius:4px; }
@@ -2361,7 +2361,13 @@ function openFile(n){
     }
     setTimeout(() => {
       editor.refresh();
-      if(!editor.getOption("readOnly")) editor.focus();
+      /* Only text files are writable; media/binary behavior remains unchanged. */
+      if(n && !isBinary(getExt(n))) {
+        editor.setOption("readOnly", false);
+        const input = editor.getInputField && editor.getInputField();
+        if(input) { input.disabled=false; input.readOnly=false; input.style.pointerEvents="auto"; }
+        editor.focus();
+      } else if(!editor.getOption("readOnly")) editor.focus();
     }, 10);
   }
   renderFileExplorer();
@@ -2966,10 +2972,11 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if(editor) {
       editor.refresh();
+      /* Repair stale CodeMirror lock after workspace initialization. */
+      const current = window.activeFile || activeFile || "";
+      if(current && !isBinary(getExt(current))) editor.setOption("readOnly", false);
       const input = editor.getInputField && editor.getInputField();
-      if(input) { input.disabled = false; input.readOnly = false; input.style.pointerEvents = "auto"; }
-      const ext = getExt(window.activeFile || activeFile || "");
-      if(!isBinary(ext)) editor.setOption("readOnly", false);
+      if(input && current && !isBinary(getExt(current))) { input.disabled=false; input.readOnly=false; input.style.pointerEvents="auto"; }
       editor.focus();
     }
   }, 100);
