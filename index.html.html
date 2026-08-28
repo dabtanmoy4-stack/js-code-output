@@ -381,6 +381,24 @@
     .tour-finish-card{width:min(460px,94vw);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:24px;padding:30px;text-align:center;box-shadow:0 35px 100px rgba(0,0,0,.5);transform:translateY(18px) scale(.97);transition:.45s cubic-bezier(.16,1,.3,1)}.tour-finish.show .tour-finish-card{transform:none}
     .tour-finish-icon{width:68px;height:68px;border-radius:20px;margin:0 auto 16px;display:grid;place-items:center;background:rgba(20,86,184,.12);color:var(--brand);font-size:28px}.tour-finish h3{margin:0 0 8px;font-size:23px;font-weight:950;letter-spacing:-.04em}.tour-finish p{margin:0 auto 20px;max-width:340px;color:var(--muted);font-size:12px;line-height:1.7}
     @media(max-width:700px){.tour-tooltip{width:min(340px,calc(100vw - 20px));padding:16px;border-radius:16px}.tour-title{font-size:16px}.tour-text{font-size:11px}.tour-actions{gap:5px}.tour-btn{padding:8px 9px;font-size:9px}}
+
+    /* CodeMirror Pointer and Layer Fix */
+.CodeMirror {
+  height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5 !important;
+}
+
+.CodeMirror-scroll {
+  min-height: 100% !important;
+}
+
+#wrapper-editor {
+  position: relative !important;
+  height: 100% !important;
+  width: 100% !important;
+}
   </style>
 
 </head>
@@ -2905,6 +2923,9 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const wrapper = document.getElementById("wrapper-editor");
+  wrapper.innerHTML = ""; // আগের থাকলে ক্লিয়ার করবে
+
+  // CodeMirror Initialization
   editor = CodeMirror(wrapper, {
     value: (activeFile && files[activeFile] && !isBinary(getExt(activeFile))) ? files[activeFile] : (files["index.html"] || ""),
     mode: getMode(activeFile || "index.html"),
@@ -2919,17 +2940,7 @@ window.addEventListener("DOMContentLoaded", () => {
     tabSize: 2,
     gutters: ["CodeMirror-lint-markers"],
     lint: true,
-    inputStyle: "textarea",
-    extraKeys: { 
-      "Ctrl-Space": "autocomplete",
-      "Tab": "emmetExpandAbbreviation",
-      "Esc": "emmetResetAbbreviation",
-      "Enter": "emmetInsertLineBreak",
-      "Ctrl-F": "findPersistent",
-      "Cmd-F": "findPersistent",
-      "Ctrl-H": "replace",
-      "Cmd-Alt-F": "replace"
-    },
+    inputStyle: "contenteditable", // 'textarea' এর বদলে contenteditable ব্যবহার করা হয়েছে টাইপিং সমস্যা দূর করতে
     readOnly: false
   });
   window.editor = editor;
@@ -2938,15 +2949,12 @@ window.addEventListener("DOMContentLoaded", () => {
     emmetCodeMirror(editor);
   }
 
-  // Keep the desktop editor reliably focusable/clickable without changing its behavior.
-  const cmSurface = document.querySelector("#wrapper-editor .CodeMirror");
-  if (cmSurface) {
-    cmSurface.addEventListener("mousedown", () => {
-      if (editor && !editor.getOption("readOnly")) {
-        editor.focus();
-      }
-    }, true);
-  }
+  // Click Trigger Focus
+  wrapper.addEventListener("click", () => {
+    if (editor && !editor.getOption("readOnly")) {
+      editor.focus();
+    }
+  });
 
   editor.on("inputRead", (cm, change) => {
     if (/^[a-zA-Z.<$]$/.test(change.text[0])) {
@@ -2971,12 +2979,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   renderFileExplorer();
   
+  // Refresh layout after initialization
   setTimeout(() => {
     if(editor) {
       editor.refresh();
       editor.focus();
     }
-  }, 100);
+  }, 150);
 });
 </script>
 </body>
