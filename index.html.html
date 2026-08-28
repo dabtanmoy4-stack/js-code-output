@@ -1300,11 +1300,7 @@ onAuthStateChanged(auth, user => {
     if (skipBtn) skipBtn.addEventListener("click", window.skipWorkspaceTour);
     if (finishBtn) finishBtn.addEventListener("click", window.finishWorkspaceTour);
   });
-  // DOMContentLoaded-এর শেষে editor রিফ্রেশ করুন
-  setTimeout(() => {
-    if(editor) {
-      editor.refresh();
-      editor.focus();
+ 
     }
   }, 200);
 })();
@@ -2890,11 +2886,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.documentElement.classList.add("dark");
 
     }
-   // DOMContentLoaded-এর শেষে editor রিফ্রেশ করুন
-  setTimeout(() => {
-    if(editor) {
-      editor.refresh();
-      editor.focus();
+   
     }
   }, 200);                     
   }, 200);
