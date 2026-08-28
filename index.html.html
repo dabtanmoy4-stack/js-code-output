@@ -21,7 +21,6 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/dialog/dialog.min.css">
@@ -368,6 +367,7 @@
   </style>
 
 </head>
+<body>
   <div id="workspaceTour" aria-hidden="true">
     <div class="tour-shade"></div>
     <div id="tourSpotlight" class="tour-spotlight"></div>
@@ -399,7 +399,6 @@
       </div>
     </div>
   </div>
-
   <div id="landingPage" class="landing">
     <div class="wire-bg">
       <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
@@ -950,15 +949,18 @@
 
       <div class="pt-3 border-t border-[var(--line)]">
         <label class="text-[10px] uppercase font-bold text-gray-400 block mb-2">Share Directly</label>
-        <div class="grid grid-cols-3 gap-2">
-          <button class="modal-btn flex items-center justify-center gap-2 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 border-transparent" onclick="shareToPlatform('whatsapp')">
-            <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp
+        <div class="grid grid-cols-4 gap-2">
+          <button class="modal-btn flex items-center justify-center gap-1.5 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 border-transparent text-[11px]" onclick="shareToPlatform('whatsapp')">
+            <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
           </button>
-          <button class="modal-btn flex items-center justify-center gap-2 bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 border-transparent" onclick="shareToPlatform('facebook')">
-            <i class="fa-brands fa-facebook text-lg"></i> Facebook
+          <button class="modal-btn flex items-center justify-center gap-1.5 bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 border-transparent text-[11px]" onclick="shareToPlatform('facebook')">
+            <i class="fa-brands fa-facebook text-base"></i> Facebook
           </button>
-          <button class="modal-btn flex items-center justify-center gap-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-transparent" onclick="shareToPlatform('native')">
-            <i class="fa-solid fa-share-nodes text-base"></i> More
+          <button class="modal-btn flex items-center justify-center gap-1.5 bg-[#E4405F]/10 text-[#E4405F] hover:bg-[#E4405F]/20 border-transparent text-[11px]" onclick="shareToPlatform('instagram')">
+            <i class="fa-brands fa-instagram text-base"></i> Instagram
+          </button>
+          <button class="modal-btn flex items-center justify-center gap-1.5 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-transparent text-[11px]" onclick="shareToPlatform('native')">
+            <i class="fa-solid fa-share-nodes text-sm"></i> More
           </button>
         </div>
       </div>
@@ -1086,7 +1088,7 @@ onAuthStateChanged(auth, user => {
   resolveAuth(user || null);
 });
 </script>
-  <script>
+<script>
 "use strict";
 
 (function(){
@@ -1103,7 +1105,7 @@ onAuthStateChanged(auth, user => {
     {key:"live-output",title:"Live Output",text:"Your website renders here. With Auto enabled, changes appear live as you type.",label:"LIVE OUTPUT",prefer:"left"},
     {key:"console-button",title:"Developer Console",text:"Inspect real-time logs, runtime warnings (yellow), and syntax errors (red).",label:"CONSOLE",prefer:"bottom"},
     {key:"format-button",title:"Format Code",text:"Format the active code file with Prettier in one click.",label:"FORMAT",prefer:"bottom"},
-    {key:"publish-button",title:"Publish & Share",text:"Publish your live web projects and share instant links to WhatsApp, Facebook, and more.",label:"PUBLISH",prefer:"bottom"},
+    {key:"publish-button",title:"Publish & Share",text:"Publish your live web projects and share instant links to WhatsApp, Facebook, Instagram, and more.",label:"PUBLISH",prefer:"bottom"},
     {key:"libraries-button",title:"Libraries",text:"Turn supported CDN libraries such as Tailwind CSS, Font Awesome, Three.js and Chart.js on or off.",label:"LIBRARIES",prefer:"bottom"},
     {key:"download-button",title:"Export Project",text:"Export your project as a complete ZIP or as a single HTML file.",label:"EXPORT",prefer:"bottom"}
   ];
@@ -1293,7 +1295,11 @@ let isSwitchingProject = false;
 let folderState = {}; 
 let pendingAuthAction = null;
 
-const defaultTemplate = {}; 
+const defaultTemplate = {
+  "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Live Output</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"container\">\n    <h1>Hello World!</h1>\n    <p>Welcome to JS CODE OUTPUT</p>\n    <button id=\"btn\">Click Me</button>\n  </div>\n  <script src=\"script.js\"><\/script>\n</body>\n</html>",
+  "style.css": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: system-ui, sans-serif;\n  display: grid;\n  place-items: center;\n  min-height: 100vh;\n  background: #f8fafc;\n  color: #0f172a;\n}\n\n.container {\n  text-align: center;\n  padding: 2rem;\n  background: #ffffff;\n  border-radius: 12px;\n  box-shadow: 0 10px 25px rgba(0,0,0,0.05);\n}\n\nh1 {\n  font-size: 2rem;\n  color: #2563eb;\n  margin-bottom: 0.5rem;\n}\n\np {\n  color: #64748b;\n  margin-bottom: 1.5rem;\n}\n\nbutton {\n  padding: 10px 20px;\n  border: none;\n  border-radius: 8px;\n  background: #2563eb;\n  color: #ffffff;\n  font-weight: bold;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #1d4ed8;\n  transform: translateY(-2px);\n}",
+  "script.js": "const btn = document.getElementById('btn');\n\nif (btn) {\n  btn.addEventListener('click', () => {\n    alert('Welcome to JS CODE OUTPUT!');\n    console.log('Button clicked successfully at ' + new Date().toLocaleTimeString());\n  });\n}"
+};
 
 window.files = files;
 window.activeFile = activeFile;
@@ -1316,7 +1322,6 @@ window.addEventListener('click', () => {
     if(cm) cm.style.display = 'none';
 });
 
-// Real-time Console Logging & Indicator Status Updates
 window.addEventListener('message', function(e) {
     if(e.data && e.data.type === 'console') {
         const consoleOutput = document.getElementById('consoleOutput');
@@ -1360,9 +1365,6 @@ function clearConsole() {
     if(indicator) indicator.classList.add("hidden");
 }
 
-/* ====================================================
-   CINEMATIC EXECUTION VISUALIZER ENGINE
-==================================================== */
 function triggerCinematicRun() {
   const overlay = document.getElementById("runVisualizerOverlay");
   const status = document.getElementById("runVisualizerStatus");
@@ -1388,9 +1390,6 @@ function triggerCinematicRun() {
   }, 1050);
 }
 
-/* ====================================================
-   PROTECTED AUTH & PUBLISH / SHARE ACTIONS
-==================================================== */
 function showRequireAuthModal(title, desc, actionCallback) {
   document.getElementById("requireAuthTitle").textContent = title;
   document.getElementById("requireAuthDesc").textContent = desc;
@@ -1501,6 +1500,12 @@ function shareToPlatform(platform) {
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   } else if (platform === 'facebook') {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  } else if (platform === 'instagram') {
+    navigator.clipboard.writeText(url);
+    showToast("Link copied! Open Instagram to paste and share 📸");
+    setTimeout(() => {
+      window.open('https://www.instagram.com/', '_blank');
+    }, 700);
   } else if (platform === 'native') {
     if (navigator.share) {
       navigator.share({
@@ -1514,9 +1519,6 @@ function shareToPlatform(platform) {
   }
 }
 
-/* ====================================================
-   SEARCH, REPLACE & FULLSCREEN CONTROLS
-==================================================== */
 function triggerSearch() {
   if (editor) {
     editor.execCommand("find");
@@ -1877,7 +1879,7 @@ function startWithoutLogin(){
 
   if(localProjects.length === 0) {
       const id = "local_proj_" + Date.now();
-      localProjects.push({id, name: "Guest Project " + 1});
+      localProjects.push({id, name: "Guest Project 1"});
       localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
       openEditorWorkspace(id, "Guest Project 1", structuredClone(defaultTemplate));
   } else {
@@ -2253,8 +2255,6 @@ function renderEditorTabs(){
 function openFile(n){
   if(n && files[n] === undefined && !n.endsWith('/')) return;
   
-  if (n === activeFile) return;
-
   if (!isSwitchingProject && activeFile && files[activeFile] !== undefined) {
     syncEditor();
     saveLocalProjectFiles();
@@ -2332,12 +2332,15 @@ function openFile(n){
 
            let oldLock = isSwitchingProject;
            isSwitchingProject = true;
-           editor.setValue(files[n] || "");
+           editor.setValue(files[n] !== undefined ? files[n] : "");
            editor.clearHistory();
            isSwitchingProject = oldLock; 
         }
     }
-    setTimeout(() => editor.refresh(), 10);
+    setTimeout(() => {
+      editor.refresh();
+      if(!editor.getOption("readOnly")) editor.focus();
+    }, 10);
   }
   renderFileExplorer();
 }
@@ -2874,12 +2877,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (initialId) {
     loadLocalProjectFiles(initialId);
+  } else {
+    setFileMap(defaultTemplate);
+    activeFile = "index.html";
+    window.files = files;
+    window.activeFile = activeFile;
   }
 
   const wrapper = document.getElementById("wrapper-editor");
   editor = CodeMirror(wrapper, {
-    value: (activeFile && files[activeFile] && !isBinary(getExt(activeFile))) ? files[activeFile] : "",
-    mode: getMode(activeFile),
+    value: (activeFile && files[activeFile] && !isBinary(getExt(activeFile))) ? files[activeFile] : (files["index.html"] || ""),
+    mode: getMode(activeFile || "index.html"),
     theme: "dracula",
     lineNumbers: true,
     autoCloseTags: true,
@@ -2901,7 +2909,7 @@ window.addEventListener("DOMContentLoaded", () => {
       "Ctrl-H": "replace",
       "Cmd-Alt-F": "replace"
     },
-    readOnly: activeFile ? false : "nocursor"
+    readOnly: false
   });
   window.editor = editor;
 
@@ -2931,8 +2939,14 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   renderFileExplorer();
+  
+  setTimeout(() => {
+    if(editor) {
+      editor.refresh();
+      editor.focus();
+    }
+  }, 100);
 });
 </script>
-
 </body>
 </html>
