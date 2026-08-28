@@ -282,11 +282,60 @@ body{overflow-x:hidden}.hidden{display:none!important}
   .preview-toolbar .screen-btn[title="Refresh"] { display:inline-flex; }
   .console-panel { height: 120px; }
 }
+  /* ====================================================
+   PROFESSIONAL ONBOARDING SYSTEM CSS (NEW)
+==================================================== */
+.onboarding-overlay { position: fixed; inset: 0; z-index: 99999; background: rgba(2, 8, 23, 0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.onboarding-overlay.active { opacity: 1; pointer-events: auto; }
+.onboarding-card { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; width: min(480px, 90vw); min-height: 380px; padding: 45px 35px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; transform: translateY(40px) scale(0.95); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; overflow: hidden; }
+.onboarding-overlay.active .onboarding-card { transform: translateY(0) scale(1); }
+.onboarding-slide { display: none; flex-direction: column; align-items: center; text-align: center; animation: slideFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; height: 100%; justify-content: center; }
+.onboarding-slide.active { display: flex; }
+@keyframes slideFadeIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.onboarding-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(20, 86, 184, 0.1); display: grid; place-items: center; font-size: 34px; margin-bottom: 25px; animation: bounceFloat 3s infinite ease-in-out; border: 1px solid rgba(20, 86, 184, 0.2); }
+@keyframes bounceFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); box-shadow: 0 15px 25px rgba(20, 86, 184, 0.15); } }
+.onboarding-dots { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: auto; }
+.onboarding-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.onboarding-dot.active { background: var(--brand); width: 28px; border-radius: 8px; }
+.onboarding-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; width: 100%; }
+.btn-skip { color: var(--muted); font-size: 13px; font-weight: 700; background: transparent; border: none; cursor: pointer; padding: 10px 15px; border-radius: 10px; transition: 0.2s; }
+.btn-skip:hover { color: var(--ink); background: var(--surface2); }
 </style>
 
 </head>
 <body>
-
+<div id="onboardingSystem" class="onboarding-overlay">
+  <div class="onboarding-card">
+    
+    <div class="onboarding-slide active" id="ob-slide-0">
+      <div class="onboarding-icon" style="color: #6ea8ff;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Welcome to<br><span style="color: var(--brand);">JS CODE OUTPUT</span></h2>
+      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Experience a world-class code editor right in your browser. Build, preview, and share your projects seamlessly.</p>
+    </div>
+    
+    <div class="onboarding-slide" id="ob-slide-1">
+      <div class="onboarding-icon" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2);"><i class="fa-solid fa-bolt"></i></div>
+      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Instant Live Output</h2>
+      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Watch your code come to life in real-time. Code HTML, CSS, and JS side-by-side without ever leaving the tab.</p>
+    </div>
+    
+    <div class="onboarding-slide" id="ob-slide-2">
+      <div class="onboarding-icon" style="color: #34d399; background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.2);"><i class="fa-solid fa-cloud"></i></div>
+      <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.03em;">Cloud Workspaces</h2>
+      <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 320px;">Sign in with Google to auto-save isolated projects securely in the cloud, or use it locally. The choice is yours.</p>
+    </div>
+    
+    <div class="onboarding-actions">
+      <button class="btn-skip" onclick="closeOnboarding()">Skip</button>
+      <div class="onboarding-dots" id="ob-dots">
+        <div class="onboarding-dot active"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <button class="primary-btn" id="ob-next-btn" onclick="nextOnboardingSlide()" style="margin: 0; box-shadow: 0 10px 20px rgba(20,86,184,0.3);">Next <i class="fa-solid fa-arrow-right ml-1"></i></button>
+    </div>
+  </div>
+</div>
 <!-- 1. FULL RICH LANDING PAGE -->
 <div id="landingPage" class="landing">
   <div class="wire-bg">
@@ -937,6 +986,50 @@ onAuthStateChanged(auth, user => {
     document.getElementById("signOutBtn")?.classList.add("hidden");
   }
   resolveAuth(user || null);
+});
+  /* ====================================================
+   PROFESSIONAL ONBOARDING SYSTEM JS (NEW)
+==================================================== */
+let currentObSlide = 0;
+const totalObSlides = 3;
+
+function initOnboarding() {
+  const hasSeenOnboarding = localStorage.getItem("jco_onboarding_seen");
+  if (!hasSeenOnboarding) {
+    // Show modal 1 second after site loads for a smooth intro
+    setTimeout(() => {
+      document.getElementById("onboardingSystem").classList.add("active");
+    }, 1000);
+  }
+}
+
+window.nextOnboardingSlide = function() {
+  document.getElementById(`ob-slide-${currentObSlide}`).classList.remove("active");
+  document.getElementById("ob-dots").children[currentObSlide].classList.remove("active");
+  
+  currentObSlide++;
+  
+  if (currentObSlide >= totalObSlides) {
+    closeOnboarding();
+    return;
+  }
+  
+  document.getElementById(`ob-slide-${currentObSlide}`).classList.add("active");
+  document.getElementById("ob-dots").children[currentObSlide].classList.add("active");
+  
+  if (currentObSlide === totalObSlides - 1) {
+    document.getElementById("ob-next-btn").innerHTML = "Let's Build! <i class='fa-solid fa-rocket ml-1'></i>";
+  }
+}
+
+window.closeOnboarding = function() {
+  document.getElementById("onboardingSystem").classList.remove("active");
+  localStorage.setItem("jco_onboarding_seen", "true");
+}
+
+// Attach to DOM load
+window.addEventListener("DOMContentLoaded", () => {
+  initOnboarding();
 });
 </script>
 
