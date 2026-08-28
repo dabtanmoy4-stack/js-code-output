@@ -2155,6 +2155,10 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
   setTimeout(() => {
     isSwitchingProject = false;
     window.isSwitchingProject = false;
+    if(editor) {
+      editor.refresh();
+      editor.focus();
+    }
   }, 100);
 
   setTimeout(() => {
@@ -2914,6 +2918,7 @@ window.addEventListener("DOMContentLoaded", () => {
     tabSize: 2,
     gutters: ["CodeMirror-lint-markers"],
     lint: true,
+    inputStyle: "textarea",
     extraKeys: { 
       "Ctrl-Space": "autocomplete",
       "Tab": "emmetExpandAbbreviation",
