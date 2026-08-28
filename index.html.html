@@ -323,12 +323,12 @@ body{overflow-x:hidden}.hidden{display:none!important}
   <div class="tour-shade"></div><div id="tourSpotlight" class="tour-spotlight"></div>
   <div id="tourFloatingLabel" class="tour-floating-label"><i class="fa-solid fa-sparkles"></i><span>FEATURE</span></div>
   <div id="tourTooltip" class="tour-tooltip" data-arrow="bottom" role="dialog" aria-live="polite">
-    <div class="tour-topline"><span id="tourStepBadge" class="tour-step-badge">STEP 1 OF 1</span><button class="tour-btn ghost" type="button" onclick="skipWorkspaceTour()">Skip tour</button></div>
+    <div class="tour-topline"><span id="tourStepBadge" class="tour-step-badge">STEP 1 OF 1</span><button class="tour-btn ghost" type="button">Skip tour</button></div>
     <h3 id="tourTitle" class="tour-title">Welcome</h3><p id="tourText" class="tour-text">Let's take a quick look around your workspace.</p>
     <div class="tour-progress"><span id="tourProgressBar"></span></div>
-    <div class="tour-actions"><div class="tour-actions-left"><button id="tourBack" class="tour-btn" type="button" onclick="workspaceTourBack()">← Back</button></div><div class="tour-actions-right"><button id="tourNext" class="tour-btn primary" type="button" onclick="workspaceTourNext()">Next →</button></div></div>
+    <div class="tour-actions"><div class="tour-actions-left"><button id="tourBack" class="tour-btn" type="button">← Back</button></div><div class="tour-actions-right"><button id="tourNext" class="tour-btn primary" type="button">Next →</button></div></div>
   </div>
-  <div id="tourFinish" class="tour-finish"><div class="tour-finish-card"><div class="tour-finish-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>You're ready to build.</h3><p>That's the complete workspace tour. You can now explore everything freely and start creating.</p><button class="tour-btn primary" type="button" onclick="finishWorkspaceTour()">Start Building <i class="fa-solid fa-arrow-right ml-1"></i></button></div></div>
+  <div id="tourFinish" class="tour-finish"><div class="tour-finish-card"><div class="tour-finish-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>You're ready to build.</h3><p>That's the complete workspace tour. You can now explore everything freely and start creating.</p><button class="tour-btn primary" type="button">Start Building <i class="fa-solid fa-arrow-right ml-1"></i></button></div></div>
 </div>
 <!-- 1. FULL RICH LANDING PAGE -->
 <div id="landingPage" class="landing">
@@ -982,9 +982,9 @@ onAuthStateChanged(auth, user => {
   resolveAuth(user || null);
 });
 
-  /* ====================================================
+    /* ====================================================
      INTERACTIVE WORKSPACE SPOTLIGHT TOUR JS
-     Isolated onboarding layer — no existing feature logic is replaced.
+     Fixed onboarding controls only.
      ==================================================== */
   (function(){
     const TOUR_KEY="jco_workspace_tour_seen_v2";
@@ -1005,20 +1005,139 @@ onAuthStateChanged(auth, user => {
       {key:"download-button",title:"Export Project",text:"Export your project as a complete ZIP or as a single HTML file.",label:"EXPORT",prefer:"bottom"},
       {key:"project-switcher",title:"One Last Tip",text:"You can return to your projects anytime from the workspace controls. Everything else is ready for you to explore.",label:"READY",prefer:"bottom"}
     ];
-    let index=0,active=false,resizeTimer=null;
+
+    let index=0,active=false,resizeTimer=null,renderTimer=null;
     const $=id=>document.getElementById(id);
-    function isVisible(el){if(!el)return false;const cs=getComputedStyle(el),r=el.getBoundingClientRect();return cs.display!=="none"&&cs.visibility!=="hidden"&&parseFloat(cs.opacity||"1")>0&&r.width>1&&r.height>1;}
-    function targetFor(step){const mobile=innerWidth<=1000;if(mobile&&step.mobileKey){const m=document.querySelector(`[data-tour="${step.mobileKey}"]`);if(isVisible(m))return m;}const el=document.querySelector(`[data-tour="${step.key}"]`);return isVisible(el)?el:null;}
-    function ensureTargetVisible(step){if(innerWidth<=1000&&(step.key==="explorer"||step.key==="file-actions")){const exp=document.querySelector('.explorer');if(exp&&!exp.classList.contains('open')&&typeof window.toggleExplorerMenu==='function')window.toggleExplorerMenu();}}
-    function visibleSteps(){return tour.filter(step=>!(step.key==="preview-toolbar"&&innerWidth<=700));}
-    function positionTooltip(target,prefer){const tip=$("tourTooltip"),pad=12,gap=18,r=target.getBoundingClientRect(),tw=Math.min(360,innerWidth-28),th=tip.offsetHeight||190;let left=0,top=0,arrow="bottom";const bottom=innerHeight-r.bottom-gap>=th,topok=r.top-gap>=th,right=innerWidth-r.right-gap>=tw,leftok=r.left-gap>=tw;if(prefer==="right"&&right){left=r.right+gap;top=r.top;arrow="right"}else if(prefer==="left"&&leftok){left=r.left-tw-gap;top=r.top;arrow="left"}else if(prefer==="top"&&topok){left=r.left;top=r.top-th-gap;arrow="top"}else if(bottom){left=r.left;top=r.bottom+gap;arrow="bottom"}else if(topok){left=r.left;top=r.top-th-gap;arrow="top"}else if(right){left=r.right+gap;top=Math.max(pad,Math.min(r.top,innerHeight-th-pad));arrow="right"}else{left=Math.max(pad,r.left-tw-gap);top=Math.max(pad,Math.min(r.bottom+gap,innerHeight-th-pad));arrow="left"}left=Math.max(pad,Math.min(left,innerWidth-tw-pad));top=Math.max(pad,Math.min(top,innerHeight-th-pad));tip.style.width=tw+"px";tip.style.left=left+"px";tip.style.top=top+"px";tip.dataset.arrow=arrow;}
-    function render(){if(!active)return;const steps=visibleSteps();if(index>=steps.length){showFinish();return;}const step=steps[index];ensureTargetVisible(step);let target=targetFor(step);if(!target){index++;render();return;}try{target.scrollIntoView({block:"nearest",inline:"nearest"});}catch(e){}setTimeout(()=>{target=targetFor(step);if(!target){index++;render();return;}const r=target.getBoundingClientRect(),spot=$("tourSpotlight"),pad=5;spot.style.left=(r.left-pad)+"px";spot.style.top=(r.top-pad)+"px";spot.style.width=(r.width+pad*2)+"px";spot.style.height=(r.height+pad*2)+"px";spot.style.borderRadius=Math.min(16,Math.max(8,parseFloat(getComputedStyle(target).borderRadius)||10))+"px";
-        $("tourStepBadge").textContent=`STEP ${index+1} OF ${steps.length}`;$("tourTitle").textContent=step.title;$("tourText").textContent=step.text;$("tourProgressBar").style.width=((index+1)/steps.length*100)+"%";$("tourNext").innerHTML=index===steps.length-1?"Finish →":"Next →";$("tourBack").style.visibility=index===0?"hidden":"visible";const fl=$("tourFloatingLabel");fl.querySelector("span").textContent=step.label;fl.style.left=Math.max(8,Math.min(r.left,innerWidth-120))+"px";fl.style.top=Math.max(8,r.top-32)+"px";positionTooltip(target,step.prefer);spot.classList.add("show");$("tourTooltip").classList.add("show");fl.classList.add("show");},90);}
-    function showFinish(){$("tourSpotlight").classList.remove("show");$("tourTooltip").classList.remove("show");$("tourFloatingLabel").classList.remove("show");$("tourFinish").classList.add("show");}
-    function start(){if(active||localStorage.getItem(TOUR_KEY)==="true")return;const app=$("app");if(!app||app.classList.contains("hidden"))return;active=true;index=0;$("tourFinish").classList.remove("show");$("workspaceTour").classList.add("active");$("workspaceTour").setAttribute("aria-hidden","false");setTimeout(render,220);}
-    window.startWorkspaceTour=start;window.workspaceTourNext=function(){const steps=visibleSteps();if(index<steps.length-1){index++;render();}else showFinish();};window.workspaceTourBack=function(){if(index>0){index--;render();}};window.skipWorkspaceTour=function(){active=false;localStorage.setItem(TOUR_KEY,"true");$("workspaceTour").classList.remove("active");$("workspaceTour").setAttribute("aria-hidden","true");$("tourFinish").classList.remove("show");const exp=document.querySelector('.explorer');if(innerWidth<=1000&&exp?.classList.contains('open')&&typeof window.toggleExplorerMenu==='function')window.toggleExplorerMenu();};window.finishWorkspaceTour=window.skipWorkspaceTour;
-    window.addEventListener("resize",()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(active)render();},120);});window.addEventListener("scroll",()=>{if(active)render();},{passive:true});window.__maybeStartWorkspaceTour=()=>{if(localStorage.getItem(TOUR_KEY)!=="true"&&$("app")&&!$("app").classList.contains("hidden"))setTimeout(start,650);};
-  })();
+
+    function isVisible(el){
+      if(!el)return false;
+      const cs=getComputedStyle(el),r=el.getBoundingClientRect();
+      return cs.display!=="none"&&cs.visibility!=="hidden"&&parseFloat(cs.opacity||"1")>0&&r.width>1&&r.height>1;
+    }
+    function targetFor(step){
+      const mobile=innerWidth<=1000;
+      if(mobile&&step.mobileKey){
+        const m=document.querySelector(`[data-tour="${step.mobileKey}"]`);
+        if(isVisible(m))return m;
+      }
+      const el=document.querySelector(`[data-tour="${step.key}"]`);
+      return isVisible(el)?el:null;
+    }
+    function ensureTargetVisible(step){
+      if(innerWidth<=1000&&(step.key==="explorer"||step.key==="file-actions")){
+        const exp=document.querySelector(".explorer");
+        if(exp&&!exp.classList.contains("open")&&typeof window.toggleExplorerMenu==="function")window.toggleExplorerMenu();
+      }
+    }
+    function visibleSteps(){
+      return tour.filter(step=>!(step.key==="preview-toolbar"&&innerWidth<=700));
+    }
+    function positionTooltip(target,prefer){
+      const tip=$("tourTooltip");
+      if(!tip||!target)return;
+      const pad=12,gap=18,r=target.getBoundingClientRect(),tw=Math.min(360,innerWidth-28),th=tip.offsetHeight||190;
+      let left=0,top=0,arrow="bottom";
+      const bottom=innerHeight-r.bottom-gap>=th,topok=r.top-gap>=th,right=innerWidth-r.right-gap>=tw,leftok=r.left-gap>=tw;
+      if(prefer==="right"&&right){left=r.right+gap;top=r.top;arrow="right"}
+      else if(prefer==="left"&&leftok){left=r.left-tw-gap;top=r.top;arrow="left"}
+      else if(prefer==="top"&&topok){left=r.left;top=r.top-th-gap;arrow="top"}
+      else if(bottom){left=r.left;top=r.bottom+gap;arrow="bottom"}
+      else if(topok){left=r.left;top=r.top-th-gap;arrow="top"}
+      else if(right){left=r.right+gap;top=Math.max(pad,Math.min(r.top,innerHeight-th-pad));arrow="right"}
+      else{left=Math.max(pad,r.left-tw-gap);top=Math.max(pad,Math.min(r.bottom+gap,innerHeight-th-pad));arrow="left"}
+      left=Math.max(pad,Math.min(left,innerWidth-tw-pad));
+      top=Math.max(pad,Math.min(top,innerHeight-th-pad));
+      tip.style.width=tw+"px";tip.style.left=left+"px";tip.style.top=top+"px";tip.dataset.arrow=arrow;
+    }
+    function render(){
+      if(!active)return;
+      const steps=visibleSteps();
+      if(index>=steps.length){showFinish();return;}
+      const step=steps[index];
+      ensureTargetVisible(step);
+      let target=targetFor(step);
+      if(!target){index++;render();return;}
+      try{target.scrollIntoView({block:"nearest",inline:"nearest"});}catch(e){}
+      clearTimeout(renderTimer);
+      renderTimer=setTimeout(()=>{
+        if(!active)return;
+        target=targetFor(step);
+        if(!target){index++;render();return;}
+        const r=target.getBoundingClientRect(),spot=$("tourSpotlight"),fl=$("tourFloatingLabel");
+        if(!spot||!fl)return;
+        const pad=5;
+        spot.style.left=(r.left-pad)+"px";spot.style.top=(r.top-pad)+"px";
+        spot.style.width=(r.width+pad*2)+"px";spot.style.height=(r.height+pad*2)+"px";
+        spot.style.borderRadius=Math.min(16,Math.max(8,parseFloat(getComputedStyle(target).borderRadius)||10))+"px";
+        $("tourStepBadge").textContent=`STEP ${index+1} OF ${steps.length}`;
+        $("tourTitle").textContent=step.title;$("tourText").textContent=step.text;
+        $("tourProgressBar").style.width=((index+1)/steps.length*100)+"%";
+        $("tourNext").textContent=index===steps.length-1?"Finish →":"Next →";
+        $("tourBack").style.visibility=index===0?"hidden":"visible";
+        fl.querySelector("span").textContent=step.label;
+        fl.style.left=Math.max(8,Math.min(r.left,innerWidth-120))+"px";
+        fl.style.top=Math.max(8,r.top-32)+"px";
+        positionTooltip(target,step.prefer);
+        spot.classList.add("show");$("tourTooltip").classList.add("show");fl.classList.add("show");
+      },100);
+    }
+    function showFinish(){
+      $("tourSpotlight")?.classList.remove("show");$("tourTooltip")?.classList.remove("show");
+      $("tourFloatingLabel")?.classList.remove("show");$("tourFinish")?.classList.add("show");
+    }
+    function closeTour(mark=true){
+      active=false;clearTimeout(renderTimer);
+      if(mark)localStorage.setItem(TOUR_KEY,"true");
+      $("workspaceTour")?.classList.remove("active");$("workspaceTour")?.setAttribute("aria-hidden","true");
+      $("tourFinish")?.classList.remove("show");$("tourSpotlight")?.classList.remove("show");
+      $("tourTooltip")?.classList.remove("show");$("tourFloatingLabel")?.classList.remove("show");
+      const exp=document.querySelector(".explorer");
+      if(innerWidth<=1000&&exp?.classList.contains("open")&&typeof window.toggleExplorerMenu==="function")window.toggleExplorerMenu();
+    }
+    function start(){
+      if(active||localStorage.getItem(TOUR_KEY)==="true")return;
+      const app=$("app");if(!app||app.classList.contains("hidden"))return;
+      active=true;index=0;$("tourFinish")?.classList.remove("show");
+      $("workspaceTour")?.classList.add("active");$("workspaceTour")?.setAttribute("aria-hidden","false");
+      clearTimeout(renderTimer);renderTimer=setTimeout(render,220);
+    }
+
+    window.startWorkspaceTour=start;
+    window.workspaceTourNext=function(){
+      if(!active)return;
+      const steps=visibleSteps();
+      if(index<steps.length-1){index++;render();}else showFinish();
+    };
+    window.workspaceTourBack=function(){if(active&&index>0){index--;render();}};
+    window.skipWorkspaceTour=function(){closeTour(true)};
+    window.finishWorkspaceTour=function(){closeTour(true)};
+
+    // Robust direct listeners. These do not depend on inline onclick execution.
+    function bindTourControls(){
+      const root=$("workspaceTour");if(!root)return;
+      const bind=(el,fn)=>{
+        if(!el)return;
+        el.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();fn();},true);
+      };
+      bind($("tourNext"),window.workspaceTourNext);
+      bind($("tourBack"),window.workspaceTourBack);
+      root.querySelectorAll(".tour-btn").forEach(btn=>{
+        const text=(btn.textContent||"").trim().toLowerCase();
+        if(text.includes("skip"))bind(btn,window.skipWorkspaceTour);
+        else if(text.includes("start building"))bind(btn,window.finishWorkspaceTour);
+      });
+    }
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindTourControls,{once:true});
+    else bindTourControls();
+
+    window.addEventListener("resize",()=>{
+      clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(active)render();},120);
+    });
+    window.addEventListener("scroll",()=>{if(active)render();},{passive:true});
+    window.__maybeStartWorkspaceTour=()=>{
+      if(localStorage.getItem(TOUR_KEY)!=="true"&&$("app")&&!$("app").classList.contains("hidden"))setTimeout(start,650);
+    };
+  })();  })();
 </script>
 
 <script>
