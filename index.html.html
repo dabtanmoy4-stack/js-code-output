@@ -159,10 +159,27 @@
   .editor-tab { height:34px;border:0;background:transparent;color:var(--muted);font-size:11px;padding:0 12px;border-radius:7px 7px 0 0;display:inline-flex;align-items:center;gap:6px; white-space: nowrap; }
   .editor-tab:hover { background:var(--surface2);color:var(--ink); }
   .editor-tab.active-file-tab { background:var(--surface2);color:var(--brand);border-top:2px solid var(--brand);font-weight:800; }
-  .editor-container-wrapper { flex:1;min-height:0;display:flex;flex-direction:column;position:relative; }
-  .editor-content { flex:1;min-height:0;position:relative; }
-  .code-pane { position:absolute;inset:0; }
+  .editor-container-wrapper { 
+  flex: 1; 
+  min-height: 0; 
+  display: flex; 
+  flex-direction: column; 
+  position: relative; 
+}
 
+.editor-content { 
+  flex: 1; 
+  min-height: 0; 
+  position: relative; 
+  height: 100%; /* এই লাইনটি নিশ্চিত করুন */
+}
+
+.code-pane { 
+  position: absolute; 
+  inset: 0; 
+  height: 100%; 
+  width: 100%; 
+}
   /* HIGH-CONTRAST PURE BLACK CODEMIRROR THEME & HIGHLIGHTS */
   .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#000000!important;color:#f8fafc!important; }
   .CodeMirror-gutters { background:#050b14!important; border-right:1px solid #1e293b!important; }
@@ -2864,7 +2881,13 @@ window.addEventListener("popstate", (e) => {
 
 window.addEventListener("DOMContentLoaded", () => {
   document.documentElement.classList.add("dark");
-
+// DOMContentLoaded-এর শেষে editor রিফ্রেশ করুন
+  setTimeout(() => {
+    if(editor) {
+      editor.refresh();
+      editor.focus();
+    }
+  }, 200);
   let initialId = localStorage.getItem("js-code-output-active-project-id");
   if(initialId && initialId.startsWith("local_proj_")) {
     let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
