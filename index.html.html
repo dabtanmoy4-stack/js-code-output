@@ -327,6 +327,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <div id="workspaceTour" aria-hidden="true">
   <div class="tour-shade"></div>
   <div id="tourSpotlight" class="tour-spotlight"></div>
+  <div id="tourFloatingLabel" class="tour-floating-label" aria-hidden="true"><i class="fa-solid fa-sparkles"></i><span>FEATURE</span></div>
 
   <div id="tourTooltip" class="tour-tooltip" data-arrow="bottom" role="dialog" aria-live="polite">
     <div class="tour-topline">
@@ -1015,7 +1016,7 @@ onAuthStateChanged(auth, user => {
    INTERACTIVE WORKSPACE SPOTLIGHT TOUR (JS FIXED)
 ==================================================== */
 (function(){
-  const TOUR_KEY = "jco_workspace_tour_seen_v3";
+  const TOUR_KEY = "jco_workspace_tour_seen_v4";
   const tour = [
     {key:"project-switcher",title:"Project Switcher",text:"Switch between your projects from here. Your current project is always shown at the top.",label:"PROJECTS",prefer:"bottom"},
     {key:"explorer",mobileKey:"mobile-explorer",title:"File Explorer",text:"Manage your project files and folders here. On mobile, use the folder button to open this panel.",label:"FILES",prefer:"right"},
@@ -1115,14 +1116,17 @@ onAuthStateChanged(auth, user => {
       $("tourBack").style.visibility = index === 0 ? "hidden" : "visible";
       
       const fl = $("tourFloatingLabel");
-      fl.querySelector("span").textContent = step.label;
-      fl.style.left = Math.max(8, Math.min(r.left, innerWidth - 120)) + "px";
-      fl.style.top = Math.max(8, r.top - 32) + "px";
+      if(fl){
+        const flText = fl.querySelector("span");
+        if(flText) flText.textContent = step.label;
+        fl.style.left = Math.max(8, Math.min(r.left, innerWidth - 120)) + "px";
+        fl.style.top = Math.max(8, r.top - 32) + "px";
+        fl.classList.add("show");
+      }
       
       positionTooltip(target, step.prefer);
       spot.classList.add("show");
       $("tourTooltip").classList.add("show");
-      fl.classList.add("show");
     }, 90);
   }
   
