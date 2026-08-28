@@ -192,9 +192,9 @@
   .cm-searching { background: rgba(236, 72, 153, 0.6) !important; border-radius:3px; color:#fff !important; }
   .CodeMirror-matchingbracket { background: #0284c7 !important; color: #fff !important; font-weight: bold; border-radius: 2px; }
   .CodeMirror-matchingtag { background: rgba(168, 85, 247, 0.45) !important; border-bottom: 2px solid #a855f7; }
-  /* Keep the actual CodeMirror input layer interactive. */
-  .CodeMirror, .CodeMirror-scroll, .CodeMirror textarea, .CodeMirror textarea.CodeMirror-input { pointer-events:auto !important; }
-  .CodeMirror textarea.CodeMirror-input { user-select:text !important; -webkit-user-select:text !important; cursor:text !important; }
+  /* Keep the CodeMirror input surface editable/clickable. */
+  .CodeMirror, .CodeMirror-scroll, .CodeMirror-code, .CodeMirror textarea { pointer-events:auto !important; }
+  .CodeMirror textarea { -webkit-user-select:text !important; user-select:text !important; }
   
   /* High contrast syntax tokens */
   .cm-s-dracula .cm-keyword { color: #ff79c6 !important; font-weight: bold; }
@@ -2361,13 +2361,7 @@ function openFile(n){
     }
     setTimeout(() => {
       editor.refresh();
-      /* Only text files are writable; media/binary behavior remains unchanged. */
-      if(n && !isBinary(getExt(n))) {
-        editor.setOption("readOnly", false);
-        const input = editor.getInputField && editor.getInputField();
-        if(input) { input.disabled=false; input.readOnly=false; input.style.pointerEvents="auto"; }
-        editor.focus();
-      } else if(!editor.getOption("readOnly")) editor.focus();
+      if(!editor.getOption("readOnly")) editor.focus();
     }, 10);
   }
   renderFileExplorer();
@@ -2942,6 +2936,34 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   window.editor = editor;
 
+  // Ensure the hidden CodeMirror input is actually editable and receives focus.
+  // This only repairs editor input/focus; it does not alter any editor features.
+  function ensureEditorInputReady() {
+    if (!editor) return;
+    const input = editor.getInputField && editor.getInputField();
+    if (input) {
+      input.readOnly = false;
+      input.removeAttribute('readonly');
+      input.disabled = false;
+      input.removeAttribute('disabled');
+      input.tabIndex = 0;
+    }
+    editor.setOption('readOnly', false);
+  }
+
+  const codeMirrorSurface = document.querySelector('#wrapper-editor');
+  if (codeMirrorSurface) {
+    codeMirrorSurface.addEventListener('mousedown', () => {
+      ensureEditorInputReady();
+      editor.focus();
+    });
+    codeMirrorSurface.addEventListener('touchstart', () => {
+      ensureEditorInputReady();
+      editor.focus();
+    }, {passive:true});
+  }
+  ensureEditorInputReady();
+
   if(typeof emmetCodeMirror !== 'undefined') {
     emmetCodeMirror(editor);
   }
@@ -2972,11 +2994,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if(editor) {
       editor.refresh();
-      /* Repair stale CodeMirror lock after workspace initialization. */
-      const current = window.activeFile || activeFile || "";
-      if(current && !isBinary(getExt(current))) editor.setOption("readOnly", false);
-      const input = editor.getInputField && editor.getInputField();
-      if(input && current && !isBinary(getExt(current))) { input.disabled=false; input.readOnly=false; input.style.pointerEvents="auto"; }
+      if (typeof ensureEditorInputReady === 'function') ensureEditorInputReady();
       editor.focus();
     }
   }, 100);
