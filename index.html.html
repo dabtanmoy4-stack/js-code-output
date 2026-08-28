@@ -310,7 +310,9 @@ body{overflow-x:hidden}.hidden{display:none!important}
   .tour-btn{border:1px solid #2a3b54;background:#142033;color:#dbeafe;border-radius:9px;padding:8px 11px;font-size:10px;font-weight:800;transition:.2s;cursor:pointer;}.tour-btn:hover{border-color:#6ea8ff;transform:translateY(-1px)}
   .tour-btn.primary{background:#6ea8ff;color:#07101d;border-color:#6ea8ff;box-shadow:0 8px 22px rgba(110,168,255,.22)}
   .tour-btn.ghost{background:transparent;color:#8494aa;border-color:transparent}.tour-btn.ghost:hover{background:#111d2d;color:#dbeafe;border-color:#223149}
-  .tour-floating-label{position:fixed;z-index:3;pointer-events:none;display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:#6ea8ff;color:#07101d;font-size:9px;font-weight:950;letter-spacing:.04em;box-shadow:0 8px 24px rgba(110,168,255,.28);opacity:0;transition:opacity .2s ease}.tour-floating-label.show{opacity:1}
+ .tour-floating-label{
+  display:none !important;
+}
   .tour-finish{position:fixed;inset:0;z-index:5;display:none;place-items:center;padding:20px;pointer-events:auto;background:rgba(2,8,23,.78);backdrop-filter:blur(10px);opacity:0;transition:opacity .35s ease}
   .tour-finish.show{display:grid;opacity:1}
   .tour-finish-card{width:min(460px,94vw);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:24px;padding:30px;text-align:center;box-shadow:0 35px 100px rgba(0,0,0,.5);transform:translateY(18px) scale(.97);transition:.45s cubic-bezier(.16,1,.3,1)}.tour-finish.show .tour-finish-card{transform:none}
@@ -325,7 +327,7 @@ body{overflow-x:hidden}.hidden{display:none!important}
 <div id="workspaceTour" aria-hidden="true">
   <div class="tour-shade"></div>
   <div id="tourSpotlight" class="tour-spotlight"></div>
-  <div id="tourFloatingLabel" class="tour-floating-label"><i class="fa-solid fa-sparkles"></i><span>FEATURE</span></div>
+
   <div id="tourTooltip" class="tour-tooltip" data-arrow="bottom" role="dialog" aria-live="polite">
     <div class="tour-topline">
       <span id="tourStepBadge" class="tour-step-badge">STEP 1 OF 1</span>
