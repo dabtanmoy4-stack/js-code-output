@@ -182,12 +182,8 @@
   }
   
   /* HIGH-CONTRAST PURE BLACK CODEMIRROR THEME & HIGHLIGHTS */
-  .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#000000!important;color:#f8fafc!important; }
-  /* Fix desktop editor input/focus layering without changing editor features. */
-  .editor-panel, .editor-container-wrapper, .editor-content, .code-pane { position:relative; z-index:1; }
-  .CodeMirror { position:relative; z-index:2; pointer-events:auto !important; }
-  .CodeMirror-scroll, .CodeMirror-code, .CodeMirror textarea { pointer-events:auto !important; }
-  .CodeMirror textarea { user-select:text !important; -webkit-user-select:text !important; }
+  .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#000000!important;color:#f8fafc!important;position:relative;z-index:30;pointer-events:auto!important; }
+  .CodeMirror-scroll,.CodeMirror-sizer,.CodeMirror-lines,.CodeMirror-code,.CodeMirror-gutter-wrapper{pointer-events:auto!important;}
   .CodeMirror-gutters { background:#050b14!important; border-right:1px solid #1e293b!important; }
   .CodeMirror-linenumber { color:#64748b!important; }
   .CodeMirror-cursor { border-left:2px solid #38bdf8!important; }
@@ -2938,16 +2934,18 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   window.editor = editor;
 
-  /* Desktop mouse click -> guaranteed CodeMirror focus. */
-  const editorSurface = document.getElementById("wrapper-editor");
-  if (editorSurface) {
-    editorSurface.addEventListener("click", () => {
-      if (editor && !editor.getOption("readOnly")) editor.focus();
-    });
-  }
-
   if(typeof emmetCodeMirror !== 'undefined') {
     emmetCodeMirror(editor);
+  }
+
+  // Keep the desktop editor reliably focusable/clickable without changing its behavior.
+  const cmSurface = document.querySelector("#wrapper-editor .CodeMirror");
+  if (cmSurface) {
+    cmSurface.addEventListener("mousedown", () => {
+      if (editor && !editor.getOption("readOnly")) {
+        editor.focus();
+      }
+    }, true);
   }
 
   editor.on("inputRead", (cm, change) => {
@@ -2976,7 +2974,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if(editor) {
       editor.refresh();
-      if (!editor.getOption("readOnly")) editor.focus();
+      editor.focus();
     }
   }, 100);
 });
