@@ -293,6 +293,9 @@
   .context-menu button { text-align: left; padding: 8px 12px; font-size: 11px; border-radius: 4px; border: none; background: transparent; color: var(--ink); display: flex; align-items: center; gap: 8px; }
   .context-menu button:hover { background: var(--surface2); color: var(--brand); }
   .CodeMirror-lint-marker-error { background:#ef4444!important;border-radius:50%;width:8px;height:8px; }
+  /* Editor input interaction fix */
+  .CodeMirror, .CodeMirror-scroll, .CodeMirror textarea, .CodeMirror textarea.CodeMirror-input { pointer-events:auto !important; }
+  .CodeMirror textarea.CodeMirror-input { user-select:text !important; -webkit-user-select:text !important; cursor:text !important; }
   .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
   .CodeMirror-hints { background:#090d16!important;border:1px solid #1e293b!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
   .CodeMirror-hint-active { background:#1e293b!important;color:#38bdf8!important;border-radius:4px; }
@@ -2963,6 +2966,10 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if(editor) {
       editor.refresh();
+      const input = editor.getInputField && editor.getInputField();
+      if(input) { input.disabled = false; input.readOnly = false; input.style.pointerEvents = "auto"; }
+      const ext = getExt(window.activeFile || activeFile || "");
+      if(!isBinary(ext)) editor.setOption("readOnly", false);
       editor.focus();
     }
   }, 100);
