@@ -431,6 +431,35 @@
 
   </style>
 
+
+<style id="public-viewer-extra-css">
+.public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.public-viewer-head{height:72px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;background:rgba(255,255,255,.92);border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:20;backdrop-filter:blur(16px)}
+.public-viewer-brand{font-size:15px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.public-viewer-brand-dot{width:9px;height:9px;border-radius:50%;background:#2563eb;box-shadow:0 0 0 5px rgba(37,99,235,.10)}
+.public-viewer-cta{border:0;border-radius:12px;padding:11px 16px;background:#111827;color:#fff;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 8px 24px rgba(15,23,42,.12);transition:transform .18s,box-shadow .18s}
+.public-viewer-cta:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(15,23,42,.18)}
+.public-viewer-main{min-height:calc(100vh - 72px);padding:30px;display:flex;align-items:flex-start;justify-content:center}
+.public-project-shell{width:min(1400px,100%);height:calc(100vh - 132px);min-height:600px;background:#fff;border:1px solid #e5e7eb;border-radius:20px;overflow:hidden;box-shadow:0 24px 70px rgba(15,23,42,.12);display:flex;flex-direction:column}
+.public-project-titlebar{height:44px;flex:0 0 44px;display:flex;align-items:center;gap:9px;padding:0 16px;background:#fafafa;border-bottom:1px solid #e5e7eb;font-size:12px;font-weight:700;color:#475569}
+.public-project-live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.10)}
+.public-project-live-label{margin-left:auto;font-size:9px;letter-spacing:.12em;color:#16a34a}
+.public-project-frame{width:100%;height:100%;border:0;background:#fff;display:block;flex:1}
+.public-viewer-loading{width:min(560px,100%);margin:16vh auto 0;padding:30px;display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 20px 50px rgba(15,23,42,.08)}
+.public-viewer-spinner{width:34px;height:34px;border:3px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:publicViewerSpin .8s linear infinite;flex:0 0 auto}
+.public-viewer-loading strong,.public-viewer-error-icon+div strong{font-size:15px}
+.public-viewer-loading p,.public-viewer-error-icon+div p{margin:5px 0 0;color:#64748b;font-size:12px}
+.public-viewer-error-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#fff7ed;color:#ea580c;font-size:18px;flex:0 0 auto}
+.public-viewer-back{margin-top:14px;border:0;border-radius:10px;padding:9px 13px;background:#111827;color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+@keyframes publicViewerSpin{to{transform:rotate(360deg)}}
+@media(max-width:700px){
+  .public-viewer-head{height:auto;min-height:68px;padding:12px 15px;align-items:center}
+  .public-viewer-brand{font-size:12px}
+  .public-viewer-cta{font-size:11px;padding:9px 11px}
+  .public-viewer-main{padding:14px;min-height:calc(100vh - 68px)}
+  .public-project-shell{height:calc(100vh - 96px);min-height:500px;border-radius:14px}
+}
+</style>
 </head>
 <body>
   <div id="workspaceTour" aria-hidden="true">
@@ -2994,12 +3023,117 @@ window.addEventListener("popstate", (e) => {
 });
 
 async function checkForLiveViewerMode() {
-  const liveProjId=new URLSearchParams(window.location.search).get('live');if(!liveProjId)return false;
-  try{await(window.firebaseAuthReady||Promise.resolve());const snap=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"public_projects",liveProjId));
-    if(snap.exists()){const data=snap.data(),title=data.name||"Published Project";document.documentElement.classList.remove("dark");
-      document.body.innerHTML=`<div class="public-viewer"><header class="public-viewer-head"><div class="public-viewer-brand">A product made by JS CODE OUTPUT</div><button class="public-viewer-cta" onclick="window.location.href=window.location.origin+window.location.pathname">Try to make your own project <i class="fa-solid fa-arrow-right"></i></button></header><main class="public-viewer-main"><div class="public-project-shell"><iframe class="public-project-frame" title="${escapeHTML(title)}"></iframe></div></main></div>`;
-      document.querySelector(".public-project-frame").srcdoc=data.htmlBundle||"<!doctype html><html><body><h1>Project has no content</h1></body></html>";document.title=title+" — JS CODE OUTPUT";return true;}
-  }catch(err){console.error("Failed to load live project:",err)}return false;
+  // Public viewer mode: supports both the current ?live=ID links and
+  // the older ?published=ID links. This runs before the normal editor UI.
+  const params = new URLSearchParams(window.location.search);
+  const liveProjId = params.get("live") || params.get("published");
+  if (!liveProjId) return false;
+
+  // Immediately show the public viewer shell so the shared link never
+  // briefly exposes the editor/project dashboard.
+  document.documentElement.classList.remove("dark");
+  document.body.innerHTML = `
+    <div class="public-viewer">
+      <header class="public-viewer-head">
+        <div class="public-viewer-brand">
+          <span class="public-viewer-brand-dot"></span>
+          A product made by JS CODE OUTPUT
+        </div>
+        <button class="public-viewer-cta" id="publicMakeOwnBtn">
+          Try to make your own project <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </header>
+      <main class="public-viewer-main">
+        <div class="public-viewer-loading" id="publicViewerStatus">
+          <div class="public-viewer-spinner"></div>
+          <div>
+            <strong>Loading project…</strong>
+            <p>Please wait while the published project is opened.</p>
+          </div>
+        </div>
+        <div class="public-project-shell hidden" id="publicProjectShell">
+          <div class="public-project-titlebar">
+            <span class="public-project-live-dot"></span>
+            <span id="publicProjectName">Published Project</span>
+            <span class="public-project-live-label">LIVE</span>
+          </div>
+          <iframe
+            id="publicProjectFrame"
+            class="public-project-frame"
+            title="Published Project"
+            sandbox="allow-scripts allow-forms allow-modals allow-popups allow-presentation"
+          ></iframe>
+        </div>
+      </main>
+    </div>
+  `;
+
+  document.getElementById("publicMakeOwnBtn").onclick = () => {
+    // Remove the live query before returning to the editor.
+    window.location.href = window.location.origin + window.location.pathname;
+  };
+
+  try {
+    // Firebase is initialized by the module script below. Wait for it to
+    // become available without requiring the visitor to sign in.
+    const deadline = Date.now() + 12000;
+    while (
+      (!window.firebaseGetDoc || !window.firebaseDoc || !window.firebaseDB) &&
+      Date.now() < deadline
+    ) {
+      await new Promise(r => setTimeout(r, 50));
+    }
+
+    if (!window.firebaseGetDoc || !window.firebaseDoc || !window.firebaseDB) {
+      throw new Error("Firebase is not ready.");
+    }
+
+    const snap = await window.firebaseGetDoc(
+      window.firebaseDoc(window.firebaseDB, "public_projects", liveProjId)
+    );
+
+    if (!snap.exists()) {
+      throw new Error("Published project not found.");
+    }
+
+    const data = snap.data() || {};
+    const title = data.name || "Published Project";
+    const bundle = data.htmlBundle || "";
+
+    if (!bundle) {
+      throw new Error("This published project has no website content.");
+    }
+
+    document.title = title + " — JS CODE OUTPUT";
+    document.getElementById("publicProjectName").textContent = title;
+
+    const frame = document.getElementById("publicProjectFrame");
+    frame.srcdoc = bundle;
+
+    document.getElementById("publicViewerStatus").classList.add("hidden");
+    document.getElementById("publicProjectShell").classList.remove("hidden");
+
+    return true;
+  } catch (err) {
+    console.error("Failed to load live project:", err);
+
+    const status = document.getElementById("publicViewerStatus");
+    if (status) {
+      status.innerHTML = `
+        <div class="public-viewer-error-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div>
+          <strong>Unable to open this published project</strong>
+          <p>The project may have been unpublished, deleted, or its public link is unavailable.</p>
+          <button class="public-viewer-back" onclick="window.location.href=window.location.origin+window.location.pathname">
+            Open JS CODE OUTPUT
+          </button>
+        </div>
+      `;
+    }
+    return true;
+  }
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
