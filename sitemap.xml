@@ -39,5 +39,27 @@
     <url><loc>https://js-code-output.vercel.app/online-web-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
     <url><loc>https://js-code-output.vercel.app/web-code-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
     <url><loc>https://js-code-output.vercel.app/code-editor-with-live-preview.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<!-- Code Output -->
+  <url>
+    <loc>https://js-code-output.vercel.app/code-output</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
+  <!-- Live Output Code -->
+  <url>
+    <loc>https://js-code-output.vercel.app/live-output-code</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Real Time Code Output -->
+  <url>
+    <loc>https://js-code-output.vercel.app/real-time-code-output</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
