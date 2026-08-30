@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Output - JS Runner</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #0e1117;
+      color: #e6edf3;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #58a6ff;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #238636;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .back-btn:hover {
+      background-color: #2ea043;
+    }
+    main {
+      flex: 1;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 768px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .box-title {
+      font-size: 0.95rem;
+      color: #8b949e;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    textarea {
+      width: 100%;
+      height: 380px;
+      background-color: #161b22;
+      color: #79c0ff;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+    }
+    .console-box {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 14px;
+      height: 380px;
+      overflow-y: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      color: #3fb950;
+      white-space: pre-wrap;
+    }
+    .run-btn {
+      margin-top: 16px;
+      background-color: #1f6feb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .run-btn:hover {
+      background-color: #388bfd;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">JS Code Output</div>
+    <a href="/" class="back-btn">← Back to Main Workspace</a>
+  </header>
+
+  <main>
+    <h2>JavaScript Code Output Runner</h2>
+    <div class="editor-container">
+      <div>
+        <div class="box-title">JS Input Code</div>
+        <textarea id="code" placeholder="Type JS code here...">console.log("Hello from Code Output!");&#10;const sum = 10 + 20;&#10;console.log("Result:", sum);</textarea>
+        <button class="run-btn" onclick="runCode()">Run Code</button>
+      </div>
+      <div>
+        <div class="box-title">Console Output</div>
+        <div id="output" class="console-box">// Output will appear here...</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function runCode() {
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = '';
+      const originalLog = console.log;
+      console.log = function(...args) {
+        outputDiv.innerHTML += args.join(' ') + '\n';
+        originalLog.apply(console, args);
+      };
+      try {
+        new Function(document.getElementById('code').value)();
+      } catch (err) {
+        outputDiv.innerHTML += 'Error: ' + err.message + '\n';
+      } finally {
+        console.log = originalLog;
+      }
+    }
+  </script>
+
+</body>
+</html>
