@@ -1155,7 +1155,7 @@
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,setDoc,getDoc,deleteDoc,arrayUnion,arrayRemove,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1182,6 +1182,7 @@ window.firebaseDeleteDoc = deleteDoc;
 window.firebaseServerTimestamp = serverTimestamp;
 window.firebaseSignOut = signOut;
 window.googleSignIn = () => signInWithPopup(auth, provider);
+window.firebaseAnonymousSignIn = () => signInAnonymously(auth);
 
 window.saveProjectDraft = async (idOverride=null) => {
   const user = auth.currentUser;
@@ -3088,9 +3089,29 @@ async function checkForLiveViewerMode() {
       throw new Error("Firebase is not ready.");
     }
 
-    const snap = await window.firebaseGetDoc(
-      window.firebaseDoc(window.firebaseDB, "public_projects", liveProjId)
-    );
+    let snap;
+    try {
+      // First try the public document directly.
+      snap = await window.firebaseGetDoc(
+        window.firebaseDoc(window.firebaseDB, "public_projects", liveProjId)
+      );
+    } catch (firstErr) {
+      // If Firestore rules require authentication, silently create an
+      // anonymous Firebase session and retry. This keeps the public viewer
+      // free of a Google-login screen.
+      if (window.firebaseAnonymousSignIn) {
+        try {
+          await window.firebaseAnonymousSignIn();
+          snap = await window.firebaseGetDoc(
+            window.firebaseDoc(window.firebaseDB, "public_projects", liveProjId)
+          );
+        } catch (anonErr) {
+          throw anonErr;
+        }
+      } else {
+        throw firstErr;
+      }
+    }
 
     if (!snap.exists()) {
       throw new Error("Published project not found.");
@@ -3125,7 +3146,7 @@ async function checkForLiveViewerMode() {
         </div>
         <div>
           <strong>Unable to open this published project</strong>
-          <p>The project may have been unpublished, deleted, or its public link is unavailable.</p>
+          <p>The published project could not be loaded. If this keeps happening, make sure Firebase Authentication → Anonymous is enabled and Firestore allows reading <b>public_projects</b>.</p>
           <button class="public-viewer-back" onclick="window.location.href=window.location.origin+window.location.pathname">
             Open JS CODE OUTPUT
           </button>
