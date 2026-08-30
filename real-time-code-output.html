@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Time Code Output - HTML/JS Preview</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #0e1117;
+      color: #e6edf3;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #58a6ff;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #238636;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .back-btn:hover {
+      background-color: #2ea043;
+    }
+    main {
+      flex: 1;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 768px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .box-title {
+      font-size: 0.95rem;
+      color: #8b949e;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    textarea {
+      width: 100%;
+      height: 420px;
+      background-color: #161b22;
+      color: #79c0ff;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 14px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+    }
+    iframe {
+      width: 100%;
+      height: 420px;
+      background-color: #ffffff;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">Real Time Code Output</div>
+    <a href="/" class="back-btn">← Back to Main Workspace</a>
+  </header>
+
+  <main>
+    <h2>Real-Time DOM & JS Visualizer</h2>
+    <div class="editor-container">
+      <div>
+        <div class="box-title">Source Code (HTML/JS)</div>
+        <textarea id="realtimeSource" oninput="renderFrame()"><h2 style="color: #0969da; font-family: sans-serif;">Live Preview</h2>
+<p style="font-family: sans-serif;">This renders output instantly in an isolated window.</p>
+<button onclick="alert('Working!')">Click Me</button></textarea>
+      </div>
+      <div>
+        <div class="box-title">Live Preview Window</div>
+        <iframe id="previewFrame"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function renderFrame() {
+      const code = document.getElementById('realtimeSource').value;
+      const iframe = document.getElementById('previewFrame');
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(code);
+      doc.close();
+    }
+    window.onload = renderFrame;
+  </script>
+
+</body>
+</html>
