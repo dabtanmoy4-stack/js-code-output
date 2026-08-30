@@ -398,6 +398,37 @@
   height: 100% !important;
   width: 100% !important;
 }
+
+  .project-more{width:28px;height:28px;border:0;background:transparent;color:var(--muted);border-radius:7px;display:grid;place-items:center;flex:0 0 28px}
+  .project-more:hover{background:var(--surface2);color:var(--brand)}
+  .context-menu.project-menu-context{min-width:190px;padding:6px;border-radius:12px;backdrop-filter:blur(18px)}
+  .context-menu.project-menu-context button{padding:10px 12px;border-radius:8px}
+  .context-menu.project-menu-context button.danger{color:#ef4444}
+  .context-menu.project-menu-context button.danger:hover{background:rgba(239,68,68,.10);color:#ef4444}
+  .code-search-panel{position:absolute;top:7px;right:9px;z-index:120;display:none;align-items:center;gap:7px;padding:7px;background:#090d16;border:1px solid #263650;border-radius:11px;box-shadow:0 14px 35px rgba(0,0,0,.45);width:min(430px,calc(100% - 18px))}
+  .code-search-panel.show{display:flex}
+  .code-search-panel input{min-width:0;flex:1;background:#020617;color:#f8fafc;border:1px solid #334155;border-radius:7px;padding:7px 9px;font:12px "Fira Code",monospace;outline:none}
+  .code-search-panel input:focus{border-color:#38bdf8;box-shadow:0 0 0 2px rgba(56,189,248,.12)}
+  .code-search-count{font:10px "Fira Code",monospace;color:#94a3b8;white-space:nowrap;min-width:54px;text-align:center}
+  .code-search-btn{border:1px solid #334155;background:#142033;color:#dbeafe;border-radius:7px;width:28px;height:28px}
+  .code-search-btn:hover{border-color:#38bdf8;color:#38bdf8}
+  .code-search-hint{font-size:9px;color:#64748b;white-space:nowrap}
+  .draft-modal-card{width:min(440px,94vw);text-align:left}
+  .draft-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(20,86,184,.12);color:var(--brand);font-size:20px;margin-bottom:14px}
+  .draft-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+  .draft-actions button{padding:11px 13px;border-radius:10px;font-size:11px;font-weight:800;border:1px solid var(--line)}
+  .draft-save{background:var(--ink);color:var(--surface)}
+  .draft-cancel{background:var(--surface2);color:var(--ink)}
+  .public-viewer{min-height:100vh;background:#f7f9fc;color:#101828;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  .public-viewer-head{height:72px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(255,255,255,.86);backdrop-filter:blur(18px);border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:5}
+  .public-viewer-brand{font-size:12px;font-weight:900;letter-spacing:.06em;color:#111827}
+  .public-viewer-cta{border:0;background:#111827;color:#fff;padding:10px 15px;border-radius:10px;font-size:11px;font-weight:850;cursor:pointer;box-shadow:0 8px 20px rgba(15,23,42,.12)}
+  .public-viewer-cta:hover{transform:translateY(-1px)}
+  .public-viewer-main{padding:34px 5vw 60px}
+  .public-project-shell{width:min(1180px,100%);margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:22px;overflow:hidden;box-shadow:0 25px 70px rgba(15,35,65,.10)}
+  .public-project-frame{display:block;width:100%;height:min(78vh,900px);min-height:520px;border:0;background:#fff}
+  @media(max-width:700px){.code-search-panel{top:6px;right:6px;width:calc(100% - 12px)}.code-search-hint{display:none}.public-viewer-head{height:62px;padding:0 16px}.public-viewer-main{padding:18px 12px 35px}.public-project-shell{border-radius:16px}.public-project-frame{min-height:72vh;height:72vh}.public-viewer-brand{font-size:10px}.public-viewer-cta{font-size:10px;padding:9px 11px}}
+
   </style>
 
 </head>
@@ -885,6 +916,15 @@
             </div>
 
           </div>
+          <div id="codeSearchPanel" class="code-search-panel" role="search">
+            <input id="codeSearchInput" type="text" autocomplete="off" placeholder="Search in current file…">
+            <span id="codeSearchCount" class="code-search-count">0 / 0</span>
+            <button class="code-search-btn" type="button" onclick="searchPrevious()" title="Previous (Shift+Enter)">↑</button>
+            <button class="code-search-btn" type="button" onclick="searchNext()" title="Next (Enter)">↓</button>
+            <button class="code-search-btn" type="button" onclick="closeCodeSearch()" title="Close (Esc)">×</button>
+            <span class="code-search-hint">Enter ↵</span>
+          </div>
+
           <div class="editor-container-wrapper">
             <div class="editor-content">
               <div id="wrapper-editor" class="code-pane" data-tour="code-editor"></div>
@@ -1060,6 +1100,22 @@
 
 <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-2 text-green-400"></i><span id="toastMsg">Saved</span></div>
 
+<div id="draftGuardModal" class="overlay hidden">
+  <div class="modal draft-modal-card">
+    <div class="draft-icon"><i class="fa-solid fa-floppy-disk"></i></div>
+    <h3>Save your changes as draft?</h3>
+    <p id="draftGuardText">You have unsaved changes in this project. Save them as a draft before leaving?</p>
+    <div class="draft-actions">
+      <button class="draft-save" id="draftSaveBtn">Save as Draft</button>
+      <button class="draft-cancel" id="draftDiscardBtn">Cancel Changes</button>
+    </div>
+  </div>
+</div>
+<div id="projectContextMenu" class="context-menu project-menu-context">
+  <button id="projectCtxRename"><i class="fa-solid fa-pen"></i> Rename Project</button>
+  <button id="projectCtxDelete" class="danger"><i class="fa-solid fa-trash"></i> Delete Project</button>
+</div>
+
 <div id="customContextMenu" class="context-menu">
     <button id="cm-add-file" onclick="cmAddFile()"><i class="fa-solid fa-file-circle-plus"></i> Add File</button>
     <button id="cm-add-folder" onclick="cmAddFolder()"><i class="fa-solid fa-folder-plus"></i> Add Folder</button>
@@ -1071,7 +1127,7 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,setDoc,getDoc,arrayUnion,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,setDoc,getDoc,deleteDoc,arrayUnion,arrayRemove,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
@@ -1092,6 +1148,8 @@ window.firebaseDoc = doc;
 window.firebaseSetDoc = setDoc;
 window.firebaseGetDoc = getDoc;
 window.firebaseArrayUnion = arrayUnion;
+window.firebaseArrayRemove = arrayRemove;
+window.firebaseDeleteDoc = deleteDoc;
 window.firebaseServerTimestamp = serverTimestamp;
 window.firebaseSignOut = signOut;
 window.googleSignIn = () => signInWithPopup(auth, provider);
@@ -1334,6 +1392,15 @@ let hasTypedInSession = false;
 let isSwitchingProject = false; 
 let folderState = {}; 
 let pendingAuthAction = null;
+let projectCommittedFiles = null;
+let projectCommittedActiveFile = null;
+let projectDirty = false;
+let projectActionTarget = null;
+let projectActionIsCloud = false;
+let projectActionName = "";
+let pendingProjectAction = null;
+let searchMatches = [];
+let searchIndex = -1;
 
 const defaultTemplate = {
   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Live Output</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"container\">\n    <h1>Hello World!</h1>\n    <p>Welcome to JS CODE OUTPUT</p>\n    <button id=\"btn\">Click Me</button>\n  </div>\n  <script src=\"script.js\"><\/script>\n</body>\n</html>",
@@ -1612,12 +1679,32 @@ function shareToPlatform(platform) {
   }
 }
 
-function triggerSearch() {
-  if (editor) {
-    editor.execCommand("find");
-    setTimeout(attachCloseBtnToDialog, 50);
-  }
+function triggerSearch(){
+  if(!editor) return;
+  const panel=document.getElementById("codeSearchPanel"), input=document.getElementById("codeSearchInput");
+  if(!panel||!input) return;
+  panel.classList.add("show"); input.focus(); input.select(); updateCodeSearch();
 }
+function clearSearchMarks(){ if(editor) editor.getAllMarks().forEach(m=>{if(m.__jcoSearch)m.clear();}); }
+function closeCodeSearch(){ document.getElementById("codeSearchPanel")?.classList.remove("show"); clearSearchMarks(); searchMatches=[]; searchIndex=-1; editor?.focus(); }
+function updateCodeSearch(){
+  if(!editor)return;
+  const q=document.getElementById("codeSearchInput")?.value||"", count=document.getElementById("codeSearchCount");
+  clearSearchMarks(); searchMatches=[]; searchIndex=-1;
+  if(!q){if(count)count.textContent="0 / 0";return;}
+  const c=editor.getSearchCursor(q,CodeMirror.Pos(0,0),{caseFold:true});
+  while(c.findNext()) searchMatches.push({from:c.from(),to:c.to()});
+  if(!searchMatches.length){if(count)count.textContent="0 / 0";return;}
+  searchMatches.forEach(m=>{const mark=editor.markText(m.from,m.to,{className:"cm-searching"});mark.__jcoSearch=true;});
+  searchIndex=0; selectSearchMatch();
+}
+function selectSearchMatch(){
+  if(!editor||!searchMatches.length)return;
+  const m=searchMatches[searchIndex]; editor.setSelection(m.from,m.to); editor.scrollIntoView({from:m.from,to:m.to},120);
+  const count=document.getElementById("codeSearchCount"); if(count)count.textContent=`${searchIndex+1} / ${searchMatches.length}`;
+}
+function searchNext(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex+1)%searchMatches.length;selectSearchMatch();}
+function searchPrevious(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex-1+searchMatches.length)%searchMatches.length;selectSearchMatch();}
 
 function triggerReplace() {
   if (editor) {
@@ -1755,8 +1842,7 @@ window.cmRename = function() {
 
     files = newFiles;
     window.files = files;
-
-    saveLocalProjectFiles();
+    projectDirty = true;
     renderFileExplorer();
     if(requiresActiveChange) openFile(activeNewPath);
 };
@@ -1983,6 +2069,7 @@ function startWithoutLogin(){
 }
 
 function openProjectsPage(pushHistory = true){
+  if(window.currentProjectId&&projectDirty){pendingProjectAction=()=>openProjectsPage(pushHistory);requestLeaveWithDraft();return;}
   document.getElementById("landingPage").classList.add("hidden");
   document.getElementById("startLoginScreen").classList.add("hidden");
   document.getElementById("app").classList.add("hidden");
@@ -2012,6 +2099,7 @@ function openProjectsPage(pushHistory = true){
 }
 
 function backToHome(pushHistory = true) {
+  if(window.currentProjectId&&projectDirty){pendingProjectAction=()=>backToHome(pushHistory);requestLeaveWithDraft();return;}
   document.getElementById("app").classList.add("hidden");
   document.getElementById("projectsPage").classList.add("hidden");
   document.getElementById("landingPage").classList.remove("hidden");
@@ -2042,21 +2130,10 @@ async function createProject(){
   const u = window.firebaseCurrentUser;
   if(!name) return alert("Please enter a project name.");
 
+  if(window.currentProjectId&&projectDirty){pendingProjectAction=()=>createProject();requestLeaveWithDraft();return;}
+
   isSwitchingProject = true;
   window.isSwitchingProject = true;
-
-  if (window.currentProjectId) {
-    let temp = isSwitchingProject;
-    isSwitchingProject = false;
-    syncEditor();
-    saveLocalProjectFiles();
-    isSwitchingProject = temp;
-  }
-
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if(u) await window.saveProjectDraft(window.currentProjectId);
-  }
-
   const initialFiles = structuredClone(defaultTemplate);
 
   if (u) {
@@ -2091,19 +2168,11 @@ async function createProject(){
   }
 }
 
-function createProjectCardHTML(id, name, isCloud) {
-  const card = document.createElement("div");
-  card.className = "project-card";
-  card.innerHTML = `
-    <div>
-      <i class="fa-solid fa-${isCloud ? 'cloud' : 'folder'} text-blue-500 text-2xl mb-2"></i>
-      <h3 class="font-bold text-sm">${escapeHTML(name || "Untitled")}</h3>
-      <p class="text-[10px] text-gray-400">${isCloud ? 'Cloud Workspace' : 'Local Workspace'}</p>
-    </div>
-    <div class="text-[10px] text-blue-400 font-semibold mt-4">Open Project →</div>
-  `;
-  card.onclick = () => switchProject(id, name);
-  return card;
+function createProjectCardHTML(id,name,isCloud){
+  const card=document.createElement("div");card.className="project-card";
+  card.innerHTML=`<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
+  card.onclick=()=>requestProjectSwitch(id,name);card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
+  card.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,isCloud)};bindProjectLongPress(card,id,name,isCloud);return card;
 }
 
 async function loadProjects(){
@@ -2145,39 +2214,31 @@ async function loadProjects(){
   loadHeaderProjects();
 }
 
-async function switchProject(id, name){
-  if(id === window.currentProjectId) return; 
-
-  isSwitchingProject = true;
-  window.isSwitchingProject = true;
-
-  if (window.currentProjectId) {
-     let temp = isSwitchingProject;
-     isSwitchingProject = false;
-     syncEditor();
-     saveLocalProjectFiles(); 
-     isSwitchingProject = temp;
-  }
-
-  if(window.currentProjectId && !window.currentProjectId.startsWith("local_proj_")){
-    if (window.firebaseCurrentUser) await window.saveProjectDraft(window.currentProjectId);
-  }
-
-  if(id.startsWith("local_proj_")) {
-    openEditorWorkspace(id, name);
-    return;
-  }
-
-  const u = window.firebaseCurrentUser;
-  if(u){
-    const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-    if(pDoc.exists()){
-      const d = pDoc.data();
-      openEditorWorkspace(id, d.name || name, d.files);
-      return;
-    }
-  }
-  openEditorWorkspace(id, name);
+async function performProjectSwitch(id,name){
+  if(id===window.currentProjectId)return;
+  isSwitchingProject=true;window.isSwitchingProject=true;
+  if(window.currentProjectId){let temp=isSwitchingProject;isSwitchingProject=false;syncEditor();isSwitchingProject=temp;}
+  if(id.startsWith("local_proj_")){openEditorWorkspace(id,name);return;}
+  const u=window.firebaseCurrentUser;
+  if(u){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(pDoc.exists()){const d=pDoc.data();openEditorWorkspace(id,d.name||name,d.files);return;}}
+  openEditorWorkspace(id,name);
+}
+function requestProjectSwitch(id,name){if(id===window.currentProjectId)return;pendingProjectAction=()=>performProjectSwitch(id,name);requestLeaveWithDraft();}
+async function switchProject(id,name){requestProjectSwitch(id,name);}
+function requestLeaveWithDraft(){
+  if(!projectDirty){const fn=pendingProjectAction;pendingProjectAction=null;if(fn)return fn();return;}
+  const modal=document.getElementById("draftGuardModal");modal.classList.remove("hidden");
+  document.getElementById("draftSaveBtn").onclick=async()=>{modal.classList.add("hidden");if(await saveCurrentProjectDraftExplicit()){const fn=pendingProjectAction;pendingProjectAction=null;if(fn)fn();}};
+  document.getElementById("draftDiscardBtn").onclick=()=>{modal.classList.add("hidden");discardCurrentProjectChanges();const fn=pendingProjectAction;pendingProjectAction=null;if(fn)fn();};
+}
+async function saveCurrentProjectDraftExplicit(){
+  try{if(!window.currentProjectId)return true;if(!isSwitchingProject)syncEditor();const id=window.currentProjectId,u=window.firebaseCurrentUser;let ok=true;
+    if(u&&!id.startsWith("local_proj_"))ok=await window.saveProjectDraft(id);else saveLocalProjectFiles();
+    if(ok!==false){projectCommittedFiles=structuredClone(files);projectCommittedActiveFile=activeFile;projectDirty=false;showToast("Draft saved.");return true;}
+  }catch(e){console.error(e)}showToast("Could not save draft.");return false;
+}
+function discardCurrentProjectChanges(){
+  if(!projectCommittedFiles)return;isSwitchingProject=true;window.isSwitchingProject=true;setFileMap(structuredClone(projectCommittedFiles));activeFile=projectCommittedActiveFile;window.activeFile=activeFile;renderFileExplorer();openFile(activeFile);updatePreview(true);projectDirty=false;setTimeout(()=>{isSwitchingProject=false;window.isSwitchingProject=false},50);showToast("Changes cancelled.");
 }
 
 function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
@@ -2217,6 +2278,9 @@ function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
 
   window.files = files;
   window.activeFile = activeFile;
+  projectCommittedFiles = structuredClone(files);
+  projectCommittedActiveFile = activeFile;
+  projectDirty = false;
   renderFileExplorer();
   openFile(activeFile); 
 
@@ -2355,7 +2419,6 @@ function openFile(n){
   
   if (!isSwitchingProject && activeFile && files[activeFile] !== undefined) {
     syncEditor();
-    saveLocalProjectFiles();
   }
 
   activeFile = n;
@@ -2471,7 +2534,7 @@ window.createNewFolder = function(basePath = "") {
   files[fullPath] = ""; 
   folderState[fullPath] = true; 
   if(basePath) folderState[basePath] = true;
-  saveLocalProjectFiles();
+  projectDirty = true;
   renderFileExplorer();
 };
 
@@ -2492,7 +2555,7 @@ window.deleteItem = function(path) {
       const nextFile = remainingFiles.length > 0 ? remainingFiles[0] : null;
       openFile(nextFile);
   } else {
-      saveLocalProjectFiles();
+      projectDirty = true;
       renderFileExplorer();
   }
 };
@@ -2516,6 +2579,7 @@ function addUploadedFilePath(path, content){
   if(!cleanPath) return;
 
   files[cleanPath] = content == null ? "" : content;
+  projectDirty = true;
 
   const parts = cleanPath.split("/");
   let cur = "";
@@ -2605,8 +2669,7 @@ async function handleFileUpload(e){
   if(preferred) openFile(preferred);
 
   try { updatePreview(true); } catch(err) { }
-  try { saveLocalProjectFiles(); } catch(err) { }
-  try { scheduleCloudSave(); } catch(err) { }
+  projectDirty = true;
 
   if(failed.length){
     showToast(`${results.length} uploaded; ${failed.length} skipped.`);
@@ -2646,8 +2709,7 @@ async function handleFolderUpload(e){
   if(preferredPath) openFile(preferredPath);
 
   try { updatePreview(true); } catch(err) { }
-  try { saveLocalProjectFiles(); } catch(err) { }
-  try { scheduleCloudSave(); } catch(err) { }
+  projectDirty = true;
 
   if(failed.length){
     showToast(`${results.length} uploaded; ${failed.length} skipped.`);
@@ -2743,8 +2805,6 @@ function updatePreview(force=false){
 </body>
 </html>`;
 
-  saveLocalProjectFiles();
-  scheduleCloudSave();
 }
 
 function toggleFullScreenPreview() {
@@ -2823,6 +2883,7 @@ async function downloadSingleHTML() {
 function clearEditors(){
   if(!confirm("Clear active file?")) return;
   if(editor) editor.setValue("");
+  projectDirty = true;
   syncEditor();
 }
 
@@ -2852,42 +2913,44 @@ function headerAddProject(){
   showCreateProject();
 }
 
+function hideProjectContextMenu(){document.getElementById("projectContextMenu")?.style.setProperty("display","none");}
+function showProjectContextMenu(e,id,name,isCloud){
+  e.preventDefault?.();e.stopPropagation?.();projectActionTarget=id;projectActionIsCloud=!!isCloud;projectActionName=name||"Project";
+  const m=document.getElementById("projectContextMenu");if(!m)return;m.style.display="flex";
+  let x=e.clientX||20,y=e.clientY||20;if(x+195>innerWidth)x=innerWidth-203;if(y+92>innerHeight)y=innerHeight-100;m.style.left=x+"px";m.style.top=y+"px";
+}
+function bindProjectLongPress(el,id,name,isCloud){
+  let timer=null;
+  el.addEventListener("touchstart",()=>{timer=setTimeout(()=>showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:20,clientY:Math.max(20,innerHeight*.45)},id,name,isCloud),650)},{passive:true});
+  ["touchend","touchmove","touchcancel"].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(timer),{passive:true}));
+}
+async function renameProjectByTarget(){
+  const id=projectActionTarget,oldName=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
+  const name=prompt("Rename project:",oldName);if(!name||name.trim()===oldName)return;const newName=name.trim();
+  try{
+    if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to rename cloud projects.");await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name:newName,updatedAt:window.firebaseServerTimestamp()},{merge:true});}
+    else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.map(p=>p.id===id?{...p,name:newName,updatedAt:Date.now()}:p);localStorage.setItem("js_local_projects",JSON.stringify(ps));}
+    if(id===window.currentProjectId){document.getElementById("currentProjectName").textContent=newName;document.getElementById("dropdownCurrentProject").textContent=newName;}
+    await loadProjects();loadHeaderProjects();showToast("Project renamed.");
+  }catch(e){console.error(e);showToast("Could not rename project.")}
+}
+async function deleteProjectByTarget(){
+  const id=projectActionTarget,name=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
+  if(!confirm(`Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`))return;
+  try{
+    if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to delete cloud projects.");await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds:window.firebaseArrayRemove(id)},{merge:true});try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(_){}}
+    else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.filter(p=>p.id!==id);localStorage.setItem("js_local_projects",JSON.stringify(ps));localStorage.removeItem("js_files_"+id);localStorage.removeItem("js_active_file_"+id);}
+    if(id===window.currentProjectId){window.currentProjectId="";currentProjectId="";localStorage.removeItem("js-code-output-active-project-id");const ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");if(ps.length)openEditorWorkspace(ps[0].id,ps[0].name);else backToHome();}
+    await loadProjects();loadHeaderProjects();showToast("Project deleted permanently.");
+  }catch(e){console.error(e);showToast("Could not delete project.")}
+}
+function wireProjectContextActions(){document.getElementById("projectCtxRename")?.addEventListener("click",renameProjectByTarget);document.getElementById("projectCtxDelete")?.addEventListener("click",deleteProjectByTarget);}
+
 async function loadHeaderProjects(){
-  const el = document.getElementById("headerProjectsList");
-  el.innerHTML = "";
-
-  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-  localProjects.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "header-project-item " + (p.id === window.currentProjectId ? "current" : "");
-    btn.innerHTML = `<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span>`;
-    btn.onclick = () => {
-      document.getElementById("projectSwitcherMenu").classList.add("hidden");
-      switchProject(p.id, p.name);
-    };
-    el.appendChild(btn);
-  });
-
-  const u = window.firebaseCurrentUser;
-  if(u){
-    try {
-      const uDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid));
-      const ids = uDoc.exists() ? uDoc.data().projectIds || [] : [];
-      for(const id of ids){
-        const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
-        if(!pDoc.exists()) continue;
-        const d = pDoc.data();
-        const btn = document.createElement("button");
-        btn.className = "header-project-item " + (id === window.currentProjectId ? "current" : "");
-        btn.innerHTML = `<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(d.name || "Untitled")}</span>`;
-        btn.onclick = () => {
-          document.getElementById("projectSwitcherMenu").classList.add("hidden");
-          switchProject(id, d.name);
-        };
-        el.appendChild(btn);
-      }
-    } catch(e) {}
-  }
+  const el=document.getElementById("headerProjectsList");el.innerHTML="";
+  let localProjects=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
+  localProjects.forEach(p=>{const btn=document.createElement("button");btn.className="header-project-item "+(p.id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(p.id,p.name)};btn.oncontextmenu=e=>showProjectContextMenu(e,p.id,p.name,false);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,p.id,p.name,false)};bindProjectLongPress(btn,p.id,p.name,false);el.appendChild(btn);});
+  const u=window.firebaseCurrentUser;if(u){try{const uDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid));const ids=uDoc.exists()?uDoc.data().projectIds||[]:[];for(const id of ids){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(!pDoc.exists())continue;const d=pDoc.data(),name=d.name||"Untitled";const btn=document.createElement("button");btn.className="header-project-item "+(id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(id,name)};btn.oncontextmenu=e=>showProjectContextMenu(e,id,name,true);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,true)};bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
 
 function showToast(msg){
@@ -2899,13 +2962,25 @@ function showToast(msg){
 }
 
 window.addEventListener("beforeunload", function (e) {
-  if (hasTypedInSession) {
+  if (projectDirty) {
     e.preventDefault();
     e.returnValue = "";
   }
 });
 
 window.addEventListener("popstate", (e) => {
+  if(window.currentProjectId && projectDirty){
+    history.forward();
+    const targetHash = (e.state && e.state.page === "projects") ? "#projects" : "";
+    pendingProjectAction=()=>{
+      window.__allowLeave=true;
+      if(targetHash === "#projects") history.back();
+      else history.go(-1);
+      setTimeout(()=>window.__allowLeave=false,100);
+    };
+    requestLeaveWithDraft();
+    return;
+  }
   const hash = window.location.hash;
   if (hash.startsWith("#editor")) {
     const id = localStorage.getItem("js-code-output-active-project-id");
@@ -2919,24 +2994,12 @@ window.addEventListener("popstate", (e) => {
 });
 
 async function checkForLiveViewerMode() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const liveProjId = urlParams.get('live');
-  if (!liveProjId) return false;
-
-  try {
-    await (window.firebaseAuthReady || Promise.resolve());
-    const snap = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "public_projects", liveProjId));
-    if (snap.exists()) {
-      const data = snap.data();
-      document.open();
-      document.write(data.htmlBundle || "<h1>Project has no content</h1>");
-      document.close();
-      return true;
-    }
-  } catch(err) {
-    console.error("Failed to load live project:", err);
-  }
-  return false;
+  const liveProjId=new URLSearchParams(window.location.search).get('live');if(!liveProjId)return false;
+  try{await(window.firebaseAuthReady||Promise.resolve());const snap=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"public_projects",liveProjId));
+    if(snap.exists()){const data=snap.data(),title=data.name||"Published Project";document.documentElement.classList.remove("dark");
+      document.body.innerHTML=`<div class="public-viewer"><header class="public-viewer-head"><div class="public-viewer-brand">A product made by JS CODE OUTPUT</div><button class="public-viewer-cta" onclick="window.location.href=window.location.origin+window.location.pathname">Try to make your own project <i class="fa-solid fa-arrow-right"></i></button></header><main class="public-viewer-main"><div class="public-project-shell"><iframe class="public-project-frame" title="${escapeHTML(title)}"></iframe></div></main></div>`;
+      document.querySelector(".public-project-frame").srcdoc=data.htmlBundle||"<!doctype html><html><body><h1>Project has no content</h1></body></html>";document.title=title+" — JS CODE OUTPUT";return true;}
+  }catch(err){console.error("Failed to load live project:",err)}return false;
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -2984,6 +3047,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     readOnly: false
   });
   window.editor = editor;
+  const searchInput=document.getElementById("codeSearchInput");
+  if(searchInput){searchInput.addEventListener("input",updateCodeSearch);searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.shiftKey?searchPrevious():searchNext()}if(e.key==="Escape"){e.preventDefault();closeCodeSearch()}});}
+  wireProjectContextActions();
 
   if(typeof emmetCodeMirror !== 'undefined') {
     emmetCodeMirror(editor);
@@ -3004,17 +3070,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   editor.on("change", (cm, changeObj) => {
     if (isSwitchingProject) return;
-
     hasTypedInSession = true;
+    projectDirty = true;
     syncEditor();
-    saveLocalProjectFiles();
-
     const auto = document.getElementById("autoRunToggle");
     if(auto?.checked){
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => updatePreview(), 400);
     }
-    scheduleCloudSave();
   });
 
   renderFileExplorer();
@@ -3027,6 +3090,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   }, 150);
 });
+document.addEventListener("click",e=>{const m=document.getElementById("projectContextMenu");if(m&&!m.contains(e.target))hideProjectContextMenu();});
 </script>
 </body>
 </html>
