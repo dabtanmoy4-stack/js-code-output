@@ -299,6 +299,19 @@
 
   .mobile-explorer-toggle { display: none; }
   .header-actions-scroll { display: flex; align-items: center; gap: 8px; }
+  /* Touch/click reliability for workspace header actions */
+  .header-actions-scroll .app-btn { position:relative; z-index:90; pointer-events:auto; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  .header-actions-scroll .app-btn.touch-pressed { transform:scale(.97); }
+  .project-switcher { z-index:95; }
+  .project-menu { z-index:5000; }
+  .project-list { position:relative; z-index:2; touch-action:pan-y; -webkit-overflow-scrolling:touch; }
+  .header-project-item { position:relative; z-index:3; pointer-events:auto; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  .project-more { pointer-events:auto; touch-action:manipulation; }
+  .project-quick-tools { display:grid; grid-template-columns:1fr 1fr; gap:7px; padding:9px 10px; border-bottom:1px solid var(--line); }
+  .project-quick-tool { min-height:34px; border:1px solid var(--line); background:var(--surface2); color:var(--ink); border-radius:8px; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; touch-action:manipulation; pointer-events:auto; }
+  .project-quick-tool:hover { border-color:var(--brand); color:var(--brand); }
+  .clear-all-btn { background:rgba(245,158,11,.10)!important; border-color:rgba(245,158,11,.35)!important; color:#d97706!important; }
+  .clear-all-btn:hover { background:rgba(245,158,11,.16)!important; border-color:#d97706!important; color:#b45309!important; }
 
   @media(max-width:1000px){ 
     .hero{grid-template-columns:1fr;gap:35px} 
@@ -909,6 +922,14 @@
               <div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
               <div id="dropdownCurrentProject" class="text-xs font-extrabold mt-1">Untitled Project</div>
             </div>
+            <div class="project-quick-tools" data-tour="search-code">
+              <button type="button" class="project-quick-tool" onclick="triggerSearch();document.getElementById('projectSwitcherMenu').classList.add('hidden');">
+                <i class="fa-solid fa-magnifying-glass"></i><span>Search</span>
+              </button>
+              <button type="button" class="project-quick-tool" data-tour="replace-code" onclick="triggerReplace();document.getElementById('projectSwitcherMenu').classList.add('hidden');">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i><span>Replace</span>
+              </button>
+            </div>
             <div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
             <div id="headerProjectsList" class="project-list"></div>
             <div class="p-2 border-t border-[var(--line)]">
@@ -919,12 +940,15 @@
       </div>
 
       <div class="header-actions-scroll">
+        <button type="button" class="app-btn" data-tour="draft-button" onclick="saveCurrentProjectDraftExplicit()" title="Save current project changes as draft">
+          <i class="fa-solid fa-floppy-disk"></i><span class="btn-text">Save Draft</span>
+        </button>
         <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer" title="Auto run on change">
           <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
         </label>
         <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
         
-        <button class="app-btn publish" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
+        <button class="app-btn publish header-action-btn" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
         
         <button class="app-btn" data-tour="format-button" onclick="formatCode()" title="Format Code (Prettier)"><i class="fa-solid fa-align-left text-purple-400"></i> <span class="btn-text">Format</span></button>
         <button class="app-btn relative" id="headerConsoleBtn" data-tour="console-button" onclick="toggleConsoleUI()" title="Toggle Console">
@@ -933,8 +957,8 @@
           <span id="consoleStatusIndicator" class="console-badge hidden"></span>
         </button>
 
-        <button class="app-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
-        <button class="app-btn" data-tour="download-button" onclick="handleProtectedDownload()" title="Download"><i class="fa-solid fa-download"></i></button>
+        <button class="app-btn header-action-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
+        <button class="app-btn header-action-btn" data-tour="download-button" onclick="handleProtectedDownload()" title="Download"><i class="fa-solid fa-download"></i></button>
         <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span></button>
         <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
       </div>
@@ -972,10 +996,8 @@
             <div id="tabs" class="tabs"></div>
 
             <div class="flex gap-1">
-              <button data-tour="search-code" onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-              <button onclick="triggerReplace()" class="tool-btn" style="padding:4px 8px" title="Find & Replace (Ctrl+H)"><i class="fa-solid fa-arrow-right-arrow-left text-xs"></i></button>
-              <button onclick="toggleEditorFullscreen()" class="tool-btn" style="padding:4px 8px" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
-              <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+              <button type="button" onclick="toggleEditorFullscreen()" class="tool-btn" style="padding:4px 8px" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
+              <button type="button" onclick="clearEditors()" class="tool-btn clear-all-btn" style="padding:4px 10px" title="Clear All Code from Active File"><i class="fa-solid fa-eraser"></i><span class="hidden sm:inline">Clear All</span></button>
             </div>
 
           </div>
@@ -991,14 +1013,14 @@
           <div class="editor-container-wrapper">
             <!-- Compact PRO tools rail: kept beside the code surface so it never crowds the main toolbar. -->
             <div id="proUpgradeTools" class="pro-upgrade-tools pro-editor-rail" aria-label="Pro coding tools">
-              <button class="pro-tool featured" onclick="jcoOpenProjectIO()" title="Project Import / Export" aria-label="Project Import / Export"><i class="fa-solid fa-file-export"></i><span class="label">Project</span></button>
-              <button class="pro-tool" onclick="jcoOpenIntelliSense()" title="Advanced IntelliSense" aria-label="Advanced IntelliSense"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="label">AI Hint</span></button>
-              <button class="pro-tool" onclick="jcoOpenExtensions()" title="Extensions Marketplace" aria-label="Extensions Marketplace"><i class="fa-solid fa-puzzle-piece"></i><span class="label">Ext</span></button>
-              <button class="pro-tool" onclick="jcoOpenGit()" title="Browser Git" aria-label="Browser Git"><i class="fa-brands fa-git-alt"></i><span class="label">Git</span></button>
-              <button class="pro-tool" onclick="jcoOpenDebugger()" title="Debugger & Breakpoints" aria-label="Debugger and Breakpoints"><i class="fa-solid fa-bug"></i><span class="label">Debug</span></button>
-              <button class="pro-tool" onclick="jcoOpenLiveShare()" title="Live Share" aria-label="Live Share"><span class="pro-dot"></span><i class="fa-solid fa-users"></i><span class="label">Share</span></button>
-              <button class="pro-tool" onclick="jcoOpenThemes()" title="Themes & Keyboard Shortcuts" aria-label="Themes and Keyboard Shortcuts"><i class="fa-solid fa-palette"></i><span class="label">Theme</span></button>
-              <button class="pro-tool" onclick="jcoOpenFrameworks()" title="React / Vue / TypeScript" aria-label="Frameworks"><i class="fa-solid fa-layer-group"></i><span class="label">Stack</span></button>
+              <button class="pro-tool featured" data-tour="pro-project-io" onclick="jcoOpenProjectIO()" title="Project Import / Export" aria-label="Project Import / Export"><i class="fa-solid fa-file-export"></i><span class="label">Project</span></button>
+              <button class="pro-tool" data-tour="pro-intellisense" onclick="jcoOpenIntelliSense()" title="Advanced IntelliSense" aria-label="Advanced IntelliSense"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="label">AI Hint</span></button>
+              <button class="pro-tool" data-tour="pro-extensions" onclick="jcoOpenExtensions()" title="Extensions Marketplace" aria-label="Extensions Marketplace"><i class="fa-solid fa-puzzle-piece"></i><span class="label">Ext</span></button>
+              <button class="pro-tool" data-tour="pro-git" onclick="jcoOpenGit()" title="Browser Git" aria-label="Browser Git"><i class="fa-brands fa-git-alt"></i><span class="label">Git</span></button>
+              <button class="pro-tool" data-tour="pro-debugger" onclick="jcoOpenDebugger()" title="Debugger & Breakpoints" aria-label="Debugger and Breakpoints"><i class="fa-solid fa-bug"></i><span class="label">Debug</span></button>
+              <button class="pro-tool" data-tour="pro-liveshare" onclick="jcoOpenLiveShare()" title="Live Share" aria-label="Live Share"><span class="pro-dot"></span><i class="fa-solid fa-users"></i><span class="label">Share</span></button>
+              <button class="pro-tool" data-tour="pro-themes" onclick="jcoOpenThemes()" title="Themes & Keyboard Shortcuts" aria-label="Themes and Keyboard Shortcuts"><i class="fa-solid fa-palette"></i><span class="label">Theme</span></button>
+              <button class="pro-tool" data-tour="pro-frameworks" onclick="jcoOpenFrameworks()" title="React / Vue / TypeScript" aria-label="Frameworks"><i class="fa-solid fa-layer-group"></i><span class="label">Stack</span></button>
             </div>
             <div class="editor-content">
               <div id="wrapper-editor" class="code-pane" data-tour="code-editor"></div>
@@ -1292,13 +1314,22 @@ onAuthStateChanged(auth, user => {
 "use strict";
 
 (function(){
-  const TOUR_KEY = "jco_workspace_tour_seen_v4";
+  const TOUR_KEY = "jco_workspace_tour_seen_v5";
   const tour = [
     {key:"project-switcher",title:"Project Switcher",text:"Switch between your projects from here. Your current project is always shown at the top.",label:"PROJECTS",prefer:"bottom"},
+    {key:"draft-button",title:"Save as Draft",text:"Save your current project changes immediately without publishing them.",label:"DRAFT",prefer:"bottom"},
     {key:"explorer",mobileKey:"mobile-explorer",title:"File Explorer",text:"Manage your project files and folders here. On mobile, use the folder button to open this panel.",label:"FILES",prefer:"right"},
     {key:"file-actions",title:"Create & Upload",text:"Create files or folders, or upload existing files and folders into the current project.",label:"FILE TOOLS",prefer:"right"},
     {key:"editor-tabs",title:"Editor Tabs",text:"Your project files appear as tabs here, so you can move between files quickly.",label:"TABS",prefer:"bottom"},
-    {key:"search-code",title:"Search & Replace",text:"Find and replace code inside the active file instantly with regex support.",label:"SEARCH",prefer:"bottom"},
+    {key:"search-code",title:"Search & Replace",text:"Search and replace code from the project menu above your project list. Both tools work on the active file.",label:"SEARCH",prefer:"bottom"},
+    {key:"pro-project-io",title:"Project Import / Export",text:"Import or export a complete JCO project package from this tool.",label:"PROJECT IO",prefer:"right"},
+    {key:"pro-intellisense",title:"Advanced IntelliSense",text:"Get smarter code completion and symbol assistance while editing.",label:"INTELLISENSE",prefer:"right"},
+    {key:"pro-extensions",title:"Extensions",text:"Open the browser-side extensions area and manage supported coding extensions.",label:"EXTENSIONS",prefer:"right"},
+    {key:"pro-git",title:"Browser Git",text:"Use the built-in browser Git workspace for project versioning features.",label:"GIT",prefer:"right"},
+    {key:"pro-debugger",title:"Debugger",text:"Open debugger tools and manage breakpoints for your project.",label:"DEBUGGER",prefer:"right"},
+    {key:"pro-liveshare",title:"Live Share",text:"Open Live Share to collaborate across browser tabs using the available local transport.",label:"LIVE SHARE",prefer:"right"},
+    {key:"pro-themes",title:"Themes & Shortcuts",text:"Customize the editor theme and review the available keyboard shortcuts.",label:"THEMES",prefer:"right"},
+    {key:"pro-frameworks",title:"Frameworks",text:"Explore the browser-side React, Vue and TypeScript framework support available here.",label:"FRAMEWORKS",prefer:"right"},
     {key:"code-editor",title:"Code Editor",text:"This is your main ultra-black high-contrast coding area with bracket and tag pairing.",label:"EDITOR",prefer:"right"},
     {key:"run-button",title:"Run Project",text:"Run the project manually with real-time compilation visualizer effects.",label:"RUN",prefer:"bottom"},
     {key:"preview-toolbar",title:"Preview Controls",text:"Switch viewport sizes, refresh the output, or open the live preview fullscreen from here.",label:"PREVIEW",prefer:"bottom"},
@@ -3022,9 +3053,37 @@ function showProjectContextMenu(e,id,name,isCloud){
   let x=e.clientX||20,y=e.clientY||20;if(x+195>innerWidth)x=innerWidth-203;if(y+92>innerHeight)y=innerHeight-100;m.style.left=x+"px";m.style.top=y+"px";
 }
 function bindProjectLongPress(el,id,name,isCloud){
-  let timer=null;
-  el.addEventListener("touchstart",()=>{timer=setTimeout(()=>showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:20,clientY:Math.max(20,innerHeight*.45)},id,name,isCloud),650)},{passive:true});
-  ["touchend","touchmove","touchcancel"].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(timer),{passive:true}));
+  let timer=null, longPressed=false, touchActive=false;
+  el.addEventListener("touchstart",()=>{
+    touchActive=true;
+    longPressed=false;
+    clearTimeout(timer);
+    timer=setTimeout(()=>{
+      if(!touchActive)return;
+      longPressed=true;
+      showProjectContextMenu({
+        preventDefault(){},stopPropagation(){},
+        clientX:Math.min(innerWidth-210,Math.max(12,innerWidth*.5-95)),
+        clientY:Math.max(20,innerHeight*.45)
+      },id,name,isCloud);
+    },650);
+  },{passive:true});
+  el.addEventListener("touchend",()=>{
+    clearTimeout(timer);
+    if(touchActive && !longPressed){
+      el._touchHandled=true;
+      document.getElementById("projectSwitcherMenu")?.classList.add("hidden");
+      requestProjectSwitch(id,name);
+      setTimeout(()=>{el._touchHandled=false;},700);
+    }
+    touchActive=false;
+  },{passive:true});
+  el.addEventListener("touchcancel",()=>{clearTimeout(timer);touchActive=false;},{passive:true});
+  el.addEventListener("touchmove",()=>{clearTimeout(timer);},{passive:true});
+  const more=el.querySelector(".project-more");
+  if(more){
+    ["touchstart","touchend","touchcancel"].forEach(ev=>more.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
+  }
 }
 async function renameProjectByTarget(){
   const id=projectActionTarget,oldName=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
@@ -3051,9 +3110,25 @@ function wireProjectContextActions(){document.getElementById("projectCtxRename")
 async function loadHeaderProjects(){
   const el=document.getElementById("headerProjectsList");el.innerHTML="";
   let localProjects=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
-  localProjects.forEach(p=>{const btn=document.createElement("button");btn.className="header-project-item "+(p.id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(p.id,p.name)};btn.oncontextmenu=e=>showProjectContextMenu(e,p.id,p.name,false);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,p.id,p.name,false)};bindProjectLongPress(btn,p.id,p.name,false);el.appendChild(btn);});
-  const u=window.firebaseCurrentUser;if(u){try{const uDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid));const ids=uDoc.exists()?uDoc.data().projectIds||[]:[];for(const id of ids){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(!pDoc.exists())continue;const d=pDoc.data(),name=d.name||"Untitled";const btn=document.createElement("button");btn.className="header-project-item "+(id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(id,name)};btn.oncontextmenu=e=>showProjectContextMenu(e,id,name,true);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,true)};bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
+  localProjects.forEach(p=>{const btn=document.createElement("button");btn.type="button";btn.className="header-project-item "+(p.id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{if(btn._touchHandled){btn._touchHandled=false;return;}document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(p.id,p.name)};btn.oncontextmenu=e=>showProjectContextMenu(e,p.id,p.name,false);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,p.id,p.name,false)};bindProjectLongPress(btn,p.id,p.name,false);el.appendChild(btn);});
+  const u=window.firebaseCurrentUser;if(u){try{const uDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid));const ids=uDoc.exists()?uDoc.data().projectIds||[]:[];for(const id of ids){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(!pDoc.exists())continue;const d=pDoc.data(),name=d.name||"Untitled";const btn=document.createElement("button");btn.type="button";btn.className="header-project-item "+(id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{if(btn._touchHandled){btn._touchHandled=false;return;}document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(id,name)};btn.oncontextmenu=e=>showProjectContextMenu(e,id,name,true);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,true)};bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
+
+/* Ensure primary header actions respond reliably to touch/pointer input on mobile browsers. */
+(function bindHeaderTouchActions(){
+  function bind(){
+    ["publish-button","libraries-button","download-button"].forEach(key=>{
+      const el=document.querySelector(`[data-tour="${key}"]`);
+      if(!el || el.dataset.touchBound==="1") return;
+      el.dataset.touchBound="1";
+      el.addEventListener("pointerdown",()=>el.classList.add("touch-pressed"),{passive:true});
+      el.addEventListener("pointerup",()=>el.classList.remove("touch-pressed"),{passive:true});
+      el.addEventListener("pointercancel",()=>el.classList.remove("touch-pressed"),{passive:true});
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind,{once:true});
+  else bind();
+})();
 
 function showToast(msg){
   const t = document.getElementById("toast");
