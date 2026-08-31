@@ -470,6 +470,28 @@
 .pro-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.pro-stat{border:1px solid var(--line);border-radius:10px;background:var(--surface2);padding:10px}.pro-stat b{display:block;font-size:16px}.pro-stat span{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.pro-input{width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:9px;padding:9px;font-size:11px;outline:none}.pro-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,143,232,.1)}.pro-list{display:flex;flex-direction:column;gap:7px}.pro-list-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);font-size:10px}.pro-code{font-family:"Fira Code",monospace;font-size:10px;white-space:pre-wrap;background:#050b14;color:#dbeafe;border-radius:10px;padding:12px;max-height:260px;overflow:auto}.pro-status{font-size:9px;color:var(--muted);margin-top:7px}.pro-hero-new{position:relative;margin:0 5vw 25px;border:1px solid var(--line);border-radius:24px;padding:34px;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--surface) 92%,#1456b8),var(--surface));box-shadow:var(--shadow)}.pro-hero-new:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(79,143,232,.12),transparent 28%);animation:proSpin 10s linear infinite}.pro-hero-new>*{position:relative}.pro-hero-new h2{margin:7px 0;font-size:clamp(24px,4vw,42px);letter-spacing:-.04em}.pro-hero-new p{margin:0;color:var(--muted);font-size:12px;line-height:1.7;max-width:700px}.pro-feature-marquee{display:flex;gap:10px;overflow:hidden;margin-top:20px}.pro-feature-chip{flex:0 0 auto;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:10px;font-weight:800;animation:proChip 7s ease-in-out infinite}.pro-feature-chip:nth-child(2){animation-delay:.5s}.pro-feature-chip:nth-child(3){animation-delay:1s}.pro-feature-chip:nth-child(4){animation-delay:1.5s}.pro-feature-chip:nth-child(5){animation-delay:2s}.pro-feature-chip:nth-child(6){animation-delay:2.5s}@keyframes proChip{50%{transform:translateY(-5px);box-shadow:0 10px 25px rgba(20,86,184,.12)}}@keyframes proSpin{to{transform:rotate(360deg)}}
 .pro-breakpoint-gutter{cursor:pointer!important;color:#f87171!important;font-weight:900}.pro-breakpoint-dot{color:#ef4444;text-shadow:0 0 9px #ef4444}.pro-debug-line{background:rgba(239,68,68,.10)!important}.pro-live-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:rgba(34,197,94,.1);color:#16a34a;font-size:9px;font-weight:900}.pro-live-badge i{font-size:6px}.pro-table{width:100%;border-collapse:collapse;font-size:10px}.pro-table th,.pro-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left}.pro-table th{color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.pro-empty{padding:22px;text-align:center;color:var(--muted);font-size:10px;border:1px dashed var(--line);border-radius:12px}
 @media(max-width:700px){.pro-grid{grid-template-columns:1fr}.pro-stat-row{grid-template-columns:repeat(2,1fr)}.pro-hero-new{margin:0 18px 20px;padding:24px}.pro-tool{padding:7px 8px}.pro-tool span.label{display:none}}
+/* PRO tools are intentionally docked beside the code, not across the workspace. */
+.pro-editor-rail{display:flex !important;flex:0 0 42px;width:42px;height:100%;padding:7px 5px !important;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;overflow-y:auto;overflow-x:hidden;border-bottom:0 !important;border-right:1px solid var(--line);background:color-mix(in srgb,var(--surface) 96%,transparent);scrollbar-width:none;z-index:20}
+.pro-editor-rail::-webkit-scrollbar{display:none}
+.pro-editor-rail .pro-tool{width:32px;height:32px;min-height:32px;flex:0 0 32px;padding:0;border-radius:8px;justify-content:center;gap:0;font-size:0}
+.pro-editor-rail .pro-tool i{font-size:12px}
+.pro-editor-rail .pro-tool .label{display:none}
+.pro-editor-rail .pro-tool .pro-dot{position:absolute;top:5px;right:5px;width:5px;height:5px}
+.pro-editor-rail .pro-tool:hover{transform:translateX(2px) scale(1.04)}
+.pro-editor-rail .pro-tool.featured{box-shadow:0 6px 16px rgba(79,70,229,.18)}
+.editor-container-wrapper{display:flex !important;min-height:0;min-width:0}
+.editor-container-wrapper .editor-content{min-width:0;flex:1}
+@media(max-width:700px){
+  .pro-editor-rail{position:absolute;left:5px;top:5px;width:auto;height:34px;min-height:34px;flex-direction:row;align-items:center;padding:3px !important;border:1px solid var(--line) !important;border-radius:10px;box-shadow:0 8px 22px rgba(0,0,0,.16);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(8px);overflow:hidden}
+  .pro-editor-rail .pro-tool{width:28px;height:28px;min-height:28px;flex-basis:28px}
+  .pro-editor-rail .pro-tool i{font-size:10px}
+  .pro-editor-rail .pro-tool .pro-dot{top:3px;right:3px}
+  .editor-container-wrapper{position:relative}
+  .editor-container-wrapper .editor-content{width:100%}
+  #wrapper-editor .CodeMirror{padding-top:0}
+}
+@media(max-width:430px){.pro-editor-rail{left:3px;top:3px;gap:3px}.pro-editor-rail .pro-tool{width:26px;height:26px;min-height:26px;flex-basis:26px}.pro-editor-rail .pro-tool i{font-size:9px}}
+
 </style>
 
 </head>
@@ -967,6 +989,17 @@
           </div>
 
           <div class="editor-container-wrapper">
+            <!-- Compact PRO tools rail: kept beside the code surface so it never crowds the main toolbar. -->
+            <div id="proUpgradeTools" class="pro-upgrade-tools pro-editor-rail" aria-label="Pro coding tools">
+              <button class="pro-tool featured" onclick="jcoOpenProjectIO()" title="Project Import / Export" aria-label="Project Import / Export"><i class="fa-solid fa-file-export"></i><span class="label">Project</span></button>
+              <button class="pro-tool" onclick="jcoOpenIntelliSense()" title="Advanced IntelliSense" aria-label="Advanced IntelliSense"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="label">AI Hint</span></button>
+              <button class="pro-tool" onclick="jcoOpenExtensions()" title="Extensions Marketplace" aria-label="Extensions Marketplace"><i class="fa-solid fa-puzzle-piece"></i><span class="label">Ext</span></button>
+              <button class="pro-tool" onclick="jcoOpenGit()" title="Browser Git" aria-label="Browser Git"><i class="fa-brands fa-git-alt"></i><span class="label">Git</span></button>
+              <button class="pro-tool" onclick="jcoOpenDebugger()" title="Debugger & Breakpoints" aria-label="Debugger and Breakpoints"><i class="fa-solid fa-bug"></i><span class="label">Debug</span></button>
+              <button class="pro-tool" onclick="jcoOpenLiveShare()" title="Live Share" aria-label="Live Share"><span class="pro-dot"></span><i class="fa-solid fa-users"></i><span class="label">Share</span></button>
+              <button class="pro-tool" onclick="jcoOpenThemes()" title="Themes & Keyboard Shortcuts" aria-label="Themes and Keyboard Shortcuts"><i class="fa-solid fa-palette"></i><span class="label">Theme</span></button>
+              <button class="pro-tool" onclick="jcoOpenFrameworks()" title="React / Vue / TypeScript" aria-label="Frameworks"><i class="fa-solid fa-layer-group"></i><span class="label">Stack</span></button>
+            </div>
             <div class="editor-content">
               <div id="wrapper-editor" class="code-pane" data-tour="code-editor"></div>
               
@@ -1038,16 +1071,6 @@
     <span class="pro-feature-chip">⚡ Deep IntelliSense</span><span class="pro-feature-chip">🌿 Local Git</span><span class="pro-feature-chip">🧩 Extensions</span><span class="pro-feature-chip">👥 Live Share</span><span class="pro-feature-chip">🐞 Breakpoints</span><span class="pro-feature-chip">🎨 Themes & Shortcuts</span>
   </div>
 </section>
-<div id="proUpgradeTools" class="pro-upgrade-tools" style="display:none">
-  <button class="pro-tool featured" onclick="jcoOpenProjectIO()"><i class="fa-solid fa-file-export"></i><span class="label">Project IO</span></button>
-  <button class="pro-tool" onclick="jcoOpenIntelliSense()"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="label">IntelliSense</span></button>
-  <button class="pro-tool" onclick="jcoOpenExtensions()"><i class="fa-solid fa-puzzle-piece"></i><span class="label">Extensions</span></button>
-  <button class="pro-tool" onclick="jcoOpenGit()"><i class="fa-brands fa-git-alt"></i><span class="label">Git</span></button>
-  <button class="pro-tool" onclick="jcoOpenDebugger()"><i class="fa-solid fa-bug"></i><span class="label">Debug</span></button>
-  <button class="pro-tool" onclick="jcoOpenLiveShare()"><span class="pro-dot"></span><i class="fa-solid fa-users"></i><span class="label">Live Share</span></button>
-  <button class="pro-tool" onclick="jcoOpenThemes()"><i class="fa-solid fa-palette"></i><span class="label">Themes</span></button>
-  <button class="pro-tool" onclick="jcoOpenFrameworks()"><i class="fa-solid fa-layer-group"></i><span class="label">Frameworks</span></button>
-</div>
 
 <div id="jcoProjectIOModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Project Import / Export</h3><p>Move the complete workspace as a portable JSON project file.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoProjectIOModal')">×</button></div><div class="pro-grid"><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-file-arrow-down"></i></div><div><h4>Export Project</h4><p>Files, folders and active file.</p></div></div></div><button class="pro-action" onclick="jcoExportProject()">Download .jco.json</button></div><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-file-arrow-up"></i></div><div><h4>Import Project</h4><p>Restore a previously exported workspace.</p></div></div></div><input id="jcoProjectImportInput" type="file" accept="application/json,.json" hidden onchange="jcoImportProject(event)"><button class="pro-action" onclick="document.getElementById('jcoProjectImportInput').click()">Choose JSON Project</button></div></div><div class="pro-status">ES module files such as .js, .mjs, .ts and .tsx are preserved as editable project files.</div></div></div>
 
