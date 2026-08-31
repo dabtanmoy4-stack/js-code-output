@@ -460,6 +460,18 @@
   .public-project-shell{height:calc(100vh - 96px);min-height:500px;border-radius:14px}
 }
 </style>
+
+<style id="jco-pro-upgrade-css">
+/* JCO PRO UPGRADE LAYER — additive only */
+.pro-upgrade-tools{display:flex;align-items:center;gap:6px;overflow:auto;scrollbar-width:none;padding:5px 8px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 96%,transparent)}
+.pro-upgrade-tools::-webkit-scrollbar{display:none}.pro-tool{position:relative;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:9px;padding:7px 10px;font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:.22s}.pro-tool:hover{transform:translateY(-2px);border-color:var(--brand);color:var(--brand);box-shadow:0 7px 18px rgba(20,86,184,.12)}.pro-tool .pro-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 9px #22c55e;animation:proPulse 1.6s infinite}.pro-tool.featured{background:linear-gradient(135deg,#1456b8,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(79,70,229,.22)}
+@keyframes proPulse{50%{transform:scale(1.5);opacity:.55}}
+.pro-modal{width:min(820px,96vw);max-height:min(760px,90vh);overflow:auto}.pro-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.pro-card{border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:14px;transition:.2s;position:relative;overflow:hidden}.pro-card:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:var(--shadow)}.pro-card:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-65px;top:-65px;background:radial-gradient(circle,rgba(79,143,232,.18),transparent 68%);pointer-events:none}.pro-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.pro-card-icon{width:38px;height:38px;border-radius:11px;background:rgba(79,143,232,.12);color:var(--brand);display:grid;place-items:center;font-size:16px}.pro-card h4{margin:0;font-size:13px}.pro-card p{margin:5px 0 0;font-size:10px;line-height:1.55;color:var(--muted)}.pro-pill{font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:999px;background:rgba(34,197,94,.1);color:#16a34a}.pro-action{margin-top:12px;width:100%;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px;font-size:10px;font-weight:800}.pro-action:hover{border-color:var(--brand);color:var(--brand)}
+.pro-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.pro-stat{border:1px solid var(--line);border-radius:10px;background:var(--surface2);padding:10px}.pro-stat b{display:block;font-size:16px}.pro-stat span{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.pro-input{width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:9px;padding:9px;font-size:11px;outline:none}.pro-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,143,232,.1)}.pro-list{display:flex;flex-direction:column;gap:7px}.pro-list-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);font-size:10px}.pro-code{font-family:"Fira Code",monospace;font-size:10px;white-space:pre-wrap;background:#050b14;color:#dbeafe;border-radius:10px;padding:12px;max-height:260px;overflow:auto}.pro-status{font-size:9px;color:var(--muted);margin-top:7px}.pro-hero-new{position:relative;margin:0 5vw 25px;border:1px solid var(--line);border-radius:24px;padding:34px;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--surface) 92%,#1456b8),var(--surface));box-shadow:var(--shadow)}.pro-hero-new:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(79,143,232,.12),transparent 28%);animation:proSpin 10s linear infinite}.pro-hero-new>*{position:relative}.pro-hero-new h2{margin:7px 0;font-size:clamp(24px,4vw,42px);letter-spacing:-.04em}.pro-hero-new p{margin:0;color:var(--muted);font-size:12px;line-height:1.7;max-width:700px}.pro-feature-marquee{display:flex;gap:10px;overflow:hidden;margin-top:20px}.pro-feature-chip{flex:0 0 auto;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:10px;font-weight:800;animation:proChip 7s ease-in-out infinite}.pro-feature-chip:nth-child(2){animation-delay:.5s}.pro-feature-chip:nth-child(3){animation-delay:1s}.pro-feature-chip:nth-child(4){animation-delay:1.5s}.pro-feature-chip:nth-child(5){animation-delay:2s}.pro-feature-chip:nth-child(6){animation-delay:2.5s}@keyframes proChip{50%{transform:translateY(-5px);box-shadow:0 10px 25px rgba(20,86,184,.12)}}@keyframes proSpin{to{transform:rotate(360deg)}}
+.pro-breakpoint-gutter{cursor:pointer!important;color:#f87171!important;font-weight:900}.pro-breakpoint-dot{color:#ef4444;text-shadow:0 0 9px #ef4444}.pro-debug-line{background:rgba(239,68,68,.10)!important}.pro-live-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:rgba(34,197,94,.1);color:#16a34a;font-size:9px;font-weight:900}.pro-live-badge i{font-size:6px}.pro-table{width:100%;border-collapse:collapse;font-size:10px}.pro-table th,.pro-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left}.pro-table th{color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.pro-empty{padding:22px;text-align:center;color:var(--muted);font-size:10px;border:1px dashed var(--line);border-radius:12px}
+@media(max-width:700px){.pro-grid{grid-template-columns:1fr}.pro-stat-row{grid-template-columns:repeat(2,1fr)}.pro-hero-new{margin:0 18px 20px;padding:24px}.pro-tool{padding:7px 8px}.pro-tool span.label{display:none}}
+</style>
+
 </head>
 <body>
   <div id="workspaceTour" aria-hidden="true">
@@ -1016,6 +1028,43 @@
 
     </main>
   </div>
+
+<!-- JCO PRO UPGRADE: additive UI -->
+<section id="proUpgradeAd" class="pro-hero-new" style="display:none">
+  <div class="kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> NEW PRO WORKSPACE TOOLS</div>
+  <h2>More power. Same beautiful workspace.</h2>
+  <p>Advanced IntelliSense, local Git snapshots, live tab collaboration, extensions, framework tooling, breakpoints, project import/export and customizable themes — added without replacing your existing editor.</p>
+  <div class="pro-feature-marquee">
+    <span class="pro-feature-chip">⚡ Deep IntelliSense</span><span class="pro-feature-chip">🌿 Local Git</span><span class="pro-feature-chip">🧩 Extensions</span><span class="pro-feature-chip">👥 Live Share</span><span class="pro-feature-chip">🐞 Breakpoints</span><span class="pro-feature-chip">🎨 Themes & Shortcuts</span>
+  </div>
+</section>
+<div id="proUpgradeTools" class="pro-upgrade-tools" style="display:none">
+  <button class="pro-tool featured" onclick="jcoOpenProjectIO()"><i class="fa-solid fa-file-export"></i><span class="label">Project IO</span></button>
+  <button class="pro-tool" onclick="jcoOpenIntelliSense()"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="label">IntelliSense</span></button>
+  <button class="pro-tool" onclick="jcoOpenExtensions()"><i class="fa-solid fa-puzzle-piece"></i><span class="label">Extensions</span></button>
+  <button class="pro-tool" onclick="jcoOpenGit()"><i class="fa-brands fa-git-alt"></i><span class="label">Git</span></button>
+  <button class="pro-tool" onclick="jcoOpenDebugger()"><i class="fa-solid fa-bug"></i><span class="label">Debug</span></button>
+  <button class="pro-tool" onclick="jcoOpenLiveShare()"><span class="pro-dot"></span><i class="fa-solid fa-users"></i><span class="label">Live Share</span></button>
+  <button class="pro-tool" onclick="jcoOpenThemes()"><i class="fa-solid fa-palette"></i><span class="label">Themes</span></button>
+  <button class="pro-tool" onclick="jcoOpenFrameworks()"><i class="fa-solid fa-layer-group"></i><span class="label">Frameworks</span></button>
+</div>
+
+<div id="jcoProjectIOModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Project Import / Export</h3><p>Move the complete workspace as a portable JSON project file.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoProjectIOModal')">×</button></div><div class="pro-grid"><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-file-arrow-down"></i></div><div><h4>Export Project</h4><p>Files, folders and active file.</p></div></div></div><button class="pro-action" onclick="jcoExportProject()">Download .jco.json</button></div><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-file-arrow-up"></i></div><div><h4>Import Project</h4><p>Restore a previously exported workspace.</p></div></div></div><input id="jcoProjectImportInput" type="file" accept="application/json,.json" hidden onchange="jcoImportProject(event)"><button class="pro-action" onclick="document.getElementById('jcoProjectImportInput').click()">Choose JSON Project</button></div></div><div class="pro-status">ES module files such as .js, .mjs, .ts and .tsx are preserved as editable project files.</div></div></div>
+
+<div id="jcoIntelliSenseModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Advanced IntelliSense</h3><p>Project-aware symbols plus language/API suggestions on top of your existing CodeMirror hints.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoIntelliSenseModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoSymbolCount">0</b><span>Project symbols</span></div><div class="pro-stat"><b id="jcoFileCount">0</b><span>Files scanned</span></div><div class="pro-stat"><b id="jcoModuleCount">0</b><span>Modules</span></div><div class="pro-stat"><b>Ctrl+Space</b><span>Suggestions</span></div></div><div class="pro-list" id="jcoSymbolsList"></div></div></div>
+
+<div id="jcoExtensionsModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Extensions Marketplace</h3><p>Browser-safe extension packs. Installed state is saved locally per browser.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoExtensionsModal')">×</button></div><div class="pro-grid" id="jcoExtensionsList"></div><div class="pro-status">Full third-party extension execution and remote marketplace publishing can be connected later with a server/API.</div></div></div>
+
+<div id="jcoGitModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-brands fa-git-alt mr-2 text-red-500"></i>Browser Git</h3><p>Local Git-like branches and immutable snapshots. No remote push is attempted.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoGitModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoGitBranch">main</b><span>Branch</span></div><div class="pro-stat"><b id="jcoGitCommitCount">0</b><span>Commits</span></div><div class="pro-stat"><b id="jcoGitFileCount">0</b><span>Files</span></div><div class="pro-stat"><b id="jcoGitStatus">clean</b><span>Status</span></div></div><div class="flex gap-2 mb-3"><input id="jcoCommitMessage" class="pro-input" placeholder="Commit message…"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCommit()">Commit</button></div><div class="flex gap-2 mb-3"><input id="jcoBranchName" class="pro-input" placeholder="new-branch"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCreateBranch()">Branch</button></div><div id="jcoGitHistory" class="pro-list"></div></div></div>
+
+<div id="jcoDebuggerModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-solid fa-bug mr-2 text-red-500"></i>Interactive Debugger</h3><p>Click a gutter line to mark a breakpoint. Breakpoints are injected as <code>debugger</code> statements into the preview runtime.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoDebuggerModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoBreakpointCount">0</b><span>Breakpoints</span></div><div class="pro-stat"><b id="jcoDebugFile">—</b><span>Active file</span></div><div class="pro-stat"><b id="jcoDebugLine">—</b><span>Selected line</span></div><div class="pro-stat"><b>Preview</b><span>Runtime</span></div></div><div class="pro-list-row"><span>Tip: breakpoint pauses require browser DevTools to expose the paused runtime.</span><button class="pro-action" style="width:auto;margin:0" onclick="jcoClearBreakpoints()">Clear</button></div></div></div>
+
+<div id="jcoLiveShareModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-solid fa-users mr-2 text-blue-500"></i>Live Share</h3><p>Instant same-browser collaboration using BroadcastChannel. Open this project in another tab to collaborate without a server.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoLiveShareModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoLiveStatus">Offline</b><span>Channel</span></div><div class="pro-stat"><b id="jcoLivePeers">0</b><span>Peer tabs</span></div><div class="pro-stat"><b id="jcoLiveProject">—</b><span>Project</span></div><div class="pro-stat"><b>LOCAL</b><span>Transport</span></div></div><div class="flex gap-2"><button class="pro-action" onclick="jcoStartLiveShare()">Start Live Share</button><button class="pro-action" onclick="jcoStopLiveShare()">Stop</button></div><div class="pro-status">Internet-wide collaboration, authentication and persistent cursors can be connected later with Firebase/WebSocket infrastructure.</div></div></div>
+
+<div id="jcoThemesModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Editor Themes & Shortcuts</h3><p>Customize the editor without changing the rest of your workspace.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoThemesModal')">×</button></div><div class="pro-grid"><div class="pro-card"><h4>Code theme</h4><select id="jcoThemeSelect" class="pro-input mt-2" onchange="jcoSetTheme(this.value)"><option value="dracula">Dracula</option><option value="material-darker">Material Darker</option><option value="monokai">Monokai</option><option value="eclipse">Eclipse</option><option value="neo">Neo</option></select><p>Theme CSS is loaded on demand.</p></div><div class="pro-card"><h4>Keyboard shortcuts</h4><div class="pro-list mt-2"><div class="pro-list-row"><span>Run</span><b>Ctrl + Enter</b></div><div class="pro-list-row"><span>Format</span><b>Shift + Alt + F</b></div><div class="pro-list-row"><span>Find</span><b>Ctrl + F</b></div><div class="pro-list-row"><span>IntelliSense</span><b>Ctrl + Space</b></div><div class="pro-list-row"><span>Save snapshot</span><b>Ctrl + S</b></div></div></div></div></div></div>
+
+<div id="jcoFrameworksModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Modern Frameworks</h3><p>Current browser-side support and compiler capabilities in this workspace.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoFrameworksModal')">×</button></div><div class="pro-grid"><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-brands fa-react"></i></div><div><h4>React / JSX / TSX</h4><p>Babel-based JSX + TypeScript transpilation is already available in preview.</p></div></div><span class="pro-pill">READY</span></div></div><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-brands fa-vuejs"></i></div><div><h4>Vue SFC</h4><p>.vue files are recognized by the editor; full SFC bundling needs the next runtime layer.</p></div></div><span class="pro-pill" style="background:rgba(245,158,11,.1);color:#d97706">PARTIAL</span></div></div><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-code"></i></div><div><h4>TypeScript</h4><p>.ts/.tsx modes and Babel TypeScript transpilation are preserved.</p></div></div><span class="pro-pill">READY</span></div></div><div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div><h4>ES Modules</h4><p>.mjs and module-style project files can be imported/exported with Project IO.</p></div></div><span class="pro-pill">READY</span></div></div></div></div>
+
   <div id="downloadModal" class="overlay hidden">
   <div class="modal">
     <div class="flex justify-between items-center">
@@ -3247,5 +3296,138 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 document.addEventListener("click",e=>{const m=document.getElementById("projectContextMenu");if(m&&!m.contains(e.target))hideProjectContextMenu();});
 </script>
+
+<script>
+/* JCO PRO UPGRADE — additive layer; existing functions/features are intentionally left intact. */
+(function(){
+  const $=id=>document.getElementById(id);
+  const KEY='jco-pro-upgrade-v1';
+  const state=JSON.parse(localStorage.getItem(KEY)||'{}');
+  state.extensions=state.extensions||{}; state.themes=state.themes||{}; state.breakpoints=state.breakpoints||{};
+  const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+  const projectKey=()=>String(window.currentProjectId||localStorage.getItem('js-code-output-active-project-id')||'untitled');
+  const gitKey=()=> 'jco-git-'+projectKey();
+  const clone=o=>JSON.parse(JSON.stringify(o||{}));
+  window.jcoClose=id=>$(id)?.classList.add('hidden');
+  function open(id){$(id)?.classList.remove('hidden');}
+  function showUpgradeUI(){
+    const t=$('proUpgradeTools'),a=$('proUpgradeAd'); if(t)t.style.display='flex'; if(a)a.style.display='block';
+  }
+  window.jcoOpenProjectIO=()=>open('jcoProjectIOModal');
+  window.jcoOpenIntelliSense=()=>{open('jcoIntelliSenseModal'); jcoRefreshSymbols();};
+  window.jcoOpenExtensions=()=>{open('jcoExtensionsModal'); jcoRenderExtensions();};
+  window.jcoOpenGit=()=>{open('jcoGitModal'); jcoRenderGit();};
+  window.jcoOpenDebugger=()=>{open('jcoDebuggerModal'); jcoRenderBreakpoints();};
+  window.jcoOpenLiveShare=()=>{open('jcoLiveShareModal'); jcoUpdateLiveUI();};
+  window.jcoOpenThemes=()=>open('jcoThemesModal');
+  window.jcoOpenFrameworks=()=>open('jcoFrameworksModal');
+
+  window.jcoExportProject=function(){
+    try{
+      if(typeof syncEditor==='function') syncEditor();
+      const payload={format:'JCO-PROJECT',version:1,name:$('currentProjectName')?.textContent||'Untitled Project',projectId:projectKey(),activeFile:window.activeFile||null,files:clone(window.files||{}),exportedAt:new Date().toISOString()};
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download=(payload.name.replace(/[^a-z0-9_-]+/gi,'-')||'project')+'.jco.json';a.click();URL.revokeObjectURL(url); if(typeof showToast==='function')showToast('Project exported successfully 📦');
+    }catch(e){console.error(e);if(typeof showToast==='function')showToast('Project export failed.');}
+  };
+  window.jcoImportProject=function(e){
+    const f=e.target.files?.[0]; if(!f)return; const r=new FileReader();
+    r.onload=()=>{try{const p=JSON.parse(r.result);if(!p.files||typeof p.files!=='object')throw Error('Invalid project');setFileMap(p.files);window.activeFile=p.activeFile&&files[p.activeFile]!==undefined?p.activeFile:Object.keys(files).find(k=>!k.endsWith('/'))||null;activeFile=window.activeFile;saveLocalProjectFiles();renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;updatePreview(true);projectDirty=true;jcoRefreshSymbols();if(typeof showToast==='function')showToast('Project imported successfully ✨');jcoClose('jcoProjectIOModal');}catch(err){console.error(err);if(typeof showToast==='function')showToast('Invalid JCO project file.');}};r.readAsText(f);e.target.value='';
+  };
+
+  function extractSymbols(){
+    const out=[], seen=new Set();
+    Object.entries(window.files||{}).forEach(([path,code])=>{
+      if(path.endsWith('/'))return; const text=String(code||'');
+      const rx=/(?:const|let|var|function|class|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g; let m;
+      while((m=rx.exec(text))){const key=m[1];if(!seen.has(key)){seen.add(key);out.push({name:key,path,type:(m[0].split(/\s+/)[0]||'symbol')});}}
+      const imp=/import\s+(?:[^'";]+?\s+from\s+)?['"]([^'"]+)['"]/g; while((m=imp.exec(text))) out.push({name:m[1],path,type:'module'});
+    }); return out.slice(0,120);
+  }
+  function jcoRefreshSymbols(){
+    const syms=extractSymbols(); $('jcoSymbolCount').textContent=syms.length; $('jcoFileCount').textContent=Object.keys(window.files||{}).filter(k=>!k.endsWith('/')).length; $('jcoModuleCount').textContent=syms.filter(x=>x.type==='module').length;
+    const box=$('jcoSymbolsList'); if(!box)return; box.innerHTML=syms.length?syms.map(x=>`<div class="pro-list-row"><span><b>${escapeHTML(x.name)}</b><small style="display:block;color:var(--muted)">${escapeHTML(x.path)}</small></span><span class="pro-pill">${escapeHTML(x.type)}</span></div>`).join(''):'<div class="pro-empty">No project symbols detected yet. Start typing to populate IntelliSense.</div>';
+  }
+  function projectHint(cm){
+    const cur=cm.getCursor(),line=cm.getLine(cur.line).slice(0,cur.ch),match=line.match(/[A-Za-z_$][\w$]*$/),q=match?match[0].toLowerCase():'';
+    const base=['Array','Boolean','Date','Error','JSON','Math','Number','Object','Promise','RegExp','Set','String','Map','console','document','window','localStorage','fetch','setTimeout','clearTimeout','addEventListener','querySelector','querySelectorAll','getElementById','classList','innerHTML','textContent','value','map','filter','reduce','forEach','find','includes','push','pop','slice','trim','toString','toLowerCase','toUpperCase','async','await','return','import','export','from','default'];
+    const project=extractSymbols().map(x=>x.name); const words=[...new Set(base.concat(project))].filter(x=>!q||x.toLowerCase().startsWith(q));
+    return {list:()=>words.map(x=>({text:x,displayText:x+'  • JCO'})),from:CodeMirror.Pos(cur.line,cur.ch-(match?match[0].length:0)),to:cur};
+  }
+  function enableHints(){
+    if(!window.editor||!window.CodeMirror)return;
+    window.editor.setOption('extraKeys',Object.assign({},window.editor.getOption('extraKeys')||{}, {'Ctrl-Space':cm=>cm.showHint({hint:projectHint,completeSingle:false})}));
+  }
+
+  const extensions=[
+    ['prettier-pro','Prettier Pro','Format-aware editor workflow and formatting actions.','fa-wand-magic-sparkles'],
+    ['eslint-lite','ESLint Lite','Fast browser-side JavaScript quality hints.','fa-shield-halved'],
+    ['path-intellisense','Path IntelliSense','Suggest project files and module paths.','fa-route'],
+    ['react-toolkit','React Toolkit','React/JSX/TSX helper snippets and framework presets.','fa-react'],
+    ['vue-toolkit','Vue Toolkit','Vue SFC helpers and template snippets.','fa-vuejs'],
+    ['git-tools','Git Tools','Enhanced local commit and branch workflow.','fa-code-branch']
+  ];
+  function jcoRenderExtensions(){const box=$('jcoExtensionsList');if(!box)return;box.innerHTML=extensions.map(x=>{const on=!!state.extensions[x[0]];return `<div class="pro-card"><div class="pro-card-head"><div class="flex items-center gap-3"><div class="pro-card-icon"><i class="fa-solid ${x[3]}"></i></div><div><h4>${x[1]}</h4><p>${x[2]}</p></div></div><span class="pro-pill" style="background:${on?'rgba(34,197,94,.1)':'rgba(100,116,139,.1)'};color:${on?'#16a34a':'var(--muted)'}">${on?'INSTALLED':'AVAILABLE'}</span></div><button class="pro-action" onclick="jcoToggleExtension('${x[0]}')">${on?'Disable':'Install'}</button></div>`}).join('');}
+  window.jcoToggleExtension=id=>{state.extensions[id]=!state.extensions[id];save();jcoRenderExtensions();if(typeof showToast==='function')showToast((state.extensions[id]?'Extension installed: ':'Extension disabled: ')+id);};
+
+  function gitLoad(){try{return JSON.parse(localStorage.getItem(gitKey())||'null')||{branches:{main:{commits:[]}},current:'main'}}catch(e){return {branches:{main:{commits:[]}},current:'main'}}}
+  function gitSave(g){localStorage.setItem(gitKey(),JSON.stringify(g));}
+  function jcoRenderGit(){const g=gitLoad();const b=g.branches[g.current]||{commits:[]};$('jcoGitBranch').textContent=g.current;$('jcoGitCommitCount').textContent=b.commits.length;$('jcoGitFileCount').textContent=Object.keys(window.files||{}).filter(k=>!k.endsWith('/')).length;$('jcoGitStatus').textContent=projectDirty?'modified':'clean';const h=$('jcoGitHistory');let rows='';Object.entries(g.branches).forEach(([name,br])=>{rows+=`<div class="pro-list-row"><span><b>${escapeHTML(name)}</b><small style="display:block;color:var(--muted)">${br.commits.length} commit(s)</small></span><button class="pro-action" style="width:auto;margin:0" onclick="jcoGitCheckout('${name}')">Checkout</button></div>`;});b.commits.slice().reverse().forEach(c=>{rows+=`<div class="pro-list-row"><span><b>${escapeHTML(c.message)}</b><small style="display:block;color:var(--muted)">${new Date(c.time).toLocaleString()}</small></span><span class="pro-pill">${c.hash}</span></div>`});h.innerHTML=rows||'<div class="pro-empty">No local commits yet.</div>';}
+  window.jcoGitCommit=()=>{if(typeof syncEditor==='function')syncEditor();const input=$('jcoCommitMessage'),msg=(input.value||'').trim();if(!msg){if(typeof showToast==='function')showToast('Write a commit message first.');return;}const g=gitLoad(),br=g.branches[g.current]||(g.branches[g.current]={commits:[]});const hash=Math.random().toString(36).slice(2,9);br.commits.push({hash,message:msg,time:new Date().toISOString(),files:clone(window.files),activeFile:window.activeFile});gitSave(g);input.value='';projectDirty=false;jcoRenderGit();if(typeof showToast==='function')showToast('Local commit created ✓');};
+  window.jcoGitCreateBranch=()=>{const name=($('jcoBranchName').value||'').trim().replace(/\s+/g,'-');if(!name)return;const g=gitLoad();if(g.branches[name]){if(typeof showToast==='function')showToast('Branch already exists.');return;}g.branches[name]={commits:[]};g.current=name;gitSave(g);$('jcoBranchName').value='';jcoRenderGit();if(typeof showToast==='function')showToast('Branch created: '+name);};
+  window.jcoGitCheckout=name=>{const g=gitLoad(),br=g.branches[name];if(!br)return;const last=br.commits[br.commits.length-1];g.current=name;gitSave(g);if(last){setFileMap(last.files);activeFile=last.activeFile&&files[last.activeFile]!==undefined?last.activeFile:Object.keys(files).find(k=>!k.endsWith('/'))||null;window.activeFile=activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;updatePreview(true);}jcoRenderGit();if(typeof showToast==='function')showToast('Checked out '+name);};
+
+  const bpKey=()=> 'jco-bp-'+projectKey();
+  function bpLoad(){try{return JSON.parse(localStorage.getItem(bpKey())||'{}')}catch(e){return {}}}
+  function bpSave(x){localStorage.setItem(bpKey(),JSON.stringify(x))}
+  function jcoRenderBreakpoints(){const b=bpLoad(),count=Object.values(b).reduce((n,a)=>n+a.length,0);$('jcoBreakpointCount').textContent=count;$('jcoDebugFile').textContent=activeFile||'—';$('jcoDebugLine').textContent=editor?editor.getCursor().line+1:'—';}
+  window.jcoClearBreakpoints=()=>{bpSave({});jcoApplyBreakpointMarkers();jcoRenderBreakpoints();};
+  function jcoApplyBreakpointMarkers(){
+    if(!editor)return;
+    const b=bpLoad();
+    editor.clearGutter('jco-breakpoints');
+    Object.entries(b).forEach(([file,lines])=>{
+      if(file===activeFile){
+        lines.forEach(n=>{
+          const marker=document.createElement('span');
+          marker.className='pro-breakpoint-dot';
+          marker.textContent='●';
+          editor.setGutterMarker(n,null,marker);
+        });
+      }
+    });
+  }
+  function toggleBP(line){const b=bpLoad();b[activeFile]=b[activeFile]||[];const arr=b[activeFile],i=arr.indexOf(line);if(i>=0)arr.splice(i,1);else arr.push(line);bpSave(b);jcoApplyBreakpointMarkers();jcoRenderBreakpoints();}
+
+  let channel=null,peerCount=0,suppress=false;
+  function jcoUpdateLiveUI(){ $('jcoLiveStatus').textContent=channel?'Online':'Offline';$('jcoLivePeers').textContent=peerCount;$('jcoLiveProject').textContent=projectKey().slice(0,18); }
+  window.jcoStartLiveShare=()=>{if(!('BroadcastChannel' in window)){if(typeof showToast==='function')showToast('BroadcastChannel is not supported here.');return;}if(channel)return;channel=new BroadcastChannel('jco-live-'+projectKey());channel.onmessage=e=>{const d=e.data||{};if(d.type==='hello'){peerCount++;channel.postMessage({type:'state',files:clone(window.files),activeFile:window.activeFile});jcoUpdateLiveUI();}else if(d.type==='state'&&!suppress){suppress=true;setFileMap(d.files);activeFile=d.activeFile||activeFile;window.activeFile=activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;updatePreview(true);suppress=false;}else if(d.type==='update'&&!suppress){setFileMap(d.files);activeFile=d.activeFile||activeFile;window.activeFile=activeFile;renderFileExplorer();if(activeFile&&editor&&activeFile===window.activeFile&&files[activeFile]!==editor.getValue())editor.setValue(files[activeFile]);updatePreview(true);}};channel.postMessage({type:'hello'});jcoUpdateLiveUI();if(typeof showToast==='function')showToast('Live Share started in this browser tab ✨');};
+  window.jcoStopLiveShare=()=>{if(channel){channel.close();channel=null;peerCount=0;}jcoUpdateLiveUI();};
+  function broadcast(){if(channel&&!suppress){try{channel.postMessage({type:'update',files:clone(window.files),activeFile:window.activeFile});}catch(e){}}}
+
+  const oldOpenFile=window.openFile; if(typeof oldOpenFile==='function'){
+    window.openFile=function(path){const r=oldOpenFile.apply(this,arguments);setTimeout(()=>{enableHints();jcoApplyBreakpointMarkers();jcoRenderBreakpoints();jcoRefreshSymbols();broadcast();},30);return r;};
+  }
+  function loadThemeCss(name){if(name==='dracula')return;const id='jco-theme-'+name;if($(id))return;const link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/'+name+'.min.css';document.head.appendChild(link);}
+  window.jcoSetTheme=name=>{if(!editor)return;loadThemeCss(name);editor.setOption('theme',name);state.themes.editor=name;save();if(typeof showToast==='function')showToast('Editor theme: '+name+' 🎨');};
+
+  document.addEventListener('keydown',e=>{
+    if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();if(typeof triggerCinematicRun==='function')triggerCinematicRun();}
+    if(e.shiftKey&&e.altKey&&e.key.toLowerCase()==='f'){e.preventDefault();if(typeof formatCode==='function')formatCode();}
+    if(e.ctrlKey&&e.key.toLowerCase()==='s'){e.preventDefault();if(typeof saveLocalProjectFiles==='function')saveLocalProjectFiles();const input=$('jcoCommitMessage');if(input&&!input.value.trim())input.value='Save snapshot';jcoGitCommit();}
+  });
+  window.addEventListener('DOMContentLoaded',()=>{
+    showUpgradeUI();enableHints();
+    const a=$('proUpgradeAd'); if(a&&$('landingPage'))$('landingPage').insertBefore(a,$('how-it-works'));
+    const tools=$('proUpgradeTools'), editorPanel=$('editorPanelContainer'); if(tools&&editorPanel)editorPanel.parentNode.insertBefore(tools,editorPanel);
+    if(editor){editor.on('gutterClick',(cm,line,gutter)=>{if(gutter==='CodeMirror-linenumbers'||gutter==='jco-breakpoints')toggleBP(line);});editor.on('cursorActivity',jcoRenderBreakpoints);editor.on('change',()=>{jcoRefreshSymbols();jcoApplyBreakpointMarkers();broadcast();});}
+    const theme=state.themes.editor||'dracula';if(editor&&theme!=='dracula')jcoSetTheme(theme);
+    jcoApplyBreakpointMarkers();jcoRefreshSymbols();
+  });
+  // Late initialization because the existing workspace editor is created during DOMContentLoaded.
+  setTimeout(()=>{showUpgradeUI();enableHints();if(editor){editor.on('gutterClick',(cm,line,gutter)=>{if(gutter==='CodeMirror-linenumbers'||gutter==='jco-breakpoints')toggleBP(line);});editor.on('cursorActivity',jcoRenderBreakpoints);editor.on('change',()=>{jcoRefreshSymbols();jcoApplyBreakpointMarkers();broadcast();});jcoApplyBreakpointMarkers();}},1200);
+})();
+</script>
+
 </body>
 </html>
