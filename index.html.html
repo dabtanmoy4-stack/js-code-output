@@ -809,7 +809,7 @@
   <a href="https://js-code-output.vercel.app/web-code-editor.html">Web Code Editor</a>
   <a href="https://js-code-output.vercel.app/code-editor-with-live-preview.html">Editor with Live Preview</a>
   
-  <!-- Additional links -->
+  <!-- নতুন ৩টি লিংক -->
   <a href="https://js-code-output.vercel.app/code-output.html">Code Output</a>
   <a href="https://js-code-output.vercel.app/live-output-code.html">Live Output Code</a>
   <a href="https://js-code-output.vercel.app/real-time-code-output.html">Real Time Code Output</a>
@@ -1078,7 +1078,7 @@
 
 <div id="jcoExtensionsModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3>Extensions Marketplace</h3><p>Browser-safe extension packs. Installed state is saved locally per browser.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoExtensionsModal')">×</button></div><div class="pro-grid" id="jcoExtensionsList"></div><div class="pro-status">Full third-party extension execution and remote marketplace publishing can be connected later with a server/API.</div></div></div>
 
-<div id="jcoGitModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-brands fa-git-alt mr-2 text-red-500"></i>Browser Git</h3><p>Local Git-like branches and immutable snapshots. No remote push is attempted.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoGitModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoGitBranch">main</b><span>Branch</span></div><div class="pro-stat"><b id="jcoGitCommitCount">0</b><span>Commits</span></div><div class="pro-stat"><b id="jcoGitFileCount">0</b><span>Files</span></div><div class="pro-stat"><b id="jcoGitStatus">clean</b><span>Status</span></div></div><div class="flex gap-2 mb-3"><input id="jcoCommitMessage" class="pro-input" placeholder="Commit message…"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCommit()">Commit</button></div><div class="flex gap-2 mb-3"><input id="jcoBranchName" class="pro-input" placeholder="new-branch"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCreateBranch()">Branch</button></div><div id="jcoGitHistory" class="pro-list"></div></div></div>
+<div id="jcoGitModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-brands fa-git-alt mr-2 text-red-500"></i>Browser Git</h3><p>Local Git snapshots plus optional GitHub push from this browser.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoGitModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoGitBranch">main</b><span>Branch</span></div><div class="pro-stat"><b id="jcoGitCommitCount">0</b><span>Commits</span></div><div class="pro-stat"><b id="jcoGitFileCount">0</b><span>Files</span></div><div class="pro-stat"><b id="jcoGitStatus">clean</b><span>Status</span></div></div><div class="flex gap-2 mb-3"><input id="jcoCommitMessage" class="pro-input" placeholder="Commit message…"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCommit()">Commit</button></div><div class="flex gap-2 mb-3"><input id="jcoBranchName" class="pro-input" placeholder="new-branch"><button class="pro-action" style="width:auto;min-width:110px;margin:0" onclick="jcoGitCreateBranch()">Branch</button></div><div id="jcoGitHistory" class="pro-list"></div><div style="height:1px;background:var(--border);margin:16px 0"></div><div class="pro-card"><div class="pro-card-head"><div><h4><i class="fa-brands fa-github mr-2"></i>GitHub Push</h4><p>Connect a GitHub token, choose a repository and push the current workspace as one Git commit.</p></div><span id="jcoGithubStatus" class="pro-pill">DISCONNECTED</span></div><div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3"><input id="jcoGithubToken" type="password" class="pro-input" placeholder="GitHub fine-grained token"><input id="jcoGithubBranch" class="pro-input" value="main" placeholder="Branch"></div><div class="flex gap-2 mt-2"><button class="pro-action" style="width:auto" onclick="jcoGithubConnect()">Connect</button><button class="pro-action" style="width:auto" onclick="jcoGithubLoadRepos()">Load Repositories</button><button class="pro-action" style="width:auto" onclick="jcoGithubDisconnect()">Disconnect</button></div><div class="flex gap-2 mt-2"><select id="jcoGithubRepo" class="pro-input"><option value="">Select repository</option></select><input id="jcoGithubCommit" class="pro-input" value="Update from JCO" placeholder="GitHub commit message"></div><button class="pro-action mt-2" onclick="jcoGithubPush()"><i class="fa-brands fa-github mr-2"></i>Push to GitHub</button><div class="pro-status mt-2">For security, the token is kept only in this browser session. Use a fine-grained token with repository Contents read/write access.</div></div></div></div>
 
 <div id="jcoDebuggerModal" class="overlay hidden"><div class="modal pro-modal"><div class="flex justify-between items-center"><div><h3><i class="fa-solid fa-bug mr-2 text-red-500"></i>Interactive Debugger</h3><p>Click a gutter line to mark a breakpoint. Breakpoints are injected as <code>debugger</code> statements into the preview runtime.</p></div><button class="text-gray-400 text-lg" onclick="jcoClose('jcoDebuggerModal')">×</button></div><div class="pro-stat-row"><div class="pro-stat"><b id="jcoBreakpointCount">0</b><span>Breakpoints</span></div><div class="pro-stat"><b id="jcoDebugFile">—</b><span>Active file</span></div><div class="pro-stat"><b id="jcoDebugLine">—</b><span>Selected line</span></div><div class="pro-stat"><b>Preview</b><span>Runtime</span></div></div><div class="pro-list-row"><span>Tip: breakpoint pauses require browser DevTools to expose the paused runtime.</span><button class="pro-action" style="width:auto;margin:0" onclick="jcoClearBreakpoints()">Clear</button></div></div></div>
 
@@ -1229,7 +1229,6 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,setDoc,getDoc,deleteDoc,arrayUnion,arrayRemove,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {getDatabase,ref as rtdbRef,set as rtdbSet,get as rtdbGet,onValue as rtdbOnValue,onDisconnect as rtdbOnDisconnect,remove as rtdbRemove} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
@@ -1242,17 +1241,10 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 try{getAnalytics(app)}catch(e){}
-const auth = getAuth(app), provider = new GoogleAuthProvider(), db = getFirestore(app), rtdb = getDatabase(app, "https://js-code-output-default-rtdb.firebaseio.com");
+const auth = getAuth(app), provider = new GoogleAuthProvider(), db = getFirestore(app);
 
 window.firebaseAuth = auth;
 window.firebaseDB = db;
-window.firebaseRTDB = rtdb;
-window.firebaseRTDBRef = rtdbRef;
-window.firebaseRTDBSet = rtdbSet;
-window.firebaseRTDBGet = rtdbGet;
-window.firebaseRTDBOnValue = rtdbOnValue;
-window.firebaseRTDBOnDisconnect = rtdbOnDisconnect;
-window.firebaseRTDBRemove = rtdbRemove;
 window.firebaseDoc = doc;
 window.firebaseSetDoc = setDoc;
 window.firebaseGetDoc = getDoc;
@@ -3347,7 +3339,7 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
   window.jcoOpenProjectIO=()=>open('jcoProjectIOModal');
   window.jcoOpenIntelliSense=()=>{open('jcoIntelliSenseModal'); jcoRefreshSymbols();};
   window.jcoOpenExtensions=()=>{open('jcoExtensionsModal'); jcoRenderExtensions();};
-  window.jcoOpenGit=()=>{open('jcoGitModal'); jcoRenderGit();};
+  window.jcoOpenGit=()=>{open('jcoGitModal'); jcoRenderGit(); jcoGithubRestoreSession();};
   window.jcoOpenDebugger=()=>{open('jcoDebuggerModal'); jcoRenderBreakpoints();};
   window.jcoOpenLiveShare=()=>{open('jcoLiveShareModal'); jcoUpdateLiveUI();};
   window.jcoOpenThemes=()=>open('jcoThemesModal');
@@ -3408,6 +3400,48 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
   window.jcoGitCreateBranch=()=>{const name=($('jcoBranchName').value||'').trim().replace(/\s+/g,'-');if(!name)return;const g=gitLoad();if(g.branches[name]){if(typeof showToast==='function')showToast('Branch already exists.');return;}g.branches[name]={commits:[]};g.current=name;gitSave(g);$('jcoBranchName').value='';jcoRenderGit();if(typeof showToast==='function')showToast('Branch created: '+name);};
   window.jcoGitCheckout=name=>{const g=gitLoad(),br=g.branches[name];if(!br)return;const last=br.commits[br.commits.length-1];g.current=name;gitSave(g);if(last){setFileMap(last.files);activeFile=last.activeFile&&files[last.activeFile]!==undefined?last.activeFile:Object.keys(files).find(k=>!k.endsWith('/'))||null;window.activeFile=activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;updatePreview(true);}jcoRenderGit();if(typeof showToast==='function')showToast('Checked out '+name);};
 
+  /* GitHub browser integration: uses GitHub's REST Git Data API so the whole
+     workspace becomes a single commit. Token is stored in sessionStorage only. */
+  const GH_API='https://api.github.com';
+  const ghTokenKey='jco-github-token';
+  const ghRepoKey='jco-github-repo';
+  function ghToken(){return sessionStorage.getItem(ghTokenKey)||'';}
+  function ghHeaders(){return {'Accept':'application/vnd.github+json','Authorization':'Bearer '+ghToken(),'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'};}
+  function ghSetStatus(text,ok){const el=$('jcoGithubStatus');if(el){el.textContent=text;el.style.color=ok?'#16a34a':'var(--muted)';}}
+  function ghSetRepoSelect(repos){const sel=$('jcoGithubRepo');if(!sel)return;const saved=sessionStorage.getItem(ghRepoKey)||'';sel.innerHTML='<option value="">Select repository</option>'+repos.map(r=>`<option value="${escapeHTML(r.full_name)}">${escapeHTML(r.full_name)}${r.private?' · private':''}</option>`).join('');if(saved)sel.value=saved;sel.onchange=()=>{if(sel.value)sessionStorage.setItem(ghRepoKey,sel.value);};}
+  async function ghRequest(path,opts={}){const r=await fetch(GH_API+path,{...opts,headers:{...ghHeaders(),...(opts.headers||{})}});let data=null;try{data=await r.json()}catch(_){ }if(!r.ok){const msg=data?.message||('GitHub API error '+r.status);throw new Error(msg);}return data;}
+  window.jcoGithubConnect=async()=>{const input=$('jcoGithubToken'),token=(input?.value||'').trim();if(!token){showToast?.('Enter a GitHub fine-grained token first.');return;}try{sessionStorage.setItem(ghTokenKey,token);const me=await ghRequest('/user');ghSetStatus('CONNECTED: '+(me.login||'GitHub'),true);showToast?.('GitHub connected ✓');await jcoGithubLoadRepos();}catch(e){sessionStorage.removeItem(ghTokenKey);ghSetStatus('DISCONNECTED',false);console.error(e);showToast?.('GitHub connection failed: '+e.message);}};
+  window.jcoGithubLoadRepos=async()=>{if(!ghToken()){showToast?.('Connect GitHub first.');return;}try{const repos=await ghRequest('/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member');ghSetRepoSelect(repos);ghSetStatus('CONNECTED',true);showToast?.(repos.length+' repositories loaded.');}catch(e){console.error(e);showToast?.('Could not load repositories: '+e.message);}};
+  window.jcoGithubDisconnect=()=>{sessionStorage.removeItem(ghTokenKey);sessionStorage.removeItem(ghRepoKey);const t=$('jcoGithubToken');if(t)t.value='';const s=$('jcoGithubRepo');if(s)s.innerHTML='<option value="">Select repository</option>';ghSetStatus('DISCONNECTED',false);showToast?.('GitHub disconnected.');};
+  function utf8ToBase64(text){const bytes=new TextEncoder().encode(String(text));let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin);}
+  window.jcoGithubPush=async()=>{
+    if(!ghToken()){showToast?.('Connect GitHub first.');return;}
+    if(typeof syncEditor==='function')syncEditor();
+    const repo=($('jcoGithubRepo')?.value||sessionStorage.getItem(ghRepoKey)||'').trim();
+    const branch=(($('jcoGithubBranch')?.value||'main').trim()||'main').replace(/^refs\/heads\//,'');
+    const message=(($('jcoGithubCommit')?.value||'Update from JCO').trim()||'Update from JCO');
+    if(!repo||!repo.includes('/')){showToast?.('Select a GitHub repository first.');return;}
+    const [owner,name]=repo.split('/');
+    try{
+      showToast?.('Preparing GitHub push…');
+      const ref=await ghRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/git/ref/heads/${encodeURIComponent(branch)}`);
+      const headSha=ref.object.sha;
+      const headCommit=await ghRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/git/commits/${headSha}`);
+      const baseTree=headCommit.tree.sha;
+      const treeEntries=[];
+      for(const [path,code] of Object.entries(window.files||{})){
+        if(path.endsWith('/'))continue;
+        treeEntries.push({path:path.replace(/^\/+/,''),mode:'100644',type:'blob',content:String(code??'')});
+      }
+      if(!treeEntries.length){showToast?.('There are no files to push.');return;}
+      const tree=await ghRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/git/trees`,{method:'POST',body:JSON.stringify({base_tree:baseTree,tree:treeEntries})});
+      const commit=await ghRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/git/commits`,{method:'POST',body:JSON.stringify({message,tree:tree.sha,parents:[headSha]})});
+      await ghRequest(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}/git/refs/heads/${encodeURIComponent(branch)}`,{method:'PATCH',body:JSON.stringify({sha:commit.sha,force:false})});
+      ghSetStatus('PUSHED',true);showToast?.(`Pushed ${treeEntries.length} file(s) to ${repo}@${branch} ✓`);
+    }catch(e){console.error(e);showToast?.('GitHub push failed: '+e.message);}
+  };
+  function jcoGithubRestoreSession(){if(ghToken()){ghSetStatus('CONNECTED',true);const saved=sessionStorage.getItem(ghRepoKey);if(saved&&$('jcoGithubRepo'))$('jcoGithubRepo').innerHTML=`<option value="${escapeHTML(saved)}">${escapeHTML(saved)}</option>`;}}
+
   const bpKey=()=> 'jco-bp-'+projectKey();
   function bpLoad(){try{return JSON.parse(localStorage.getItem(bpKey())||'{}')}catch(e){return {}}}
   function bpSave(x){localStorage.setItem(bpKey(),JSON.stringify(x))}
@@ -3460,83 +3494,5 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
 })();
 </script>
 
-<script>
-/* JCO — Firebase Realtime Live Share layer. Additive only: the existing local Live Share remains available. */
-(function(){
-  'use strict';
-  const $=id=>document.getElementById(id);
-  const copy=o=>JSON.parse(JSON.stringify(o||{}));
-  const msg=m=>{try{if(typeof showToast==='function')showToast(m);else if(typeof toast==='function')toast(m)}catch(e){}};
-  let room=null, unsub=null, applying=false, timer=null, uid=null, lastRemote=0;
-  const clean=v=>String(v||'').trim().replace(/[^a-zA-Z0-9_-]/g,'-').slice(0,60);
-  const root=id=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id);
-  const stateRef=id=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id+'/state');
-  const presenceRef=(id,u)=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id+'/presence/'+u);
-
-  // Firebase Realtime Database does not allow '.', '#', '$', '/', '[' or ']' in object keys.
-  // Project file paths commonly contain these characters, so store files as an array while
-  // preserving the original path exactly.
-  function packFiles(map){
-    return Object.keys(map||{}).map(path=>({path:String(path),content:String(map[path]??'')}));
-  }
-  function unpackFiles(value){
-    if(Array.isArray(value)){
-      const out={};
-      value.forEach(item=>{
-        if(item && typeof item.path==='string') out[item.path]=String(item.content??'');
-      });
-      return out;
-    }
-    // Backward compatibility with older rooms that stored safe object keys.
-    return value && typeof value==='object' ? copy(value) : {};
-  }
-  async function auth(){
-    if(window.firebaseAuth?.currentUser){uid=window.firebaseAuth.currentUser.uid;return true}
-    if(!window.firebaseAnonymousSignIn){msg('Firebase Authentication is not available.');return false}
-    try{await window.firebaseAnonymousSignIn();uid=window.firebaseAuth?.currentUser?.uid||'anon';return true}catch(e){console.error(e);msg('Make sure Anonymous Authentication is enabled.');return false}
-  }
-  function ui(){
-    const status=$('jcoLiveCloudStatus'),name=$('jcoLiveRoomName'),main=$('jcoLiveStatus'),transport=document.querySelector('#jcoLiveShareModal .pro-stat:last-child b');
-    if(name)name.value=room||''; if(status)status.textContent=room?'Internet: '+room:'Internet Share stopped'; if(main)main.textContent=room?'Online':'Offline'; if(transport)transport.textContent=room?'FIREBASE RTDB':'LOCAL';
-  }
-  async function stop(silent){
-    try{if(unsub){unsub();unsub=null} if(room&&uid&&window.firebaseRTDBRemove)await window.firebaseRTDBRemove(presenceRef(room,uid))}catch(e){}
-    room=null;uid=null;lastRemote=0;clearTimeout(timer);ui();if(!silent)msg('Internet Live Share stopped.');
-  }
-  async function publish(){
-    if(!room||applying||!window.firebaseRTDBSet)return;
-    try{if(typeof syncEditor==='function')syncEditor();const now=Date.now();await window.firebaseRTDBSet(stateRef(room),{files:packFiles(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid||'anon'});lastRemote=now}catch(e){console.error(e);msg('Live Share update failed.')}
-  }
-  function schedule(){if(!room||applying)return;clearTimeout(timer);timer=setTimeout(publish,300)}
-  async function join(id){
-    if(!window.firebaseRTDB){msg('Firebase Realtime Database is not ready.');return}
-    if(!(await auth()))return; id=clean(id); if(!id){msg('Enter a room name.');return}
-    try{
-      const snap=await window.firebaseRTDBGet(root(id)); if(!snap.exists()){msg('This Live Share room was not found.');return}
-      const data=snap.val()||{}; if(!data.state?.files){msg('This room has no project data.');return}
-      await stop(true); room=id; uid=window.firebaseAuth?.currentUser?.uid||'anon';
-      const st=data.state; setFileMap(unpackFiles(st.files)); window.activeFile=st.activeFile&&files[st.activeFile]!==undefined?st.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null; activeFile=window.activeFile; renderFileExplorer(); if(activeFile)openFile(activeFile); hasTypedInSession=true; projectDirty=false; updatePreview(true);
-      await window.firebaseRTDBSet(presenceRef(room,uid),{uid,joinedAt:Date.now()});
-      try{await window.firebaseRTDBOnDisconnect(presenceRef(room,uid)).remove()}catch(e){}
-      lastRemote=Number(st.updatedAt||0);
-      unsub=window.firebaseRTDBOnValue(stateRef(room),snap2=>{const x=snap2.val()||{};if(!x.files||applying)return;const ts=Number(x.updatedAt||0);if(ts<=lastRemote||x.updatedBy===uid)return;lastRemote=ts;applying=true;try{setFileMap(unpackFiles(x.files));window.activeFile=x.activeFile&&files[x.activeFile]!==undefined?x.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null;activeFile=window.activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;projectDirty=true;updatePreview(true)}finally{setTimeout(()=>applying=false,0)}});
-      ui();msg('Internet Live Share connected: '+room+' ✓');
-    }catch(e){console.error(e);msg('Room join failed: '+(e.message||e))}
-  }
-  async function create(){
-    if(!(await auth()))return; let id=clean(prompt('Create Live Share room name:',(typeof projectKey==='function'?projectKey():'jco-room').slice(0,18)));if(!id)return;
-    try{const existing=await window.firebaseRTDBGet(root(id));if(existing.exists()&&!confirm('This room already exists. Join it?'))return;await stop(true);room=id;uid=window.firebaseAuth?.currentUser?.uid||'anon';const now=Date.now();await window.firebaseRTDBSet(root(id),{meta:{ownerUid:uid,createdAt:now,projectId:typeof projectKey==='function'?projectKey():''},state:{files:packFiles(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid}});await join(id)}catch(e){console.error(e);msg('Room create failed: '+(e.message||e))}
-  }
-  window.jcoCreateLiveRoom=create; window.jcoJoinLiveRoom=()=>join($('jcoLiveRoomName')?.value||prompt('Enter Live Share room name:')); window.jcoStopCloudLiveShare=()=>stop(false); window.jcoStartCloudLiveShare=create;
-  const oldBroadcast=window.broadcast; window.broadcast=function(){try{if(typeof oldBroadcast==='function')oldBroadcast();schedule()}catch(e){}};
-  function inject(){
-    const m=$('jcoLiveShareModal'); if(!m||m.dataset.rtdbReady)return; m.dataset.rtdbReady='1';
-    const p=m.querySelector('.pro-status'); if(p){p.textContent='Local Live Share will continue to work as before. Create or join a Firebase Realtime Database room to use Internet Live Share.';p.insertAdjacentHTML('beforebegin','<div class="jco-live-room-row" style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap"><input id="jcoLiveRoomName" class="pro-input" placeholder="room-name" style="flex:1;min-width:180px"><button class="pro-action" style="width:auto;margin:0" onclick="jcoCreateLiveRoom()">Create Internet Room</button><button class="pro-action" style="width:auto;margin:0" onclick="jcoJoinLiveRoom()">Join Room</button><button class="pro-action" style="width:auto;margin:0" onclick="jcoStopCloudLiveShare()">Stop Internet</button></div><div id="jcoLiveCloudStatus" class="jco-feature-note">Internet Share stopped</div>')}
-    ui();
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(inject,900));else setTimeout(inject,900);
-  setTimeout(inject,2200);
-  document.addEventListener('input',e=>{if(room&&!applying&&(e.target.closest?.('.CodeMirror')))schedule()},true);
-})();
-</script>\n</body>
+</body>
 </html>
