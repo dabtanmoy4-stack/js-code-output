@@ -3472,6 +3472,24 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
   const root=id=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id);
   const stateRef=id=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id+'/state');
   const presenceRef=(id,u)=>window.firebaseRTDBRef(window.firebaseRTDB,'liveRooms/'+id+'/presence/'+u);
+
+  // Firebase Realtime Database does not allow '.', '#', '$', '/', '[' or ']' in object keys.
+  // Project file paths commonly contain these characters, so store files as an array while
+  // preserving the original path exactly.
+  function packFiles(map){
+    return Object.keys(map||{}).map(path=>({path:String(path),content:String(map[path]??'')}));
+  }
+  function unpackFiles(value){
+    if(Array.isArray(value)){
+      const out={};
+      value.forEach(item=>{
+        if(item && typeof item.path==='string') out[item.path]=String(item.content??'');
+      });
+      return out;
+    }
+    // Backward compatibility with older rooms that stored safe object keys.
+    return value && typeof value==='object' ? copy(value) : {};
+  }
   async function auth(){
     if(window.firebaseAuth?.currentUser){uid=window.firebaseAuth.currentUser.uid;return true}
     if(!window.firebaseAnonymousSignIn){msg('Firebase Authentication is not available.');return false}
@@ -3487,7 +3505,7 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
   }
   async function publish(){
     if(!room||applying||!window.firebaseRTDBSet)return;
-    try{if(typeof syncEditor==='function')syncEditor();const now=Date.now();await window.firebaseRTDBSet(stateRef(room),{files:copy(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid||'anon'});lastRemote=now}catch(e){console.error(e);msg('Live Share update failed।')}
+    try{if(typeof syncEditor==='function')syncEditor();const now=Date.now();await window.firebaseRTDBSet(stateRef(room),{files:packFiles(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid||'anon'});lastRemote=now}catch(e){console.error(e);msg('Live Share update failed.')}
   }
   function schedule(){if(!room||applying)return;clearTimeout(timer);timer=setTimeout(publish,300)}
   async function join(id){
@@ -3497,17 +3515,17 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
       const snap=await window.firebaseRTDBGet(root(id)); if(!snap.exists()){msg('This Live Share room was not found.');return}
       const data=snap.val()||{}; if(!data.state?.files){msg('This room has no project data.');return}
       await stop(true); room=id; uid=window.firebaseAuth?.currentUser?.uid||'anon';
-      const st=data.state; setFileMap(copy(st.files)); window.activeFile=st.activeFile&&files[st.activeFile]!==undefined?st.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null; activeFile=window.activeFile; renderFileExplorer(); if(activeFile)openFile(activeFile); hasTypedInSession=true; projectDirty=false; updatePreview(true);
+      const st=data.state; setFileMap(unpackFiles(st.files)); window.activeFile=st.activeFile&&files[st.activeFile]!==undefined?st.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null; activeFile=window.activeFile; renderFileExplorer(); if(activeFile)openFile(activeFile); hasTypedInSession=true; projectDirty=false; updatePreview(true);
       await window.firebaseRTDBSet(presenceRef(room,uid),{uid,joinedAt:Date.now()});
       try{await window.firebaseRTDBOnDisconnect(presenceRef(room,uid)).remove()}catch(e){}
       lastRemote=Number(st.updatedAt||0);
-      unsub=window.firebaseRTDBOnValue(stateRef(room),snap2=>{const x=snap2.val()||{};if(!x.files||applying)return;const ts=Number(x.updatedAt||0);if(ts<=lastRemote||x.updatedBy===uid)return;lastRemote=ts;applying=true;try{setFileMap(copy(x.files));window.activeFile=x.activeFile&&files[x.activeFile]!==undefined?x.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null;activeFile=window.activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;projectDirty=true;updatePreview(true)}finally{setTimeout(()=>applying=false,0)}});
+      unsub=window.firebaseRTDBOnValue(stateRef(room),snap2=>{const x=snap2.val()||{};if(!x.files||applying)return;const ts=Number(x.updatedAt||0);if(ts<=lastRemote||x.updatedBy===uid)return;lastRemote=ts;applying=true;try{setFileMap(unpackFiles(x.files));window.activeFile=x.activeFile&&files[x.activeFile]!==undefined?x.activeFile:Object.keys(files).find(f=>!f.endsWith('/'))||null;activeFile=window.activeFile;renderFileExplorer();if(activeFile)openFile(activeFile);hasTypedInSession=true;projectDirty=true;updatePreview(true)}finally{setTimeout(()=>applying=false,0)}});
       ui();msg('Internet Live Share connected: '+room+' ✓');
     }catch(e){console.error(e);msg('Room join failed: '+(e.message||e))}
   }
   async function create(){
     if(!(await auth()))return; let id=clean(prompt('Create Live Share room name:',(typeof projectKey==='function'?projectKey():'jco-room').slice(0,18)));if(!id)return;
-    try{const existing=await window.firebaseRTDBGet(root(id));if(existing.exists()&&!confirm('This room already exists. Join it?'))return;await stop(true);room=id;uid=window.firebaseAuth?.currentUser?.uid||'anon';const now=Date.now();await window.firebaseRTDBSet(root(id),{meta:{ownerUid:uid,createdAt:now,projectId:typeof projectKey==='function'?projectKey():''},state:{files:copy(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid}});await join(id)}catch(e){console.error(e);msg('Room create failed: '+(e.message||e))}
+    try{const existing=await window.firebaseRTDBGet(root(id));if(existing.exists()&&!confirm('This room already exists. Join it?'))return;await stop(true);room=id;uid=window.firebaseAuth?.currentUser?.uid||'anon';const now=Date.now();await window.firebaseRTDBSet(root(id),{meta:{ownerUid:uid,createdAt:now,projectId:typeof projectKey==='function'?projectKey():''},state:{files:packFiles(window.files||{}),activeFile:window.activeFile||null,updatedAt:now,updatedBy:uid}});await join(id)}catch(e){console.error(e);msg('Room create failed: '+(e.message||e))}
   }
   window.jcoCreateLiveRoom=create; window.jcoJoinLiveRoom=()=>join($('jcoLiveRoomName')?.value||prompt('Enter Live Share room name:')); window.jcoStopCloudLiveShare=()=>stop(false); window.jcoStartCloudLiveShare=create;
   const oldBroadcast=window.broadcast; window.broadcast=function(){try{if(typeof oldBroadcast==='function')oldBroadcast();schedule()}catch(e){}};
