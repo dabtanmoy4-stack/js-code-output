@@ -1427,6 +1427,8 @@ const jsMiniProvider = new GoogleAuthProvider();
 jsMiniProvider.setCustomParameters({prompt:"select_account"});
 
 let jsMiniUser = null;
+let jsMiniAuthReadyResolve;
+const jsMiniAuthReady = new Promise(resolve => { jsMiniAuthReadyResolve = resolve; });
 let jsMiniCloudSites = [];
 let jsMiniHistory = [];
 let jsMiniHistoryIndex = -1;
@@ -1434,6 +1436,7 @@ let jsMiniHistoryIndex = -1;
 onAuthStateChanged(jsMiniAuth, user => {
   jsMiniUser = user || null;
   window.jsMiniUser = jsMiniUser;
+  jsMiniAuthReadyResolve(jsMiniUser);
   if (typeof updateJSMiniAccountUI === "function") updateJSMiniAccountUI();
 });
 
@@ -1482,8 +1485,13 @@ window.updateJSMiniAccountUI=function(){
 };
 window.openJSMiniDeploy=async function(projectId){
   ensureJSMiniUI();
+  // JS mini.Browser uses the SAME Firebase Auth session as JS CODE OUTPUT.
+  // Never start a second Google popup here. Wait for Firebase to restore the
+  // existing session, then use that exact signed-in user.
+  try { await jsMiniAuthReady; } catch(e) {}
   if(!jsMiniUser){
-    try{ await signInWithPopup(jsMiniAuth,jsMiniProvider); }catch(e){ console.error(e); alert('Google Sign-In was cancelled or failed.'); return; }
+    alert('Please sign in to JS CODE OUTPUT first. JS mini.Browser uses the same Google account session.');
+    return;
   }
   const id=projectId || new URLSearchParams(location.search).get('deploy');
   if(!id){ alert('No project was selected for deployment.'); return; }
