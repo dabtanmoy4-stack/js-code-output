@@ -474,6 +474,19 @@
             }
         }
     </style>
+<style id="jsmini-live-deployment">
+/* JS mini.Browser live deployment additions — existing Marvel palette intentionally preserved. */
+.jsmini-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}
+.jsmini-modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#151515;border:1px solid #333;border-top:3px solid #E23636;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.65);padding:22px}
+.jsmini-modal h2{font-size:22px;font-weight:900;margin:0 0 5px}.jsmini-muted{color:#9ca3af;font-size:12px}.jsmini-label{display:block;font-size:11px;color:#d1d5db;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin:16px 0 7px}
+.jsmini-input,.jsmini-textarea,.jsmini-select{width:100%;background:#0f0f0f;border:1px solid #3f3f46;color:#fff;border-radius:10px;padding:11px 12px;outline:none;font-size:13px}.jsmini-input:focus,.jsmini-textarea:focus,.jsmini-select:focus{border-color:#E23636;box-shadow:0 0 0 2px rgba(226,54,54,.15)}.jsmini-textarea{min-height:90px;resize:vertical}
+.jsmini-domain-wrap{display:flex;align-items:center}.jsmini-domain-wrap .jsmini-input{border-radius:10px 0 0 10px}.jsmini-domain-suffix{background:#202A44;border:1px solid #3f3f46;border-left:0;padding:11px 12px;border-radius:0 10px 10px 0;color:#F78F3F;font-weight:800;font-size:12px;white-space:nowrap}
+.jsmini-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.jsmini-btn{border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-btn.cancel{background:#262626;color:#d1d5db}.jsmini-btn.deploy{background:#E23636;color:#fff;box-shadow:0 5px 18px rgba(226,54,54,.25)}.jsmini-btn.deploy:hover{background:#b91c1c}.jsmini-status{margin-top:12px;font-size:12px;min-height:18px}.jsmini-success{color:#86efac}.jsmini-error{color:#fca5a5}.jsmini-loading{color:#F78F3F}
+.jsmini-sitebar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#111;border-bottom:1px solid #333}.jsmini-sitebar strong{font-size:12px}.jsmini-sitebar span{font-size:10px;color:#9ca3af}.jsmini-open-frame{width:100%;height:calc(100vh - 100px);border:0;background:#fff;display:block}
+.jsmini-sites-section{width:min(900px,100%);margin:30px auto 0;padding:0 8px}.jsmini-sites-title{font-size:13px;color:#9ca3af;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;font-weight:900}.jsmini-sites-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.jsmini-site-card{background:#151515;border:1px solid #333;border-radius:12px;padding:15px;text-align:left;cursor:pointer;transition:.2s}.jsmini-site-card:hover{border-color:#E23636;transform:translateY(-2px)}.jsmini-site-card h3{font-size:15px;font-weight:900;margin:0 0 5px}.jsmini-site-card p{font-size:11px;color:#9ca3af;line-height:1.5;margin:0 0 9px}.jsmini-site-card .domain{font-size:10px;color:#F78F3F;font-weight:800}
+@media(max-width:600px){.jsmini-modal{padding:17px;border-radius:13px}.jsmini-actions{flex-direction:column-reverse}.jsmini-btn{width:100%}.jsmini-sitebar{padding:8px 10px}.jsmini-open-frame{height:calc(100vh - 96px)}}
+</style>
+
 </head>
 
 <body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
@@ -715,7 +728,7 @@
 
                     <button
                         class="bg-marvelRed hover:bg-red-700 text-white text-sm py-1.5 px-4 rounded-full w-full transition"
-                        onclick="alert('Account creation system will be added later!')">
+                        onclick="window.jsMiniSignIn && window.jsMiniSignIn()">
                         Sign In / Create Account
                     </button>
                 </div>
@@ -1043,10 +1056,8 @@
                     .getElementById('address-bar')
                     .value;
 
-            if (currentVal.endsWith('.JS')) {
-
+            if (currentVal.endsWith('.JS') || currentVal.endsWith('.js') || currentVal.endsWith('.jsmini')) {
                 loadSite(currentVal);
-
             } else if (currentVal !== '') {
 
                 executeSearch(currentVal);
@@ -1108,15 +1119,9 @@
 
                 if (query === '') return;
 
-                if (
-                    query.endsWith('.js') ||
-                    query.endsWith('.JS')
-                ) {
-
+                if (query.endsWith('.jsmini') || query.endsWith('.js') || query.endsWith('.JS')) {
                     loadSite(query);
-
                 } else {
-
                     executeSearch(query);
                 }
             }
@@ -1396,6 +1401,181 @@
         };
 
     </script>
+
+<script type="module">
+/* =========================================================
+   JS mini.Browser — live JS CODE OUTPUT integration
+   Keeps the existing Marvel visual system untouched.
+   ========================================================= */
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const jsMiniFirebaseConfig = {
+  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+  authDomain: "js-code-output.firebaseapp.com",
+  projectId: "js-code-output",
+  storageBucket: "js-code-output.firebasestorage.app",
+  messagingSenderId: "600350018167",
+  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+  measurementId: "G-L47M0E9V96"
+};
+const jsMiniApp = getApps().length ? getApps()[0] : initializeApp(jsMiniFirebaseConfig);
+const jsMiniAuth = getAuth(jsMiniApp);
+const jsMiniDb = getFirestore(jsMiniApp);
+const jsMiniProvider = new GoogleAuthProvider();
+jsMiniProvider.setCustomParameters({prompt:"select_account"});
+
+let jsMiniUser = null;
+let jsMiniCloudSites = [];
+let jsMiniHistory = [];
+let jsMiniHistoryIndex = -1;
+
+onAuthStateChanged(jsMiniAuth, user => {
+  jsMiniUser = user || null;
+  window.jsMiniUser = jsMiniUser;
+  if (typeof updateJSMiniAccountUI === "function") updateJSMiniAccountUI();
+});
+
+function escapeHTML(v=""){
+  return String(v).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+}
+function normalizeDomain(v=""){
+  return String(v).trim().toLowerCase().replace(/^https?:\/\//,'').replace(/^js:\/\//,'').replace(/\.jsmini$/i,'').replace(/\.js$/i,'');
+}
+function domainValid(v){ return /^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/.test(v); }
+
+function ensureJSMiniUI(){
+  if(document.getElementById('jsmini-deploy-modal')) return;
+  const wrap=document.createElement('div'); wrap.id='jsmini-deploy-modal'; wrap.className='jsmini-modal-backdrop hidden';
+  wrap.innerHTML=`<div class="jsmini-modal" role="dialog" aria-modal="true" aria-labelledby="jsminiDeployTitle">
+    <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start">
+      <div><h2 id="jsminiDeployTitle">🚀 Deploy to JS mini.Browser</h2><div class="jsmini-muted">Publish this project inside the JS mini.Browser ecosystem.</div></div>
+      <button id="jsminiDeployClose" class="jsmini-btn cancel" type="button">×</button>
+    </div>
+    <label class="jsmini-label" for="jsminiProjectName">Project name</label>
+    <input id="jsminiProjectName" class="jsmini-input" maxlength="80" placeholder="My Awesome Website">
+    <label class="jsmini-label" for="jsminiDescription">Description</label>
+    <textarea id="jsminiDescription" class="jsmini-textarea" maxlength="300" placeholder="Tell people what this website is about..."></textarea>
+    <label class="jsmini-label" for="jsminiDomain">Virtual domain</label>
+    <div class="jsmini-domain-wrap"><input id="jsminiDomain" class="jsmini-input" maxlength="50" placeholder="my-awesome-site"><span class="jsmini-domain-suffix">.jsmini</span></div>
+    <label class="jsmini-label" for="jsminiCategory">Category</label>
+    <select id="jsminiCategory" class="jsmini-select"><option>Portfolio</option><option>Business</option><option>Game</option><option>Tool</option><option>Blog</option><option>Education</option><option>Other</option></select>
+    <label class="jsmini-label" for="jsminiVisibility">Visibility</label>
+    <select id="jsminiVisibility" class="jsmini-select"><option value="public">Public</option><option value="unlisted">Unlisted</option></select>
+    <div id="jsminiDeployStatus" class="jsmini-status"></div>
+    <div class="jsmini-actions"><button id="jsminiDeployCancel" class="jsmini-btn cancel" type="button">Cancel</button><button id="jsminiDeployBtn" class="jsmini-btn deploy" type="button">🚀 Deploy</button></div>
+  </div>`;
+  document.body.appendChild(wrap);
+  document.getElementById('jsminiDeployClose').onclick=closeJSMiniDeploy;
+  document.getElementById('jsminiDeployCancel').onclick=closeJSMiniDeploy;
+  document.getElementById('jsminiDeployBtn').onclick=submitJSMiniDeploy;
+  document.getElementById('jsminiDomain').addEventListener('input',e=>{e.target.value=e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')});
+}
+
+window.jsMiniSignIn=async function(){ try{ if(!jsMiniUser) await signInWithPopup(jsMiniAuth,jsMiniProvider); updateJSMiniAccountUI(); }catch(e){ console.error(e); alert("Google Sign-In was cancelled or failed."); } };
+window.updateJSMiniAccountUI=function(){
+  const h=document.querySelector('header > div:last-child button:nth-of-type(2)');
+  if(h && jsMiniUser){ const img=h.querySelector('img'); if(img){img.src=jsMiniUser.photoURL||img.src; img.alt=jsMiniUser.displayName||'Signed in';} }
+  const card=document.querySelector('#settings-sidebar .bg-marvelBlue\/20');
+  if(card){ const title=card.querySelector('h3'); const text=card.querySelector('p'); const btn=card.querySelector('button'); if(jsMiniUser){ if(title) title.textContent=jsMiniUser.displayName||'Google Account'; if(text) text.textContent=jsMiniUser.email||'Signed in with Google'; if(btn){btn.textContent='Signed in';btn.disabled=true;btn.style.opacity='.65';} } }
+};
+window.openJSMiniDeploy=async function(projectId){
+  ensureJSMiniUI();
+  if(!jsMiniUser){
+    try{ await signInWithPopup(jsMiniAuth,jsMiniProvider); }catch(e){ console.error(e); alert('Google Sign-In was cancelled or failed.'); return; }
+  }
+  const id=projectId || new URLSearchParams(location.search).get('deploy');
+  if(!id){ alert('No project was selected for deployment.'); return; }
+  const ref=doc(jsMiniDb,'users',jsMiniUser.uid,'projects',id);
+  const snap=await getDoc(ref);
+  if(!snap.exists()){ alert('This project could not be found in your cloud projects. Return to JS CODE OUTPUT and save the project first.'); return; }
+  const data=snap.data();
+  const files=data.files||{};
+  if(!Object.keys(files).some(k=>/\.html?$/i.test(k))){ alert('Your project needs an HTML file before it can be deployed.'); return; }
+  document.getElementById('jsminiProjectName').value=data.name||'Untitled Project';
+  document.getElementById('jsminiDescription').value=data.jsMiniDescription||'';
+  document.getElementById('jsminiDomain').value=data.jsMiniDomain||normalizeDomain(data.name||'my-site');
+  document.getElementById('jsminiCategory').value=data.jsMiniCategory||'Other';
+  document.getElementById('jsminiVisibility').value=data.jsMiniVisibility||'public';
+  wrapDeployModal(true);
+  window.__jsMiniDeployProject={id,data};
+};
+function wrapDeployModal(show){const m=document.getElementById('jsmini-deploy-modal'); if(m)m.classList.toggle('hidden',!show)}
+function closeJSMiniDeploy(){wrapDeployModal(false)}
+async function submitJSMiniDeploy(){
+  const state=window.__jsMiniDeployProject; if(!state||!jsMiniUser)return;
+  const name=document.getElementById('jsminiProjectName').value.trim()||'Untitled Project';
+  const description=document.getElementById('jsminiDescription').value.trim();
+  const domain=normalizeDomain(document.getElementById('jsminiDomain').value);
+  const category=document.getElementById('jsminiCategory').value;
+  const visibility=document.getElementById('jsminiVisibility').value;
+  const status=document.getElementById('jsminiDeployStatus'); const btn=document.getElementById('jsminiDeployBtn');
+  if(!domainValid(domain)){status.className='jsmini-status jsmini-error';status.textContent='Use 1–50 lowercase letters, numbers and hyphens.';return}
+  btn.disabled=true; status.className='jsmini-status jsmini-loading'; status.textContent='Checking virtual domain...';
+  try{
+    const q=query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true));
+    const taken=await getDocs(q); let conflict=false;
+    taken.forEach(d=>{const x=d.data();if(x.id!==state.id && x.jsMiniPublished===true && normalizeDomain(x.virtualDomain||'')===domain) conflict=true});
+    if(conflict){status.className='jsmini-status jsmini-error';status.textContent='That virtual domain is already taken.';btn.disabled=false;return}
+    status.textContent='Preparing your website...';
+    const htmlBundle=buildJSMiniStandalone(state.data.files||{});
+    const site={id:state.id,ownerUid:jsMiniUser.uid,ownerName:jsMiniUser.displayName||'',ownerPhoto:jsMiniUser.photoURL||'',name,description,virtualDomain:domain,category,visibility,status:'published',jsMiniPublished:true,htmlBundle,publishedAt:serverTimestamp(),updatedAt:serverTimestamp()};
+    await setDoc(doc(jsMiniDb,'public_projects',state.id),site,{merge:true});
+    await setDoc(doc(jsMiniDb,'users',jsMiniUser.uid,'projects',state.id),{name,jsMiniDescription:description,jsMiniDomain:domain,jsMiniCategory:category,jsMiniVisibility:visibility,jsMiniDeployed:true},{merge:true});
+    status.className='jsmini-status jsmini-success';status.textContent='✓ Deployed successfully.';
+    setTimeout(()=>{closeJSMiniDeploy();loadJSMiniSite(domain,true)},550);
+  }catch(e){console.error(e);status.className='jsmini-status jsmini-error';status.textContent='Deployment failed. Please try again.';btn.disabled=false}
+}
+function buildJSMiniStandalone(files){
+  const keys=Object.keys(files).filter(k=>!k.endsWith('/')); const htmlKey=keys.find(k=>k.toLowerCase()==='index.html')||keys.find(k=>/\.html?$/i.test(k));
+  let html=htmlKey?String(files[htmlKey]||''):''; const css=keys.filter(k=>/\.css$/i.test(k)).map(k=>files[k]||'').join('\n'); const js=keys.filter(k=>/\.(js|mjs)$/i.test(k)).map(k=>files[k]||'').join(';\n');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head><body>${html}<script>try{${js}}catch(e){console.error(e)}<\/script></body></html>`;
+}
+async function loadCloudSites(){
+  try{let snap; try { snap=await getDocs(query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true))); } catch(e) { if(!jsMiniUser){ try{ await signInAnonymously(jsMiniAuth); snap=await getDocs(query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true))); }catch(e2){ throw e2; } } else throw e; } jsMiniCloudSites=[]; snap.forEach(d=>jsMiniCloudSites.push({id:d.id,...d.data()})); renderCloudSites();}catch(e){console.error('JS Mini sites load failed:',e)}
+}
+function allSites(){return jsMiniCloudSites.filter(s=>s.visibility!=='unlisted').map(s=>({url:(s.virtualDomain||'')+'.jsmini',title:s.name||'Untitled Website',snippet:s.description||'Published on JS mini.Browser',theme:'dark',cloud:true,site:s}));}
+function renderCloudSites(){const el=document.getElementById('jsmini-cloud-sites');if(!el)return;const sites=jsMiniCloudSites.filter(s=>s.visibility!=='unlisted'); if(!sites.length){el.innerHTML='<div class="text-xs text-gray-500">No public JS mini websites yet. Be the first to deploy one.</div>';return} el.innerHTML=sites.slice(0,12).map(s=>`<div class="jsmini-site-card" onclick="loadSite('${escapeHTML((s.virtualDomain||'')+'.jsmini')}')"><h3>${escapeHTML(s.name||'Untitled')}</h3><p>${escapeHTML(s.description||'No description')}</p><div class="domain">${escapeHTML((s.virtualDomain||'')+'.jsmini')} · ${escapeHTML(s.category||'Other')}</div></div>`).join('')}
+window.executeJSMiniSearch=async function(q){const queryText=String(q||'').trim().toLowerCase(); if(!queryText){goHome();return} await loadCloudSites(); const local=mockDatabase.map(x=>({...x,cloud:false})); const sites=[...allSites(),...local].filter(s=>`${s.title} ${s.snippet} ${s.url}`.toLowerCase().includes(queryText)); document.getElementById('search-query-text').textContent=q; const c=document.getElementById('results-container'); if(!sites.length){c.innerHTML='<div class="text-center py-20"><i data-lucide="search-x" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i><h3 class="text-xl text-gray-300 font-medium">No JS mini websites found</h3><p class="text-gray-500 mt-2">Only websites deployed inside JS mini.Browser are searchable here.</p></div>';}else{c.innerHTML=sites.map(s=>`<div class="group cursor-pointer bg-[#151515] p-5 rounded-xl border border-gray-800 hover:border-marvelRed transition-colors shadow-lg" onclick="loadSite('${escapeHTML(s.url)}')"><div class="flex items-start gap-4"><div class="mt-1 bg-gray-800 p-2 rounded text-marvelGold group-hover:bg-marvelRed group-hover:text-white transition"><i data-lucide="globe" class="w-5 h-5"></i></div><div><div class="text-sm text-gray-400 mb-1">js://${escapeHTML(s.url)} <span class="bg-gray-800 text-[10px] px-1.5 py-0.5 rounded text-gray-400">${s.cloud?'Published':'Demo'}</span></div><h3 class="text-xl text-blue-400 group-hover:underline font-medium mb-2">${escapeHTML(s.title)}</h3><p class="text-gray-300 text-sm leading-relaxed">${escapeHTML(s.snippet)}</p></div></div></div>`).join('')} lucide.createIcons(); switchView('view-search-results');}
+window.loadJSMiniSite=async function(raw,fromHistory=false){
+  let domain=normalizeDomain(raw); if(!domain)return; const full=domain+'.jsmini'; document.getElementById('address-bar').value=full; await loadCloudSites(); const site=jsMiniCloudSites.find(s=>normalizeDomain(s.virtualDomain||'')===domain);
+  if(site){const c=document.getElementById('website-content');c.innerHTML=`<div class="jsmini-sitebar"><div><strong>${escapeHTML(site.name||domain)}</strong><br><span>${escapeHTML(full)} · ${escapeHTML(site.description||'')}</span></div><span>${escapeHTML(site.category||'Other')}</span></div><iframe class="jsmini-open-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups" title="${escapeHTML(site.name||domain)}"></iframe>`;const frame=c.querySelector('iframe');frame.srcdoc=site.htmlBundle||'<h1>Empty website</h1>';switchView('view-website');if(!fromHistory){jsMiniHistory=jsMiniHistory.slice(0,jsMiniHistoryIndex+1);jsMiniHistory.push(domain);jsMiniHistoryIndex=jsMiniHistory.length-1}return}
+  const demo=mockDatabase.find(x=>normalizeDomain(x.url)===domain); if(demo){window.originalLoadSiteForJSMini?window.originalLoadSiteForJSMini(raw):null;return} loadSite(raw);
+};
+window.loadSite=window.loadJSMiniSite;
+window.executeSearch=window.executeJSMiniSearch;
+window.goJSMiniBack=function(){if(jsMiniHistoryIndex>0){jsMiniHistoryIndex--;loadJSMiniSite(jsMiniHistory[jsMiniHistoryIndex],true)}else goHome()};
+window.goJSMiniForward=function(){if(jsMiniHistoryIndex<jsMiniHistory.length-1){jsMiniHistoryIndex++;loadJSMiniSite(jsMiniHistory[jsMiniHistoryIndex],true)}};
+window.handleJSMiniDeployFromURL=async function(){
+  const p=new URLSearchParams(location.search);
+  const id=p.get('deploy');
+  const site=p.get('site');
+
+  // IMPORTANT: opening js-mini-browser.html normally MUST always show
+  // the JS mini.Browser home page. The deployment screen is only an
+  // internal route reached from the JS CODE OUTPUT workspace button.
+  if(id){
+    await window.openJSMiniDeploy(id);
+    return;
+  }
+
+  if(site){
+    await loadJSMiniSite(site,true);
+    return;
+  }
+
+  goHome();
+};
+
+function addCloudSection(){const home=document.getElementById('view-home');if(!home||document.getElementById('jsmini-cloud-sites'))return;const sec=document.createElement('div');sec.className='jsmini-sites-section';sec.innerHTML='<div class="jsmini-sites-title">Public JS mini websites</div><div id="jsmini-cloud-sites" class="jsmini-sites-grid"></div>';home.appendChild(sec)}
+window.addEventListener('DOMContentLoaded',()=>{ensureJSMiniUI();addCloudSection();loadCloudSites();setTimeout(()=>window.handleJSMiniDeployFromURL(),100);});
+</script>
+
+<script>
+/* Preserve the original demo database while routing real JS mini sites through Firebase. */
+window.originalLoadSiteForJSMini = window.loadSite;
+</script>
 
 </body>
 </html>
