@@ -1133,7 +1133,7 @@
       <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
     </label>
 
-    <button class="app-btn deploy-js-mini" title="Deploy to JS Mini" aria-label="Deploy to JS Mini"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini</span></button>
+    <button class="app-btn deploy-js-mini" onclick="openJSMiniDeploy()" title="Deploy to JS Mini Browser" aria-label="Deploy to JS Mini Browser"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini Browser</span></button>
 
     <div class="desktop-toolbar-tools">
       <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
@@ -1905,6 +1905,28 @@ function buildStandaloneProjectHTML(projFiles) {
   <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
 </body>
 </html>`;
+}
+
+async function openJSMiniDeploy() {
+  // JS Mini Browser deployment is handled by js-mini-browser.html.
+  // Keep the existing workspace/project system untouched and pass only
+  // the current project id to the dedicated deployment page.
+  try {
+    const projectId = window.currentProjectId || currentProjectId || localStorage.getItem("js-code-output-active-project-id") || "";
+
+    // Give the existing autosave system a chance to persist the latest edit
+    // before leaving the workspace. This does not alter the current editor flow.
+    if (projectId && typeof window.saveProjectDraft === "function" && !String(projectId).startsWith("local_proj_")) {
+      try { await window.saveProjectDraft(projectId); } catch (e) { console.warn("JS Mini pre-deploy save skipped:", e); }
+    }
+
+    const base = new URL("js-mini-browser.html", window.location.href);
+    base.searchParams.set("deploy", projectId || "");
+    window.location.href = base.href;
+  } catch (e) {
+    console.error("Unable to open JS Mini Browser deployment:", e);
+    if (typeof showToast === "function") showToast("Could not open JS Mini Browser.");
+  }
 }
 
 async function handlePublishProject() {
