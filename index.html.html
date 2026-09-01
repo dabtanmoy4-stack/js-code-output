@@ -2846,6 +2846,19 @@ return code;
 const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html");
 let html = rootIndex ? files[rootIndex] : (htmlKeys.length ? files[htmlKeys[0]] : "");
 
+// Local project CSS/JS files are already bundled into the preview below.
+// Remove their original <link>/<script src> tags so the iframe does not
+// request missing standalone files (404) such as style.css or script.js.
+const localProjectPaths = new Set(allFileKeys.map(k => k.replace(/^\.\//, "")));
+html = html.replace(/<link\b[^>]*?rel=["']stylesheet["'][^>]*?href=["']([^"']+)["'][^>]*?>/gi, (tag, href) => {
+  const path = String(href).replace(/^\.\//, "");
+  return localProjectPaths.has(path) && /\.(css|scss)$/i.test(path) ? "" : tag;
+});
+html = html.replace(/<script\b([^>]*?)src=["']([^"']+)["']([^>]*)><\/script>/gi, (tag, before, src, after) => {
+  const path = String(src).replace(/^\.\//, "");
+  return localProjectPaths.has(path) && /\.(js|mjs|ts|tsx)$/i.test(path) ? "" : tag;
+});
+
 Object.keys(files).forEach(filename => {
 if(isBinary(getExt(filename))) {
 const safeKey = filename.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
