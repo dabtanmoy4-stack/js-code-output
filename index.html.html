@@ -1133,7 +1133,7 @@
       <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
     </label>
 
-    <button class="app-btn deploy-js-mini" onclick="openJSMiniDeploy()" title="Deploy to JS Mini Browser" aria-label="Deploy to JS Mini Browser"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini Browser</span></button>
+    <button class="app-btn deploy-js-mini" onclick="deployToJSMiniBrowser()" title="Deploy to JS Mini Browser" aria-label="Deploy to JS Mini Browser"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini Browser</span></button>
 
     <div class="desktop-toolbar-tools">
       <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
@@ -1867,6 +1867,67 @@ function handleProtectedDownload() {
   openDownloadMenu();
 }
 
+async function deployToJSMiniBrowser() {
+  try {
+    let user = window.firebaseCurrentUser || window.currentUser;
+
+    if (!user) {
+      if (window.firebaseAuthReady) await window.firebaseAuthReady;
+      user = window.firebaseCurrentUser || window.currentUser;
+    }
+
+    if (!user) {
+      if (typeof window.googleSignIn !== "function") {
+        showToast("Google Sign-In is not ready. Please try again.");
+        return;
+      }
+      try {
+        await window.googleSignIn();
+        if (window.firebaseAuthReady) await window.firebaseAuthReady;
+      } catch (e) {
+        console.error("JS Mini Google Sign-In failed:", e);
+        showToast("Google Sign-In cancelled or failed.");
+        return;
+      }
+      user = window.firebaseCurrentUser || window.currentUser;
+    }
+
+    if (!user) {
+      showToast("Please sign in with Google first.");
+      return;
+    }
+
+    if (typeof syncEditor === "function") syncEditor();
+
+    let id = window.currentProjectId;
+    const projectName = document.getElementById("currentProjectName")?.textContent.trim() || "Untitled Project";
+
+    if (!id || id.startsWith("local_proj_")) {
+      id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", id), {
+        id,
+        name: projectName,
+        ownerId: user.uid,
+        files: JSON.parse(JSON.stringify(window.files || {})),
+        createdAt: window.firebaseServerTimestamp(),
+        updatedAt: window.firebaseServerTimestamp()
+      });
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid), {
+        projectIds: window.firebaseArrayUnion(id)
+      }, {merge:true});
+      window.currentProjectId = id;
+      localStorage.setItem("js-code-output-active-project-id", id);
+    } else {
+      await window.saveProjectDraft(id);
+    }
+
+    window.location.href = "js-mini-browser.html?deploy=" + encodeURIComponent(id);
+  } catch (e) {
+    console.error("JS Mini Browser deployment launch failed:", e);
+    showToast("Could not open JS Mini Browser deployment.");
+  }
+}
+
 function buildStandaloneProjectHTML(projFiles) {
   const fileSet = projFiles || files;
   const allFileKeys = Object.keys(fileSet).filter(k => !k.endsWith("/"));
@@ -1905,28 +1966,6 @@ function buildStandaloneProjectHTML(projFiles) {
   <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
 </body>
 </html>`;
-}
-
-async function openJSMiniDeploy() {
-  // JS Mini Browser deployment is handled by js-mini-browser.html.
-  // Keep the existing workspace/project system untouched and pass only
-  // the current project id to the dedicated deployment page.
-  try {
-    const projectId = window.currentProjectId || currentProjectId || localStorage.getItem("js-code-output-active-project-id") || "";
-
-    // Give the existing autosave system a chance to persist the latest edit
-    // before leaving the workspace. This does not alter the current editor flow.
-    if (projectId && typeof window.saveProjectDraft === "function" && !String(projectId).startsWith("local_proj_")) {
-      try { await window.saveProjectDraft(projectId); } catch (e) { console.warn("JS Mini pre-deploy save skipped:", e); }
-    }
-
-    const base = new URL("js-mini-browser.html", window.location.href);
-    base.searchParams.set("deploy", projectId || "");
-    window.location.href = base.href;
-  } catch (e) {
-    console.error("Unable to open JS Mini Browser deployment:", e);
-    if (typeof showToast === "function") showToast("Could not open JS Mini Browser.");
-  }
 }
 
 async function handlePublishProject() {
