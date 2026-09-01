@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS mini.Browser</title>
+    <!-- Tailwind CSS for styling (Marvel color theme mixed with Dark UI) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        marvelRed: '#E23636',
+                        marvelDark: '#151515',
+                        marvelBlue: '#202A44',
+                        marvelGold: '#F78F3F'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons for browser buttons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Edge/Chrome style thin scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #151515; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #202A44; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E23636; 
+        }
+        
+        .marvel-bg {
+            background: radial-gradient(circle at center, #202A44 0%, #151515 100%);
+        }
+        
+        /* Smooth transitions */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
+
+    <!-- Browser Window Header / Toolbar (Chrome + Edge Mix) -->
+    <header class="bg-[#0a0a0a] border-b-2 border-marvelRed p-2 flex items-center justify-between shadow-md z-20">
+        <!-- Window Controls & Navigation -->
+        <div class="flex items-center gap-2">
+            <!-- Mac/Linux style window dots for aesthetic -->
+            <div class="flex gap-1.5 mr-4 px-2">
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <button onclick="goHome()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Home">
+                <i data-lucide="home" class="w-5 h-5"></i>
+            </button>
+            <button onclick="alert('Back kora abosthay nai (Feature coming soon)')" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <button class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+            <button onclick="refreshPage()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                <i data-lucide="rotate-cw" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Omnibox / Address Bar -->
+        <div class="flex-1 max-w-3xl mx-4 relative group">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i data-lucide="search" class="w-4 h-4 text-marvelGold"></i>
+            </div>
+            <input type="text" id="address-bar" 
+                class="w-full bg-[#1a1a1a] border border-gray-700 text-white rounded-full py-1.5 pl-10 pr-4 focus:outline-none focus:border-marvelRed focus:ring-1 focus:ring-marvelRed transition shadow-inner"
+                placeholder="Search or enter a .JS URL..."
+                onkeydown="handleAddressBarEnter(event)">
+        </div>
+
+        <!-- Extensions & Settings (Edge Style) -->
+        <div class="flex items-center gap-2">
+            <div class="h-6 w-px bg-gray-700 mx-1"></div>
+            <button class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-marvelGold transition" title="Extensions">
+                <i data-lucide="puzzle" class="w-5 h-5"></i>
+            </button>
+            <button class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marvel" alt="User" class="w-6 h-6 rounded-full bg-gray-600">
+            </button>
+            <button onclick="toggleSettings()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Settings">
+                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Browser Content Area -->
+    <main class="flex-1 flex relative overflow-hidden">
+        
+        <!-- Tab Content Area -->
+        <div id="viewport" class="flex-1 overflow-y-auto marvel-bg flex flex-col relative w-full">
+            
+            <!-- Home Screen View -->
+            <div id="view-home" class="flex-1 flex flex-col items-center justify-center p-8 fade-in">
+                <div class="text-center mb-8">
+                    <!-- Marvel Style Logo -->
+                    <div class="bg-marvelRed text-white font-black text-5xl tracking-tighter px-4 py-2 inline-block shadow-lg uppercase">
+                        JS mini
+                    </div>
+                    <span class="text-gray-300 text-3xl font-light ml-2 tracking-wide block mt-2">.Browser</span>
+                </div>
+                
+                <div class="w-full max-w-2xl relative">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6"></i>
+                    <input type="text" id="main-search" 
+                        class="w-full bg-[#151515] bg-opacity-80 border-2 border-gray-700 text-white rounded-full py-4 pl-14 pr-6 text-lg focus:outline-none focus:border-marvelRed focus:ring-4 focus:ring-red-900/50 shadow-2xl transition-all"
+                        placeholder="Search for alien tech or .JS websites from around the world..."
+                        onkeydown="if(event.key === 'Enter') executeSearch(this.value)">
+                </div>
+                
+                <div class="flex gap-4 mt-8">
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('stark.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-marvelRed transition shadow-md border border-gray-700">
+                            <i data-lucide="cpu" class="text-marvelGold w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">stark.JS</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('shield.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-marvelBlue transition shadow-md border border-gray-700">
+                            <i data-lucide="shield" class="text-gray-300 w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">shield.JS</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('wakanda.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-purple-800 transition shadow-md border border-gray-700">
+                            <i data-lucide="globe" class="text-gray-300 w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">wakanda.JS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Results View -->
+            <div id="view-search-results" class="hidden w-full max-w-4xl mx-auto p-8 fade-in flex-1">
+                <div class="flex items-center gap-4 mb-6 border-b border-gray-800 pb-4">
+                    <div class="bg-marvelRed text-white font-bold text-xl px-2 py-1">JS</div>
+                    <span class="text-gray-400">Search results for: <span id="search-query-text" class="text-white font-medium"></span></span>
+                </div>
+                <div id="results-container" class="space-y-6">
+                    <!-- Results will be injected here via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Website Render View -->
+            <div id="view-website" class="hidden bg-white text-black w-full min-h-full fade-in relative">
+                <!-- Website content is injected here -->
+                <div id="website-content" class="w-full h-full"></div>
+            </div>
+
+        </div>
+
+        <!-- Sidebar / Settings (Edge style slide-in panel) -->
+        <div id="settings-sidebar" class="w-80 bg-[#111] border-l border-gray-800 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out absolute right-0 top-0 h-full z-10 shadow-2xl">
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-[#1a1a1a]">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="settings" class="text-marvelGold"></i> Settings
+                </h2>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 flex-1 overflow-y-auto space-y-6">
+                <!-- User Account Section (Future feature placeholder) -->
+                <div class="bg-marvelBlue/20 p-4 rounded-lg border border-marvelBlue/50 text-center">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marvel" class="w-16 h-16 mx-auto rounded-full bg-gray-800 mb-2">
+                    <h3 class="font-bold">New Account</h3>
+                    <p class="text-xs text-gray-400 mb-3">Sign in to sync your data across devices.</p>
+                    <button class="bg-marvelRed hover:bg-red-700 text-white text-sm py-1.5 px-4 rounded-full w-full transition" onclick="alert('Account creation system will be added later!')">
+                        Sign In / Create Account
+                    </button>
+                </div>
+
+                <!-- Settings Links -->
+                <div class="space-y-1">
+                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                        <i data-lucide="palette" class="w-4 h-4 text-gray-400"></i> Appearance (Marvel Theme)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-gray-400"></i> Privacy & Security
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                        <i data-lucide="upload-cloud" class="w-4 h-4 text-gray-400"></i> Publish Website <span class="bg-marvelGold text-black text-[10px] px-1.5 py-0.5 rounded font-bold ml-auto">PRO</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                        <i data-lucide="history" class="w-4 h-4 text-gray-400"></i> Browsing History
+                    </a>
+                </div>
+                
+                <div class="mt-8 border-t border-gray-800 pt-4">
+                    <p class="text-xs text-gray-500 text-center">JS mini.Browser v1.0<br>Made for futuristic web.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // -------------------------------------------------------------
+        // Mock Database of .JS Websites (Internal Websites)
+        // -------------------------------------------------------------
+        const mockDatabase = [
+            {
+                url: 'stark.JS',
+                title: 'Stark Industries | Changing the World',
+                snippet: 'We create the best tech, arc reactors, and defense systems. Iron Man suits available for Avengers only.',
+                theme: 'dark',
+                content: `
+                    <div style="background-color: #111; color: #fff; min-height: 100vh; font-family: sans-serif;">
+                        <header style="padding: 20px 40px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
+                            <h1 style="color: #FFD700; margin: 0; font-weight: 900; letter-spacing: 2px;">STARK <span style="color:white">INDUSTRIES</span></h1>
+                            <nav>
+                                <a href="#" style="color: #ccc; text-decoration: none; margin-left: 20px;">Products</a>
+                                <a href="#" style="color: #ccc; text-decoration: none; margin-left: 20px;">Arc Reactor</a>
+                                <a href="#" style="color: #ccc; text-decoration: none; margin-left: 20px;">Contact Tony</a>
+                            </nav>
+                        </header>
+                        <main style="padding: 60px 40px; max-width: 900px; margin: 0 auto; text-align: center;">
+                            <h2 style="font-size: 3rem; margin-bottom: 20px;">Building a safer tomorrow.</h2>
+                            <p style="color: #888; font-size: 1.2rem; line-height: 1.6;">Our latest nanotech integration is now live. Please login to your Stark Pad to sync your armor.</p>
+                            <div style="margin-top: 40px; background: #222; padding: 40px; border-radius: 10px; border-left: 5px solid #FFD700;">
+                                <h3 style="color: #FFD700;">System Alert:</h3>
+                                <p>Friday AI is currently running system diagnostics. Everything is online.</p>
+                            </div>
+                        </main>
+                    </div>
+                `
+            },
+            {
+                url: 'shield.JS',
+                title: 'S.H.I.E.L.D. Secure Database',
+                snippet: 'Strategic Homeland Intervention, Enforcement and Logistics Division. Authorized personnel only.',
+                theme: 'light',
+                content: `
+                    <div style="background-color: #e2e8f0; color: #1e293b; min-height: 100vh; font-family: monospace;">
+                        <div style="background-color: #0f172a; padding: 15px; text-align: center; color: white;">
+                            <h1 style="margin:0;">S.H.I.E.L.D. INTRANET</h1>
+                        </div>
+                        <div style="max-width: 800px; margin: 40px auto; background: white; padding: 30px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                            <h2 style="color: #b91c1c; border-bottom: 2px solid #b91c1c; padding-bottom: 10px;">CLASSIFIED FILE: #8934</h2>
+                            <p><strong>Subject:</strong> Tesseract Energy Signatures</p>
+                            <p><strong>Status:</strong> Under monitoring by Director Fury.</p>
+                            <br/>
+                            <p style="background: #fef2f2; padding: 10px; border-left: 4px solid #ef4444;">
+                                WARNING: Level 7 Clearance required to view full documents.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                url: 'wakanda.JS',
+                title: 'Wakanda Outreach Program',
+                snippet: 'Discover the technological marvels of Wakanda. Vibranium research and international aid.',
+                theme: 'dark',
+                content: `
+                    <div style="background-color: #2e0f4c; color: #fff; min-height: 100vh; font-family: sans-serif;">
+                        <header style="padding: 30px; text-align: center;">
+                            <h1 style="color: #d8b4fe; font-size: 2.5rem; letter-spacing: 5px; text-transform: uppercase;">Wakanda Forever</h1>
+                        </header>
+                        <div style="padding: 20px; text-align: center;">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tech City" style="width: 100%; max-width: 600px; border-radius: 20px; border: 2px solid #d8b4fe;">
+                            <h2 style="margin-top: 30px; color: #e9d5ff;">Vibranium Technology Hub</h2>
+                            <p style="max-width: 600px; margin: 20px auto; color: #c084fc;">We are sharing our knowledge with the world. Join our science exchange programs.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                url: 'avengers.JS',
+                title: 'Avengers HQ - Public Portal',
+                snippet: 'Report alien sightings, superhuman activities, or apply for internship.',
+                theme: 'light',
+                content: `
+                    <div style="background-color: white; color: #333; min-height: 100vh; font-family: sans-serif;">
+                        <div style="background-color: #E23636; height: 10px; w-full"></div>
+                        <div style="max-width: 1000px; margin: 0 auto; padding: 40px;">
+                            <h1 style="font-size: 3rem; color: #202A44; display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #202A44; color: white; border-radius: 50%; width: 50px; height: 50px; display: inline-flex; justify-content: center; align-items: center;">A</span>
+                                Avengers Headquarters
+                            </h1>
+                            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;"/>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                                    <h3>Report an Incident</h3>
+                                    <p>See a portal opening in the sky? Let us know immediately.</p>
+                                    <button style="background: #E23636; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Report Now</button>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                                    <h3>Damage Control</h3>
+                                    <p>Need help rebuilding after a superhero fight? Contact DODC.</p>
+                                    <button style="background: #202A44; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Contact DODC</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // UI Control Functions
+        // -------------------------------------------------------------
+
+        // Hide all views, then show the target one
+        function switchView(viewId) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-search-results').classList.add('hidden');
+            document.getElementById('view-website').classList.add('hidden');
+            
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // Return to Home Page
+        function goHome() {
+            document.getElementById('address-bar').value = '';
+            switchView('view-home');
+        }
+
+        // Refresh currently viewed site/page
+        function refreshPage() {
+            const currentVal = document.getElementById('address-bar').value;
+            if(currentVal.endsWith('.JS')) {
+                loadSite(currentVal);
+            } else if (currentVal !== '') {
+                executeSearch(currentVal);
+            } else {
+                goHome();
+            }
+        }
+
+        // Toggle Right Sidebar (Settings)
+        let settingsOpen = false;
+        function toggleSettings() {
+            const sidebar = document.getElementById('settings-sidebar');
+            if(settingsOpen) {
+                sidebar.classList.add('translate-x-full');
+            } else {
+                sidebar.classList.remove('translate-x-full');
+            }
+            settingsOpen = !settingsOpen;
+        }
+
+        // -------------------------------------------------------------
+        // Core Logic: Search and Navigation
+        // -------------------------------------------------------------
+
+        // Address Bar Enter Key Press
+        function handleAddressBarEnter(event) {
+            if(event.key === 'Enter') {
+                const query = event.target.value.trim().toLowerCase();
+                if(query === '') return;
+                
+                // If URL contains .JS, open website directly
+                if(query.endsWith('.js') || query.endsWith('.JS')) {
+                    loadSite(query);
+                } else {
+                    // Otherwise do a normal search
+                    executeSearch(query);
+                }
+            }
+        }
+
+        // Search the mock database
+        function executeSearch(query) {
+            if(!query) return;
+            
+            // update address bar
+            document.getElementById('address-bar').value = query;
+            document.getElementById('search-query-text').innerText = query;
+            
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = ''; // clear previous
+
+            query = query.toLowerCase();
+            
+            // filter data (title, url ba snippet a thakle asbe)
+            const matches = mockDatabase.filter(site => 
+                site.title.toLowerCase().includes(query) || 
+                site.url.toLowerCase().includes(query) ||
+                site.snippet.toLowerCase().includes(query)
+            );
+
+            if(matches.length > 0) {
+                matches.forEach(site => {
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'group cursor-pointer bg-[#151515] p-5 rounded-xl border border-gray-800 hover:border-marvelRed transition-colors shadow-lg';
+                    resultCard.onclick = () => loadSite(site.url);
+                    
+                    resultCard.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 bg-gray-800 p-2 rounded text-marvelGold group-hover:bg-marvelRed group-hover:text-white transition">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-400 mb-1 flex items-center gap-2">
+                                    js://${site.url} <span class="bg-gray-800 text-[10px] px-1.5 py-0.5 rounded text-gray-400">Verified .JS</span>
+                                </div>
+                                <h3 class="text-xl text-blue-400 group-hover:underline font-medium mb-2">${site.title}</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">${site.snippet}</p>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(resultCard);
+                });
+                lucide.createIcons(); // refresh icons
+            } else {
+                // No results found
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-20">
+                        <i data-lucide="search-x" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <h3 class="text-xl text-gray-300 font-medium">No .JS websites found</h3>
+                        <p class="text-gray-500 mt-2">Your search "${query}" might exist on other websites, but this is JS mini.Browser, only .JS domains are allowed here.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+
+            switchView('view-search-results');
+        }
+
+        // Load a specific .JS Website inside the browser
+        function loadSite(url) {
+            // ensure format
+            url = url.toLowerCase();
+            if(!url.endsWith('.js')) url += '.js';
+            
+            document.getElementById('address-bar').value = url;
+            
+            const siteData = mockDatabase.find(s => s.url.toLowerCase() === url);
+            const contentArea = document.getElementById('website-content');
+            
+            if(siteData) {
+                // inject content
+                contentArea.innerHTML = siteData.content;
+            } else {
+                // 404 Not Found Page Design
+                contentArea.innerHTML = `
+                    <div style="background-color: #111; color: white; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: sans-serif;">
+                        <h1 style="font-size: 5rem; margin: 0; color: #E23636;">404</h1>
+                        <h2 style="font-size: 1.5rem; margin-top: 10px;">Website Not Found</h2>
+                        <p style="color: #888; margin-top: 20px; max-width: 400px;">The website "${url}" you are looking for has not been published on this platform or uses a different domain.</p>
+                        <button onclick="goHome()" style="margin-top: 30px; background: #202A44; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">Return to Home</button>
+                    </div>
+                `;
+            }
+
+            switchView('view-website');
+        }
+
+        // Init: ensure home is showing on load
+        window.onload = () => {
+            goHome();
+        };
+
+    </script>
+</body>
+</html>
