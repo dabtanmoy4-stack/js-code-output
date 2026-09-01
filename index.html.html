@@ -335,6 +335,36 @@
 
   .mobile-explorer-toggle { display: none; }
   .header-actions-scroll { display: flex; align-items: center; gap: 8px; }
+  /* Search/Replace moved beside Project button */
+  .project-search-actions { display:flex; align-items:center; gap:5px; margin-left:4px; }
+  .project-search-actions .tool-btn { flex:0 0 auto; padding:6px 9px; }
+  /* Workspace account menu */
+  .account-menu-wrap { position:relative; }
+  .account-menu {
+    position:absolute; right:0; top:43px; width:310px; max-width:calc(100vw - 16px);
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); z-index:10000; overflow:hidden; display:none;
+  }
+  .account-menu.show { display:block; }
+  .account-menu-head { padding:14px; border-bottom:1px solid var(--line); }
+  .account-menu-title { font-size:10px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  .account-current { display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .account-avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center; color:var(--brand); flex:0 0 36px; }
+  .account-info { min-width:0; flex:1; }
+  .account-name { font-size:12px; font-weight:850; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .account-email { font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .account-list { max-height:220px; overflow:auto; padding:7px; }
+  .account-item { width:100%; display:flex; align-items:center; gap:9px; padding:9px; border:0; background:transparent; color:var(--ink); border-radius:9px; text-align:left; }
+  .account-item:hover { background:var(--surface2); }
+  .account-item.active { background:rgba(20,86,184,.10); }
+  .account-check { margin-left:auto; color:var(--brand); font-size:11px; }
+  .account-menu-actions { padding:9px; border-top:1px solid var(--line); }
+  .account-add-btn { width:100%; justify-content:center; }
+  @media(max-width:700px){
+    .project-search-actions { margin-left:0; }
+    .project-search-actions .tool-btn { padding:6px 8px; }
+    .account-menu { right:-4px; width:min(310px,calc(100vw - 16px)); }
+  }
 
   @media(max-width:1000px){ 
     .hero{grid-template-columns:1fr;gap:35px} 
@@ -923,6 +953,11 @@
         </div>
       </div>
     </div>
+
+    <div class="project-search-actions" aria-label="Code search tools">
+      <button data-tour="search-code" onclick="triggerSearch()" class="tool-btn" title="Search Code (Ctrl+F)" aria-label="Search Code"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button onclick="triggerReplace()" class="tool-btn" title="Find & Replace (Ctrl+H)" aria-label="Find and Replace"><i class="fa-solid fa-arrow-right-arrow-left text-xs"></i></button>
+    </div>
   </div>
 
   <div class="header-actions-scroll">
@@ -942,7 +977,29 @@
 
     <button class="app-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
     <button class="app-btn" data-tour="download-button" onclick="handleProtectedDownload()" title="Download"><i class="fa-solid fa-download"></i></button>
-    <button class="app-btn" onclick="openProjectsPage()" title="Workspace Account"><i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span></button>
+    <div class="account-menu-wrap">
+      <button id="workspaceAccountButton" class="app-btn" onclick="toggleAccountMenu(event)" title="Workspace Account" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span>
+      </button>
+      <div id="workspaceAccountMenu" class="account-menu" role="menu">
+        <div class="account-menu-head">
+          <div class="account-menu-title">Your Accounts</div>
+          <div id="accountCurrent" class="account-current">
+            <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="account-info">
+              <div id="accountCurrentName" class="account-name">Guest</div>
+              <div id="accountCurrentEmail" class="account-email">No account signed in</div>
+            </div>
+          </div>
+        </div>
+        <div id="workspaceAccountList" class="account-list"></div>
+        <div class="account-menu-actions">
+          <button class="app-btn account-add-btn" onclick="addWorkspaceAccount()">
+            <i class="fa-solid fa-user-plus"></i><span>Add Account</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
   </div>
 </header>
@@ -979,8 +1036,6 @@
         <div id="tabs" class="tabs"></div>
 
         <div class="flex gap-1">
-          <button data-tour="search-code" onclick="triggerSearch()" class="tool-btn" style="padding:4px 8px" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-          <button onclick="triggerReplace()" class="tool-btn" style="padding:4px 8px" title="Find & Replace (Ctrl+H)"><i class="fa-solid fa-arrow-right-arrow-left text-xs"></i></button>
           <button onclick="toggleEditorFullscreen()" class="tool-btn" style="padding:4px 8px" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
           <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
         </div>
@@ -1213,7 +1268,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 try{getAnalytics(app)}catch(e){}
-const auth = getAuth(app), provider = new GoogleAuthProvider(), db = getFirestore(app);
+const auth = getAuth(app), provider = new GoogleAuthProvider(), db = getFirestore(app); provider.setCustomParameters({prompt:"select_account"});
 
 window.firebaseAuth = auth;
 window.firebaseDB = db;
@@ -1254,8 +1309,10 @@ onAuthStateChanged(auth, user => {
   if (user) {
     localStorage.removeItem("js-code-output-skip-login");
     document.getElementById("signOutBtn")?.classList.remove("hidden");
+    if(typeof rememberWorkspaceAccount === "function") rememberWorkspaceAccount(user);
   } else {
     document.getElementById("signOutBtn")?.classList.add("hidden");
+    if(typeof renderWorkspaceAccounts === "function") renderWorkspaceAccounts();
   }
   resolveAuth(user || null);
 });
@@ -1499,9 +1556,10 @@ window.toggleExplorerMenu = function() {
     }
 };
 
-window.addEventListener('click', () => {
+window.addEventListener('click', (e) => {
     const cm = document.getElementById('customContextMenu');
     if(cm) cm.style.display = 'none';
+    if(!e.target.closest(".account-menu-wrap")) closeAccountMenu();
 });
 
 window.addEventListener('message', function(e) {
@@ -2352,6 +2410,7 @@ const accountSpan = document.getElementById("workspaceAccountName");
 if(accountSpan) {
 accountSpan.textContent = u ? (u.displayName || u.email || "Developer") : "Guest";
 }
+if(typeof renderWorkspaceAccounts === "function") renderWorkspaceAccounts();
 
 if(initialFiles){
 setFileMap(initialFiles);
@@ -3010,6 +3069,131 @@ function toggleLibraries(){ document.getElementById("librariesModal").classList.
 function toggleTheme(){
 const isDark = document.documentElement.classList.toggle("dark");
 document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+}
+
+function getWorkspaceAccounts(){
+  try { return JSON.parse(localStorage.getItem("jco_workspace_accounts") || "[]"); }
+  catch(e){ return []; }
+}
+
+function saveWorkspaceAccounts(list){
+  try { localStorage.setItem("jco_workspace_accounts", JSON.stringify(list.slice(0,12))); }
+  catch(e){}
+}
+
+function rememberWorkspaceAccount(user){
+  if(!user) return;
+  const account = {
+    uid: user.uid || "",
+    name: user.displayName || user.email || "Developer",
+    email: user.email || "",
+    photoURL: user.photoURL || ""
+  };
+  let list = getWorkspaceAccounts().filter(a => a.uid !== account.uid && a.email !== account.email);
+  list.unshift(account);
+  saveWorkspaceAccounts(list);
+  renderWorkspaceAccounts();
+}
+
+function renderWorkspaceAccounts(){
+  const listEl = document.getElementById("workspaceAccountList");
+  const currentName = document.getElementById("accountCurrentName");
+  const currentEmail = document.getElementById("accountCurrentEmail");
+  const avatar = document.querySelector("#accountCurrent .account-avatar");
+  const buttonName = document.getElementById("workspaceAccountName");
+  if(!listEl) return;
+
+  const user = window.firebaseCurrentUser || window.currentUser;
+  const accounts = getWorkspaceAccounts();
+
+  if(user){
+    if(currentName) currentName.textContent = user.displayName || user.email || "Developer";
+    if(currentEmail) currentEmail.textContent = user.email || "Signed in";
+    if(buttonName) buttonName.textContent = user.displayName || user.email || "Developer";
+    if(avatar) avatar.innerHTML = user.photoURL
+      ? `<img src="${escapeHTML(user.photoURL)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
+      : '<i class="fa-solid fa-user"></i>';
+  } else {
+    if(currentName) currentName.textContent = "Guest";
+    if(currentEmail) currentEmail.textContent = "No account signed in";
+    if(buttonName) buttonName.textContent = "Guest";
+    if(avatar) avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+  }
+
+  listEl.innerHTML = "";
+  if(!accounts.length){
+    const empty = document.createElement("div");
+    empty.style.cssText = "padding:14px 10px;color:var(--muted);font-size:11px;text-align:center;";
+    empty.textContent = "No saved accounts yet.";
+    listEl.appendChild(empty);
+    return;
+  }
+
+  accounts.forEach(a => {
+    const item = document.createElement("button");
+    item.className = "account-item" + (user && a.uid === user.uid ? " active" : "");
+    item.type = "button";
+    const avatarHtml = a.photoURL
+      ? `<img src="${escapeHTML(a.photoURL)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
+      : '<i class="fa-solid fa-user"></i>';
+    item.innerHTML = `
+      <div class="account-avatar">${avatarHtml}</div>
+      <div class="account-info">
+        <div class="account-name">${escapeHTML(a.name || "Developer")}</div>
+        <div class="account-email">${escapeHTML(a.email || "")}</div>
+      </div>
+      ${user && a.uid === user.uid ? '<span class="account-check"><i class="fa-solid fa-check"></i></span>' : ''}
+    `;
+    item.onclick = () => selectWorkspaceAccount(a);
+    listEl.appendChild(item);
+  });
+}
+
+function toggleAccountMenu(e){
+  e?.stopPropagation();
+  const menu = document.getElementById("workspaceAccountMenu");
+  const button = document.getElementById("workspaceAccountButton");
+  if(!menu) return;
+  const open = menu.classList.toggle("show");
+  if(button) button.setAttribute("aria-expanded", open ? "true" : "false");
+  if(open) renderWorkspaceAccounts();
+}
+
+function closeAccountMenu(){
+  const menu = document.getElementById("workspaceAccountMenu");
+  const button = document.getElementById("workspaceAccountButton");
+  if(menu) menu.classList.remove("show");
+  if(button) button.setAttribute("aria-expanded", "false");
+}
+
+async function addWorkspaceAccount(){
+  closeAccountMenu();
+  if(!window.googleSignIn){
+    showToast("Google sign-in is not ready yet.");
+    return;
+  }
+  try{
+    const res = await window.googleSignIn();
+    if(res?.user){
+      window.firebaseCurrentUser = res.user;
+      window.currentUser = res.user;
+      rememberWorkspaceAccount(res.user);
+      showToast("Account added successfully.");
+    }
+  }catch(e){
+    console.error("Add account failed:", e);
+    showToast("Account sign-in cancelled or failed.");
+  }
+}
+
+async function selectWorkspaceAccount(account){
+  const current = window.firebaseCurrentUser || window.currentUser;
+  if(current && account.uid === current.uid){
+    closeAccountMenu();
+    return;
+  }
+  closeAccountMenu();
+  await addWorkspaceAccount();
 }
 
 function toggleProjectSwitcher(e){
