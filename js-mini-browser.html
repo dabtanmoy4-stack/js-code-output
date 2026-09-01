@@ -487,6 +487,64 @@
 @media(max-width:600px){.jsmini-modal{padding:17px;border-radius:13px}.jsmini-actions{flex-direction:column-reverse}.jsmini-btn{width:100%}.jsmini-sitebar{padding:8px 10px}.jsmini-open-frame{height:calc(100vh - 96px)}}
 </style>
 
+
+<style id="jsmini-chrome-experience">
+/* Chrome-like motion and account/history surfaces; existing palette is intentionally unchanged. */
+.jsmini-account-menu{position:fixed;z-index:100050;width:320px;background:#151515;border:1px solid #333;border-radius:16px;box-shadow:0 18px 55px rgba(0,0,0,.65);padding:8px;transform-origin:top right;animation:jsminiMenuIn .16s ease-out}
+.jsmini-account-head{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #333;margin-bottom:6px}
+.jsmini-account-head img{width:44px;height:44px;border-radius:50%;background:#202A44;border:2px solid #333}
+.jsmini-account-head strong{display:block;font-size:14px;color:#fff;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jsmini-account-head span{display:block;font-size:11px;color:#9ca3af;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.jsmini-account-menu button{width:100%;display:flex;align-items:center;gap:12px;background:transparent;border:0;color:#ddd;padding:11px 12px;border-radius:10px;cursor:pointer;text-align:left;font-size:13px;transition:background .14s,transform .14s}
+.jsmini-account-menu button:hover{background:#202A44;color:#fff;transform:translateX(2px)}
+.jsmini-account-menu button svg{width:17px;height:17px;color:#F78F3F}
+.jsmini-menu-sep{height:1px;background:#333;margin:6px 4px}
+.jsmini-history-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(7px);z-index:100040;display:flex;justify-content:flex-end}
+.jsmini-history-panel{height:100%;width:min(520px,100%);background:#111;border-left:1px solid #333;box-shadow:-20px 0 60px rgba(0,0,0,.5);animation:jsminiPanelIn .2s ease-out;display:flex;flex-direction:column}
+.jsmini-history-head{height:auto!important;min-height:76px;background:#1a1a1a!important;border:0!important;border-bottom:1px solid #333!important;display:flex;align-items:center;justify-content:space-between;padding:16px 18px}
+.jsmini-history-head h2{font-size:20px;font-weight:900;margin:0;color:#fff}
+.jsmini-history-head span{display:block;font-size:11px;color:#9ca3af;margin-top:3px}
+.jsmini-history-head button{background:transparent;border:0;color:#aaa;font-size:28px;line-height:1;cursor:pointer;padding:5px 8px;border-radius:8px}
+.jsmini-history-head button:hover{background:#202A44;color:#fff}
+.jsmini-history-toolbar{display:flex;gap:8px;padding:12px;border-bottom:1px solid #292929}
+.jsmini-history-toolbar input{flex:1;min-width:0;background:#151515;border:1px solid #3a3a3a;color:#fff;border-radius:10px;padding:10px 12px;outline:0}
+.jsmini-history-toolbar input:focus{border-color:#E23636;box-shadow:0 0 0 2px rgba(226,54,54,.12)}
+.jsmini-history-toolbar button{background:#202A44;color:#fff;border:0;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.jsmini-history-toolbar button:hover{background:#E23636}
+#jsmini-history-list{overflow:auto;padding:8px;flex:1}
+.jsmini-history-row{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;color:#fff;text-align:left;padding:11px 9px;border-radius:11px;cursor:pointer;transition:background .14s,transform .14s}
+.jsmini-history-row:hover{background:#1b1b1b;transform:translateX(2px)}
+.jsmini-history-icon{width:34px;height:34px;border-radius:50%;background:#202A44;display:grid;place-items:center;flex:none}
+.jsmini-history-icon svg{width:16px;height:16px;color:#F78F3F}
+.jsmini-history-main{min-width:0;flex:1}
+.jsmini-history-main strong,.jsmini-history-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jsmini-history-main strong{font-size:12px;font-weight:800}
+.jsmini-history-main small{font-size:10px;color:#888;margin-top:3px}
+.jsmini-history-row time{font-size:9px;color:#777;white-space:nowrap}
+.jsmini-history-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#777;text-align:center;gap:7px}
+.jsmini-history-empty svg{width:44px;height:44px;color:#202A44}
+.jsmini-history-empty strong{color:#ddd;font-size:14px}
+.jsmini-history-empty span{font-size:11px}
+header button:disabled{cursor:default!important}
+#view-home,#view-search-results,#view-website{animation-duration:.18s}
+.fade-in{animation:jsminiViewIn .18s ease-out}
+.jsmini-modal-backdrop:not(.hidden){animation:jsminiBackdropIn .16s ease-out}
+.jsmini-modal-backdrop:not(.hidden) .jsmini-modal{animation:jsminiModalIn .2s cubic-bezier(.2,.8,.2,1)}
+.jsmini-site-card{transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.jsmini-site-card:hover{box-shadow:0 10px 30px rgba(0,0,0,.28)}
+@keyframes jsminiViewIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes jsminiBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes jsminiModalIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes jsminiMenuIn{from{opacity:0;transform:translateY(-5px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes jsminiPanelIn{from{opacity:.5;transform:translateX(25px)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+ .jsmini-account-menu{width:min(340px,calc(100vw - 16px));right:8px!important}
+ .jsmini-history-panel{width:100%;border-left:0}
+ .jsmini-history-toolbar{flex-wrap:wrap}
+ .jsmini-history-toolbar input{flex-basis:100%}
+}
+</style>
+
 </head>
 
 <body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
@@ -1408,7 +1466,7 @@
    Keeps the existing Marvel visual system untouched.
    ========================================================= */
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const jsMiniFirebaseConfig = {
@@ -1438,6 +1496,8 @@ onAuthStateChanged(jsMiniAuth, user => {
   window.jsMiniUser = jsMiniUser;
   jsMiniAuthReadyResolve(jsMiniUser);
   if (typeof updateJSMiniAccountUI === "function") updateJSMiniAccountUI();
+  jsMiniHistoryLoaded=false;
+  jsMiniHistoryLoad().catch(e=>console.warn(e));
 });
 
 function escapeHTML(v=""){
@@ -1541,20 +1601,249 @@ function buildJSMiniStandalone(files){
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head><body>${html}<script>try{${js}}catch(e){console.error(e)}<\/script></body></html>`;
 }
 async function loadCloudSites(){
-  try{let snap; try { snap=await getDocs(query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true))); } catch(e) { if(!jsMiniUser){ try{ await signInAnonymously(jsMiniAuth); snap=await getDocs(query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true))); }catch(e2){ throw e2; } } else throw e; } jsMiniCloudSites=[]; snap.forEach(d=>jsMiniCloudSites.push({id:d.id,...d.data()})); renderCloudSites();}catch(e){console.error('JS Mini sites load failed:',e)}
+  try{let snap; try { snap=await getDocs(query(collection(jsMiniDb,'public_projects'),where('jsMiniPublished','==',true))); } catch(e) { console.error('Public sites require readable Firestore rules:',e); throw e; } jsMiniCloudSites=[]; snap.forEach(d=>jsMiniCloudSites.push({id:d.id,...d.data()})); renderCloudSites();}catch(e){console.error('JS Mini sites load failed:',e)}
 }
 function allSites(){return jsMiniCloudSites.filter(s=>s.visibility!=='unlisted').map(s=>({url:(s.virtualDomain||'')+'.jsmini',title:s.name||'Untitled Website',snippet:s.description||'Published on JS mini.Browser',theme:'dark',cloud:true,site:s}));}
 function renderCloudSites(){const el=document.getElementById('jsmini-cloud-sites');if(!el)return;const sites=jsMiniCloudSites.filter(s=>s.visibility!=='unlisted'); if(!sites.length){el.innerHTML='<div class="text-xs text-gray-500">No public JS mini websites yet. Be the first to deploy one.</div>';return} el.innerHTML=sites.slice(0,12).map(s=>`<div class="jsmini-site-card" onclick="loadSite('${escapeHTML((s.virtualDomain||'')+'.jsmini')}')"><h3>${escapeHTML(s.name||'Untitled')}</h3><p>${escapeHTML(s.description||'No description')}</p><div class="domain">${escapeHTML((s.virtualDomain||'')+'.jsmini')} · ${escapeHTML(s.category||'Other')}</div></div>`).join('')}
 window.executeJSMiniSearch=async function(q){const queryText=String(q||'').trim().toLowerCase(); if(!queryText){goHome();return} await loadCloudSites(); const local=mockDatabase.map(x=>({...x,cloud:false})); const sites=[...allSites(),...local].filter(s=>`${s.title} ${s.snippet} ${s.url}`.toLowerCase().includes(queryText)); document.getElementById('search-query-text').textContent=q; const c=document.getElementById('results-container'); if(!sites.length){c.innerHTML='<div class="text-center py-20"><i data-lucide="search-x" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i><h3 class="text-xl text-gray-300 font-medium">No JS mini websites found</h3><p class="text-gray-500 mt-2">Only websites deployed inside JS mini.Browser are searchable here.</p></div>';}else{c.innerHTML=sites.map(s=>`<div class="group cursor-pointer bg-[#151515] p-5 rounded-xl border border-gray-800 hover:border-marvelRed transition-colors shadow-lg" onclick="loadSite('${escapeHTML(s.url)}')"><div class="flex items-start gap-4"><div class="mt-1 bg-gray-800 p-2 rounded text-marvelGold group-hover:bg-marvelRed group-hover:text-white transition"><i data-lucide="globe" class="w-5 h-5"></i></div><div><div class="text-sm text-gray-400 mb-1">js://${escapeHTML(s.url)} <span class="bg-gray-800 text-[10px] px-1.5 py-0.5 rounded text-gray-400">${s.cloud?'Published':'Demo'}</span></div><h3 class="text-xl text-blue-400 group-hover:underline font-medium mb-2">${escapeHTML(s.title)}</h3><p class="text-gray-300 text-sm leading-relaxed">${escapeHTML(s.snippet)}</p></div></div></div>`).join('')} lucide.createIcons(); switchView('view-search-results');}
 window.loadJSMiniSite=async function(raw,fromHistory=false){
   let domain=normalizeDomain(raw); if(!domain)return; const full=domain+'.jsmini'; document.getElementById('address-bar').value=full; await loadCloudSites(); const site=jsMiniCloudSites.find(s=>normalizeDomain(s.virtualDomain||'')===domain);
-  if(site){const c=document.getElementById('website-content');c.innerHTML=`<div class="jsmini-sitebar"><div><strong>${escapeHTML(site.name||domain)}</strong><br><span>${escapeHTML(full)} · ${escapeHTML(site.description||'')}</span></div><span>${escapeHTML(site.category||'Other')}</span></div><iframe class="jsmini-open-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups" title="${escapeHTML(site.name||domain)}"></iframe>`;const frame=c.querySelector('iframe');frame.srcdoc=site.htmlBundle||'<h1>Empty website</h1>';switchView('view-website');if(!fromHistory){jsMiniHistory=jsMiniHistory.slice(0,jsMiniHistoryIndex+1);jsMiniHistory.push(domain);jsMiniHistoryIndex=jsMiniHistory.length-1}return}
-  const demo=mockDatabase.find(x=>normalizeDomain(x.url)===domain); if(demo){window.originalLoadSiteForJSMini?window.originalLoadSiteForJSMini(raw):null;return} loadSite(raw);
+  if(site){const c=document.getElementById('website-content');c.innerHTML=`<div class="jsmini-sitebar"><div><strong>${escapeHTML(site.name||domain)}</strong><br><span>${escapeHTML(full)} · ${escapeHTML(site.description||'')}</span></div><span>${escapeHTML(site.category||'Other')}</span></div><iframe class="jsmini-open-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups" title="${escapeHTML(site.name||domain)}"></iframe>`;const frame=c.querySelector('iframe');frame.srcdoc=site.htmlBundle||'<h1>Empty website</h1>';switchView('view-website');return}
+  const demo=mockDatabase.find(x=>normalizeDomain(x.url)===domain); if(demo){jsMiniOriginalLoadSite(raw);return} jsMiniOriginalLoadSite(raw);
 };
+const jsMiniOriginalLoadSite = window.loadSite;
 window.loadSite=window.loadJSMiniSite;
 window.executeSearch=window.executeJSMiniSearch;
 window.goJSMiniBack=function(){if(jsMiniHistoryIndex>0){jsMiniHistoryIndex--;loadJSMiniSite(jsMiniHistory[jsMiniHistoryIndex],true)}else goHome()};
 window.goJSMiniForward=function(){if(jsMiniHistoryIndex<jsMiniHistory.length-1){jsMiniHistoryIndex++;loadJSMiniSite(jsMiniHistory[jsMiniHistoryIndex],true)}};
+
+/* =========================================================
+   CHROME-LIKE BROWSER EXPERIENCE
+   Persistent account history + local fallback + navigation UI.
+   Existing features and Marvel palette remain unchanged.
+   ========================================================= */
+const JSMINI_LOCAL_HISTORY_KEY='jsmini-browser-history-v2';
+let jsMiniHistoryLoaded=false;
+let jsMiniHistorySyncing=false;
+
+function jsMiniHistoryReadLocal(){
+  try{return JSON.parse(localStorage.getItem(JSMINI_LOCAL_HISTORY_KEY)||'[]');}catch(e){return [];}
+}
+function jsMiniHistoryWriteLocal(){
+  try{localStorage.setItem(JSMINI_LOCAL_HISTORY_KEY,JSON.stringify(jsMiniHistory.slice(-100)));}catch(e){}
+}
+async function jsMiniHistoryLoad(){
+  if(jsMiniHistoryLoaded)return;
+  jsMiniHistoryLoaded=true;
+  const local=jsMiniHistoryReadLocal();
+  jsMiniHistory=Array.isArray(local)?local:[];
+  jsMiniHistoryIndex=jsMiniHistory.length-1;
+  if(jsMiniUser && !jsMiniUser.isAnonymous){
+    try{
+      const snap=await getDoc(doc(jsMiniDb,'users',jsMiniUser.uid,'browser','history'));
+      if(snap.exists()){
+        const cloud=Array.isArray(snap.data().items)?snap.data().items:[];
+        if(cloud.length) jsMiniHistory=cloud.slice(-100);
+        jsMiniHistoryIndex=jsMiniHistory.length-1;
+        jsMiniHistoryWriteLocal();
+      }
+    }catch(e){console.warn('Browser history sync read failed:',e);}
+  }
+  updateJSMiniNavigationUI();
+  renderJSMiniHistory();
+}
+async function jsMiniHistorySave(){
+  jsMiniHistoryWriteLocal();
+  if(!jsMiniUser || jsMiniUser.isAnonymous || jsMiniHistorySyncing)return;
+  jsMiniHistorySyncing=true;
+  try{
+    await setDoc(doc(jsMiniDb,'users',jsMiniUser.uid,'browser','history'),{
+      items:jsMiniHistory.slice(-100),
+      updatedAt:Date.now()
+    },{merge:true});
+  }catch(e){console.warn('Browser history sync write failed:',e);}
+  finally{jsMiniHistorySyncing=false;}
+}
+function jsMiniRecordHistory(entry){
+  if(!entry)return;
+  const value=typeof entry==='string'?entry:entry.url;
+  if(!value)return;
+  const item={url:String(value),title:String((entry&&entry.title)||value),type:String((entry&&entry.type)||'website'),visitedAt:Date.now()};
+  const last=jsMiniHistory[jsMiniHistory.length-1];
+  if(last && last.url===item.url){
+    jsMiniHistory[jsMiniHistory.length-1]={...last,...item};
+    jsMiniHistoryIndex=jsMiniHistory.length-1;
+  }else{
+    jsMiniHistory=jsMiniHistory.slice(0,jsMiniHistoryIndex+1);
+    jsMiniHistory.push(item);
+    jsMiniHistory=jsMiniHistory.slice(-100);
+    jsMiniHistoryIndex=jsMiniHistory.length-1;
+  }
+  jsMiniHistoryWriteLocal();
+  jsMiniHistorySave();
+  updateJSMiniNavigationUI();
+  renderJSMiniHistory();
+}
+function updateJSMiniNavigationUI(){
+  const buttons=document.querySelectorAll('header > div:first-child button');
+  if(buttons.length>=5){
+    const back=buttons[2], forward=buttons[3];
+    back.onclick=()=>window.goJSMiniBack();
+    forward.onclick=()=>window.goJSMiniForward();
+    back.disabled=jsMiniHistoryIndex<=0;
+    forward.disabled=jsMiniHistoryIndex<0 || jsMiniHistoryIndex>=jsMiniHistory.length-1;
+    back.style.opacity=back.disabled?'.35':'1';
+    forward.style.opacity=forward.disabled?'.35':'1';
+    back.title='Back';
+    forward.title='Forward';
+  }
+}
+function jsMiniFormatTime(ts){
+  const d=new Date(ts||Date.now());
+  return d.toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function ensureJSMiniAccountMenu(){
+  if(document.getElementById('jsmini-account-menu'))return;
+  const menu=document.createElement('div');
+  menu.id='jsmini-account-menu';
+  menu.className='jsmini-account-menu hidden';
+  menu.innerHTML=`
+    <div class="jsmini-account-head">
+      <img id="jsmini-account-photo" src="" alt="">
+      <div><strong id="jsmini-account-name">Google Account</strong><span id="jsmini-account-email">Not signed in</span></div>
+    </div>
+    <button type="button" data-account-action="history"><i data-lucide="history"></i><span>History</span></button>
+    <button type="button" data-account-action="refresh"><i data-lucide="rotate-cw"></i><span>Reload browser</span></button>
+    <div class="jsmini-menu-sep"></div>
+    <button type="button" data-account-action="signin" id="jsmini-account-signin"><i data-lucide="log-in"></i><span>Sign in with Google</span></button>
+    <button type="button" data-account-action="signout" id="jsmini-account-signout"><i data-lucide="log-out"></i><span>Sign out</span></button>
+  `;
+  document.body.appendChild(menu);
+  menu.querySelector('[data-account-action="history"]').onclick=()=>{hideJSMiniAccountMenu();openJSMiniHistoryPanel();};
+  menu.querySelector('[data-account-action="refresh"]').onclick=()=>{hideJSMiniAccountMenu();refreshPage();};
+  menu.querySelector('[data-account-action="signin"]').onclick=()=>window.jsMiniSignIn();
+  menu.querySelector('[data-account-action="signout"]').onclick=async()=>{
+    try{await signOut(jsMiniAuth);hideJSMiniAccountMenu();jsMiniHistoryLoaded=false;updateJSMiniAccountUI();}catch(e){console.error(e);}
+  };
+  lucide.createIcons();
+}
+function toggleJSMiniAccountMenu(){
+  ensureJSMiniAccountMenu();
+  const m=document.getElementById('jsmini-account-menu');
+  m.classList.toggle('hidden');
+  if(!m.classList.contains('hidden')){
+    const b=document.querySelector('header > div:last-child button:nth-of-type(2)');
+    const r=b?.getBoundingClientRect();
+    if(r){m.style.top=(r.bottom+8)+'px';m.style.right=Math.max(8,window.innerWidth-r.right)+'px';}
+  }
+}
+function hideJSMiniAccountMenu(){document.getElementById('jsmini-account-menu')?.classList.add('hidden');}
+function ensureJSMiniHistoryPanel(){
+  if(document.getElementById('jsmini-history-panel'))return;
+  const wrap=document.createElement('div');
+  wrap.id='jsmini-history-panel';
+  wrap.className='jsmini-history-backdrop hidden';
+  wrap.innerHTML=`
+    <section class="jsmini-history-panel" role="dialog" aria-modal="true">
+      <header class="jsmini-history-head"><div><h2>History</h2><span>Synced to your Google account when signed in</span></div><button id="jsmini-history-close" type="button">×</button></header>
+      <div class="jsmini-history-toolbar"><input id="jsmini-history-search" placeholder="Search history"><button id="jsmini-history-clear" type="button">Clear browsing data</button></div>
+      <div id="jsmini-history-list"></div>
+    </section>`;
+  document.body.appendChild(wrap);
+  document.getElementById('jsmini-history-close').onclick=closeJSMiniHistoryPanel;
+  document.getElementById('jsmini-history-clear').onclick=clearJSMiniHistory;
+  document.getElementById('jsmini-history-search').oninput=renderJSMiniHistory;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)closeJSMiniHistoryPanel();});
+}
+function openJSMiniHistoryPanel(){ensureJSMiniHistoryPanel();renderJSMiniHistory();document.getElementById('jsmini-history-panel').classList.remove('hidden');}
+function closeJSMiniHistoryPanel(){document.getElementById('jsmini-history-panel')?.classList.add('hidden');}
+function renderJSMiniHistory(){
+  const list=document.getElementById('jsmini-history-list'); if(!list)return;
+  const q=(document.getElementById('jsmini-history-search')?.value||'').toLowerCase();
+  const items=jsMiniHistory.slice().reverse().filter(x=>`${x.url} ${x.title}`.toLowerCase().includes(q));
+  if(!items.length){list.innerHTML='<div class="jsmini-history-empty"><i data-lucide="history"></i><strong>No history</strong><span>Your visited JS mini websites will appear here.</span></div>';lucide.createIcons();return;}
+  list.innerHTML=items.map((x,i)=>`<button class="jsmini-history-row" type="button" data-history-url="${escapeHTML(x.url)}"><span class="jsmini-history-icon"><i data-lucide="${x.type==='search'?'search':'globe-2'}"></i></span><span class="jsmini-history-main"><strong>${escapeHTML(x.title||x.url)}</strong><small>${escapeHTML(x.url)}</small></span><time>${escapeHTML(jsMiniFormatTime(x.visitedAt))}</time></button>`).join('');
+  list.querySelectorAll('[data-history-url]').forEach(b=>b.onclick=()=>{closeJSMiniHistoryPanel();loadJSMiniSite(b.dataset.historyUrl);});
+  lucide.createIcons();
+}
+async function clearJSMiniHistory(){
+  jsMiniHistory=[];jsMiniHistoryIndex=-1;jsMiniHistoryWriteLocal();
+  if(jsMiniUser && !jsMiniUser.isAnonymous){try{await setDoc(doc(jsMiniDb,'users',jsMiniUser.uid,'browser','history'),{items:[],updatedAt:Date.now()},{merge:true});}catch(e){console.warn(e);}}
+  renderJSMiniHistory();updateJSMiniNavigationUI();
+}
+function updateJSMiniAccountMenuUI(){
+  ensureJSMiniAccountMenu();
+  const photo=document.getElementById('jsmini-account-photo');
+  const name=document.getElementById('jsmini-account-name');
+  const email=document.getElementById('jsmini-account-email');
+  const signIn=document.getElementById('jsmini-account-signin');
+  const signOutBtn=document.getElementById('jsmini-account-signout');
+  const realUser=jsMiniUser && !jsMiniUser.isAnonymous;
+  if(photo)photo.src=realUser?.photoURL||'https://api.dicebear.com/7.x/avataaars/svg?seed=JSmini';
+  if(name)name.textContent=realUser?.displayName||'Guest';
+  if(email)email.textContent=realUser?.email||'Sign in to sync history';
+  if(signIn)signIn.style.display=realUser?'none':'flex';
+  if(signOutBtn)signOutBtn.style.display=realUser?'flex':'none';
+}
+const jsMiniOriginalUpdateAccountUI=window.updateJSMiniAccountUI;
+window.updateJSMiniAccountUI=function(){
+  if(typeof jsMiniOriginalUpdateAccountUI==='function')jsMiniOriginalUpdateAccountUI();
+  updateJSMiniAccountMenuUI();
+};
+function installJSMiniChromeUI(){
+  ensureJSMiniAccountMenu();ensureJSMiniHistoryPanel();
+  const accountButton=document.querySelector('header > div:last-child button:nth-of-type(2)');
+  if(accountButton){accountButton.onclick=toggleJSMiniAccountMenu;accountButton.title='Google Account';}
+  updateJSMiniAccountMenuUI();updateJSMiniNavigationUI();
+  document.addEventListener('click',e=>{
+    const m=document.getElementById('jsmini-account-menu'), b=document.querySelector('header > div:last-child button:nth-of-type(2)');
+    if(m && !m.contains(e.target) && b && !b.contains(e.target))hideJSMiniAccountMenu();
+  });
+  window.addEventListener('resize',()=>{updateJSMiniNavigationUI();hideJSMiniAccountMenu();});
+}
+const jsMiniOriginalLoadJSMiniSite=window.loadJSMiniSite;
+window.loadJSMiniSite=async function(raw,fromHistory=false){
+  const before=jsMiniHistoryIndex;
+  await jsMiniOriginalLoadJSMiniSite(raw,fromHistory);
+  const domain=normalizeDomain(raw);
+  const site=jsMiniCloudSites.find(s=>normalizeDomain(s.virtualDomain||'')===domain);
+  const demo=mockDatabase.find(x=>normalizeDomain(x.url)===domain);
+  if(site || demo){
+    if(!fromHistory)jsMiniRecordHistory({url:domain+'.'+(site?'jsmini':'js'),title:site?.name||demo?.title||domain,type:'website'});
+  }
+  updateJSMiniNavigationUI();
+};
+window.goJSMiniBack=function(){
+  // Browser-style back: always move inside the mini.Browser history.
+  // Never close/navigate away from the browser document.
+  if(jsMiniHistoryIndex>0){
+    jsMiniHistoryIndex--;
+    const x=jsMiniHistory[jsMiniHistoryIndex];
+    if(x.type==='home'){
+      document.getElementById('address-bar').value='';
+      switchView('view-home');
+    }else{
+      jsMiniOriginalLoadJSMiniSite(x.url,true);
+    }
+    jsMiniHistoryWriteLocal();
+    updateJSMiniNavigationUI();renderJSMiniHistory();
+  }
+};
+window.goJSMiniForward=function(){
+  if(jsMiniHistoryIndex<jsMiniHistory.length-1){
+    jsMiniHistoryIndex++;
+    const x=jsMiniHistory[jsMiniHistoryIndex];
+    jsMiniOriginalLoadJSMiniSite(x.url,true);
+    updateJSMiniNavigationUI();renderJSMiniHistory();
+  }
+};
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='h'){e.preventDefault();openJSMiniHistoryPanel();}
+  if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();window.goJSMiniBack();}
+  if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();window.goJSMiniForward();}
+  if(e.key==='Escape'){hideJSMiniAccountMenu();closeJSMiniHistoryPanel();}
+});
+
 window.handleJSMiniDeployFromURL=async function(){
   const p=new URLSearchParams(location.search);
   const id=p.get('deploy');
@@ -1577,13 +1866,23 @@ window.handleJSMiniDeployFromURL=async function(){
 };
 
 function addCloudSection(){const home=document.getElementById('view-home');if(!home||document.getElementById('jsmini-cloud-sites'))return;const sec=document.createElement('div');sec.className='jsmini-sites-section';sec.innerHTML='<div class="jsmini-sites-title">Public JS mini websites</div><div id="jsmini-cloud-sites" class="jsmini-sites-grid"></div>';home.appendChild(sec)}
-window.addEventListener('DOMContentLoaded',()=>{ensureJSMiniUI();addCloudSection();loadCloudSites();setTimeout(()=>window.handleJSMiniDeployFromURL(),100);});
+window.addEventListener('DOMContentLoaded',()=>{
+  ensureJSMiniUI();addCloudSection();installJSMiniChromeUI();jsMiniHistoryLoad();
+  // Keep Home as the first browser-history entry so Back returns to Home
+  // instead of closing/navigating away from js-mini-browser.html.
+  setTimeout(()=>{
+    if(!jsMiniHistory.length){
+      jsMiniHistory=[{url:'__home__',title:'JS mini.Browser Home',type:'home',visitedAt:Date.now()}];
+      jsMiniHistoryIndex=0;
+      jsMiniHistoryWriteLocal();
+    }
+    loadCloudSites();setTimeout(()=>window.handleJSMiniDeployFromURL(),100);
+    updateJSMiniNavigationUI();
+  },0);
+});
 </script>
 
-<script>
-/* Preserve the original demo database while routing real JS mini sites through Firebase. */
-window.originalLoadSiteForJSMini = window.loadSite;
-</script>
+<!-- Original demo routing is preserved inside the Firebase integration layer. -->
 
 </body>
 </html>
