@@ -770,22 +770,22 @@ header button:disabled{cursor:default!important}
 
             <div class="p-4 flex-1 overflow-y-auto space-y-6">
 
-                <div class="bg-marvelBlue/20 p-4 rounded-lg border border-marvelBlue/50 text-center">
+                <div id="jsmini-account-card" class="bg-marvelBlue/20 p-4 rounded-lg border border-marvelBlue/50 text-center">
 
-                    <img
+                    <img id="jsmini-account-photo"
                         src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marvel"
                         class="w-16 h-16 mx-auto rounded-full bg-gray-800 mb-2">
 
-                    <h3 class="font-bold">
-                        New Account
+                    <h3 id="jsmini-account-name" class="font-bold">
+                        Checking account…
                     </h3>
 
-                    <p class="text-xs text-gray-400 mb-3">
-                        Sign in to sync your data across devices.
+                    <p id="jsmini-account-email" class="text-xs text-gray-400 mb-3">
+                        Checking Google account…
                     </p>
 
                     <button
-                        class="bg-marvelRed hover:bg-red-700 text-white text-sm py-1.5 px-4 rounded-full w-full transition"
+                        id="jsmini-account-action" class="bg-marvelRed hover:bg-red-700 text-white text-sm py-1.5 px-4 rounded-full w-full transition"
                         onclick="window.jsMiniSignIn && window.jsMiniSignIn()">
                         Sign In / Create Account
                     </button>
@@ -1536,12 +1536,36 @@ function ensureJSMiniUI(){
   document.getElementById('jsminiDomain').addEventListener('input',e=>{e.target.value=e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')});
 }
 
-window.jsMiniSignIn=async function(){ try{ if(!jsMiniUser) await signInWithPopup(jsMiniAuth,jsMiniProvider); updateJSMiniAccountUI(); }catch(e){ console.error(e); alert("Google Sign-In was cancelled or failed."); } };
+setPersistence(jsMiniAuth, browserLocalPersistence).catch(e=>console.warn('Auth persistence:',e));
+window.jsMiniSignIn=async function(){
+  try{
+    if(jsMiniUser){ updateJSMiniAccountUI(); return; }
+    await signInWithPopup(jsMiniAuth,jsMiniProvider);
+  }catch(e){ console.error(e); if(e?.code !== 'auth/popup-closed-by-user' && e?.code !== 'auth/cancelled-popup-request') alert("Google Sign-In was cancelled or failed."); }
+};
+window.jsMiniSignOut=async function(){ try{ await signOut(jsMiniAuth); }catch(e){ console.error(e); } };
 window.updateJSMiniAccountUI=function(){
   const h=document.querySelector('header > div:last-child button:nth-of-type(2)');
-  if(h && jsMiniUser){ const img=h.querySelector('img'); if(img){img.src=jsMiniUser.photoURL||img.src; img.alt=jsMiniUser.displayName||'Signed in';} }
-  const card=document.querySelector('#settings-sidebar .bg-marvelBlue\/20');
-  if(card){ const title=card.querySelector('h3'); const text=card.querySelector('p'); const btn=card.querySelector('button'); if(jsMiniUser){ if(title) title.textContent=jsMiniUser.displayName||'Google Account'; if(text) text.textContent=jsMiniUser.email||'Signed in with Google'; if(btn){btn.textContent='Signed in';btn.disabled=true;btn.style.opacity='.65';} } }
+  const avatar=h?.querySelector('img');
+  const photo=document.getElementById('jsmini-account-photo');
+  const name=document.getElementById('jsmini-account-name');
+  const email=document.getElementById('jsmini-account-email');
+  const btn=document.getElementById('jsmini-account-action');
+  if(jsMiniUser){
+    const displayName=jsMiniUser.displayName||'Google Account';
+    const emailText=jsMiniUser.email||'Signed in with Google';
+    if(avatar){avatar.src=jsMiniUser.photoURL||avatar.src; avatar.alt=displayName; avatar.title=displayName;}
+    if(photo){photo.src=jsMiniUser.photoURL||photo.src; photo.alt=displayName;}
+    if(name) name.textContent=displayName;
+    if(email) email.textContent=emailText;
+    if(btn){btn.textContent='Sign out';btn.disabled=false;btn.style.opacity='1';btn.onclick=window.jsMiniSignOut;}
+  }else{
+    if(avatar){avatar.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Marvel';avatar.alt='Sign in';avatar.title='Sign in with Google';}
+    if(photo){photo.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Marvel';photo.alt='Sign in';}
+    if(name) name.textContent='Not signed in';
+    if(email) email.textContent='Sign in with Google to sync your account.';
+    if(btn){btn.textContent='Sign In / Create Account';btn.disabled=false;btn.style.opacity='1';btn.onclick=window.jsMiniSignIn;}
+  }
 };
 window.openJSMiniDeploy=async function(projectId){
   ensureJSMiniUI();
