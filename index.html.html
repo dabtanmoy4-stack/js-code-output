@@ -122,6 +122,9 @@
 
   #app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
   #topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; }
+  #topHeader{position:relative;z-index:300;pointer-events:auto;}
+  #topHeader .header-actions-scroll{position:relative;z-index:301;pointer-events:auto;}
+  #topHeader .header-actions-scroll .app-btn,#topHeader button[title="Account"]{position:relative;z-index:302;pointer-events:auto;touch-action:manipulation;}
   .header-left { display:flex;align-items:center;gap:14px; }
   .app-brand { display:flex;align-items:center;gap:9px;min-width:0; }
   .app-brand h1 { font-size:12px;margin:0;font-weight:950;letter-spacing:.09em; }
@@ -2470,16 +2473,66 @@ async function performProjectSwitch(id,name){
 function requestProjectSwitch(id,name){if(id===window.currentProjectId)return;pendingProjectAction=()=>performProjectSwitch(id,name);requestLeaveWithDraft();}
 async function switchProject(id,name){requestProjectSwitch(id,name);}
 function requestLeaveWithDraft(){
-  if(!projectDirty){const fn=pendingProjectAction;pendingProjectAction=null;if(fn)return fn();return;}
-  const modal=document.getElementById("draftGuardModal");modal.classList.remove("hidden");
-  document.getElementById("draftSaveBtn").onclick=async()=>{modal.classList.add("hidden");if(await saveCurrentProjectDraftExplicit()){const fn=pendingProjectAction;pendingProjectAction=null;if(fn)fn();}};
-  document.getElementById("draftDiscardBtn").onclick=()=>{modal.classList.add("hidden");discardCurrentProjectChanges();const fn=pendingProjectAction;pendingProjectAction=null;if(fn)fn();};
+  if(!projectDirty){
+    const fn=pendingProjectAction;
+    pendingProjectAction=null;
+    if(fn)return fn();
+    return;
+  }
+  const modal=document.getElementById("draftGuardModal");
+  if(!modal)return;
+  modal.classList.remove("hidden");
+  const saveBtn=document.getElementById("draftSaveBtn");
+  const discardBtn=document.getElementById("draftDiscardBtn");
+  if(saveBtn){
+    saveBtn.onclick=async()=>{
+      saveBtn.disabled=true;
+      discardBtn.disabled=true;
+      try{
+        if(await saveCurrentProjectDraftExplicit()){
+          modal.classList.add("hidden");
+          const fn=pendingProjectAction;
+          pendingProjectAction=null;
+          if(fn)await fn();
+        }
+      }finally{
+        saveBtn.disabled=false;
+        discardBtn.disabled=false;
+      }
+    };
+  }
+  if(discardBtn){
+    discardBtn.onclick=async()=>{
+      modal.classList.add("hidden");
+      discardCurrentProjectChanges();
+      const fn=pendingProjectAction;
+      pendingProjectAction=null;
+      if(fn)await fn();
+    };
+  }
 }
 async function saveCurrentProjectDraftExplicit(){
-  try{if(!window.currentProjectId)return true;if(!isSwitchingProject)syncEditor();const id=window.currentProjectId,u=window.firebaseCurrentUser;let ok=true;
-    if(u&&!id.startsWith("local_proj_"))ok=await window.saveProjectDraft(id);else saveLocalProjectFiles();
-    if(ok!==false){projectCommittedFiles=structuredClone(files);projectCommittedActiveFile=activeFile;projectDirty=false;showToast("Draft saved.");return true;}
-  }catch(e){console.error(e)}showToast("Could not save draft.");return false;
+  try{
+    if(!window.currentProjectId)return true;
+    if(!isSwitchingProject)syncEditor();
+    const id=window.currentProjectId;
+    let cloudOk=true;
+    // Always keep a local draft snapshot so switching/back never loses the edits.
+    saveLocalProjectFiles();
+    const u=window.firebaseCurrentUser;
+    if(u&&!id.startsWith("local_proj_")){
+      cloudOk=await window.saveProjectDraft(id);
+    }
+    if(cloudOk!==false){
+      projectCommittedFiles=structuredClone(files);
+      projectCommittedActiveFile=activeFile;
+      projectDirty=false;
+      showToast("Draft saved.");
+      return true;
+    }
+  }catch(e){console.error("Draft save failed:",e)}
+  showToast("Could not save draft.");
+  return false;
 }
 function discardCurrentProjectChanges(){
   if(!projectCommittedFiles)return;isSwitchingProject=true;window.isSwitchingProject=true;setFileMap(structuredClone(projectCommittedFiles));activeFile=projectCommittedActiveFile;window.activeFile=activeFile;renderFileExplorer();openFile(activeFile);updatePreview(true);projectDirty=false;setTimeout(()=>{isSwitchingProject=false;window.isSwitchingProject=false},50);showToast("Changes cancelled.");
@@ -3244,6 +3297,51 @@ async function loadHeaderProjects(){
       more.addEventListener("touchend",e=>{e.preventDefault();e.stopPropagation();showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:Math.min(innerWidth-210,Math.max(8,e.changedTouches[0]?.clientX||20)),clientY:Math.min(innerHeight-110,Math.max(8,e.changedTouches[0]?.clientY||20))},id,name,true)},{passive:false});
       bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
+
+/* Header action repair: keep native click behavior deterministic.
+   No global capture-phase touch handler is used here because it can cancel
+   the normal click chain used by these existing buttons. */
+(function repairHeaderActions(){
+  function bind(){
+    const bindClick = (selector, fn, label) => {
+      const el = document.querySelector(selector);
+      if(!el) return;
+      el.onclick = function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          const result = fn();
+          if(result && typeof result.catch === 'function') result.catch(err => {
+            console.error(label + ' failed:', err);
+            if(typeof showToast === 'function') showToast(label + ' failed.');
+          });
+        } catch(err) {
+          console.error(label + ' failed:', err);
+          if(typeof showToast === 'function') showToast(label + ' failed.');
+        }
+      };
+      el.style.pointerEvents='auto';
+      el.style.touchAction='manipulation';
+      el.style.position='relative';
+      el.style.zIndex='250';
+    };
+
+    bindClick('[data-tour="draft-button"]', () => saveCurrentProjectDraftExplicit(), 'Save Draft');
+    bindClick('[data-tour="publish-button"]', () => handlePublishProject(), 'Publish');
+    bindClick('[data-tour="download-button"]', () => handleProtectedDownload(), 'Download');
+    bindClick('#topHeader button[title="Account"]', () => openAccountModal(), 'Account');
+    bindClick('[data-tour="libraries-button"]', () => toggleLibraries(), 'Libraries');
+
+    const bar=document.querySelector('#topHeader .header-actions-scroll');
+    if(bar){
+      bar.style.position='relative';
+      bar.style.zIndex='200';
+      bar.style.pointerEvents='auto';
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true});
+  else bind();
+})();
 
 function showToast(msg){
   const t = document.getElementById("toast");
