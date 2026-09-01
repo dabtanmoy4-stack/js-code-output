@@ -303,6 +303,8 @@
   .app-btn { border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:6px; white-space: nowrap;}
   .app-btn.run { background:linear-gradient(135deg, #0284c7, #0f766e);color:white;border-color:#0284c7; box-shadow:0 4px 14px rgba(2, 132, 199, 0.35); }
   .app-btn.run:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5); }
+  .app-btn.deploy-js-mini { background:linear-gradient(135deg,#071a3a,#123d73 58%,#b91c1c); color:#fff; border:1px solid #234d86; box-shadow:0 4px 14px rgba(7,26,58,.38), inset 0 0 0 1px rgba(239,68,68,.18); }
+  .app-btn.deploy-js-mini:hover { transform:translateY(-1px); border-color:#ef4444; box-shadow:0 6px 18px rgba(7,26,58,.5),0 0 12px rgba(239,68,68,.18); }
   .app-btn.publish { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; border: none; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); }
   .app-btn.publish:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(124, 58, 237, 0.45); }
 
@@ -1086,6 +1088,7 @@
     <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer" title="Auto run on change">
       <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
     </label>
+    <button class="app-btn deploy-js-mini" title="Deploy to JS Mini" aria-label="Deploy to JS Mini"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini</span></button>
     <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
     
     <button class="app-btn publish" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
