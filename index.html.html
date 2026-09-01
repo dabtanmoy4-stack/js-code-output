@@ -296,6 +296,14 @@
   .CodeMirror-lint-mark-error { border-bottom:2px wavy #ef4444!important; }
   .CodeMirror-hints { background:#090d16!important;border:1px solid #1e293b!important;border-radius:8px;color:#cdd6f4!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
   .CodeMirror-hint-active { background:#1e293b!important;color:#38bdf8!important;border-radius:4px; }
+  /* Keep every real form/control directly tappable on touch devices. */
+  button, input, select, textarea, label { -webkit-tap-highlight-color:transparent; }
+  input[type="checkbox"], input[type="radio"], select, textarea,
+  .modal button, .modal input, .modal select, .modal textarea,
+  .pro-modal button, .pro-modal input, .pro-modal select, .pro-modal textarea {
+    pointer-events:auto;
+    touch-action:manipulation;
+  }
 
   .mobile-explorer-toggle { display: none; }
   .header-actions-scroll { display: flex; align-items: center; gap: 8px; }
@@ -3245,57 +3253,77 @@ async function loadHeaderProjects(){
       bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
 
-/* Robust pointer/touch handling for the primary workspace actions.
-   Use touchend as the single mobile activation path so buttons work even when
-   the browser does not synthesize a normal click after horizontal scrolling. */
-(function bindHeaderTouchActions(){
-  const actions={
-    "publish-button":"handlePublishProject",
-    "libraries-button":"toggleLibraries",
-    "download-button":"handleProtectedDownload"
-  };
+/* Reliable workspace touch feedback.
+   Keep the browser's native click/tap event chain intact. Earlier versions
+   intercepted pointerup/touchend globally which could prevent nested controls,
+   checkboxes and modal actions from receiving their normal click event. */
+(function bindHeaderTouchFeedback(){
   function bind(){
-    Object.entries(actions).forEach(([key,fn])=>{
-      const el=document.querySelector(`[data-tour="${key}"]`);
-      if(!el || el.dataset.touchBound==="1") return;
-      el.dataset.touchBound="1";
+    document.querySelectorAll('#topHeader .app-btn, #topHeader .project-adjacent-tool').forEach(el=>{
+      if(el.dataset.touchFeedbackBound==="1") return;
+      el.dataset.touchFeedbackBound="1";
       el.addEventListener("pointerdown",()=>el.classList.add("touch-pressed"),{passive:true});
-      el.addEventListener("pointerup",()=>el.classList.remove("touch-pressed"),{passive:true});
-      el.addEventListener("pointercancel",()=>el.classList.remove("touch-pressed"),{passive:true});
-      el.addEventListener("touchend",e=>{
-        e.preventDefault(); e.stopPropagation();
-        if(typeof window[fn]==="function") window[fn]();
-      },{passive:false});
+      const clear=()=>el.classList.remove("touch-pressed");
+      el.addEventListener("pointerup",clear,{passive:true});
+      el.addEventListener("pointercancel",clear,{passive:true});
+      el.addEventListener("pointerleave",clear,{passive:true});
     });
-    const account=document.querySelector('#topHeader button[title="Account"]');
-    if(account && account.dataset.touchBound!=="1"){
-      account.dataset.touchBound="1";
-      account.addEventListener("touchend",e=>{
-        e.preventDefault(); e.stopPropagation();
-        if(typeof window.openAccountModal==="function") window.openAccountModal();
-      },{passive:false});
-    }
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind,{once:true});
   else bind();
 })();
 
-/* JCO_UNIFIED_INTERACTION_GUARD: parent workspace only. */
+/* Project-list long press / context menu handling.
+   This listener is deliberately scoped to project-list items only, so it never
+   intercepts switches, checkboxes, inputs, buttons or controls inside modals. */
 (function(){
-  const actions={'[data-tour="publish-button"]':'handlePublishProject','[data-tour="download-button"]':'handleProtectedDownload','[data-tour="libraries-button"]':'toggleLibraries','#topHeader button[title="Account"]':'openAccountModal'};
-  let lastTouchAt=0;
-  const findAction=t=>{if(!t?.closest)return null;for(const sel in actions){const el=t.closest(sel);if(el)return {el,fn:actions[sel]};}return null;};
-  const invoke=fn=>{try{if(typeof window[fn]==='function')window[fn]();}catch(e){console.error('Workspace action failed:',fn,e);}};
-  document.addEventListener('pointerup',e=>{if(e.pointerType!=='touch')return;const a=findAction(e.target);if(!a)return;lastTouchAt=Date.now();e.preventDefault();e.stopImmediatePropagation();invoke(a.fn);},true);
-  document.addEventListener('click',e=>{if(Date.now()-lastTouchAt<700&&findAction(e.target)){e.preventDefault();e.stopImmediatePropagation();}},true);
   let timer=null,item=null,moved=false,longPressed=false;
   const info=el=>({id:el.dataset.projectId,name:el.dataset.projectName||'Project',cloud:el.dataset.cloud==='1'});
-  const menu=(el,e)=>{const p=info(el);showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:e?.clientX||Math.min(innerWidth-210,Math.max(12,innerWidth/2-95)),clientY:e?.clientY||Math.max(20,innerHeight*.45)},p.id,p.name,p.cloud);};
-  document.addEventListener('contextmenu',e=>{const el=e.target.closest?.('#headerProjectsList .header-project-item');if(!el)return;e.preventDefault();e.stopImmediatePropagation();menu(el,e);},true);
-  document.addEventListener('touchstart',e=>{const el=e.target.closest?.('#headerProjectsList .header-project-item');if(!el||e.target.closest?.('.project-more'))return;item=el;moved=false;longPressed=false;clearTimeout(timer);timer=setTimeout(()=>{if(item&&!moved){longPressed=true;menu(item);}},650);},true);
-  document.addEventListener('touchmove',e=>{if(item){moved=true;clearTimeout(timer);}},true);
-  document.addEventListener('touchcancel',()=>{clearTimeout(timer);item=null;moved=false;longPressed=false;},true);
-  document.addEventListener('touchend',e=>{const el=e.target.closest?.('#headerProjectsList .header-project-item');if(!el)return;clearTimeout(timer);e.preventDefault();e.stopImmediatePropagation();if(e.target.closest?.('.project-more'))menu(el,{clientX:e.changedTouches?.[0]?.clientX,clientY:e.changedTouches?.[0]?.clientY});else if(!longPressed&&!moved){document.getElementById('projectSwitcherMenu')?.classList.add('hidden');requestProjectSwitch(el.dataset.projectId,el.dataset.projectName||'Project');}item=null;moved=false;longPressed=false;},true);
+  const menu=(el,e)=>{
+    const p=info(el);
+    showProjectContextMenu({
+      preventDefault(){},stopPropagation(){},
+      clientX:e?.clientX||Math.min(innerWidth-210,Math.max(12,innerWidth/2-95)),
+      clientY:e?.clientY||Math.max(20,innerHeight*.45)
+    },p.id,p.name,p.cloud);
+  };
+  document.addEventListener('contextmenu',e=>{
+    const el=e.target.closest?.('#headerProjectsList .header-project-item');
+    if(!el)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    menu(el,e);
+  },true);
+  document.addEventListener('touchstart',e=>{
+    const el=e.target.closest?.('#headerProjectsList .header-project-item');
+    if(!el || e.target.closest?.('.project-more')) return;
+    item=el;moved=false;longPressed=false;clearTimeout(timer);
+    timer=setTimeout(()=>{
+      if(item&&!moved){longPressed=true;menu(item);}
+    },650);
+  },true);
+  document.addEventListener('touchmove',()=>{
+    if(item){moved=true;clearTimeout(timer);}
+  },true);
+  document.addEventListener('touchcancel',()=>{
+    clearTimeout(timer);item=null;moved=false;longPressed=false;
+  },true);
+  document.addEventListener('touchend',e=>{
+    const el=e.target.closest?.('#headerProjectsList .header-project-item');
+    if(!el)return;
+    clearTimeout(timer);
+    if(e.target.closest?.('.project-more')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      menu(el,{
+        clientX:e.changedTouches?.[0]?.clientX,
+        clientY:e.changedTouches?.[0]?.clientY
+      });
+    }else if(!longPressed&&!moved){
+      requestProjectSwitch(el.dataset.projectId,el.dataset.projectName||'Project');
+    }
+    item=null;moved=false;longPressed=false;
+  },true);
 })();
 
 function showToast(msg){
