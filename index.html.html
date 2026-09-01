@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9870552994374147" crossorigin="anonymous"></script>
@@ -336,6 +337,23 @@
 
   .mobile-explorer-toggle { display: none; }
   .header-actions-scroll { display: flex; align-items: center; gap: 8px; }
+  .mobile-tools-button{display:none!important}
+  .mobile-tools-menu{display:contents}
+  @media(max-width:700px){
+    .header-actions-scroll{overflow:visible!important}
+    .mobile-tools-button{display:inline-flex!important;align-items:center;justify-content:center;gap:6px}
+    .mobile-tools-menu{
+      display:none;position:absolute;right:8px;top:46px;width:min(290px,calc(100vw - 16px));
+      padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+      box-shadow:var(--shadow);z-index:10000;
+    }
+    .mobile-tools-menu.show{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .mobile-tools-menu > .app-btn{width:100%;min-height:38px;justify-content:center;padding:8px 9px}
+    .mobile-tools-menu > .account-menu-wrap{width:100%;display:block}
+    .mobile-tools-menu > .account-menu-wrap > .app-btn{width:100%;justify-content:center}
+    .mobile-tools-menu > label{display:flex!important;width:100%;justify-content:center}
+  }
+
   /* Search/Replace moved beside Project button */
   .project-search-actions { display:flex; align-items:center; gap:5px; margin-left:4px; }
   .project-search-actions .tool-btn { flex:0 0 auto; padding:6px 9px; }
@@ -496,7 +514,34 @@
   .public-project-frame{display:block;width:100%;height:min(78vh,900px);min-height:520px;border:0;background:#fff}
   @media(max-width:700px){.code-search-panel{top:6px;right:6px;width:calc(100% - 12px)}.code-search-hint{display:none}.public-viewer-head{height:62px;padding:0 16px}.public-viewer-main{padding:18px 12px 35px}.public-project-shell{border-radius:16px}.public-project-frame{min-height:72vh;height:72vh}.public-viewer-brand{font-size:10px}.public-viewer-cta{font-size:10px;padding:9px 11px}}
 
-  </style>
+  
+  /* Workspace toolbar: desktop stays inline; mobile gets a compact Tools menu */
+  .desktop-toolbar-tools{display:flex;align-items:center;gap:8px}
+  .mobile-toolbar-wrap{display:none;position:relative}
+  .mobile-tools-button{display:none!important;align-items:center;justify-content:center;gap:6px}
+  .mobile-tools-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);width:270px;padding:10px;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);z-index:10000}
+  .mobile-tools-menu.show{display:grid}
+  .mobile-tools-menu .app-btn{width:100%;min-height:40px;justify-content:center;padding:8px 7px;font-size:11px}
+  .mobile-tools-menu .app-btn span{display:inline!important}
+
+  @media (max-width:700px){
+    #topHeader{padding:0 8px}
+    .header-actions-scroll{overflow:visible!important;display:flex;align-items:center;gap:6px;margin-left:auto;position:relative}
+    .desktop-toolbar-tools{display:none!important}
+    .mobile-toolbar-wrap{display:block}
+    .mobile-tools-button{display:inline-flex!important}
+    .header-actions-scroll>.deploy-js-mini{display:inline-flex!important;white-space:nowrap}
+    .header-actions-scroll>.deploy-js-mini .btn-text{display:inline!important}
+    .header-actions-scroll>.deploy-js-mini{padding:7px 9px;font-size:10px}
+    .mobile-tools-menu{right:0}
+  }
+
+  @media (min-width:701px){
+    .mobile-toolbar-wrap{display:none!important}
+    .desktop-toolbar-tools{display:flex!important}
+  }
+
+</style>
 
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -634,7 +679,7 @@
 </head>
 <body>
 <a class="mini-browser-launcher"
-   href="mini-browser.html"
+   href="js-mini-browser.html"
    title="Open JS mini.Browser"
    aria-label="Open JS mini.Browser">
   <span class="mini-live-dot"></span>
@@ -1087,44 +1132,63 @@
     <label class="app-btn hidden md:inline-flex items-center gap-2 cursor-pointer" title="Auto run on change">
       <input id="autoRunToggle" type="checkbox" checked class="rounded"> <span class="btn-text">Auto</span>
     </label>
-    <button class="app-btn deploy-js-mini" title="Deploy to JS Mini" aria-label="Deploy to JS Mini"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini</span></button>
-    <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
-    
-    <button class="app-btn publish" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
-    
-    <button class="app-btn" data-tour="format-button" onclick="formatCode()" title="Format Code (Prettier)"><i class="fa-solid fa-align-left text-purple-400"></i> <span class="btn-text">Format</span></button>
-    <button class="app-btn relative" id="headerConsoleBtn" data-tour="console-button" onclick="toggleConsoleUI()" title="Toggle Console">
-      <i class="fa-solid fa-terminal text-green-400"></i> 
-      <span class="btn-text">Console</span>
-      <span id="consoleStatusIndicator" class="console-badge hidden"></span>
-    </button>
 
-    <button class="app-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
-    <button class="app-btn" data-tour="download-button" onclick="handleProtectedDownload()" title="Download"><i class="fa-solid fa-download"></i></button>
-    <div class="account-menu-wrap">
-      <button id="workspaceAccountButton" class="app-btn" onclick="toggleAccountMenu(event)" title="Workspace Account" aria-haspopup="true" aria-expanded="false">
-        <i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span>
+    <button class="app-btn deploy-js-mini" title="Deploy to JS Mini" aria-label="Deploy to JS Mini"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini</span></button>
+
+    <div class="desktop-toolbar-tools">
+      <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
+      <button class="app-btn publish" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
+      <button class="app-btn" data-tour="format-button" onclick="formatCode()" title="Format Code (Prettier)"><i class="fa-solid fa-align-left text-purple-400"></i> <span class="btn-text">Format</span></button>
+      <button class="app-btn relative" id="headerConsoleBtn" data-tour="console-button" onclick="toggleConsoleUI()" title="Toggle Console">
+        <i class="fa-solid fa-terminal text-green-400"></i>
+        <span class="btn-text">Console</span>
+        <span id="consoleStatusIndicator" class="console-badge hidden"></span>
       </button>
-      <div id="workspaceAccountMenu" class="account-menu" role="menu">
-        <div class="account-menu-head">
-          <div class="account-menu-title">Your Accounts</div>
-          <div id="accountCurrent" class="account-current">
-            <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
-            <div class="account-info">
-              <div id="accountCurrentName" class="account-name">Guest</div>
-              <div id="accountCurrentEmail" class="account-email">No account signed in</div>
+      <button class="app-btn" data-tour="libraries-button" onclick="toggleLibraries()"><i class="fa-solid fa-cubes"></i> <span class="btn-text">Libraries</span></button>
+      <button class="app-btn" data-tour="download-button" onclick="handleProtectedDownload()" title="Download"><i class="fa-solid fa-download"></i></button>
+      <div class="account-menu-wrap">
+        <button id="workspaceAccountButton" class="app-btn" onclick="toggleAccountMenu(event)" title="Workspace Account" aria-haspopup="true" aria-expanded="false">
+          <i class="fa-solid fa-user"></i> <span id="workspaceAccountName" class="btn-text">Guest</span>
+        </button>
+        <div id="workspaceAccountMenu" class="account-menu" role="menu">
+          <div class="account-menu-head">
+            <div class="account-menu-title">Your Accounts</div>
+            <div id="accountCurrent" class="account-current">
+              <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="account-info">
+                <div id="accountCurrentName" class="account-name">Guest</div>
+                <div id="accountCurrentEmail" class="account-email">No account signed in</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div id="workspaceAccountList" class="account-list"></div>
-        <div class="account-menu-actions">
-          <button class="app-btn account-add-btn" onclick="addWorkspaceAccount()">
-            <i class="fa-solid fa-user-plus"></i><span>Add Account</span>
-          </button>
+          <div id="workspaceAccountList" class="account-list"></div>
+          <div class="account-menu-actions">
+            <button class="app-btn account-add-btn" onclick="addWorkspaceAccount()">
+              <i class="fa-solid fa-user-plus"></i><span>Add Account</span>
+            </button>
+          </div>
         </div>
       </div>
+      <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
     </div>
-    <button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
+
+    <div class="mobile-toolbar-wrap">
+      <button id="mobileToolsButton" class="app-btn mobile-tools-button" type="button"
+        onclick="toggleMobileTools(event)" aria-haspopup="true" aria-expanded="false" title="Workspace Tools">
+        <i class="fa-solid fa-sliders"></i><span>Tools</span>
+      </button>
+
+      <div id="mobileToolsMenu" class="mobile-tools-menu" aria-label="Workspace tools">
+        <button class="app-btn run" onclick="triggerCinematicRun();closeMobileTools()"><i class="fa-solid fa-play"></i><span>Run</span></button>
+        <button class="app-btn publish" onclick="handlePublishProject();closeMobileTools()"><i class="fa-solid fa-cloud-arrow-up"></i><span>Publish</span></button>
+        <button class="app-btn" onclick="formatCode();closeMobileTools()"><i class="fa-solid fa-align-left text-purple-400"></i><span>Format</span></button>
+        <button class="app-btn" onclick="toggleConsoleUI();closeMobileTools()"><i class="fa-solid fa-terminal text-green-400"></i><span>Console</span></button>
+        <button class="app-btn" onclick="toggleLibraries();closeMobileTools()"><i class="fa-solid fa-cubes"></i><span>Libraries</span></button>
+        <button class="app-btn" onclick="handleProtectedDownload();closeMobileTools()"><i class="fa-solid fa-download"></i><span>Download</span></button>
+        <button class="app-btn" onclick="toggleAccountMenu(event);closeMobileTools()"><i class="fa-solid fa-user"></i><span>Account</span></button>
+        <button class="app-btn" onclick="toggleTheme();closeMobileTools()"><i class="fa-solid fa-sun"></i><span>Theme</span></button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -3681,5 +3745,28 @@ editor.focus();
 document.addEventListener("click",e=>{const m=document.getElementById("projectContextMenu");if(m&&!m.contains(e.target))hideProjectContextMenu();});
 </script>
 
+
+
+<script>
+function toggleMobileTools(event){
+  if(event) event.stopPropagation();
+  const menu=document.getElementById('mobileToolsMenu');
+  const button=document.getElementById('mobileToolsButton');
+  if(!menu) return;
+  const open=!menu.classList.contains('show');
+  menu.classList.toggle('show',open);
+  if(button) button.setAttribute('aria-expanded',open?'true':'false');
+}
+function closeMobileTools(){
+  const menu=document.getElementById('mobileToolsMenu');
+  const button=document.getElementById('mobileToolsButton');
+  if(menu) menu.classList.remove('show');
+  if(button) button.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click',function(e){
+  const wrap=document.querySelector('.mobile-toolbar-wrap');
+  if(wrap && !wrap.contains(e.target)) closeMobileTools();
+});
+</script>
 </body>
 </html>
