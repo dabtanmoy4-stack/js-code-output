@@ -1686,7 +1686,7 @@ updatedAt: window.firebaseServerTimestamp()
 });
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid), {
 projectIds: window.firebaseArrayUnion(newId)
-}, {merge});
+}, {merge:true});
 window.currentProjectId = newId;
 id = newId;
 localStorage.setItem("js-code-output-active-project-id", id);
@@ -1707,7 +1707,7 @@ name: projectName,
 ownerUid: user.uid,
 htmlBundle: fullHtml,
 publishedAt: window.firebaseServerTimestamp()
-}, {merge});
+}, {merge:true});
 } catch(e) {
 console.error("Public bundle error:", e);
 }
@@ -1730,12 +1730,12 @@ showToast("Live Project Link copied! 🔗");
 function shareToPlatform(platform) {
 const url = document.getElementById("publishShareUrl").value;
 const name = document.getElementById("currentProjectName").textContent.trim() || "My Web Project";
-const text = Check out "${name}" live output on JS CODE OUTPUT: ${url};
+const text = `Check out "${name}" live output on JS CODE OUTPUT: ${url}`;
 
 if (platform === 'whatsapp') {
-window.open(https://api.whatsapp.com/send?text=${encodeURIComponent(text)}, '_blank');
+window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
 } else if (platform === 'facebook') {
-window.open(https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}, '_blank');
+window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
 } else if (platform === 'instagram') {
 navigator.clipboard.writeText(url);
 showToast("Link copied! Open Instagram to paste and share 📸");
@@ -1746,7 +1746,7 @@ window.open('https://www.instagram.com/', '_blank');
 if (navigator.share) {
 navigator.share({
 title: name,
-text: Check out my live project!,
+text: "Check out my live project!",
 url: url
 }).catch(() => {});
 } else {
@@ -1769,15 +1769,15 @@ const q=document.getElementById("codeSearchInput")?.value||"", count=document.ge
 clearSearchMarks(); searchMatches=[]; searchIndex=-1;
 if(!q){if(count)count.textContent="0 / 0";return;}
 const c=editor.getSearchCursor(q,CodeMirror.Pos(0,0),{caseFold});
-while(c.findNext()) searchMatches.push({from.from(),to.to()});
+while(c.findNext()) searchMatches.push({from:c.from(),to:c.to()});
 if(!searchMatches.length){if(count)count.textContent="0 / 0";return;}
 searchMatches.forEach(m=>{const mark=editor.markText(m.from,m.to,{className:"cm-searching"});mark.__jcoSearch=true;});
 searchIndex=0; selectSearchMatch();
 }
 function selectSearchMatch(){
 if(!editor||!searchMatches.length)return;
-const m=searchMatches[searchIndex]; editor.setSelection(m.from,m.to); editor.scrollIntoView({from.from,to.to},120);
-const count=document.getElementById("codeSearchCount"); if(count)count.textContent=${searchIndex+1} / ${searchMatches.length};
+const m=searchMatches[searchIndex]; editor.setSelection(m.from,m.to); editor.scrollIntoView({from:m.from,to:m.to},120);
+const count=document.getElementById("codeSearchCount"); if(count)count.textContent=`${searchIndex+1} / ${searchMatches.length}`;
 }
 function searchNext(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex+1)%searchMatches.length;selectSearchMatch();}
 function searchPrevious(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex-1+searchMatches.length)%searchMatches.length;selectSearchMatch();}
@@ -1925,7 +1925,7 @@ if(requiresActiveChange) openFile(activeNewPath);
 
 };
 
-function escapeHTML(s){ return String(s).replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">").replace(/"/g,""").replace(/'/g,"'"); }
+function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 
 function getExt(n) {
 if(!n || typeof n !== 'string') return "";
@@ -2061,7 +2061,7 @@ if(!source || typeof source !== "object") return result;
 
 Object.entries(source).forEach(([rawPath, value]) => {
 if(!rawPath) return;
-const path = String(rawPath).replace(/^/+/, "");
+const path = String(rawPath).replace(/^\/+/, "");
 if(!path) return;
 result[path] = path.endsWith("/")
 ? ""
@@ -2227,7 +2227,7 @@ updatedAt: window.firebaseServerTimestamp()
 });
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid), {
 projectIds: window.firebaseArrayUnion(id)
-}, {merge});
+}, {merge:true});
 
   closeCreateProject();
   openEditorWorkspace(id, name, initialFiles);
@@ -2252,7 +2252,7 @@ showToast("Local Project created.");
 
 function createProjectCardHTML(id,name,isCloud){
 const card=document.createElement("div");card.className="project-card";
-card.innerHTML=<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>;
+card.innerHTML=`<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
 card.onclick=()=>requestProjectSwitch(id,name);card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
 card.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,isCloud)};bindProjectLongPress(card,id,name,isCloud);return card;
 }
@@ -2338,7 +2338,7 @@ document.getElementById("dropdownCurrentProject").textContent = name || "Untitle
 
 if (pushHistory) {
 const safeProjectName = encodeURIComponent((name || "project").toLowerCase().replace(/\s+/g, "-"));
-history.pushState({ page: "editor", id: id, name: name }, "", #editor?project=${safeProjectName});
+history.pushState({ page: "editor", id: id, name: name }, "", `#editor?project=${safeProjectName}`);
 }
 
 const u = window.firebaseCurrentUser || window.currentUser;
@@ -2367,7 +2367,7 @@ projectDirty = false;
 renderFileExplorer();
 openFile(activeFile);
 
-if(Object.keys(files).some(k => /.html?$/i.test(k))){
+if(Object.keys(files).some(k => /\.html?$/i.test(k))){
 hasTypedInSession = true;
 }
 
@@ -2470,7 +2470,7 @@ if(level > 0) ul.className = "tree-indent";
 }
 
 if(Object.keys(root).length === 0) {
-el.innerHTML = <div class="text-xs text-gray-500 text-center py-6">Workspace is empty.<br>Create a file or folder.</div>;
+el.innerHTML = `<div class="text-xs text-gray-500 text-center py-6">Workspace is empty.<br>Create a file or folder.</div>`;
 } else {
 buildDOM(root, el, 0);
 }
@@ -2493,7 +2493,7 @@ const b = document.createElement("button");
 b.className = "editor-tab " + (n === activeFile ? "active-file-tab" : "");
 const parts = n.split('/');
 const shortName = parts[parts.length - 1];
-b.innerHTML = ${icon(n)} <span>${escapeHTML(shortName)}</span>;
+b.innerHTML = `${icon(n)} <span>${escapeHTML(shortName)}</span>`;
 b.onclick = () => openFile(n);
 el.appendChild(b);
 });
@@ -2593,7 +2593,7 @@ renderFileExplorer();
 }
 
 window.createNewFile = function(basePath = "") {
-const n = prompt(Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.scss, script.ts);
+const n = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.scss, script.ts`);
 if(!n) return;
 const name = n.trim();
 if(!name) return;
@@ -2611,7 +2611,7 @@ updatePreview(true);
 };
 
 window.createNewFolder = function(basePath = "") {
-const n = prompt(Enter folder name ${basePath ? '(inside '+basePath+')' : ''}:);
+const n = prompt(`Enter folder name ${basePath ? '(inside '+basePath+')' : ''}:`);
 if(!n) return;
 const name = n.trim();
 if(!name) return;
@@ -2626,7 +2626,7 @@ renderFileExplorer();
 
 window.deleteItem = function(path) {
 const isFolder = path.endsWith('/');
-if(!confirm(Delete ${isFolder ? 'folder and all its contents' : 'file'} (${path})?)) return;
+if(!confirm(`Delete ${isFolder ? 'folder and all its contents' : 'file'} (${path})?`)) return;
 
 let requiresActiveChange = false;
 Object.keys(files).forEach(k => {
@@ -2661,7 +2661,7 @@ reject(err);
 }
 
 function addUploadedFilePath(path, content){
-const cleanPath = String(path || "").replace(/^/+/, "");
+const cleanPath = String(path || "").replace(/^\/+/, "");
 if(!cleanPath) return;
 
 files[cleanPath] = content == null ? "" : content;
@@ -2721,7 +2721,7 @@ await new Promise(resolve => setTimeout(resolve, 50));
 
 }
 
-if(text) text.innerText = Finalizing 100%...;
+if(text) text.innerText = "Finalizing 100%...";
 await new Promise(resolve => setTimeout(resolve, 150));
 
 if(overlay) {
@@ -2759,9 +2759,9 @@ try { updatePreview(true); } catch(err) { }
 projectDirty = true;
 
 if(failed.length){
-showToast(${results.length} uploaded; ${failed.length} skipped.);
+showToast(`${results.length} uploaded; ${failed.length} skipped.`);
 } else {
-showToast(${results.length} file(s) uploaded successfully.);
+showToast(`${results.length} file(s) uploaded successfully.`);
 }
 
 e.target.value = "";
@@ -2785,7 +2785,7 @@ window.files = files;
 hasTypedInSession = true;
 
 const preferred =
-results.find(x => //index.html$/i.test(x.path)) ||
+results.find(x => /index\.html$/i.test(x.path)) ||
 results.find(x => /^index.html$/i.test(x.path)) ||
 results.find(x => !isBinary(getExt(x.path))) ||
 results[0];
@@ -2799,9 +2799,9 @@ try { updatePreview(true); } catch(err) { }
 projectDirty = true;
 
 if(failed.length){
-showToast(${results.length} uploaded; ${failed.length} skipped.);
+showToast(`${results.length} uploaded; ${failed.length} skipped.`);
 } else {
-showToast(${results.length} file(s) from folder uploaded.);
+showToast(`${results.length} file(s) from folder uploaded.`);
 }
 
 e.target.value = "";
@@ -2821,9 +2821,9 @@ if(!hasTypedInSession && !force) return;
 document.getElementById("placeholderView")?.classList.add("hidden");
 
 const allFileKeys = Object.keys(files).filter(k => !k.endsWith("/"));
-const htmlKeys = allFileKeys.filter(k => /.html?$/i.test(k));
+const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
 
-const cssKeys = allFileKeys.filter(k => /.(css|scss)$/i.test(k));
+const cssKeys = allFileKeys.filter(k => /\.(css|scss)$/i.test(k));
 let css = cssKeys.map(k => {
 let code = files[k] || "";
 if (k.endsWith(".scss") && typeof Sass !== 'undefined') {
@@ -2832,7 +2832,7 @@ try { code = Sass.compile(code).text; } catch(e) { console.error("SASS Error", e
 return code;
 }).join("\n");
 
-const jsKeys = allFileKeys.filter(k => /.(js|mjs|ts|tsx)$/i.test(k));
+const jsKeys = allFileKeys.filter(k => /\.(js|mjs|ts|tsx)$/i.test(k));
 let js = jsKeys.map(k => {
 let code = files[k] || "";
 if ((k.endsWith(".ts") || k.endsWith(".tsx")) && typeof Babel !== 'undefined') {
@@ -2846,8 +2846,8 @@ let html = rootIndex ? files[rootIndex] : (htmlKeys.length ? files[htmlKeys[0]] 
 
 Object.keys(files).forEach(filename => {
 if(isBinary(getExt(filename))) {
-const safeKey = filename.replace(/[-[]/{}()*+?.\^$|]/g, "\$&");
-const rx = new RegExp('(["'])(\.\/)?' + safeKey + '\1', 'g');
+const safeKey = filename.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+const rx = new RegExp(`(["\'])(\.\/)?${safeKey}\\1`, "g");
 html = html.replace(rx, '$1' + files[filename] + '$1');
 css = css.replace(rx, '$1' + files[filename] + '$1');
 }
@@ -2856,14 +2856,14 @@ css = css.replace(rx, '$1' + files[filename] + '$1');
 const customPkgs = (document.getElementById("custom-packages")?.value || "")
 .split('\n').map(p => p.trim()).filter(p => p);
 const customImports = customPkgs.map(p => {
-if(p.endsWith('.css')) return <link rel="stylesheet" href="${p}">;
-return <script src="${p}"><\/script>;
+if(p.endsWith('.css')) return `<link rel="stylesheet" href="${p}">`;
+return `<script src="${p}"><\/script>`;
 }).join('\n');
 
-const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"></script>' : "";
+const tw = document.getElementById("lib-tailwind")?.checked ? '<script src="https://cdn.tailwindcss.com"><\/script>' : "";
 const fa = document.getElementById("lib-fontawesome")?.checked ? '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">' : "";
-const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>' : "";
-const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>' : "";
+const three = document.getElementById("lib-three")?.checked ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' : "";
+const chart = document.getElementById("lib-chart")?.checked ? '<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>' : "";
 
 const consoleProxy = `
 
@@ -3011,24 +3011,24 @@ let x=e.clientX||20,y=e.clientY||20;if(x+195>innerWidth)x=innerWidth-203;if(y+92
 }
 function bindProjectLongPress(el,id,name,isCloud){
 let timer=null;
-el.addEventListener("touchstart",()=>{timer=setTimeout(()=>showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:20,clientY.max(20,innerHeight*.45)},id,name,isCloud),650)},{passive});
+el.addEventListener("touchstart",()=>{timer=setTimeout(()=>showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:20,clientY:Math.max(20,innerHeight*.45)},id,name,isCloud),650)},{passive:true});
 ["touchend","touchmove","touchcancel"].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(timer),{passive}));
 }
 async function renameProjectByTarget(){
 const id=projectActionTarget,oldName=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
 const name=prompt("Rename project:",oldName);if(!name||name.trim()===oldName)return;const newName=name.trim();
 try{
-if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to rename cloud projects.");await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name,updatedAt.firebaseServerTimestamp()},{merge});}
-else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.map(p=>p.id===id?{...p,name,updatedAt.now()});localStorage.setItem("js_local_projects",JSON.stringify(ps));}
+if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to rename cloud projects.");await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name,updatedAt:window.firebaseServerTimestamp()},{merge});}
+else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.map(p=>p.id===id?{...p,name,updatedAt:Date.now()}:p);localStorage.setItem("js_local_projects",JSON.stringify(ps));}
 if(id===window.currentProjectId){document.getElementById("currentProjectName").textContent=newName;document.getElementById("dropdownCurrentProject").textContent=newName;}
 await loadProjects();loadHeaderProjects();showToast("Project renamed.");
 }catch(e){console.error(e);showToast("Could not rename project.")}
 }
 async function deleteProjectByTarget(){
 const id=projectActionTarget,name=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
-if(!confirm(Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.))return;
+if(!confirm(`Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`))return;
 try{
-if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to delete cloud projects.");await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds.firebaseArrayRemove(id)},{merge});try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(){}}
+if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to delete cloud projects.");await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds:window.firebaseArrayRemove(id)},{merge});try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(e){}}
 else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.filter(p=>p.id!==id);localStorage.setItem("js_local_projects",JSON.stringify(ps));localStorage.removeItem("js_files"+id);localStorage.removeItem("js_active_file_"+id);}
 if(id===window.currentProjectId){window.currentProjectId="";currentProjectId="";localStorage.removeItem("js-code-output-active-project-id");const ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");if(ps.length)openEditorWorkspace(ps[0].id,ps[0].name);else backToHome();}
 await loadProjects();loadHeaderProjects();showToast("Project deleted permanently.");
@@ -3039,8 +3039,8 @@ function wireProjectContextActions(){document.getElementById("projectCtxRename")
 async function loadHeaderProjects(){
 const el=document.getElementById("headerProjectsList");el.innerHTML="";
 let localProjects=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
-localProjects.forEach(p=>{const btn=document.createElement("button");btn.className="header-project-item "+(p.id===window.currentProjectId?"current":"");btn.innerHTML=<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(p.id,p.name)};btn.oncontextmenu=e=>showProjectContextMenu(e,p.id,p.name,false);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,p.id,p.name,false)};bindProjectLongPress(btn,p.id,p.name,false);el.appendChild(btn);});
-const u=window.firebaseCurrentUser;if(u){try{const uDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid));const ids=uDoc.exists()?uDoc.data().projectIds||[]:[];for(const id of ids){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(!pDoc.exists())continue;const d=pDoc.data(),name=d.name||"Untitled";const btn=document.createElement("button");btn.className="header-project-item "+(id===window.currentProjectId?"current":"");btn.innerHTML=<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(id,name)};btn.oncontextmenu=e=>showProjectContextMenu(e,id,name,true);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,true)};bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
+localProjects.forEach(p=>{const btn=document.createElement("button");btn.className="header-project-item "+(p.id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-folder text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(p.name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(p.id,p.name)};btn.oncontextmenu=e=>showProjectContextMenu(e,p.id,p.name,false);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,p.id,p.name,false)};bindProjectLongPress(btn,p.id,p.name,false);el.appendChild(btn);});
+const u=window.firebaseCurrentUser;if(u){try{const uDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid));const ids=uDoc.exists()?uDoc.data().projectIds||[]:[];for(const id of ids){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(!pDoc.exists())continue;const d=pDoc.data(),name=d.name||"Untitled";const btn=document.createElement("button");btn.className="header-project-item "+(id===window.currentProjectId?"current":"");btn.innerHTML=`<i class="fa-solid fa-cloud text-blue-500"></i><span class="flex-1 truncate">${escapeHTML(name)}</span><span class="project-more"><i class="fa-solid fa-ellipsis"></i></span>`;btn.onclick=()=>{document.getElementById("projectSwitcherMenu").classList.add("hidden");requestProjectSwitch(id,name)};btn.oncontextmenu=e=>showProjectContextMenu(e,id,name,true);btn.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,true)};bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
 
 function showToast(msg){
@@ -3093,7 +3093,7 @@ if (!liveProjId) return false;
 // Immediately show the public viewer shell so the shared link never
 // briefly exposes the editor/project dashboard.
 document.documentElement.classList.remove("dark");
-document.body.innerHTML =     <div class="public-viewer">
+document.body.innerHTML = `    <div class="public-viewer">
       <header class="public-viewer-head">
         <div class="public-viewer-brand">
           <span class="public-viewer-brand-dot"></span>
@@ -3126,7 +3126,7 @@ document.body.innerHTML =     <div class="public-viewer">
         </div>
       </main>
     </div>
- ;
+`;
 
 document.getElementById("publicMakeOwnBtn").onclick = () => {
 // Remove the live query before returning to the editor.
@@ -3264,7 +3264,7 @@ readOnly: false
 });
 window.editor = editor;
 const searchInput=document.getElementById("codeSearchInput");
-if(searchInput){searchInput.addEventListener("input",updateCodeSearch);searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.shiftKey?searchPrevious()()}if(e.key==="Escape"){e.preventDefault();closeCodeSearch()}});}
+if(searchInput){searchInput.addEventListener("input",updateCodeSearch);searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.shiftKey ? searchPrevious() : searchNext()}if(e.key==="Escape"){e.preventDefault();closeCodeSearch()}});}
 wireProjectContextActions();
 
 if(typeof emmetCodeMirror !== 'undefined') {
