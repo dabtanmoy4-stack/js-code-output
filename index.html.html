@@ -2244,9 +2244,13 @@ let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]"
 localProjects.push({ id, name, updatedAt: Date.now() });
 localStorage.setItem("js_local_projects", JSON.stringify(localProjects));
 
+// Save the initial project files BEFORE opening the editor. This avoids
+// the project-switch lock preventing the first save.
+localStorage.setItem("js_files_" + id, JSON.stringify(initialFiles));
+localStorage.setItem("js_active_file_" + id, "index.html");
+
 closeCreateProject();
 openEditorWorkspace(id, name, initialFiles);
-saveLocalProjectFiles();
 showToast("Local Project created.");
 
 }
@@ -2850,8 +2854,10 @@ let html = rootIndex ? files[rootIndex] : (htmlKeys.length ? files[htmlKeys[0]] 
 // Remove their original <link>/<script src> tags so the iframe does not
 // request missing standalone files (404) such as style.css or script.js.
 const localProjectPaths = new Set(allFileKeys.map(k => k.replace(/^\.\//, "")));
-html = html.replace(/<link\b[^>]*?rel=["']stylesheet["'][^>]*?href=["']([^"']+)["'][^>]*?>/gi, (tag, href) => {
-  const path = String(href).replace(/^\.\//, "");
+html = html.replace(/<link\b[^>]*>/gi, (tag) => {
+  const match = tag.match(/\bhref=["']([^"']+)["']/i);
+  if (!match) return tag;
+  const path = String(match[1]).replace(/^\.\//, "");
   return localProjectPaths.has(path) && /\.(css|scss)$/i.test(path) ? "" : tag;
 });
 html = html.replace(/<script\b([^>]*?)src=["']([^"']+)["']([^>]*)><\/script>/gi, (tag, before, src, after) => {
@@ -3027,7 +3033,7 @@ let x=e.clientX||20,y=e.clientY||20;if(x+195>innerWidth)x=innerWidth-203;if(y+92
 function bindProjectLongPress(el,id,name,isCloud){
 let timer=null;
 el.addEventListener("touchstart",()=>{timer=setTimeout(()=>showProjectContextMenu({preventDefault(){},stopPropagation(){},clientX:20,clientY:Math.max(20,innerHeight*.45)},id,name,isCloud),650)},{passive:true});
-["touchend","touchmove","touchcancel"].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(timer),{passive}));
+["touchend","touchmove","touchcancel"].forEach(ev=>el.addEventListener(ev,()=>clearTimeout(timer),{passive:true}));
 }
 async function renameProjectByTarget(){
 const id=projectActionTarget,oldName=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
@@ -3240,22 +3246,59 @@ if (isLive) return;
 document.documentElement.classList.add("dark");
 
 let initialId = localStorage.getItem("js-code-output-active-project-id");
-if(initialId && initialId.startsWith("local_proj_")) {
-let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
-let p = localProjects.find(x => x.id === initialId);
-if(p && document.getElementById("currentProjectName")) {
-document.getElementById("currentProjectName").textContent = p.name;
-document.getElementById("dropdownCurrentProject").textContent = p.name;
-}
+
+// Wait for Firebase auth before deciding whether the active project is local
+// or cloud. Previously every active project was treated as local on refresh.
+try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
+const startupUser = window.firebaseCurrentUser || window.currentUser || null;
+if (initialId) {
+  window.currentProjectId = initialId;
+  currentProjectId = initialId;
 }
 
-if (initialId) {
-loadLocalProjectFiles(initialId);
+if(initialId && initialId.startsWith("local_proj_")) {
+  let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
+  let p = localProjects.find(x => x.id === initialId);
+  if(p && document.getElementById("currentProjectName")) {
+    document.getElementById("currentProjectName").textContent = p.name;
+    document.getElementById("dropdownCurrentProject").textContent = p.name;
+  }
+  loadLocalProjectFiles(initialId);
+} else if (initialId && startupUser) {
+  try {
+    const snap = await window.firebaseGetDoc(
+      window.firebaseDoc(window.firebaseDB, "users", startupUser.uid, "projects", initialId)
+    );
+    if (snap.exists()) {
+      const d = snap.data();
+      setFileMap(d.files || defaultTemplate);
+      activeFile = localStorage.getItem("js_active_file_" + initialId);
+      const actualFiles = Object.keys(files).filter(k => !k.endsWith("/"));
+      if (!activeFile || files[activeFile] === undefined || activeFile.endsWith("/")) {
+        activeFile = actualFiles[0] || "index.html";
+      }
+      if(document.getElementById("currentProjectName")) {
+        document.getElementById("currentProjectName").textContent = d.name || "Untitled Project";
+        document.getElementById("dropdownCurrentProject").textContent = d.name || "Untitled Project";
+      }
+      window.files = files;
+      window.activeFile = activeFile;
+    } else {
+      initialId = "";
+      localStorage.removeItem("js-code-output-active-project-id");
+      setFileMap(defaultTemplate);
+      activeFile = "index.html";
+    }
+  } catch(e) {
+    console.error("Could not load active cloud project:", e);
+    setFileMap(defaultTemplate);
+    activeFile = "index.html";
+  }
 } else {
-setFileMap(defaultTemplate);
-activeFile = "index.html";
-window.files = files;
-window.activeFile = activeFile;
+  setFileMap(defaultTemplate);
+  activeFile = "index.html";
+  window.files = files;
+  window.activeFile = activeFile;
 }
 
 const wrapper = document.getElementById("wrapper-editor");
@@ -3304,6 +3347,12 @@ if (isSwitchingProject) return;
 hasTypedInSession = true;
 projectDirty = true;
 syncEditor();
+// Persist changes for both local and authenticated cloud projects.
+if (window.currentProjectId?.startsWith("local_proj_")) {
+  saveLocalProjectFiles();
+} else if (window.currentProjectId) {
+  scheduleCloudSave();
+}
 const auto = document.getElementById("autoRunToggle");
 if(auto?.checked){
 clearTimeout(debounceTimer);
