@@ -3018,7 +3018,7 @@ async function renameProjectByTarget(){
 const id=projectActionTarget,oldName=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
 const name=prompt("Rename project:",oldName);if(!name||name.trim()===oldName)return;const newName=name.trim();
 try{
-if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to rename cloud projects.");await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name,updatedAt:window.firebaseServerTimestamp()},{merge});}
+if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to rename cloud projects.");await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name,updatedAt:window.firebaseServerTimestamp()},{merge:true});}
 else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.map(p=>p.id===id?{...p,name,updatedAt:Date.now()}:p);localStorage.setItem("js_local_projects",JSON.stringify(ps));}
 if(id===window.currentProjectId){document.getElementById("currentProjectName").textContent=newName;document.getElementById("dropdownCurrentProject").textContent=newName;}
 await loadProjects();loadHeaderProjects();showToast("Project renamed.");
@@ -3028,7 +3028,7 @@ async function deleteProjectByTarget(){
 const id=projectActionTarget,name=projectActionName,isCloud=projectActionIsCloud;hideProjectContextMenu();if(!id)return;
 if(!confirm(`Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`))return;
 try{
-if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to delete cloud projects.");await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds:window.firebaseArrayRemove(id)},{merge});try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(e){}}
+if(isCloud){const u=window.firebaseCurrentUser;if(!u)return showToast("Sign in to delete cloud projects.");await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds:window.firebaseArrayRemove(id)},{merge:true});try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(e){}}
 else{let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");ps=ps.filter(p=>p.id!==id);localStorage.setItem("js_local_projects",JSON.stringify(ps));localStorage.removeItem("js_files"+id);localStorage.removeItem("js_active_file_"+id);}
 if(id===window.currentProjectId){window.currentProjectId="";currentProjectId="";localStorage.removeItem("js-code-output-active-project-id");const ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");if(ps.length)openEditorWorkspace(ps[0].id,ps[0].name);else backToHome();}
 await loadProjects();loadHeaderProjects();showToast("Project deleted permanently.");
