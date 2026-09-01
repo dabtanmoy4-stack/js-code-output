@@ -495,7 +495,31 @@
   .public-project-frame{display:block;width:100%;height:min(78vh,900px);min-height:520px;border:0;background:#fff}
   @media(max-width:700px){.code-search-panel{top:6px;right:6px;width:calc(100% - 12px)}.code-search-hint{display:none}.public-viewer-head{height:62px;padding:0 16px}.public-viewer-main{padding:18px 12px 35px}.public-project-shell{border-radius:16px}.public-project-frame{min-height:72vh;height:72vh}.public-viewer-brand{font-size:10px}.public-viewer-cta{font-size:10px;padding:9px 11px}}
 
-  </style>
+  
+/* === JS Mini.Browser launch advertisement — start page only === */
+.mini-browser-ad{position:relative;z-index:3;padding:35px 5vw 25px;overflow:hidden}
+.mini-browser-ad-inner{width:min(1160px,100%);margin:auto;position:relative;display:grid;grid-template-columns:.88fr 1.12fr;gap:35px;align-items:center;padding:34px;border:1px solid color-mix(in srgb,var(--brand) 22%,var(--line));border-radius:28px;background:radial-gradient(circle at 85% 20%,rgba(47,123,229,.16),transparent 32%),radial-gradient(circle at 15% 100%,rgba(124,58,237,.10),transparent 35%),var(--surface);box-shadow:0 28px 80px rgba(15,35,65,.12);overflow:hidden}
+.mini-browser-ad-inner:before{content:"";position:absolute;inset:-80px;background:repeating-linear-gradient(115deg,transparent 0 28px,rgba(47,123,229,.035) 29px 30px);animation:miniAdGrid 16s linear infinite;pointer-events:none}
+@keyframes miniAdGrid{to{transform:translate3d(90px,-60px,0)}}
+.mini-ad-copy{position:relative;z-index:2}.mini-ad-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(47,123,229,.10);color:var(--brand);font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(47,123,229,.16)}.mini-ad-kicker i{animation:miniPulse 1.5s ease-in-out infinite}
+@keyframes miniPulse{50%{transform:scale(1.35);filter:drop-shadow(0 0 7px currentColor)}}
+.mini-ad-copy h2{font-size:clamp(30px,4vw,53px);line-height:1.02;letter-spacing:-.055em;margin:14px 0 12px;font-weight:950}.mini-ad-copy h2 em{font-style:normal;color:var(--brand)}.mini-ad-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.75;max-width:510px}
+.mini-ad-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.mini-ad-point{display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border-radius:9px;background:var(--surface2);border:1px solid var(--line);font-size:9px;font-weight:800;color:var(--muted)}.mini-ad-point i{color:var(--brand)}
+.mini-browser-stage{position:relative;z-index:2;min-height:335px;display:grid;place-items:center;perspective:1200px}.mini-browser-window{width:min(590px,100%);height:330px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:#08111e;box-shadow:0 30px 65px rgba(0,0,0,.30),0 0 0 1px rgba(47,123,229,.10);transform:rotateY(-7deg) rotateX(3deg);animation:miniWindowFloat 5.5s ease-in-out infinite;position:relative}
+@keyframes miniWindowFloat{50%{transform:rotateY(-3deg) rotateX(1deg) translateY(-8px)}}
+.mini-window-top{height:38px;background:#0e1a2b;border-bottom:1px solid #20314a;display:flex;align-items:center;gap:7px;padding:0 12px}.mini-dot{width:7px;height:7px;border-radius:50%;background:#334155}.mini-dot:nth-child(1){background:#f87171}.mini-dot:nth-child(2){background:#fbbf24}.mini-dot:nth-child(3){background:#34d399}.mini-address{height:20px;flex:1;margin-left:7px;border:1px solid #263a55;border-radius:6px;color:#7f93ad;font:8px monospace;display:flex;align-items:center;padding:0 8px;background:#091321}
+.mini-window-body{height:292px;position:relative;overflow:hidden;background:#050b14}.mini-scene{position:absolute;inset:0;opacity:0;animation:miniScene 12s infinite}.mini-scene.one{animation-delay:0s}.mini-scene.two{animation-delay:4s}.mini-scene.three{animation-delay:8s}
+@keyframes miniScene{0%,28%{opacity:1;transform:scale(1)}33%,95%{opacity:0;transform:scale(.985)}100%{opacity:1}}
+.mini-code{position:absolute;left:0;top:0;bottom:0;width:55%;padding:20px 17px;background:#020617;color:#dbeafe;font:9px/1.9 "Fira Code","Courier New",monospace;border-right:1px solid #1e293b}.mini-code .c1{color:#ff79c6}.mini-code .c2{color:#50fa7b}.mini-code .c3{color:#f1fa8c}.mini-code .c4{color:#8be9fd}.mini-type{display:inline-block;width:0;overflow:hidden;white-space:nowrap;border-right:1px solid #38bdf8;animation:miniTyping 3s steps(30,end) infinite}
+@keyframes miniTyping{0%{width:0}55%,100%{width:100%}}
+.mini-output{position:absolute;right:0;top:0;bottom:0;width:45%;background:#f8fafc;color:#0f172a;padding:18px}.mini-output-card{height:100%;border-radius:10px;background:white;border:1px solid #e2e8f0;padding:16px;box-shadow:0 8px 20px rgba(15,23,42,.08)}.mini-output-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#7c3aed);margin-bottom:13px;animation:miniLogo 2s ease-in-out infinite}@keyframes miniLogo{50%{transform:rotate(8deg) scale(1.08);box-shadow:0 0 22px rgba(37,99,235,.28)}}.mini-output h3{font-size:14px;margin:0 0 7px}.mini-output p{font-size:8px;color:#64748b;margin:0;line-height:1.6}.mini-bars{display:grid;gap:7px;margin-top:15px}.mini-bar{height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden}.mini-bar i{display:block;height:100%;width:72%;background:#2563eb;border-radius:inherit;animation:miniLoad 2.3s ease-in-out infinite}.mini-bar:nth-child(2) i{width:48%;animation-delay:.25s}.mini-bar:nth-child(3) i{width:84%;animation-delay:.5s}@keyframes miniLoad{50%{transform:translateX(35%);opacity:.65}}
+.mini-deploy{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at center,rgba(37,99,235,.20),transparent 45%),#050b14}.mini-deploy-core{text-align:center;color:#e0f2fe}.mini-rocket{width:76px;height:76px;margin:auto;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(96,165,250,.45);box-shadow:0 0 45px rgba(37,99,235,.25);animation:miniRocket 1.7s ease-in-out infinite}@keyframes miniRocket{50%{transform:translateY(-13px) scale(1.08);box-shadow:0 0 75px rgba(37,99,235,.50)}}.mini-deploy-core strong{display:block;margin-top:14px;font-size:16px;letter-spacing:.03em}.mini-deploy-core span{display:block;margin-top:5px;font:9px monospace;color:#7dd3fc}
+.mini-particle{position:absolute;width:4px;height:4px;border-radius:50%;background:#60a5fa;box-shadow:0 0 12px #60a5fa;animation:miniParticle 3s linear infinite}@keyframes miniParticle{from{transform:translateY(130px) scale(.4);opacity:0}30%{opacity:1}to{transform:translateY(-160px) scale(1.2);opacity:0}}
+.mini-ad-badge{position:absolute;right:18px;top:18px;z-index:5;padding:8px 10px;border-radius:9px;background:#0b1220;color:#dbeafe;border:1px solid #28415f;font-size:8px;font-weight:900;letter-spacing:.12em;box-shadow:0 10px 25px rgba(0,0,0,.25);animation:miniBadge 2s ease-in-out infinite}@keyframes miniBadge{50%{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.32)}}
+@media(max-width:900px){.mini-browser-ad-inner{grid-template-columns:1fr;padding:27px}.mini-browser-stage{min-height:300px}.mini-browser-window{height:300px}.mini-window-body{height:262px}}
+@media(max-width:600px){.mini-browser-ad{padding:22px 16px}.mini-browser-ad-inner{padding:21px;border-radius:22px}.mini-ad-copy h2{font-size:32px}.mini-browser-window{height:255px;transform:none}.mini-window-body{height:217px}.mini-code{width:50%;font-size:7px;padding:13px 10px}.mini-output{width:50%;padding:10px}.mini-output h3{font-size:10px}.mini-output p{font-size:7px}.mini-output-card{padding:11px}.mini-ad-badge{right:10px;top:10px;font-size:7px}}
+
+</style>
 
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -636,6 +660,72 @@
       </div>
     </div>
     <div class="hero-badge"><strong>LIVE</strong> output while you code</div>
+  </div>
+</section>
+
+
+<!-- JS Mini.Browser launch advertisement: start-page only -->
+<section class="mini-browser-ad" aria-label="JS Mini.Browser new feature">
+  <div class="mini-browser-ad-inner">
+    <div class="mini-ad-copy">
+      <span class="mini-ad-kicker"><i class="fa-solid fa-sparkles"></i> COMING SOON · NEW FEATURE</span>
+      <h2>Meet <em>JS mini.Browser.</em></h2>
+      <p>Build a project in JS CODE OUTPUT, deploy it into a mini browser, and test the result instantly — all inside the same developer experience.</p>
+      <div class="mini-ad-points">
+        <span class="mini-ad-point"><i class="fa-solid fa-code"></i> Write JS</span>
+        <span class="mini-ad-point"><i class="fa-solid fa-cloud-arrow-up"></i> Deploy</span>
+        <span class="mini-ad-point"><i class="fa-solid fa-vial"></i> Test</span>
+        <span class="mini-ad-point"><i class="fa-solid fa-globe"></i> Preview</span>
+      </div>
+    </div>
+    <div class="mini-browser-stage">
+      <div class="mini-ad-badge"><i class="fa-solid fa-circle"></i> LIVE PREVIEW CONCEPT</div>
+      <div class="mini-browser-window">
+        <div class="mini-window-top">
+          <span class="mini-dot"></span><span class="mini-dot"></span><span class="mini-dot"></span>
+          <div class="mini-address"><i class="fa-solid fa-lock mr-1"></i> js-mini.browser / your-project</div>
+        </div>
+        <div class="mini-window-body">
+          <div class="mini-scene one">
+            <div class="mini-code">
+              <div><span class="c1">const</span> app = <span class="c2">document</span>;</div>
+              <div><span class="c1">function</span> <span class="c4">launch</span>() {</div>
+              <div>&nbsp;&nbsp;app.querySelector(<span class="c3">'#app'</span>)</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;.textContent = <span class="c3">'Hello Mini.Browser!'</span>;</div>
+              <div>}</div><div><span class="c4">launch</span>();</div><br>
+              <div class="mini-type"><span class="c2">console</span>.log(<span class="c3">'Ready to test ✓'</span>);</div>
+            </div>
+            <div class="mini-output"><div class="mini-output-card">
+              <div class="mini-output-logo"></div><h3>Hello, Mini.Browser</h3>
+              <p>Your JS project is running in a clean browser preview.</p>
+              <div class="mini-bars"><div class="mini-bar"><i></i></div><div class="mini-bar"><i></i></div><div class="mini-bar"><i></i></div></div>
+            </div></div>
+          </div>
+          <div class="mini-scene two">
+            <div class="mini-deploy"><div class="mini-deploy-core">
+              <div class="mini-rocket"><i class="fa-solid fa-rocket" style="font-size:28px"></i></div>
+              <strong>Deploying project…</strong><span>BUILD → PACKAGE → OPEN</span>
+            </div></div>
+            <div class="mini-particle" style="left:12%;top:80%;animation-delay:.1s"></div>
+            <div class="mini-particle" style="left:27%;top:65%;animation-delay:.8s"></div>
+            <div class="mini-particle" style="left:48%;top:90%;animation-delay:1.2s"></div>
+            <div class="mini-particle" style="left:70%;top:72%;animation-delay:.45s"></div>
+            <div class="mini-particle" style="left:88%;top:85%;animation-delay:1.7s"></div>
+          </div>
+          <div class="mini-scene three">
+            <div class="mini-code" style="width:100%">
+              <div><span class="c1">JS mini.Browser</span> <span class="c2">✓ ONLINE</span></div>
+              <div>────────────────────────────</div>
+              <div><span class="c4">project</span>: my-first-app</div>
+              <div><span class="c4">status</span>: <span class="c2">deployed</span></div>
+              <div><span class="c4">tests</span>: <span class="c2">12 passed</span></div>
+              <div><span class="c4">preview</span>: <span class="c3">ready</span></div><br>
+              <div><span class="c2">● Your project is live in the mini browser.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
