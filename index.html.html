@@ -3253,10 +3253,7 @@ async function loadHeaderProjects(){
       bindProjectLongPress(btn,id,name,true);el.appendChild(btn);}}catch(e){console.warn(e)}}
 }
 
-/* Reliable workspace touch feedback.
-   Keep the browser's native click/tap event chain intact. Earlier versions
-   intercepted pointerup/touchend globally which could prevent nested controls,
-   checkboxes and modal actions from receiving their normal click event. */
+/* Reliable workspace touch feedback. */
 (function bindHeaderTouchFeedback(){
   function bind(){
     document.querySelectorAll('#topHeader .app-btn, #topHeader .project-adjacent-tool').forEach(el=>{
@@ -3774,5 +3771,289 @@ document.addEventListener("click",e=>{const m=document.getElementById("projectCo
 })();
 </script>
 
+
+<script>
+/* JCO RELIABILITY PATCH v2 — restores project actions without removing existing features. */
+(function(){
+  "use strict";
+  const byId=id=>document.getElementById(id);
+  const googleUser=()=>{
+    const u=window.firebaseCurrentUser||window.currentUser||null;
+    return !!(u && !u.isAnonymous && (u.email || u.providerData?.some(p=>p?.providerId === "google.com")));
+  };
+  const currentUser=()=>window.firebaseCurrentUser||window.currentUser||null;
+
+  // ---------------- Project context menu ----------------
+  window.showProjectContextMenu=function(e,id,name,isCloud){
+    try{e?.preventDefault?.();e?.stopPropagation?.();}catch(_){ }
+    window.projectActionTarget=id;
+    window.projectActionIsCloud=!!isCloud;
+    window.projectActionName=name||"Project";
+    const m=byId("projectContextMenu");
+    if(!m)return;
+    m.classList.remove("hidden");
+    m.style.display="flex";
+    m.style.pointerEvents="auto";
+    m.style.zIndex="100000";
+    const pt=e?.changedTouches?.[0] || e;
+    let x=Number(pt?.clientX)||Math.round(innerWidth/2-95), y=Number(pt?.clientY)||Math.round(innerHeight/2-45);
+    x=Math.max(8,Math.min(x,innerWidth-205));
+    y=Math.max(8,Math.min(y,innerHeight-100));
+    m.style.left=x+"px";m.style.top=y+"px";
+    // Put the menu above project pages and all workspace layers.
+    document.body.appendChild(m);
+  };
+  window.hideProjectContextMenu=function(){
+    const m=byId("projectContextMenu"); if(!m)return;
+    m.style.display="none"; m.classList.add("hidden");
+  };
+
+  async function renameTarget(){
+    const id=window.projectActionTarget, oldName=window.projectActionName, cloud=!!window.projectActionIsCloud;
+    hideProjectContextMenu(); if(!id)return;
+    const raw=prompt("Rename project:",oldName||"Project");
+    if(!raw || raw.trim()===oldName)return;
+    const name=raw.trim();
+    try{
+      if(cloud){
+        const u=currentUser();
+        if(!u || !googleUser()) return showToast("Sign in with Google to rename cloud projects.");
+        await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id),{name,updatedAt:window.firebaseServerTimestamp()},{merge:true});
+      }else{
+        let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
+        ps=ps.map(p=>p.id===id?{...p,name,updatedAt:Date.now()}:p);
+        localStorage.setItem("js_local_projects",JSON.stringify(ps));
+      }
+      if(id===window.currentProjectId){
+        byId("currentProjectName").textContent=name;
+        byId("dropdownCurrentProject").textContent=name;
+      }
+      await window.loadProjects?.();
+      showToast("Project renamed.");
+    }catch(err){console.error(err);showToast("Could not rename project.");}
+  }
+  async function deleteTarget(){
+    const id=window.projectActionTarget, name=window.projectActionName, cloud=!!window.projectActionIsCloud;
+    hideProjectContextMenu(); if(!id)return;
+    if(!confirm(`Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`))return;
+    try{
+      if(cloud){
+        const u=currentUser();
+        if(!u || !googleUser()) return showToast("Sign in with Google to delete cloud projects.");
+        await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));
+        await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid),{projectIds:window.firebaseArrayRemove(id)},{merge:true});
+        try{await window.firebaseDeleteDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id));}catch(_){ }
+      }else{
+        let ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
+        ps=ps.filter(p=>p.id!==id);localStorage.setItem("js_local_projects",JSON.stringify(ps));
+        localStorage.removeItem("js_files_"+id);localStorage.removeItem("js_active_file_"+id);
+      }
+      if(id===window.currentProjectId){
+        window.currentProjectId=""; currentProjectId=""; projectDirty=false;
+        localStorage.removeItem("js-code-output-active-project-id");
+        const ps=JSON.parse(localStorage.getItem("js_local_projects")||"[]");
+        if(ps.length) openEditorWorkspace(ps[0].id,ps[0].name); else backToHome();
+      }
+      await window.loadProjects?.();
+      showToast("Project deleted permanently.");
+    }catch(err){console.error(err);showToast("Could not delete project.");}
+  }
+  window.renameProjectByTarget=renameTarget;
+  window.deleteProjectByTarget=deleteTarget;
+  window.wireProjectContextActions=function(){
+    const r=byId("projectCtxRename"),d=byId("projectCtxDelete");
+    if(r){r.onclick=renameTarget;r.ontouchend=e=>{e.preventDefault();e.stopPropagation();renameTarget();};}
+    if(d){d.onclick=deleteTarget;d.ontouchend=e=>{e.preventDefault();e.stopPropagation();deleteTarget();};}
+  };
+
+  // ---------------- Download + Google auth ----------------
+  window.handleProtectedDownload=async function(){
+    try{await (window.firebaseAuthReady||Promise.resolve());}catch(_){ }
+    if(!googleUser()){
+      return showRequireAuthModal(
+        "Sign In to Download",
+        "Please sign in with your Google account to download your project as a Single HTML file or a Complete ZIP.",
+        ()=>openDownloadMenu()
+      );
+    }
+    openDownloadMenu();
+  };
+
+  // ---------------- Draft saving / leave guard ----------------
+  window.saveCurrentProjectDraftExplicit=async function(){
+    try{
+      const id=window.currentProjectId;if(!id)return true;
+      if(!window.isSwitchingProject)syncEditor();
+      let ok=true;
+      const u=currentUser();
+      if(u && googleUser() && !String(id).startsWith("local_proj_")){
+        ok=await window.saveProjectDraft(id);
+      }else{
+        ok=saveLocalProjectFiles();
+      }
+      if(ok!==false){
+        projectCommittedFiles=structuredClone(files);
+        projectCommittedActiveFile=activeFile;
+        projectDirty=false;
+        showToast("Draft saved. Your changes are saved.");
+        return true;
+      }
+    }catch(err){console.error("Draft save error:",err);}
+    showToast("Could not save draft.");
+    return false;
+  };
+
+  window.requestLeaveWithDraft=function(){
+    if(!projectDirty){
+      const fn=pendingProjectAction;pendingProjectAction=null;
+      if(typeof fn==="function") return fn();
+      return;
+    }
+    const modal=byId("draftGuardModal"); if(!modal)return;
+    const saveBtn=byId("draftSaveBtn"), discardBtn=byId("draftDiscardBtn");
+    modal.classList.remove("hidden");
+    saveBtn.onclick=async e=>{
+      e?.preventDefault?.();
+      saveBtn.disabled=true;
+      try{
+        const ok=await saveCurrentProjectDraftExplicit();
+        if(!ok)return;
+        modal.classList.add("hidden");
+        const fn=pendingProjectAction;pendingProjectAction=null;
+        if(typeof fn==="function")await fn();
+      }finally{saveBtn.disabled=false;}
+    };
+    discardBtn.onclick=e=>{
+      e?.preventDefault?.();
+      modal.classList.add("hidden");
+      discardCurrentProjectChanges();
+      const fn=pendingProjectAction;pendingProjectAction=null;
+      if(typeof fn==="function")fn();
+    };
+  };
+
+  // ---------------- Accounts ----------------
+  window.openAccountModal=function(){
+    renderAccountModal();
+    byId("accountModal")?.classList.remove("hidden");
+    byId("accountModal")?.style.setProperty("z-index","100000","important");
+  };
+  window.renderAccountModal=function(){
+    const current=currentUser();
+    const isGoogle=!!(current && !current.isAnonymous);
+    const accounts=getSavedAccounts();
+    const box=byId("accountCurrentBox"),list=byId("accountList"),count=byId("accountCount");
+    if(count)count.textContent=`${accounts.length} account${accounts.length===1?"":"s"}`;
+    if(box){
+      if(isGoogle){
+        const photo=current.photoURL?`<img class="account-avatar" src="${escapeHTML(current.photoURL)}" alt="">`:`<div class="account-avatar">${escapeHTML(initialsForAccount(current.displayName,current.email))}</div>`;
+        box.innerHTML=`<div class="account-current">${photo}<div class="account-item-info"><div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Account</div><div class="account-item-name">${escapeHTML(current.displayName||"Google Account")}</div><div class="account-item-email">${escapeHTML(current.email||"")}</div></div><span class="account-badge">Active</span></div>`;
+      }else{
+        box.innerHTML=`<div class="account-current"><div class="account-avatar"><i class="fa-solid fa-user"></i></div><div class="account-item-info"><div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Account</div><div class="account-item-name">Guest</div><div class="account-item-email">No Google account is signed in.</div></div></div>`;
+      }
+    }
+    if(list){
+      list.innerHTML=accounts.length?accounts.map(a=>{
+        const active=isGoogle && ((a.uid&&a.uid===current.uid)||(a.email&&a.email===current.email));
+        const photo=a.photoURL?`<img class="account-avatar" src="${escapeHTML(a.photoURL)}" alt="">`:`<div class="account-avatar">${escapeHTML(initialsForAccount(a.name,a.email))}</div>`;
+        return `<div class="account-item">${photo}<div class="account-item-info"><div class="account-item-name">${escapeHTML(a.name||"Google Account")}</div><div class="account-item-email">${escapeHTML(a.email||"")}</div></div>${active?'<span class="account-badge">Active</span>':`<button type="button" class="account-switch-btn" data-account-email="${escapeHTML(a.email||"")}">Use</button>`}</div>`;
+      }).join(""): `<div class="text-center text-xs text-gray-400 py-6 border border-dashed border-[var(--line)] rounded-xl">No saved Google accounts yet.</div>`;
+      list.querySelectorAll(".account-switch-btn").forEach(btn=>{
+        const fn=e=>{e?.preventDefault?.();e?.stopPropagation?.();switchToSavedAccount(btn.dataset.accountEmail||"");};
+        btn.onclick=fn;btn.ontouchend=fn;
+      });
+    }
+  };
+
+  // ---------------- Publish & share ----------------
+  window.handlePublishProject=async function(){
+    try{await (window.firebaseAuthReady||Promise.resolve());}catch(_){ }
+    if(!googleUser()){
+      return showRequireAuthModal(
+        "Sign In to Publish",
+        "Please sign in with your Google account to publish this project and generate a shareable live link.",
+        ()=>handlePublishProject()
+      );
+    }
+    const user=currentUser();
+    try{
+      let id=window.currentProjectId;
+      const projectName=(byId("currentProjectName")?.textContent||"Untitled Project").trim();
+      if(!id || String(id).startsWith("local_proj_")){
+        id="proj_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+        const data={id,name:projectName,ownerId:user.uid,files:JSON.parse(JSON.stringify(window.files||{})),createdAt:window.firebaseServerTimestamp(),updatedAt:window.firebaseServerTimestamp()};
+        await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",user.uid,"projects",id),data);
+        await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"users",user.uid),{projectIds:window.firebaseArrayUnion(id)},{merge:true});
+        window.currentProjectId=id;currentProjectId=id;
+        localStorage.setItem("js-code-output-active-project-id",id);
+      }else{
+        syncEditor();
+        await window.saveProjectDraft(id);
+      }
+      const fullHtml=buildStandaloneProjectHTML(window.files||{});
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB,"public_projects",id),{
+        id,name:projectName,ownerUid:user.uid,htmlBundle:fullHtml,publishedAt:window.firebaseServerTimestamp()
+      },{merge:true});
+      const shareUrl=window.location.origin+window.location.pathname+"?live="+encodeURIComponent(id);
+      const input=byId("publishShareUrl");if(input)input.value=shareUrl;
+      byId("publishModal")?.classList.remove("hidden");
+      showToast("Project published successfully. Live link is ready to share.");
+      projectDirty=false;
+      projectCommittedFiles=structuredClone(files);projectCommittedActiveFile=activeFile;
+    }catch(err){
+      console.error("Publish failed:",err);
+      showToast(err?.code==="permission-denied"?"Publish blocked by Firebase permissions.":"Could not publish project.");
+    }
+  };
+
+  // ---------------- Touch-safe context menu delegation ----------------
+  document.addEventListener("contextmenu",e=>{
+    const el=e.target?.closest?.(".project-card, #headerProjectsList .header-project-item");
+    if(!el)return;
+    const more=e.target?.closest?.(".project-more");
+    const id=el.dataset.projectId || (el.getAttribute("data-project-id"));
+    const name=el.dataset.projectName || el.getAttribute("data-project-name") || el.querySelector("h3")?.textContent?.trim() || "Project";
+    if(id){
+      e.preventDefault();e.stopPropagation();
+      const cloud=el.dataset.cloud==="1" || el.querySelector(".fa-cloud")!=null;
+      showProjectContextMenu(e,id,name,cloud);
+    }
+  },true);
+
+  document.addEventListener("click",e=>{
+    const more=e.target?.closest?.(".project-more");
+    if(more){
+      e.preventDefault();e.stopPropagation();
+      const el=more.closest(".project-card, #headerProjectsList .header-project-item");
+      if(el){
+        const id=el.dataset.projectId,name=el.dataset.projectName||el.querySelector("h3")?.textContent?.trim()||"Project",cloud=el.dataset.cloud==="1"||el.querySelector(".fa-cloud")!=null;
+        showProjectContextMenu(e,id,name,cloud);
+      }
+    }
+  },true);
+
+  document.addEventListener("touchend",e=>{
+    const more=e.target?.closest?.(".project-more");
+    if(!more)return;
+    const el=more.closest(".project-card, #headerProjectsList .header-project-item"); if(!el)return;
+    e.preventDefault();e.stopPropagation();
+    const id=el.dataset.projectId,name=el.dataset.projectName||el.querySelector("h3")?.textContent?.trim()||"Project",cloud=el.dataset.cloud==="1"||el.querySelector(".fa-cloud")!=null;
+    showProjectContextMenu(e,id,name,cloud);
+  },{capture:true,passive:false});
+
+  // Keep project menu action buttons usable on touch.
+  window.wireProjectContextActions();
+
+  // Close project context only when clicking outside it.
+  document.addEventListener("pointerdown",e=>{
+    const m=byId("projectContextMenu"); if(!m || m.style.display==="none")return;
+    if(!m.contains(e.target)) hideProjectContextMenu();
+  },true);
+
+  // Auth buttons: reject anonymous sessions for Google-only actions.
+  const add=byId("addAccountBtn");
+  if(add){add.onclick=e=>{e.preventDefault();addGoogleAccount();};}
+})();
+</script>
 </body>
 </html>
