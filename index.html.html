@@ -1869,31 +1869,20 @@ function handleProtectedDownload() {
 
 async function deployToJSMiniBrowser() {
   try {
-    let user = window.firebaseCurrentUser || window.currentUser;
+    // Wait for Firebase to finish restoring the existing Google session.
+    try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
 
-    if (!user) {
-      if (window.firebaseAuthReady) await window.firebaseAuthReady;
-      user = window.firebaseCurrentUser || window.currentUser;
-    }
+    let user = window.firebaseCurrentUser || window.currentUser || window.firebaseAuth?.currentUser || null;
 
+    // JS CODE OUTPUT is the source of truth for authentication. JS mini.Browser
+    // uses the same Firebase Auth session, so an already signed-in user must go
+    // straight to the deployment page without another Google popup.
     if (!user) {
-      if (typeof window.googleSignIn !== "function") {
-        showToast("Google Sign-In is not ready. Please try again.");
-        return;
-      }
-      try {
-        await window.googleSignIn();
-        if (window.firebaseAuthReady) await window.firebaseAuthReady;
-      } catch (e) {
-        console.error("JS Mini Google Sign-In failed:", e);
-        showToast("Google Sign-In cancelled or failed.");
-        return;
-      }
-      user = window.firebaseCurrentUser || window.currentUser;
-    }
-
-    if (!user) {
-      showToast("Please sign in with Google first.");
+      showRequireAuthModal(
+        "Sign In to Deploy to JS Mini Browser",
+        "Please sign in with your Google account to deploy this project to JS Mini Browser.",
+        () => deployToJSMiniBrowser()
+      );
       return;
     }
 
@@ -1921,6 +1910,8 @@ async function deployToJSMiniBrowser() {
       await window.saveProjectDraft(id);
     }
 
+    // The deployment screen is a JS Mini Browser route, while opening the
+    // browser normally (without ?deploy=...) always goes to its Home page.
     window.location.href = "js-mini-browser.html?deploy=" + encodeURIComponent(id);
   } catch (e) {
     console.error("JS Mini Browser deployment launch failed:", e);
