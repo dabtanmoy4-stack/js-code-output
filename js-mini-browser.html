@@ -347,6 +347,31 @@
         .jsmini-sitebar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#111;border-bottom:1px solid #333}.jsmini-sitebar strong{font-size:12px}.jsmini-sitebar span{font-size:10px;color:#9ca3af}.jsmini-open-frame{width:100%;height:calc(100vh - 100px);border:0;background:#fff;display:block}
         .jsmini-sites-section{width:min(900px,100%);margin:30px auto 0;padding:0 8px}.jsmini-sites-title{font-size:13px;color:#9ca3af;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;font-weight:900}.jsmini-sites-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.jsmini-site-card{background:#151515;border:1px solid #333;border-radius:12px;padding:15px;text-align:left;cursor:pointer;transition:.2s}.jsmini-site-card:hover{border-color:#E23636;transform:translateY(-2px)}.jsmini-site-card h3{font-size:15px;font-weight:900;margin:0 0 5px}.jsmini-site-card p{font-size:11px;color:#9ca3af;line-height:1.5;margin:0 0 9px}.jsmini-site-card .domain{font-size:10px;color:#F78F3F;font-weight:800}
         @media(max-width:600px){.jsmini-modal{padding:17px;border-radius:13px}.jsmini-actions{flex-direction:column-reverse}.jsmini-btn{width:100%}.jsmini-sitebar{padding:8px 10px}.jsmini-open-frame{height:calc(100vh - 96px)}}
+        /* Settings feature panels */
+        .jsmini-feature-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(7px);z-index:100001;display:flex;align-items:center;justify-content:center;padding:18px}
+        .jsmini-feature-modal{width:min(680px,100%);max-height:88vh;overflow:auto;background:#111;border:1px solid #333;border-top:3px solid #E23636;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.7);padding:22px;color:#fff}
+        .jsmini-feature-modal h2{font-size:21px;font-weight:900;margin:0}
+        .jsmini-feature-muted{color:#9ca3af;font-size:12px;line-height:1.55}
+        .jsmini-feature-close{background:#262626;border:0;color:#d1d5db;border-radius:9px;width:34px;height:34px;font-size:20px;cursor:pointer}
+        .jsmini-feature-close:hover{background:#333;color:#fff}
+        .jsmini-option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:16px}
+        .jsmini-theme-option{border:1px solid #333;background:#181818;border-radius:12px;padding:14px;text-align:left;cursor:pointer;transition:.18s;color:#fff}
+        .jsmini-theme-option:hover{border-color:#E23636;transform:translateY(-1px)}
+        .jsmini-theme-option.active{border-color:#F78F3F;box-shadow:0 0 0 1px rgba(247,143,63,.25)}
+        .jsmini-theme-swatch{height:48px;border-radius:9px;margin-bottom:9px;border:1px solid rgba(255,255,255,.1)}
+        .jsmini-theme-name{font-size:12px;font-weight:900}.jsmini-theme-desc{font-size:10px;color:#9ca3af;margin-top:3px;line-height:1.4}
+        .jsmini-info-block{background:#181818;border:1px solid #2f2f2f;border-radius:12px;padding:14px;margin-top:12px}
+        .jsmini-info-block h3{font-size:13px;font-weight:900;margin:0 0 6px}.jsmini-info-block p{font-size:12px;color:#b7b7b7;line-height:1.65;margin:0}
+        .jsmini-history-toolbar{display:flex;gap:8px;margin:15px 0}.jsmini-history-search{flex:1;background:#0b0b0b;border:1px solid #333;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:12px}
+        .jsmini-history-list{display:flex;flex-direction:column;gap:8px}.jsmini-history-item{display:flex;align-items:center;gap:11px;background:#181818;border:1px solid #2e2e2e;border-radius:11px;padding:11px;cursor:pointer}
+        .jsmini-history-item:hover{border-color:#E23636;background:#1b1b1b}.jsmini-history-icon{width:32px;height:32px;border-radius:9px;background:#202A44;display:flex;align-items:center;justify-content:center;flex:none}
+        .jsmini-history-main{min-width:0;flex:1}.jsmini-history-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jsmini-history-url{font-size:10px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.jsmini-history-time{font-size:9px;color:#777;white-space:nowrap}
+        .jsmini-history-empty{text-align:center;padding:35px 15px;color:#777;font-size:12px;border:1px dashed #333;border-radius:12px}
+        .jsmini-deployed-list{display:flex;flex-direction:column;gap:10px;margin-top:15px}.jsmini-deployed-card{background:#181818;border:1px solid #333;border-radius:12px;padding:14px;cursor:pointer;transition:.18s}.jsmini-deployed-card:hover{border-color:#E23636;transform:translateY(-1px)}
+        .jsmini-deployed-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.jsmini-deployed-card h3{font-size:14px;font-weight:900;margin:0}.jsmini-deployed-card p{font-size:11px;color:#9ca3af;margin:5px 0;line-height:1.45}.jsmini-deployed-domain{font-size:10px;color:#F78F3F;font-weight:800}
+        .jsmini-empty-deployed{text-align:center;padding:30px 15px;background:#181818;border:1px dashed #333;border-radius:12px;margin-top:15px}.jsmini-empty-deployed h3{font-size:15px;font-weight:900;margin:0 0 7px}.jsmini-empty-deployed p{font-size:11px;color:#888;margin:0 0 15px;line-height:1.5}
+        .jsmini-primary{background:#E23636;color:#fff;border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-primary:hover{background:#b91c1c}
+        @media(max-width:600px){.jsmini-feature-modal{padding:17px;border-radius:13px}.jsmini-deployed-top{flex-direction:column}.jsmini-history-time{display:none}}
     </style>
 </head>
 
@@ -481,12 +506,12 @@
 
             <div class="p-4 flex-1 overflow-y-auto space-y-6">
                 <div class="bg-marvelBlue/20 p-4 rounded-lg border border-marvelBlue/50 text-center">
+                    <div id="jsmini-account-avatar"
+                        class="w-16 h-16 mx-auto rounded-full bg-gray-800 mb-2 flex items-center justify-center overflow-hidden border border-gray-700">
+                        <i data-lucide="user-round" class="w-8 h-8 text-gray-400"></i>
+                    </div>
 
-                    <!-- Fixed JS mini.Browser logo -->
-                    <img src="yt.jpeg" alt="JS mini.Browser"
-                        class="w-16 h-16 mx-auto rounded-full bg-gray-800 mb-2 object-cover">
-
-                    <h3 class="font-bold">New Account</h3>
+                    <h3 class="font-bold">No User</h3>
 
                     <p class="text-xs text-gray-400 mb-3">
                         Sign in to sync your data across devices.
@@ -500,26 +525,30 @@
                 </div>
 
                 <div class="space-y-1">
-                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                    <button type="button" onclick="openJSMiniAppearance()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
                         <i data-lucide="palette" class="w-4 h-4 text-gray-400"></i>
-                        Appearance (Marvel Theme)
-                    </a>
+                        <span>Appearance</span>
+                        <span id="jsmini-current-theme" class="text-[10px] text-gray-500 ml-auto">Marvel</span>
+                    </button>
 
-                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                    <button type="button" onclick="openJSMiniPrivacy()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
                         <i data-lucide="shield-check" class="w-4 h-4 text-gray-400"></i>
-                        Privacy & Security
-                    </a>
+                        <span>Privacy & Security</span>
+                    </button>
 
-                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                    <button type="button" onclick="openJSMiniYourWebsite()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
                         <i data-lucide="upload-cloud" class="w-4 h-4 text-gray-400"></i>
-                        Publish Website
-                        <span class="bg-marvelGold text-black text-[10px] px-1.5 py-0.5 rounded font-bold ml-auto">PRO</span>
-                    </a>
+                        <span>Your Website</span>
+                    </button>
 
-                    <a href="#" class="flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition">
+                    <button type="button" onclick="openJSMiniHistory()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
                         <i data-lucide="history" class="w-4 h-4 text-gray-400"></i>
-                        Browsing History
-                    </a>
+                        <span>Browsing History</span>
+                    </button>
                 </div>
 
                 <div class="mt-8 border-t border-gray-800 pt-4">
@@ -760,6 +789,10 @@
             if (!url.endsWith('.js')) url += '.js';
 
             document.getElementById('address-bar').value = url;
+            if(typeof jsMiniRecordHistory==='function'){
+                const demoHistory=mockDatabase.find(s => s.url.toLowerCase() === url);
+                jsMiniRecordHistory(demoHistory?demoHistory.title:url,url,'page');
+            }
 
             const siteData = mockDatabase.find(s => s.url.toLowerCase() === url);
             const contentArea = document.getElementById('website-content');
@@ -936,29 +969,16 @@
         };
 
         window.updateJSMiniAccountUI=function(){
-            const h=document.querySelector('header > div:last-child button:nth-of-type(2)');
+            const card=document.querySelector('#settings-sidebar .bg-marvelBlue\\/20');
+            const avatar=document.getElementById('jsmini-account-avatar');
 
-            /*
-             * IMPORTANT:
-             * Always keep yt.jpeg as the JS mini.Browser logo.
-             * Google account authentication is still used for Firebase,
-             * but the UI logo is never replaced by the Google profile photo.
-             */
-            if(h){
-                const img=h.querySelector('img');
-                if(img){
-                    img.src='yt.jpeg';
-                    img.alt='JS mini.Browser';
+            if(avatar){
+                if(jsMiniUser && jsMiniUser.photoURL){
+                    avatar.innerHTML=`<img src="${escapeHTML(jsMiniUser.photoURL)}" alt="Profile picture" class="w-full h-full object-cover">`;
+                }else{
+                    avatar.innerHTML='<i data-lucide="user-round" class="w-8 h-8 text-gray-400"></i>';
                 }
             }
-
-            const settingsImg=document.querySelector('#settings-sidebar .bg-marvelBlue\\/20 img');
-            if(settingsImg){
-                settingsImg.src='yt.jpeg';
-                settingsImg.alt='JS mini.Browser';
-            }
-
-            const card=document.querySelector('#settings-sidebar .bg-marvelBlue\\/20');
 
             if(card){
                 const title=card.querySelector('h3');
@@ -974,9 +994,326 @@
                         btn.disabled=true;
                         btn.style.opacity='.65';
                     }
+                }else{
+                    if(title) title.textContent='No User';
+                    if(text) text.textContent='Sign in to sync your data across devices.';
+                    if(btn){
+                        btn.textContent='Sign In / Create Account';
+                        btn.disabled=false;
+                        btn.style.opacity='1';
+                    }
                 }
             }
+
+            if(typeof lucide!=='undefined') lucide.createIcons();
         };
+
+        /* ================= JS mini.Browser SETTINGS FEATURES ================= */
+
+        const JSMINI_THEME_KEY='jsmini-theme';
+        const JSMINI_HISTORY_KEY='jsmini-browsing-history';
+
+        function jsMiniReadHistory(){
+            try{
+                const raw=JSON.parse(localStorage.getItem(JSMINI_HISTORY_KEY)||'[]');
+                return Array.isArray(raw)?raw:[];
+            }catch(e){ return []; }
+        }
+
+        function jsMiniWriteHistory(items){
+            try{
+                localStorage.setItem(JSMINI_HISTORY_KEY,JSON.stringify(items.slice(0,500)));
+            }catch(e){}
+        }
+
+        function jsMiniRecordHistory(title,url,type='page'){
+            const cleanUrl=String(url||'').trim();
+            if(!cleanUrl)return;
+
+            const items=jsMiniReadHistory();
+            const now=new Date().toISOString();
+            const filtered=items.filter(x=>String(x.url||'')!==cleanUrl);
+            filtered.unshift({
+                title:String(title||cleanUrl),
+                url:cleanUrl,
+                type,
+                visitedAt:now
+            });
+            jsMiniWriteHistory(filtered);
+        }
+
+        function jsMiniFormatTime(iso){
+            const d=new Date(iso);
+            if(Number.isNaN(d.getTime()))return '';
+            const diff=Math.max(0,Date.now()-d.getTime());
+            const mins=Math.floor(diff/60000);
+            if(mins<1)return 'Just now';
+            if(mins<60)return `${mins} min ago`;
+            const hrs=Math.floor(mins/60);
+            if(hrs<24)return `${hrs} hr ago`;
+            const days=Math.floor(hrs/24);
+            if(days<7)return `${days} day${days===1?'':'s'} ago`;
+            return d.toLocaleString();
+        }
+
+        function ensureJSMiniFeatureUI(){
+            if(document.getElementById('jsmini-feature-backdrop'))return;
+
+            const wrap=document.createElement('div');
+            wrap.id='jsmini-feature-backdrop';
+            wrap.className='jsmini-feature-backdrop hidden';
+            wrap.innerHTML=`
+                <div id="jsmini-feature-modal" class="jsmini-feature-modal" role="dialog" aria-modal="true">
+                    <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start">
+                        <div>
+                            <h2 id="jsmini-feature-title">Settings</h2>
+                            <div id="jsmini-feature-subtitle" class="jsmini-feature-muted"></div>
+                        </div>
+                        <button type="button" class="jsmini-feature-close" onclick="closeJSMiniFeature()">×</button>
+                    </div>
+                    <div id="jsmini-feature-content"></div>
+                </div>`;
+            document.body.appendChild(wrap);
+            wrap.addEventListener('click',e=>{
+                if(e.target===wrap)closeJSMiniFeature();
+            });
+        }
+
+        function showJSMiniFeature(title,subtitle,html){
+            ensureJSMiniFeatureUI();
+            document.getElementById('jsmini-feature-title').textContent=title;
+            document.getElementById('jsmini-feature-subtitle').textContent=subtitle||'';
+            document.getElementById('jsmini-feature-content').innerHTML=html;
+            document.getElementById('jsmini-feature-backdrop').classList.remove('hidden');
+            if(typeof lucide!=='undefined')lucide.createIcons();
+        }
+
+        window.closeJSMiniFeature=function(){
+            const el=document.getElementById('jsmini-feature-backdrop');
+            if(el)el.classList.add('hidden');
+        };
+
+        function jsMiniApplyTheme(theme){
+            const body=document.body;
+            body.classList.remove('jsmini-theme-light','jsmini-theme-dark','jsmini-theme-ocean','jsmini-theme-purple');
+            if(theme!=='marvel')body.classList.add(`jsmini-theme-${theme}`);
+            localStorage.setItem(JSMINI_THEME_KEY,theme);
+
+            const label={
+                marvel:'Marvel',light:'Light',dark:'Dark',ocean:'Ocean',purple:'Purple'
+            }[theme]||'Marvel';
+            const current=document.getElementById('jsmini-current-theme');
+            if(current)current.textContent=label;
+
+            // Keep the original Marvel theme untouched as the default.
+            if(theme==='light'){
+                body.style.background='#f4f4f5';
+                body.style.color='#111';
+            }else if(theme==='dark'){
+                body.style.background='#050505';
+                body.style.color='#fff';
+            }else if(theme==='ocean'){
+                body.style.background='#061827';
+                body.style.color='#fff';
+            }else if(theme==='purple'){
+                body.style.background='#140a22';
+                body.style.color='#fff';
+            }else{
+                body.style.background='';
+                body.style.color='';
+            }
+
+            document.querySelectorAll('.jsmini-theme-option').forEach(x=>{
+                x.classList.toggle('active',x.dataset.theme===theme);
+            });
+        }
+
+        window.openJSMiniAppearance=function(){
+            const current=localStorage.getItem(JSMINI_THEME_KEY)||'marvel';
+            showJSMiniFeature('Appearance','Choose how JS mini.Browser looks. Your selection is saved on this device.',`
+                <div class="jsmini-option-grid">
+                    <button type="button" class="jsmini-theme-option ${current==='marvel'?'active':''}" data-theme="marvel" onclick="jsMiniApplyTheme('marvel')">
+                        <div class="jsmini-theme-swatch" style="background:radial-gradient(circle at center,#202A44 0%,#151515 100%)"></div>
+                        <div class="jsmini-theme-name">Marvel</div><div class="jsmini-theme-desc">The current red, blue and gold theme.</div>
+                    </button>
+                    <button type="button" class="jsmini-theme-option ${current==='light'?'active':''}" data-theme="light" onclick="jsMiniApplyTheme('light')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#fff,#e5e7eb)"></div>
+                        <div class="jsmini-theme-name">Light</div><div class="jsmini-theme-desc">Clean and bright interface.</div>
+                    </button>
+                    <button type="button" class="jsmini-theme-option ${current==='dark'?'active':''}" data-theme="dark" onclick="jsMiniApplyTheme('dark')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#050505,#222)"></div>
+                        <div class="jsmini-theme-name">Dark</div><div class="jsmini-theme-desc">Deep black, low-distraction look.</div>
+                    </button>
+                    <button type="button" class="jsmini-theme-option ${current==='ocean'?'active':''}" data-theme="ocean" onclick="jsMiniApplyTheme('ocean')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#061827,#0e7490)"></div>
+                        <div class="jsmini-theme-name">Ocean</div><div class="jsmini-theme-desc">Cool blue browser atmosphere.</div>
+                    </button>
+                    <button type="button" class="jsmini-theme-option ${current==='purple'?'active':''}" data-theme="purple" onclick="jsMiniApplyTheme('purple')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#140a22,#6b21a8)"></div>
+                        <div class="jsmini-theme-name">Purple</div><div class="jsmini-theme-desc">A futuristic violet appearance.</div>
+                    </button>
+                </div>
+            `);
+        };
+
+        window.openJSMiniPrivacy=function(){
+            showJSMiniFeature('Privacy & Security','Information about how this JS mini.Browser page handles account, browsing and website data.',`
+                <div class="jsmini-info-block">
+                    <h3>Google account</h3>
+                    <p>When you sign in, JS mini.Browser uses the Google account session connected to JS CODE OUTPUT. Your display name, email address and Google profile photo may be shown in the account area so you can recognize the signed-in account.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Browsing history</h3>
+                    <p>Pages you open in JS mini.Browser are recorded locally in this browser's storage so the Browsing History page can show them later. This history is separate from the public website directory.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Deployed websites</h3>
+                    <p>Your deployed JS mini websites are stored with your JS CODE OUTPUT project data and can appear in Your Website when you are signed in. Publicly published websites may also be visible to other JS mini.Browser users according to their publication settings.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Security</h3>
+                    <p>Keep your Google account secure and only deploy code that you trust. JS mini.Browser opens deployed website content inside a restricted frame. No password or Google credential is displayed by this settings page.</p>
+                </div>
+            `);
+        };
+
+        window.openJSMiniYourWebsite=async function(){
+            try{
+                await jsMiniAuthReady;
+                if(!jsMiniUser){
+                    showJSMiniFeature('Your Website','Sign in to see websites deployed from your JS CODE OUTPUT account.',`
+                        <div class="jsmini-empty-deployed">
+                            <h3>No User</h3>
+                            <p>Sign in first, then this section will show your deployed websites.</p>
+                            <button type="button" class="jsmini-primary" onclick="closeJSMiniFeature();window.jsMiniSignIn&&window.jsMiniSignIn()">Sign In</button>
+                        </div>
+                    `);
+                    return;
+                }
+
+                const snap=await getDocs(collection(jsMiniDb,'users',jsMiniUser.uid,'projects'));
+                const projects=[];
+                snap.forEach(d=>{
+                    const x=d.data()||{};
+                    if(x.jsMiniDeployed===true || x.jsMiniPublished===true || x.jsMiniDomain){
+                        projects.push({id:d.id,...x});
+                    }
+                });
+
+                projects.sort((a,b)=>{
+                    const aa=(a.updatedAt&&a.updatedAt.seconds)||0;
+                    const bb=(b.updatedAt&&b.updatedAt.seconds)||0;
+                    return bb-aa;
+                });
+
+                if(!projects.length){
+                    showJSMiniFeature('Your Website','Websites you have deployed from JS CODE OUTPUT.',`
+                        <div class="jsmini-empty-deployed">
+                            <h3>No project deployed yet</h3>
+                            <p>Build your website in JS CODE OUTPUT and deploy it to JS mini.Browser.</p>
+                            <button type="button" class="jsmini-primary" onclick="window.location.href='index.html.html'">Make now and deploy</button>
+                        </div>
+                    `);
+                    return;
+                }
+
+                const cards=projects.map(p=>{
+                    const domain=normalizeDomain(p.jsMiniDomain||p.jsMiniVirtualDomain||p.virtualDomain||p.name||'');
+                    const full=domain?domain+'.jsmini':'Not published';
+                    const published=!!(p.jsMiniDeployed||p.jsMiniPublished||p.jsMiniDomain);
+                    return `<div class="jsmini-deployed-card" onclick="${domain?`loadJSMiniSite('${escapeHTML(domain)}')`:''}">
+                        <div class="jsmini-deployed-top">
+                            <div>
+                                <h3>${escapeHTML(p.name||'Untitled Project')}</h3>
+                                <p>${escapeHTML(p.jsMiniDescription||'Published from JS CODE OUTPUT.')}</p>
+                            </div>
+                            <span class="bg-green-900/60 text-green-300 text-[9px] px-2 py-1 rounded-full font-bold">${published?'DEPLOYED':'PROJECT'}</span>
+                        </div>
+                        <div class="jsmini-deployed-domain">${escapeHTML(full)}</div>
+                    </div>`;
+                }).join('');
+
+                showJSMiniFeature('Your Website',`${projects.length} deployed website${projects.length===1?'':'s'} found in your account.`,`
+                    <div class="jsmini-deployed-list">${cards}</div>
+                    <div style="display:flex;justify-content:flex-end;margin-top:14px">
+                        <button type="button" class="jsmini-primary" onclick="window.location.href='index.html.html'">Make now and deploy</button>
+                    </div>
+                `);
+            }catch(e){
+                console.error('Your Website load failed:',e);
+                showJSMiniFeature('Your Website','Could not load your deployed websites right now.',`
+                    <div class="jsmini-empty-deployed">
+                        <h3>Unable to load projects</h3>
+                        <p>Please check your sign-in and Firestore connection, then try again.</p>
+                        <button type="button" class="jsmini-primary" onclick="openJSMiniYourWebsite()">Try again</button>
+                    </div>
+                `);
+            }
+        };
+
+        window.openJSMiniHistory=function(){
+            const items=jsMiniReadHistory();
+
+            showJSMiniFeature('Browsing History','Your JS mini.Browser browsing history is stored locally on this device.',`
+                <div class="jsmini-history-toolbar">
+                    <input id="jsmini-history-search" class="jsmini-history-search" placeholder="Search history..." oninput="renderJSMiniHistory(this.value)">
+                    <button type="button" class="jsmini-btn cancel" onclick="clearJSMiniHistory()">Clear</button>
+                </div>
+                <div id="jsmini-history-list"></div>
+            `);
+            renderJSMiniHistory('');
+        };
+
+        window.renderJSMiniHistory=function(filter=''){
+            const el=document.getElementById('jsmini-history-list');
+            if(!el)return;
+            const q=String(filter||'').toLowerCase().trim();
+            const items=jsMiniReadHistory().filter(x=>`${x.title||''} ${x.url||''}`.toLowerCase().includes(q));
+
+            if(!items.length){
+                el.innerHTML='<div class="jsmini-history-empty">No browsing history found.</div>';
+                return;
+            }
+
+            el.innerHTML=items.map((x,i)=>`
+                <div class="jsmini-history-item" onclick="loadJSMiniHistoryItem(${i})">
+                    <div class="jsmini-history-icon"><i data-lucide="${x.type==='search'?'search':'globe'}" class="w-4 h-4 text-marvelGold"></i></div>
+                    <div class="jsmini-history-main">
+                        <div class="jsmini-history-title">${escapeHTML(x.title||x.url||'Untitled')}</div>
+                        <div class="jsmini-history-url">${escapeHTML(x.url||'')}</div>
+                    </div>
+                    <div class="jsmini-history-time">${escapeHTML(jsMiniFormatTime(x.visitedAt))}</div>
+                </div>
+            `).join('');
+            if(typeof lucide!=='undefined')lucide.createIcons();
+        };
+
+        window.loadJSMiniHistoryItem=function(filteredIndex){
+            const search=document.getElementById('jsmini-history-search');
+            const q=search?String(search.value||'').toLowerCase().trim():'';
+            const items=jsMiniReadHistory().filter(x=>`${x.title||''} ${x.url||''}`.toLowerCase().includes(q));
+            const item=items[filteredIndex];
+            if(!item)return;
+            closeJSMiniFeature();
+
+            if(item.type==='search'){
+                executeJSMiniSearch(item.url);
+            }else{
+                loadJSMiniSite(item.url);
+            }
+        };
+
+        window.clearJSMiniHistory=function(){
+            if(!confirm('Clear all JS mini.Browser browsing history?'))return;
+            jsMiniWriteHistory([]);
+            renderJSMiniHistory('');
+        };
+
+        // Restore the selected appearance when this page opens.
+        (function(){
+            const saved=localStorage.getItem(JSMINI_THEME_KEY);
+            if(saved)jsMiniApplyTheme(saved);
+        })();
 
         window.openJSMiniDeploy=async function(projectId){
             ensureJSMiniUI();
@@ -1248,6 +1585,8 @@
 
             await loadCloudSites();
 
+            jsMiniRecordHistory(`Search: ${q}`,String(q),'search');
+
             const local=mockDatabase.map(x=>({...x,cloud:false}));
 
             const sites=[
@@ -1345,6 +1684,7 @@
                     site.htmlBundle||'<h1>Empty website</h1>';
 
                 switchView('view-website');
+                jsMiniRecordHistory(site.name||domain,full,'page');
 
                 if(!fromHistory){
                     jsMiniHistory=
@@ -1442,8 +1782,10 @@
 
         window.addEventListener('DOMContentLoaded',()=>{
             ensureJSMiniUI();
+            ensureJSMiniFeatureUI();
             addCloudSection();
             loadCloudSites();
+            updateJSMiniAccountUI();
 
             setTimeout(
                 ()=>window.handleJSMiniDeployFromURL(),
