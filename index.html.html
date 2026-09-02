@@ -713,6 +713,31 @@
 .hero-cta .mini-browser-top-launcher{gap:9px}
 </style>
 
+
+<style id="premium-landing-v2">
+/* Premium landing refresh — intentionally scoped to landing page only. */
+#landingPage{background:var(--bg);isolation:isolate}
+#landingPage .site-nav{height:72px;padding:0 clamp(18px,5vw,72px);background:color-mix(in srgb,var(--surface) 72%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#landingPage .nav-brand{font-size:12px;letter-spacing:.08em}.landing-logo{width:32px;height:32px;border-radius:10px;box-shadow:0 8px 24px rgba(20,86,184,.18)}
+#landingPage .nav-links{gap:30px}.landing-nav-mini{color:var(--brand)!important;font-weight:800}
+.premium-hero{max-width:1280px;margin:auto;min-height:790px;padding:115px 5vw 80px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:3}
+.premium-copy{position:relative}.premium-pill{display:inline-flex;align-items:center;gap:9px;padding:8px 12px;border:1px solid color-mix(in srgb,var(--brand) 30%,var(--line));background:color-mix(in srgb,var(--surface) 82%,transparent);border-radius:999px;color:var(--brand);font-size:10px;font-weight:900;letter-spacing:.13em;box-shadow:0 10px 30px rgba(20,86,184,.07)}
+.premium-pill .live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.12),0 0 16px rgba(34,197,94,.7);animation:premiumPulse 1.6s infinite}
+.premium-title{font-size:clamp(48px,6.1vw,86px);line-height:.94;letter-spacing:-.075em;font-weight:950;margin:22px 0 22px;max-width:800px}.premium-title .gradient{background:linear-gradient(110deg,#1456b8 5%,#2563eb 48%,#7c3aed 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.premium-copy>p{max-width:650px;font-size:17px;line-height:1.8;color:var(--muted);margin:0}.premium-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:30px}.premium-primary{border:0!important;border-radius:12px!important;padding:14px 20px!important;background:linear-gradient(135deg,#111827,#1e3a8a)!important;color:#fff!important;box-shadow:0 15px 35px rgba(20,54,120,.25)!important}.premium-mini{display:inline-flex;align-items:center;gap:9px;border:1px solid #274f91;background:linear-gradient(135deg,#071a3a,#123d73 60%,#8f1d2c);color:#fff;border-radius:12px;padding:13px 17px;font-size:12px;font-weight:900;box-shadow:0 12px 30px rgba(7,26,58,.18);position:relative;overflow:hidden}.premium-mini:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(255,255,255,.18),transparent);transform:translateX(-110%);animation:miniSweep 3s infinite}.premium-mini>*{position:relative}.premium-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:25px}.premium-stat strong{display:block;font-size:15px}.premium-stat span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.premium-stage{position:relative;min-height:530px;display:grid;place-items:center}.stage-glow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.18),rgba(124,58,237,.08) 42%,transparent 70%);filter:blur(5px);animation:stageGlow 5s ease-in-out infinite}.browser-video{width:min(620px,100%);position:relative;border:1px solid color-mix(in srgb,var(--brand) 28%,var(--line));border-radius:22px;background:#0b1220;box-shadow:0 35px 100px rgba(10,31,70,.26),0 0 0 8px rgba(37,99,235,.035);overflow:hidden;transform:perspective(1400px) rotateY(-6deg) rotateX(2deg);animation:videoFloat 6s ease-in-out infinite}
+.browser-top{height:48px;background:#101827;border-bottom:1px solid #26364f;display:flex;align-items:center;gap:9px;padding:0 14px}.browser-dots{display:flex;gap:6px}.browser-dots i{width:8px;height:8px;border-radius:50%;display:block}.bd1{background:#ff5f57}.bd2{background:#febc2e}.bd3{background:#28c840}.browser-address{height:27px;flex:1;border:1px solid #293a55;border-radius:8px;background:#0a1220;color:#94a3b8;font:10px monospace;display:flex;align-items:center;padding:0 10px;overflow:hidden;white-space:nowrap}.address-blue{color:#60a5fa}.browser-live{font-size:8px;color:#4ade80;font-weight:900;letter-spacing:.1em}
+.video-screen{height:410px;position:relative;background:linear-gradient(135deg,#07101d,#0d1b30 55%,#07101d);overflow:hidden}.video-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(96,165,250,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.045) 1px,transparent 1px);background-size:24px 24px}.video-code{position:absolute;left:18px;top:18px;width:47%;height:calc(100% - 36px);border:1px solid #26364f;border-radius:12px;background:#050a12;padding:18px;font:10px/1.9 monospace;color:#cbd5e1;overflow:hidden}.vline{opacity:0;transform:translateY(8px);animation:codeIn .7s forwards}.vline:nth-child(1){animation-delay:.2s}.vline:nth-child(2){animation-delay:.45s}.vline:nth-child(3){animation-delay:.7s}.vline:nth-child(4){animation-delay:.95s}.vline:nth-child(5){animation-delay:1.2s}.vline:nth-child(6){animation-delay:1.45s}.vline:nth-child(7){animation-delay:1.7s}.vline:nth-child(8){animation-delay:1.95s}.vtag{color:#60a5fa}.vattr{color:#fbbf24}.vstr{color:#4ade80}.vkey{color:#c084fc}.video-preview{position:absolute;right:18px;top:18px;width:47%;height:calc(100% - 36px);border:1px solid #dbe3ef;border-radius:12px;background:#fff;color:#172033;padding:24px;overflow:hidden;animation:previewReveal 1.2s 1.4s both}.preview-topline{font-size:8px;color:#64748b;letter-spacing:.12em;font-weight:900}.preview-hero{margin-top:32px;font-size:28px;line-height:1;font-weight:950;letter-spacing:-.06em}.preview-hero span{color:#2563eb}.preview-line{height:7px;width:78%;background:#dbe7f7;border-radius:9px;margin-top:13px}.preview-line.short{width:52%}.preview-card{margin-top:28px;height:90px;border-radius:12px;background:linear-gradient(135deg,#eef5ff,#f7f0ff);border:1px solid #e3eaf4;position:relative;overflow:hidden}.preview-card:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-25px;top:-35px;background:rgba(37,99,235,.14);animation:previewOrb 3s infinite}.preview-button{position:absolute;bottom:18px;left:24px;background:#1456b8;color:#fff;border-radius:8px;padding:8px 11px;font-size:8px;font-weight:900}.video-cursor{position:absolute;width:18px;height:18px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 4px rgba(37,99,235,.25),0 0 22px rgba(96,165,250,.8);z-index:5;left:48%;top:62%;animation:cursorTour 7s ease-in-out infinite}.video-beam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#60a5fa,#c084fc,transparent);box-shadow:0 0 22px #60a5fa;animation:videoBeam 3.8s linear infinite}.video-caption{position:absolute;left:22px;bottom:18px;color:#dbeafe;font:9px monospace;letter-spacing:.13em}.video-caption b{color:#60a5fa}.video-badge{position:absolute;right:-16px;bottom:22px;padding:12px 14px;border-radius:13px;background:var(--surface);border:1px solid var(--line);box-shadow:0 20px 45px rgba(0,0,0,.18);font-size:10px;font-weight:900;color:var(--ink);animation:badgeFloat 4s ease-in-out infinite}.video-badge i{color:#22c55e;margin-right:6px}
+.premium-section{max-width:1200px;margin:auto;padding:105px 5vw;position:relative;z-index:2}.premium-heading{text-align:center;max-width:720px;margin:0 auto 45px}.premium-heading .kicker{font-size:10px;letter-spacing:.16em}.premium-heading h2{font-size:clamp(32px,4.4vw,56px);line-height:1;letter-spacing:-.055em;margin:12px 0}.premium-heading p{color:var(--muted);line-height:1.75;font-size:14px}
+.mini-ad{border:1px solid #263b63;border-radius:28px;background:linear-gradient(135deg,#050b16,#0b1730 58%,#160c1d);color:#fff;overflow:hidden;position:relative;box-shadow:0 35px 90px rgba(7,26,58,.22);min-height:420px}.mini-ad:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 25%,rgba(59,130,246,.24),transparent 30%),radial-gradient(circle at 20% 80%,rgba(220,38,38,.15),transparent 30%)}.mini-ad-inner{position:relative;z-index:2;display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:center;padding:58px}.mini-ad-copy .ad-label{font-size:9px;color:#93c5fd;font-weight:900;letter-spacing:.18em}.mini-ad-copy h3{font-size:clamp(32px,4vw,56px);line-height:.96;letter-spacing:-.06em;margin:13px 0}.mini-ad-copy p{color:#aab8cc;line-height:1.75;font-size:13px;max-width:500px}.mini-ad-features{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.mini-chip{padding:7px 9px;border:1px solid #29405f;border-radius:999px;background:rgba(255,255,255,.035);font-size:9px;color:#dbeafe}.mini-demo{position:relative;min-height:280px;border:1px solid #29405f;border-radius:20px;background:#070e19;padding:12px;box-shadow:inset 0 0 50px rgba(59,130,246,.05);overflow:hidden}.mini-demo-browser{height:100%;min-height:255px;border-radius:13px;background:#fff;overflow:hidden;color:#111827;position:relative}.mini-demo-bar{height:30px;background:#eef2f7;display:flex;align-items:center;gap:4px;padding:0 9px}.mini-demo-bar i{width:6px;height:6px;border-radius:50%;display:block}.mini-demo-url{margin-left:7px;height:17px;flex:1;background:#fff;border:1px solid #d9e0e8;border-radius:6px;font-size:7px;color:#64748b;display:flex;align-items:center;padding:0 7px}.mini-demo-home{padding:18px}.mini-demo-home small{font-size:7px;color:#64748b}.mini-demo-home h4{font-size:21px;letter-spacing:-.05em;margin:7px 0}.mini-demo-home p{font-size:8px;color:#64748b;max-width:230px;line-height:1.5}.mini-demo-card{height:80px;border-radius:10px;background:linear-gradient(135deg,#edf5ff,#f7efff);margin-top:12px;position:relative;overflow:hidden}.mini-demo-card:before{content:"JS mini.Browser";position:absolute;left:12px;top:13px;font-size:8px;font-weight:900;color:#173b76}.mini-demo-card:after{content:"Open deployed project →";position:absolute;left:12px;bottom:11px;background:#1456b8;color:#fff;padding:5px 7px;border-radius:5px;font-size:6px;font-weight:900}.mini-spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#60a5fa;box-shadow:0 0 20px #60a5fa;animation:sparkMove 5s ease-in-out infinite}.mini-spark.s1{left:12%;top:24%}.mini-spark.s2{right:14%;top:68%;animation-delay:1.5s}.mini-spark.s3{right:32%;top:16%;animation-delay:2.7s}
+.premium-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.premium-feature{padding:25px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 92%,transparent);border-radius:18px;transition:.3s;position:relative;overflow:hidden}.premium-feature:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--brand) 45%,var(--line))}.premium-feature .pf-icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:rgba(37,99,235,.10);color:var(--brand);margin-bottom:17px}.premium-feature h3{margin:0 0 8px;font-size:16px}.premium-feature p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.premium-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.timeline-card{border:1px solid var(--line);background:var(--surface);border-radius:17px;padding:20px;position:relative}.timeline-card .num{font-size:9px;color:var(--brand);font-weight:950;letter-spacing:.15em}.timeline-card h3{font-size:15px;margin:11px 0 7px}.timeline-card p{font-size:11px;color:var(--muted);line-height:1.65;margin:0}.timeline-card:after{content:"";position:absolute;top:25px;right:-12px;width:24px;height:1px;background:var(--line)}.timeline-card:last-child:after{display:none}
+.premium-final{max-width:1200px;margin:auto;padding:30px 5vw 100px}.premium-final-box{border-radius:26px;padding:70px 30px;text-align:center;background:linear-gradient(135deg,#07101d,#10295a 60%,#1a0e2b);color:#fff;position:relative;overflow:hidden;box-shadow:0 30px 90px rgba(7,26,58,.22)}.premium-final-box:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:-80px;top:-140px;background:rgba(96,165,250,.16);filter:blur(10px)}.premium-final-box>*{position:relative}.premium-final-box h2{font-size:clamp(32px,5vw,62px);line-height:.98;letter-spacing:-.06em;margin:10px 0 14px}.premium-final-box p{max-width:610px;margin:0 auto 25px;color:#aab8cc;line-height:1.7;font-size:13px}
+@keyframes premiumPulse{50%{transform:scale(1.35);opacity:.65}}@keyframes miniSweep{50%,100%{transform:translateX(110%)}}@keyframes stageGlow{50%{transform:scale(1.08);opacity:.75}}@keyframes videoFloat{50%{transform:perspective(1400px) rotateY(-2deg) rotateX(1deg) translateY(-8px)}}@keyframes codeIn{to{opacity:1;transform:none}}@keyframes previewReveal{from{opacity:0;transform:translateX(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes previewOrb{50%{transform:translate(-35px,15px)}}@keyframes cursorTour{0%,8%{left:55%;top:70%}22%{left:72%;top:30%}39%{left:28%;top:34%}56%{left:72%;top:72%}74%{left:42%;top:48%}100%{left:55%;top:70%}}@keyframes videoBeam{from{top:-3px}to{top:100%}}@keyframes badgeFloat{50%{transform:translateY(-7px)}}@keyframes sparkMove{50%{transform:translate(55px,-25px);opacity:.35}}
+@media(max-width:1000px){.premium-hero{grid-template-columns:1fr;gap:40px;padding-top:105px}.premium-stage{min-height:500px}.mini-ad-inner{grid-template-columns:1fr;padding:42px}.premium-feature-grid{grid-template-columns:1fr 1fr}.premium-timeline{grid-template-columns:1fr 1fr}.timeline-card:after{display:none}}
+@media(max-width:700px){#landingPage .site-nav{height:64px}.premium-hero{padding:90px 18px 55px;min-height:auto}.premium-title{font-size:45px}.premium-copy>p{font-size:15px}.premium-stage{min-height:390px}.browser-video{transform:none}.video-screen{height:285px}.video-code,.video-preview{top:12px;height:calc(100% - 24px)}.video-code{left:12px}.video-preview{right:12px}.premium-stat{min-width:105px}.premium-section{padding:70px 18px}.premium-feature-grid,.premium-timeline{grid-template-columns:1fr}.mini-ad-inner{padding:30px 22px;gap:25px}.mini-demo{min-height:230px}.mini-demo-browser{min-height:205px}.premium-final{padding:20px 18px 70px}.premium-final-box{padding:50px 22px}.premium-badges{display:none}}
+@media(prefers-reduced-motion:reduce){#landingPage *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
 <a class="mini-browser-launcher"
@@ -763,303 +788,95 @@
       <div class="wire-dot" style="left:14%;top:26%"></div><div class="wire-dot" style="left:76%;top:22%;animation-delay:1.7s"></div>
       <div class="wire-dot" style="left:64%;top:72%;animation-delay:3.2s"></div><div class="wire-dot" style="left:31%;top:80%;animation-delay:4.1s"></div>
     </div>
+    <nav class="site-nav">
+      <a href="#" class="nav-brand"><img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="landing-logo"><span>JS CODE OUTPUT</span></a>
+      <div class="nav-links"><a href="#features">Features</a><a href="#mini-browser-ad">JS mini.Browser</a><a href="#workspace-showcase">Workspace</a><a href="#how-it-works">How it works</a></div>
+      <div class="nav-actions"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button><button class="nav-login" onclick="startBuilding()">Start Building</button></div>
+    </nav>
 
-<nav class="site-nav">
-  <a href="#" class="nav-brand">
-    <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-7 h-7 rounded-full shadow-sm object-cover">
-    <span>JS CODE OUTPUT</span>
-  </a>
-  <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#workspace-showcase">Workspace</a>
-    <a href="#how-it-works">How it works</a>
-  </div>
-  <div class="nav-actions">
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
-    <button class="nav-login" onclick="startBuilding()">Start Building</button>
-  </div>
-</nav>
-
-<section class="hero">
-  <div>
-    <span class="eyebrow"><i class="fa-solid fa-bolt"></i> PROFESSIONAL WEB BUILDING, IN YOUR BROWSER</span>
-    <h1>World-class code editor.<br><em>Live output.</em></h1>
-    <p>Write code, build interfaces and watch your ideas come alive instantly. JS CODE OUTPUT brings a focused developer workspace, project cloud saving, and live preview into one elegant browser experience.</p>
-    <div class="hero-cta">
-      <button class="primary-btn" onclick="startBuilding()">🚀 Get Started <i class="fa-solid fa-arrow-right ml-2"></i></button>
-      <a class="mini-browser-top-launcher"
-         href="js-mini-browser.html"
-         title="Open JS mini.Browser"
-         aria-label="Open JS mini.Browser">
-        <span class="mini-top-dot"></span>
-        <span>JS mini.Browser</span>
-        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:8px"></i>
-      </a>
-    </div>
-    <div class="hero-meta">
-      <span><i class="fa-solid fa-check"></i> HTML / CSS / JS</span>
-      <span><i class="fa-solid fa-bolt"></i> IntelliSense & Linting</span>
-      <span><i class="fa-solid fa-cloud"></i> Cloud Projects</span>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <div class="hero-card">
-      <div class="hero-card-head">
-        <div class="traffic"><i class="t1"></i><i class="t2"></i><i class="t3"></i></div>
-        <span class="mini-title">JS CODE OUTPUT / LIVE WORKSPACE</span>
-        <span style="color:#6b7280;font-size:10px">● LIVE</span>
+    <section class="premium-hero">
+      <div class="premium-copy">
+        <span class="premium-pill"><span class="live-dot"></span> THE PROFESSIONAL WEB BUILDING WORKSPACE</span>
+        <h1 class="premium-title">Code it.<br><span class="gradient">See it live.</span><br>Ship it.</h1>
+        <p>Build polished websites directly in your browser with a powerful editor, instant live output, isolated projects, cloud saving, publishing and the new <strong>JS mini.Browser</strong> experience.</p>
+        <div class="premium-actions">
+          <button class="primary-btn premium-primary" onclick="startBuilding()">🚀 Get Started Free <i class="fa-solid fa-arrow-right ml-2"></i></button>
+          <a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Open JS mini.Browser</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+        <div class="premium-stats">
+          <div class="premium-stat"><strong>Live Preview</strong><span>See changes instantly</span></div>
+          <div class="premium-stat"><strong>Cloud Projects</strong><span>Save your work securely</span></div>
+          <div class="premium-stat"><strong>Publish</strong><span>Turn projects into live links</span></div>
+        </div>
       </div>
-      <div class="mock-workspace">
-        <div class="mock-side">
-          <div style="font-size:8px;color:#94a3b8;font-weight:900;margin-bottom:10px">EXPLORER</div>
-          <div class="mock-file active">⌁ index.html</div>
-          <div class="mock-file"># style.css</div>
-          <div class="mock-file">JS script.js</div>
-          <div class="mock-file">+ app.js</div>
-        </div>
-        <div class="mock-editor">
-          <div>&lt;<span class="code-blue">section</span> <span class="code-orange">class</span>=<span class="code-green">"hero"</span>&gt;</div>
-          <div>&nbsp;&nbsp;&lt;<span class="code-blue">h1</span>&gt;Build anything&lt;/<span class="code-blue">h1</span>&gt;</div>
-          <div>&nbsp;&nbsp;&lt;<span class="code-blue">p</span>&gt;See it live.&lt;/<span class="code-blue">p</span>&gt;</div>
-          <div>&nbsp;&nbsp;&lt;<span class="code-blue">button</span> <span class="code-orange">id</span>=<span class="code-green">"start"</span>&gt;</div>
-          <div>&nbsp;&nbsp;&nbsp;&nbsp;Start Building</div>
-          <div>&nbsp;&nbsp;&lt;/<span class="code-blue">button</span>&gt;</div>
-          <div>&lt;/<span class="code-blue">section</span>&gt;</div>
-          <br>
-          <div><span class="code-blue">const</span> app = document.querySelector(...)</div>
-        </div>
-        <div class="mock-output">
-          <div class="site-preview">
-            <div style="font-size:8px;color:#5b6b7f">LIVE PREVIEW</div>
-            <h3>Build anything.</h3>
-            <div class="bar"></div>
-            <div class="bar" style="width:55%"></div>
-            <div class="box"></div>
-            <div style="margin-top:15px;background:#1456b8;color:white;padding:8px 12px;border-radius:8px;display:inline-block;font-size:9px">RUN PROJECT →</div>
+
+      <div class="premium-stage" aria-label="Animated JS CODE OUTPUT product demonstration">
+        <div class="stage-glow"></div>
+        <div class="browser-video">
+          <div class="browser-top"><div class="browser-dots"><i class="bd1"></i><i class="bd2"></i><i class="bd3"></i></div><div class="browser-address"><span>https://</span><span class="address-blue">js-code-output.vercel.app</span><span>/editor</span></div><span class="browser-live">LIVE</span></div>
+          <div class="video-screen">
+            <div class="video-grid"></div><div class="video-beam"></div>
+            <div class="video-code">
+              <div class="vline"><span class="vtag">&lt;section</span> <span class="vattr">class</span>=<span class="vstr">"hero"</span><span class="vtag">&gt;</span></div>
+              <div class="vline">&nbsp;&nbsp;<span class="vtag">&lt;h1&gt;</span>Build anything<span class="vtag">&lt;/h1&gt;</span></div>
+              <div class="vline">&nbsp;&nbsp;<span class="vtag">&lt;p&gt;</span>See it live.<span class="vtag">&lt;/p&gt;</span></div>
+              <div class="vline">&nbsp;&nbsp;<span class="vtag">&lt;button</span> <span class="vattr">id</span>=<span class="vstr">"start"</span><span class="vtag">&gt;</span></div>
+              <div class="vline">&nbsp;&nbsp;&nbsp;&nbsp;Start Building</div>
+              <div class="vline">&nbsp;&nbsp;<span class="vtag">&lt;/button&gt;</span></div>
+              <div class="vline"><span class="vtag">&lt;/section&gt;</span></div>
+              <div class="vline"><span class="vkey">const</span> app = document.querySelector(...)</div>
+            </div>
+            <div class="video-preview"><div class="preview-topline">LIVE PREVIEW</div><div class="preview-hero">Build <span>anything.</span></div><div class="preview-line"></div><div class="preview-line short"></div><div class="preview-card"></div><div class="preview-button">RUN PROJECT →</div></div>
+            <div class="video-cursor"></div><div class="video-caption"><b>01</b> CODE → RENDER → ITERATE</div>
           </div>
         </div>
+        <div class="video-badge"><i class="fa-solid fa-circle-check"></i>Live output while you code</div>
       </div>
-    </div>
-    <div class="hero-badge"><strong>LIVE</strong> output while you code</div>
-  </div>
-</section>
+    </section>
 
-<section class="section" id="features">
-  <div class="section-inner">
-    <div class="section-head">
-      <div class="kicker">Built for makers</div>
-      <h2>Everything you need to turn code into a real interface.</h2>
-      <p>A clean workflow designed to keep your attention on the build — not the setup.</p>
-    </div>
-    <div class="feature-grid">
-      <article class="feature-card">
-        <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
-        <h3>Focused code editor</h3>
-        <p>CodeMirror-powered editing with syntax highlighting, VS Code style autocompletion (IntelliSense), tag/bracket pairing, and live error linting.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-icon"><i class="fa-solid fa-display"></i></div>
-        <h3>Instant live output</h3>
-        <p>Run HTML, CSS and JavaScript together and see the result instantly in a responsive live preview.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-icon"><i class="fa-solid fa-folder-tree"></i></div>
-        <h3>Isolated Projects</h3>
-        <p>Create separate projects and keep each project's files completely isolated in its own cloud or local document.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
-        <h3>Libraries on demand</h3>
-        <p>Turn Tailwind CSS, Font Awesome, Three.js and Chart.js on or off for your project.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-icon"><i class="fa-solid fa-share-nodes"></i></div>
-        <h3>Publish & Share</h3>
-        <p>Publish your web projects directly and share real-time working links with social meta tags and quick sharing.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="workspace-showcase">
-  <div class="section-inner showcase">
-    <div class="showcase-copy">
-      <div class="kicker">The workspace</div>
-      <h2>Write once. Watch it become a website.</h2>
-      <p>The editor and live output sit side by side so you can experiment quickly, test responsive layouts and iterate without leaving the browser.</p>
-      <ul class="check-list">
-        <li><i class="fa-solid fa-circle-check"></i><span>Desktop, tablet and mobile preview modes</span></li>
-        <li><i class="fa-solid fa-circle-check"></i><span>Separate HTML, CSS, JS and custom files</span></li>
-        <li><i class="fa-solid fa-circle-check"></i><span>Cloud auto-saving after Google sign-in</span></li>
-      </ul>
-      <button class="primary-btn mt-4" onclick="startBuilding()">Open the workspace →</button>
-    </div>
-    <div class="video-card">
-      <div class="video-inner">
-        <div class="orbit"></div>
-        <div class="scan"></div>
-        <div style="position:absolute;inset:0;display:grid;place-items:center;color:#dcecff">
-          <div style="text-align:center">
-            <i class="fa-solid fa-play" style="font-size:32px;margin-bottom:15px"></i>
-            <div style="font-weight:800">LIVE BUILD VISUALIZER</div>
-            <div style="font-size:10px;color:#91a7c0;margin-top:5px">CODE → RENDER → ITERATE</div>
-          </div>
+    <section class="premium-section" id="mini-browser-ad">
+      <div class="premium-heading"><div class="kicker">NEW · JS MINI.BROWSER</div><h2>Your published project gets its own browser experience.</h2><p>A cinematic product showcase that explains the flow from code to deployment to a clean browser-style project experience.</p></div>
+      <div class="mini-ad">
+        <div class="mini-ad-inner">
+          <div class="mini-ad-copy"><div class="ad-label">DEPLOY → OPEN → EXPERIENCE</div><h3>Meet<br>JS mini.Browser.</h3><p>Deploy a project from JS CODE OUTPUT and open it inside the dedicated JS mini.Browser experience. The same signed-in Firebase session is used for deployment, so an existing login can continue directly into the deployment flow.</p><div class="mini-ad-features"><span class="mini-chip">Browser-style UI</span><span class="mini-chip">Deploy from editor</span><span class="mini-chip">Live project view</span><span class="mini-chip">Google session aware</span></div><div class="premium-actions"><a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Explore JS mini.Browser</span><i class="fa-solid fa-arrow-right"></i></a></div></div>
+          <div class="mini-demo"><div class="mini-spark s1"></div><div class="mini-spark s2"></div><div class="mini-spark s3"></div><div class="mini-demo-browser"><div class="mini-demo-bar"><i class="bd1"></i><i class="bd2"></i><i class="bd3"></i><div class="mini-demo-url">🔒 js-mini-browser.html</div></div><div class="mini-demo-home"><small>JS mini.Browser</small><h4>Open your<br>deployed project.</h4><p>A focused browser-style environment for experiencing projects created with JS CODE OUTPUT.</p><div class="mini-demo-card"></div></div></div></div>
         </div>
-        <div class="video-label">&lt;/&gt; REAL-TIME WORKFLOW</div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="section ecosystem-section">
-  <div class="section-inner" style="position: relative; z-index: 5;">
-    <div class="section-head mb-0">
-      <div class="kicker">80+ File Types Supported</div>
-      <h2>Everything you need, right in the browser.</h2>
-      <p>From standard web languages to images, binary files, configurations, and complex frameworks.</p>
-    </div>
-  </div>
-  
-  <div class="floating-ecosystem">
-    <div class="float-row left-fast">
-      <div class="float-item"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</div>
-      <div class="float-item"><i class="fa-brands fa-css3-alt text-sky-400"></i> CSS3</div>
-      <div class="float-item"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</div>
-      <div class="float-item"><i class="fa-brands fa-react text-cyan-400"></i> React</div>
-      <div class="float-item"><i class="fa-brands fa-vuejs text-green-500"></i> Vue.js</div>
-      <div class="float-item"><i class="fa-brands fa-python text-blue-400"></i> Python</div>
-      <div class="float-item"><i class="fa-brands fa-java text-red-500"></i> Java</div>
-      <div class="float-item"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</div>
-      <div class="float-item"><i class="fa-brands fa-css3-alt text-sky-400"></i> CSS3</div>
-      <div class="float-item"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</div>
-    </div>
-
-    <div class="float-row right-slow">
-      <div class="float-item"><i class="fa-solid fa-c text-blue-600"></i> C / C++</div>
-      <div class="float-item"><i class="fa-brands fa-rust text-orange-600"></i> Rust</div>
-      <div class="float-item"><i class="fa-brands fa-golang text-cyan-500"></i> Go</div>
-      <div class="float-item"><i class="fa-brands fa-php text-indigo-400"></i> PHP</div>
-      <div class="float-item"><i class="fa-brands fa-swift text-orange-500"></i> Swift</div>
-      <div class="float-item"><i class="fa-brands fa-sass text-pink-500"></i> SASS / SCSS</div>
-      <div class="float-item"><i class="fa-solid fa-c text-blue-600"></i> C / C++</div>
-      <div class="float-item"><i class="fa-brands fa-rust text-orange-600"></i> Rust</div>
-    </div>
-
-    <div class="float-row left-slow">
-      <div class="float-item"><i class="fa-solid fa-database text-gray-400"></i> SQL / SQLite</div>
-      <div class="float-item"><i class="fa-solid fa-code text-green-400"></i> JSON / XML</div>
-      <div class="float-item"><i class="fa-solid fa-image text-purple-400"></i> PNG / JPG / SVG</div>
-      <div class="float-item"><i class="fa-brands fa-markdown text-gray-400"></i> Markdown</div>
-      <div class="float-item"><i class="fa-solid fa-file-video text-pink-500"></i> Video / Audio</div>
-      <div class="float-item"><i class="fa-brands fa-docker text-blue-500"></i> Docker</div>
-      <div class="float-item"><i class="fa-solid fa-database text-gray-400"></i> SQL / SQLite</div>
-    </div>
-
-    <div class="float-row right-fast">
-      <div class="float-item"><i class="fa-brands fa-git-alt text-red-500"></i> Git</div>
-      <div class="float-item"><i class="fa-brands fa-npm text-red-600"></i> NPM Packages</div>
-      <div class="float-item"><i class="fa-solid fa-file-zipper text-orange-400"></i> ZIP Archives</div>
-      <div class="float-item"><i class="fa-solid fa-gear text-gray-400"></i> YAML / Configs</div>
-      <div class="float-item"><i class="fa-solid fa-terminal text-green-500"></i> Bash / Scripts</div>
-      <div class="float-item"><i class="fa-solid fa-microchip text-indigo-500"></i> WebAssembly</div>
-      <div class="float-item"><i class="fa-brands fa-git-alt text-red-500"></i> Git</div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="how-it-works">
-  <div class="section-inner">
-    <div class="section-head">
-      <div class="kicker">Simple workflow</div>
-      <h2>From blank page to live project in four steps.</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01 / START</div>
-        <h3>Enter the builder</h3>
-        <p>Choose Google sign-in for cloud projects or continue locally without an account.</p>
+    <section class="premium-section" id="features">
+      <div class="premium-heading"><div class="kicker">THE TOOLKIT</div><h2>Everything important. Nothing in your way.</h2><p>A focused environment for turning an idea into working web output.</p></div>
+      <div class="premium-feature-grid">
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-code"></i></div><h3>Professional Editor</h3><p>CodeMirror editing with syntax highlighting, autocomplete, bracket pairing, search, linting and multiple file tabs.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-bolt"></i></div><h3>Instant Live Output</h3><p>Run HTML, CSS and JavaScript together and see the rendered result immediately beside your code.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-folder-tree"></i></div><h3>Isolated Projects</h3><p>Keep files organized per project and move between projects without mixing their workspaces.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-cloud"></i></div><h3>Cloud Saving</h3><p>With Google sign-in, project files can be saved to your cloud workspace and restored later.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-rocket"></i></div><h3>Publish & Share</h3><p>Publish projects into shareable live views and let other people experience your finished work.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-download"></i></div><h3>Export & Download</h3><p>Download project code as a single HTML file or ZIP when you are ready to take your work elsewhere.</p></article>
       </div>
-      <div class="step">
-        <div class="step-num">02 / CREATE</div>
-        <h3>Pick a project</h3>
-        <p>Create a new project or open an existing one. Every project keeps its own files isolated.</p>
+    </section>
+
+    <section class="premium-section" id="workspace-showcase">
+      <div class="premium-heading"><div class="kicker">THE FULL ANIMATION</div><h2>Watch the workflow happen.</h2><p>The animated demo above cycles through the core experience: writing code, rendering the preview, moving through the interface and showcasing JS mini.Browser.</p></div>
+      <div class="premium-stage" style="min-height:540px"><div class="stage-glow"></div><div class="browser-video" style="width:min(900px,100%)"><div class="browser-top"><div class="browser-dots"><i class="bd1"></i><i class="bd2"></i><i class="bd3"></i></div><div class="browser-address"><span>https://</span><span class="address-blue">js-code-output.vercel.app</span><span>/workspace</span></div><span class="browser-live">● BUILDING</span></div><div class="video-screen" style="height:430px"><div class="video-grid"></div><div class="video-beam"></div><div class="video-code" style="width:42%"><div class="vline" style="animation-delay:.1s">&lt;!DOCTYPE <span class="vtag">html</span>&gt;</div><div class="vline" style="animation-delay:.4s">&lt;<span class="vtag">html</span>&gt;</div><div class="vline" style="animation-delay:.7s">&nbsp;&nbsp;&lt;<span class="vtag">head</span>&gt;</div><div class="vline" style="animation-delay:1s">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="vtag">title</span>&gt;My App&lt;/<span class="vtag">title</span>&gt;</div><div class="vline" style="animation-delay:1.3s">&nbsp;&nbsp;&lt;/<span class="vtag">head</span>&gt;</div><div class="vline" style="animation-delay:1.6s">&nbsp;&nbsp;&lt;<span class="vtag">body</span>&gt;</div><div class="vline" style="animation-delay:1.9s">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="vtag">h1</span>&gt;Hello World&lt;/<span class="vtag">h1</span>&gt;</div><div class="vline" style="animation-delay:2.2s">&nbsp;&nbsp;&lt;/<span class="vtag">body</span>&gt;</div></div><div class="video-preview" style="width:52%"><div class="preview-topline">RESPONSIVE LIVE PREVIEW</div><div class="preview-hero">Your <span>idea.</span><br>Now real.</div><div class="preview-line"></div><div class="preview-line short"></div><div class="preview-card"></div><div class="preview-button">DEPLOY TO JS MINI.BROWSER →</div></div><div class="video-cursor"></div><div class="video-caption"><b>LIVE</b> EDIT · RUN · DEPLOY</div></div></div></div>
+    </section>
+
+    <section class="premium-section" id="how-it-works">
+      <div class="premium-heading"><div class="kicker">HOW IT WORKS</div><h2>Four steps from idea to experience.</h2><p>Designed so the path from first line of code to a finished project feels simple.</p></div>
+      <div class="premium-timeline">
+        <div class="timeline-card"><div class="num">01 / START</div><h3>Enter the builder</h3><p>Start building with Google sign-in for cloud features or continue locally when appropriate.</p></div>
+        <div class="timeline-card"><div class="num">02 / BUILD</div><h3>Create your project</h3><p>Open a project and work across HTML, CSS, JavaScript and project assets.</p></div>
+        <div class="timeline-card"><div class="num">03 / RUN</div><h3>See it live</h3><p>Run your code and use the live preview to iterate quickly across screen sizes.</p></div>
+        <div class="timeline-card"><div class="num">04 / SHIP</div><h3>Publish to mini.Browser</h3><p>Save, publish, export or deploy your project into the JS mini.Browser flow.</p></div>
       </div>
-      <div class="step">
-        <div class="step-num">03 / BUILD</div>
-        <h3>Write your code</h3>
-        <p>Edit HTML, CSS, JavaScript and see syntax errors and autocomplete hints live.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">04 / SHIP</div>
-        <h3>Publish & Export</h3>
-        <p>Run the output, publish a live link, or download the project as HTML or ZIP.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section class="section" id="about">
-  <div class="section-inner">
-    <div class="final-cta">
-      <div class="kicker" style="color:#8dbdff">JS CODE OUTPUT</div>
-      <h2>Build something worth seeing.</h2>
-      <p>A premium, browser-first coding experience for creators, students and developers who want to move from idea to live output quickly.</p>
-      <button class="primary-btn" onclick="startBuilding()">🚀 Get Started Free</button>
-    </div>
-  </div>
-</section>
+    <section class="premium-final" id="about"><div class="premium-final-box"><div class="kicker" style="color:#93c5fd">JS CODE OUTPUT</div><h2>Build something worth seeing.</h2><p>One browser-first workspace for writing code, watching it render and turning your finished project into a polished experience.</p><button class="primary-btn" style="background:#fff;color:#111827" onclick="startBuilding()">🚀 Start Building Free <i class="fa-solid fa-arrow-right ml-2"></i></button></div></section>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div style="display:flex;align-items:center;gap:10px">
-      <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-10 h-10 rounded-full shadow-sm object-cover">
-      <div>
-        <strong style="font-size:14px">JS CODE OUTPUT</strong>
-        <div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
-      </div>
-    </div>
-    
-
-   <div class="footer-links" style="flex-wrap: wrap; justify-content: flex-end;">
-  <a href="https://js-code-output.vercel.app/about.html">About</a>
-  <a href="https://js-code-output.vercel.app/contact.html">Contact</a>
-  <a href="https://js-code-output.vercel.app/privacy.html">Privacy</a>
-  <a href="https://js-code-output.vercel.app/terms.html">Terms</a>
-
-<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
-<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
-<a href="https://js-code-output.vercel.app/css-editor.html">CSS Editor</a>
-<a href="https://js-code-app.vercel.app/javascript-editor.html">JavaScript Editor</a>
-<a href="https://js-code-output.vercel.app/javascript-playground.html">JavaScript Playground</a>
-<a href="https://js-code-output.vercel.app/html-css-javascript-editor.html">HTML/CSS/JS Editor</a>
-<a href="https://js-code-output.vercel.app/online-css-editor.html">Online CSS Editor</a>
-<a href="https://js-code-output.vercel.app/online-javascript-editor.html">Online JavaScript Editor</a>
-
-<a href="https://js-code-output.vercel.app/html-playground.html">HTML Playground</a>
-<a href="https://js-code-output.vercel.app/online-html-editor.html">Online HTML Editor</a>
-<a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a>
-
-<a href="https://js-code-output.vercel.app/js-playground.html">JS Playground</a>
-<a href="https://js-code-output.vercel.app/online-js-editor.html">Online JS Editor</a>
-
-<a href="https://js-code-output.vercel.app/live-code-editor.html">Live Code Editor</a>
-<a href="https://js-code-output.vercel.app/live-code-playground.html">Live Code Playground</a>
-<a href="https://js-code-output.vercel.app/online-web-editor.html">Online Web Editor</a>
-<a href="https://js-code-output.vercel.app/web-code-editor.html">Web Code Editor</a>
-<a href="https://js-code-output.vercel.app/code-editor-with-live-preview.html">Editor with Live Preview</a>
-
-  <!-- নতুন ৩টি লিংক -->
-
-<a href="https://js-code-output.vercel.app/code-output.html">Code Output</a>
-<a href="https://js-code-output.vercel.app/live-output-code.html">Live Output Code</a>
-<a href="https://js-code-output.vercel.app/real-time-code-output.html">Real Time Code Output</a>
-
-</div>
-
-    <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div>
-  </div>
-</footer>
-
+    <footer class="site-footer">
+      <div class="footer-inner"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-10 h-10 rounded-full shadow-sm object-cover"><div><strong style="font-size:14px">JS CODE OUTPUT</strong><div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div></div></div>
+      <div class="footer-links" style="flex-wrap:wrap;justify-content:flex-end"><a href="https://js-code-output.vercel.app/about.html">About</a><a href="https://js-code-output.vercel.app/contact.html">Contact</a><a href="https://js-code-output.vercel.app/privacy.html">Privacy</a><a href="https://js-code-output.vercel.app/terms.html">Terms</a><a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a><a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a><a href="https://js-code-output.vercel.app/css-editor.html">CSS Editor</a><a href="https://js-code-app.vercel.app/javascript-editor.html">JavaScript Editor</a><a href="https://js-code-output.vercel.app/javascript-playground.html">JavaScript Playground</a><a href="https://js-code-output.vercel.app/html-css-javascript-editor.html">HTML/CSS/JS Editor</a><a href="https://js-code-output.vercel.app/online-css-editor.html">Online CSS Editor</a><a href="https://js-code-output.vercel.app/online-javascript-editor.html">Online JavaScript Editor</a><a href="https://js-code-output.vercel.app/html-playground.html">HTML Playground</a><a href="https://js-code-output.vercel.app/online-html-editor.html">Online HTML Editor</a><a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a><a href="https://js-code-output.vercel.app/js-playground.html">JS Playground</a><a href="https://js-code-output.vercel.app/online-js-editor.html">Online JS Editor</a><a href="https://js-code-output.vercel.app/live-code-editor.html">Live Code Editor</a><a href="https://js-code-output.vercel.app/live-code-playground.html">Live Code Playground</a><a href="https://js-code-output.vercel.app/online-web-editor.html">Online Web Editor</a><a href="https://js-code-output.vercel.app/web-code-editor.html">Web Code Editor</a><a href="https://js-code-output.vercel.app/code-editor-with-live-preview.html">Editor with Live Preview</a><a href="https://js-code-output.vercel.app/code-output.html">Code Output</a><a href="https://js-code-output.vercel.app/live-output-code.html">Live Output Code</a><a href="https://js-code-output.vercel.app/real-time-code-output.html">Real Time Code Output</a></div><div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div></div>
+    </footer>
   </div>
 
 <button class="floating-theme" onclick="toggleTheme()" title="Switch theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
