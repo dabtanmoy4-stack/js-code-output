@@ -335,7 +335,20 @@
             #view-home > div:first-child > span { font-size: 18px !important; }
             #main-search { height: 45px; }
         }
-    </style>
+    
+        /* Public website directory: one website per row, Chrome-like spacing */
+        .jsmini-sites-grid{
+            display:flex !important;
+            flex-direction:column !important;
+            align-items:stretch !important;
+            gap:14px !important;
+        }
+        .jsmini-sites-grid .jsmini-site-card{
+            width:100% !important;
+            box-sizing:border-box !important;
+        }
+
+</style>
 
     <style id="jsmini-live-deployment">
         .jsmini-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}
@@ -347,6 +360,88 @@
         .jsmini-sitebar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#111;border-bottom:1px solid #333}.jsmini-sitebar strong{font-size:12px}.jsmini-sitebar span{font-size:10px;color:#9ca3af}.jsmini-open-frame{width:100%;height:calc(100vh - 100px);border:0;background:#fff;display:block}
         .jsmini-sites-section{width:min(900px,100%);margin:30px auto 0;padding:0 8px}.jsmini-sites-title{font-size:13px;color:#9ca3af;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;font-weight:900}.jsmini-sites-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.jsmini-site-card{background:#151515;border:1px solid #333;border-radius:12px;padding:15px;text-align:left;cursor:pointer;transition:.2s}.jsmini-site-card:hover{border-color:#E23636;transform:translateY(-2px)}.jsmini-site-card h3{font-size:15px;font-weight:900;margin:0 0 5px}.jsmini-site-card p{font-size:11px;color:#9ca3af;line-height:1.5;margin:0 0 9px}.jsmini-site-card .domain{font-size:10px;color:#F78F3F;font-weight:800}
         @media(max-width:600px){.jsmini-modal{padding:17px;border-radius:13px}.jsmini-actions{flex-direction:column-reverse}.jsmini-btn{width:100%}.jsmini-sitebar{padding:8px 10px}.jsmini-open-frame{height:calc(100vh - 96px)}}
+
+
+        /* Chrome-style published results: strict single-column layout */
+        #results-container.jsmini-chrome-results,
+        .jsmini-chrome-results{
+            display:flex !important;
+            flex-direction:column !important;
+            flex-wrap:nowrap !important;
+            align-items:stretch !important;
+            width:100% !important;
+            max-width:900px !important;
+            gap:26px !important;
+            margin:0 auto !important;
+        }
+        #results-container.jsmini-chrome-results .jsmini-chrome-result,
+        .jsmini-chrome-results .jsmini-chrome-result{
+            width:100% !important;
+            max-width:760px !important;
+            min-width:0 !important;
+            margin:0 !important;
+            padding:8px 6px !important;
+            box-sizing:border-box !important;
+            display:flex !important;
+            flex-direction:row !important;
+            align-items:flex-start !important;
+        }
+        /* Never allow the public result cards to turn into a horizontal grid. */
+        .jsmini-chrome-results > *{
+            grid-column:auto !important;
+            float:none !important;
+        }
+
+        /* Published website results — Chrome-style link appearance */
+        .jsmini-chrome-results{display:flex;flex-direction:column;gap:18px}
+        .jsmini-chrome-result{
+            display:flex;gap:13px;align-items:flex-start;
+            background:transparent;border:0;border-radius:10px;
+            padding:10px 8px;cursor:pointer;transition:background .16s ease;
+        }
+        .jsmini-chrome-result:hover{background:rgba(255,255,255,.045)}
+        .jsmini-result-avatar{
+            width:42px;height:42px;min-width:42px;border-radius:50%;
+            object-fit:cover;background:#202124;border:1px solid #3c4043;
+            display:flex;align-items:center;justify-content:center;overflow:hidden;
+            margin-top:2px
+        }
+        .jsmini-result-avatar img{width:100%;height:100%;object-fit:cover}
+        .jsmini-result-body{min-width:0;flex:1}
+        .jsmini-result-url{
+            color:#9aa0a6;font-size:12px;line-height:1.35;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+            margin-bottom:3px
+        }
+        .jsmini-result-title{
+            color:#8ab4f8!important;font-size:20px!important;
+            line-height:1.3!important;font-weight:500!important;
+            margin:0 0 5px!important;text-decoration:none
+        }
+        .jsmini-chrome-result:hover .jsmini-result-title{text-decoration:underline}
+        .jsmini-result-snippet{
+            color:#bdc1c6;font-size:13px;line-height:1.55;margin:0;
+            max-width:760px
+        }
+        .jsmini-result-badge{
+            display:inline-block;margin-left:7px;padding:2px 6px;border-radius:8px;
+            background:#303134;color:#9aa0a6;font-size:9px;font-weight:700;
+            vertical-align:middle
+        }
+        .jsmini-home-site-card{
+            display:flex;align-items:center;gap:11px;
+        }
+        .jsmini-home-site-photo{
+            width:34px;height:34px;border-radius:50%;object-fit:cover;
+            background:#202124;border:1px solid #3c4043;flex:none
+        }
+        @media(max-width:600px){
+            .jsmini-chrome-result{gap:10px;padding:8px 4px}
+            .jsmini-result-avatar{width:36px;height:36px;min-width:36px}
+            .jsmini-result-title{font-size:17px!important}
+            .jsmini-result-snippet{font-size:12px}
+        }
+
         /* Settings feature panels */
         .jsmini-feature-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(7px);z-index:100001;display:flex;align-items:center;justify-content:center;padding:18px}
         .jsmini-feature-modal{width:min(680px,100%);max-height:88vh;overflow:auto;background:#111;border:1px solid #333;border-top:3px solid #E23636;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.7);padding:22px;color:#fff}
@@ -1604,11 +1699,17 @@
 
             el.innerHTML=sites.slice(0,12).map(s=>`
                 <div class="jsmini-site-card" onclick="loadSite('${escapeHTML((s.virtualDomain||'')+'.jsmini')}')">
-                    <h3>${escapeHTML(s.name||'Untitled')}</h3>
-                    <p>${escapeHTML(s.description||'No description')}</p>
-                    <div class="domain">
-                        ${escapeHTML((s.virtualDomain||'')+'.jsmini')} · ${escapeHTML(s.category||'Other')}
+                    <div class="jsmini-home-site-card">
+                        ${s.ownerPhoto
+                            ? `<img class="jsmini-home-site-photo" src="${escapeHTML(s.ownerPhoto)}" alt="" referrerpolicy="no-referrer">`
+                            : `<div class="jsmini-home-site-photo flex items-center justify-center"><i data-lucide="globe" class="w-4 h-4 text-gray-400"></i></div>`}
+                        <div style="min-width:0">
+                            <h3>${escapeHTML(s.name||'Untitled')}</h3>
+                            <div class="domain">${escapeHTML((s.virtualDomain||'')+'.jsmini')}</div>
+                        </div>
                     </div>
+                    <p>${escapeHTML(s.description||'No description')}</p>
+                    <div class="domain">${escapeHTML(s.category||'Other')} · Published</div>
                 </div>
             `).join('');
         }
@@ -1648,34 +1749,28 @@
                         <p class="text-gray-500 mt-2">Only websites deployed inside JS mini.Browser are searchable here.</p>
                     </div>`;
             }else{
-                c.innerHTML=sites.map(s=>`
-                    <div class="group cursor-pointer bg-[#151515] p-5 rounded-xl border border-gray-800 hover:border-marvelRed transition-colors shadow-lg"
+                c.className='jsmini-chrome-results';
+                c.innerHTML=sites.map(s=>{
+                    const photo = s.cloud && s.site && s.site.ownerPhoto
+                        ? escapeHTML(s.site.ownerPhoto)
+                        : '';
+                    const avatar = photo
+                        ? `<img src="${photo}" alt="" referrerpolicy="no-referrer">`
+                        : `<i data-lucide="globe" class="w-5 h-5 text-gray-400"></i>`;
+                    return `
+                    <div class="jsmini-chrome-result"
                         onclick="loadSite('${escapeHTML(s.url)}')">
-
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 bg-gray-800 p-2 rounded text-marvelGold group-hover:bg-marvelRed group-hover:text-white transition">
-                                <i data-lucide="globe" class="w-5 h-5"></i>
+                        <div class="jsmini-result-avatar">${avatar}</div>
+                        <div class="jsmini-result-body">
+                            <div class="jsmini-result-url">
+                                js://${escapeHTML(s.url)}
+                                <span class="jsmini-result-badge">${s.cloud?'Published':'Demo'}</span>
                             </div>
-
-                            <div>
-                                <div class="text-sm text-gray-400 mb-1">
-                                    js://${escapeHTML(s.url)}
-                                    <span class="bg-gray-800 text-[10px] px-1.5 py-0.5 rounded text-gray-400">
-                                        ${s.cloud?'Published':'Demo'}
-                                    </span>
-                                </div>
-
-                                <h3 class="text-xl text-blue-400 group-hover:underline font-medium mb-2">
-                                    ${escapeHTML(s.title)}
-                                </h3>
-
-                                <p class="text-gray-300 text-sm leading-relaxed">
-                                    ${escapeHTML(s.snippet)}
-                                </p>
-                            </div>
+                            <h3 class="jsmini-result-title">${escapeHTML(s.title)}</h3>
+                            <p class="jsmini-result-snippet">${escapeHTML(s.snippet)}</p>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
             }
 
             lucide.createIcons();
