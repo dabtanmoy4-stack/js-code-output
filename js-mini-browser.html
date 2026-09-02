@@ -360,6 +360,29 @@
         .jsmini-theme-option.active{border-color:#F78F3F;box-shadow:0 0 0 1px rgba(247,143,63,.25)}
         .jsmini-theme-swatch{height:48px;border-radius:9px;margin-bottom:9px;border:1px solid rgba(255,255,255,.1)}
         .jsmini-theme-name{font-size:12px;font-weight:900}.jsmini-theme-desc{font-size:10px;color:#9ca3af;margin-top:3px;line-height:1.4}
+
+        /* JS mini.Browser appearance themes */
+        body.jsmini-theme-light{background:#f4f6f8!important;color:#111827!important}
+        body.jsmini-theme-light header,
+        body.jsmini-theme-light #settings-sidebar{background:#fff!important;color:#111827!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-300{color:#334155!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-400{color:#64748b!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-500{color:#64748b!important}
+        body.jsmini-theme-light #settings-sidebar .border-gray-800{border-color:#e2e8f0!important}
+        body.jsmini-theme-light #settings-sidebar .hover\\:bg-gray-800:hover{background:#f1f5f9!important;color:#111827!important}
+        body.jsmini-theme-light #view-home,
+        body.jsmini-theme-light #view-search-results,
+        body.jsmini-theme-light #view-website{color:#111827}
+
+        body.jsmini-theme-dark{background:#050505!important;color:#f8fafc!important}
+        body.jsmini-theme-ocean{background:#061827!important;color:#e6fbff!important}
+        body.jsmini-theme-purple{background:#140a22!important;color:#f6efff!important}
+        body.jsmini-theme-sunset{background:#24130c!important;color:#fff4ed!important}
+
+        body.jsmini-theme-dark #settings-sidebar{background:#090909!important}
+        body.jsmini-theme-ocean #settings-sidebar{background:#082433!important}
+        body.jsmini-theme-purple #settings-sidebar{background:#1b0d2b!important}
+        body.jsmini-theme-sunset #settings-sidebar{background:#32170d!important}
         .jsmini-info-block{background:#181818;border:1px solid #2f2f2f;border-radius:12px;padding:14px;margin-top:12px}
         .jsmini-info-block h3{font-size:13px;font-weight:900;margin:0 0 6px}.jsmini-info-block p{font-size:12px;color:#b7b7b7;line-height:1.65;margin:0}
         .jsmini-history-toolbar{display:flex;gap:8px;margin:15px 0}.jsmini-history-search{flex:1;background:#0b0b0b;border:1px solid #333;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:12px}
@@ -974,7 +997,7 @@
 
             if(avatar){
                 if(jsMiniUser && jsMiniUser.photoURL){
-                    avatar.innerHTML=`<img src="${escapeHTML(jsMiniUser.photoURL)}" alt="Profile picture" class="w-full h-full object-cover">`;
+                    avatar.innerHTML=`<img src="${escapeHTML(jsMiniUser.photoURL)}" alt="Profile picture" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
                 }else{
                     avatar.innerHTML='<i data-lucide="user-round" class="w-8 h-8 text-gray-400"></i>';
                 }
@@ -1094,34 +1117,29 @@
         };
 
         function jsMiniApplyTheme(theme){
+            const allowed=['marvel','light','dark','ocean','purple','sunset'];
+            if(!allowed.includes(theme)) theme='marvel';
+
             const body=document.body;
-            body.classList.remove('jsmini-theme-light','jsmini-theme-dark','jsmini-theme-ocean','jsmini-theme-purple');
-            if(theme!=='marvel')body.classList.add(`jsmini-theme-${theme}`);
+            allowed.filter(x=>x!=='marvel').forEach(x=>body.classList.remove('jsmini-theme-'+x));
+            if(theme!=='marvel') body.classList.add('jsmini-theme-'+theme);
+
             localStorage.setItem(JSMINI_THEME_KEY,theme);
 
-            const label={
-                marvel:'Marvel',light:'Light',dark:'Dark',ocean:'Ocean',purple:'Purple'
-            }[theme]||'Marvel';
+            const labels={
+                marvel:'Marvel',
+                light:'Light',
+                dark:'Dark',
+                ocean:'Ocean',
+                purple:'Purple',
+                sunset:'Sunset'
+            };
             const current=document.getElementById('jsmini-current-theme');
-            if(current)current.textContent=label;
+            if(current) current.textContent=labels[theme];
 
-            // Keep the original Marvel theme untouched as the default.
-            if(theme==='light'){
-                body.style.background='#f4f4f5';
-                body.style.color='#111';
-            }else if(theme==='dark'){
-                body.style.background='#050505';
-                body.style.color='#fff';
-            }else if(theme==='ocean'){
-                body.style.background='#061827';
-                body.style.color='#fff';
-            }else if(theme==='purple'){
-                body.style.background='#140a22';
-                body.style.color='#fff';
-            }else{
-                body.style.background='';
-                body.style.color='';
-            }
+            /* Reset only the temporary inline background from older versions. */
+            body.style.background='';
+            body.style.color='';
 
             document.querySelectorAll('.jsmini-theme-option').forEach(x=>{
                 x.classList.toggle('active',x.dataset.theme===theme);
@@ -1130,30 +1148,50 @@
 
         window.openJSMiniAppearance=function(){
             const current=localStorage.getItem(JSMINI_THEME_KEY)||'marvel';
-            showJSMiniFeature('Appearance','Choose how JS mini.Browser looks. Your selection is saved on this device.',`
+
+            showJSMiniFeature(
+                'Appearance',
+                'Choose how JS mini.Browser looks. Your selection is saved on this device.',
+                `
                 <div class="jsmini-option-grid">
                     <button type="button" class="jsmini-theme-option ${current==='marvel'?'active':''}" data-theme="marvel" onclick="jsMiniApplyTheme('marvel')">
-                        <div class="jsmini-theme-swatch" style="background:radial-gradient(circle at center,#202A44 0%,#151515 100%)"></div>
-                        <div class="jsmini-theme-name">Marvel</div><div class="jsmini-theme-desc">The current red, blue and gold theme.</div>
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#151515 45%,#E23636 46%,#E23636 70%,#FFD700 71%)"></div>
+                        <div class="jsmini-theme-name">Marvel</div>
+                        <div class="jsmini-theme-desc">The original red, blue and gold theme.</div>
                     </button>
+
                     <button type="button" class="jsmini-theme-option ${current==='light'?'active':''}" data-theme="light" onclick="jsMiniApplyTheme('light')">
-                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#fff,#e5e7eb)"></div>
-                        <div class="jsmini-theme-name">Light</div><div class="jsmini-theme-desc">Clean and bright interface.</div>
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#ffffff,#e2e8f0)"></div>
+                        <div class="jsmini-theme-name">Light</div>
+                        <div class="jsmini-theme-desc">Clean and bright interface.</div>
                     </button>
+
                     <button type="button" class="jsmini-theme-option ${current==='dark'?'active':''}" data-theme="dark" onclick="jsMiniApplyTheme('dark')">
                         <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#050505,#222)"></div>
-                        <div class="jsmini-theme-name">Dark</div><div class="jsmini-theme-desc">Deep black, low-distraction look.</div>
+                        <div class="jsmini-theme-name">Dark</div>
+                        <div class="jsmini-theme-desc">Deep black, low-distraction look.</div>
                     </button>
+
                     <button type="button" class="jsmini-theme-option ${current==='ocean'?'active':''}" data-theme="ocean" onclick="jsMiniApplyTheme('ocean')">
                         <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#061827,#0e7490)"></div>
-                        <div class="jsmini-theme-name">Ocean</div><div class="jsmini-theme-desc">Cool blue browser atmosphere.</div>
+                        <div class="jsmini-theme-name">Ocean</div>
+                        <div class="jsmini-theme-desc">Cool blue browser atmosphere.</div>
                     </button>
+
                     <button type="button" class="jsmini-theme-option ${current==='purple'?'active':''}" data-theme="purple" onclick="jsMiniApplyTheme('purple')">
                         <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#140a22,#6b21a8)"></div>
-                        <div class="jsmini-theme-name">Purple</div><div class="jsmini-theme-desc">A futuristic violet appearance.</div>
+                        <div class="jsmini-theme-name">Purple</div>
+                        <div class="jsmini-theme-desc">Futuristic violet appearance.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='sunset'?'active':''}" data-theme="sunset" onclick="jsMiniApplyTheme('sunset')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#24130c,#d97706,#f97316)"></div>
+                        <div class="jsmini-theme-name">Sunset</div>
+                        <div class="jsmini-theme-desc">Warm orange sunset appearance.</div>
                     </button>
                 </div>
-            `);
+                `
+            );
         };
 
         window.openJSMiniPrivacy=function(){
