@@ -305,6 +305,8 @@
   .app-btn.run:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5); }
   .app-btn.deploy-js-mini { background:linear-gradient(135deg,#071a3a,#123d73 58%,#b91c1c); color:#fff; border:1px solid #234d86; box-shadow:0 4px 14px rgba(7,26,58,.38), inset 0 0 0 1px rgba(239,68,68,.18); }
   .app-btn.deploy-js-mini:hover { transform:translateY(-1px); border-color:#ef4444; box-shadow:0 6px 18px rgba(7,26,58,.5),0 0 12px rgba(239,68,68,.18); }
+  .app-btn.save-draft-toolbar { background:linear-gradient(135deg,#0f766e,#2563eb);color:#fff;border:1px solid #2563eb;box-shadow:0 4px 14px rgba(37,99,235,.25); }
+  .app-btn.save-draft-toolbar:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(37,99,235,.35); }
   .app-btn.publish { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; border: none; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); }
   .app-btn.publish:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(124, 58, 237, 0.45); }
 
@@ -1135,6 +1137,8 @@
 
     <button class="app-btn deploy-js-mini" onclick="deployToJSMiniBrowser()" title="Deploy to JS Mini Browser" aria-label="Deploy to JS Mini Browser"><i class="fa-solid fa-rocket"></i> <span class="btn-text">Deploy to JS Mini Browser</span></button>
 
+    <button class="app-btn save-draft-toolbar" onclick="saveCurrentProjectDraftExplicit()" title="Save project as draft" aria-label="Save project as draft"><i class="fa-solid fa-floppy-disk"></i> <span class="btn-text">Save as Draft</span></button>
+
     <div class="desktop-toolbar-tools">
       <button class="app-btn run" data-tour="run-button" onclick="triggerCinematicRun()"><i class="fa-solid fa-play"></i> <span class="btn-text">Run</span></button>
       <button class="app-btn publish" data-tour="publish-button" onclick="handlePublishProject()" title="Publish & Share Live Project"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="btn-text">Publish</span></button>
@@ -1180,6 +1184,7 @@
 
       <div id="mobileToolsMenu" class="mobile-tools-menu" aria-label="Workspace tools">
         <button class="app-btn run" onclick="triggerCinematicRun();closeMobileTools()"><i class="fa-solid fa-play"></i><span>Run</span></button>
+        <button class="app-btn save-draft-toolbar" onclick="saveCurrentProjectDraftExplicit();closeMobileTools()"><i class="fa-solid fa-floppy-disk"></i><span>Save as Draft</span></button>
         <button class="app-btn publish" onclick="handlePublishProject();closeMobileTools()"><i class="fa-solid fa-cloud-arrow-up"></i><span>Publish</span></button>
         <button class="app-btn" onclick="formatCode();closeMobileTools()"><i class="fa-solid fa-align-left text-purple-400"></i><span>Format</span></button>
         <button class="app-btn" onclick="toggleConsoleUI();closeMobileTools()"><i class="fa-solid fa-terminal text-green-400"></i><span>Console</span></button>
@@ -1225,7 +1230,7 @@
 
         <div class="flex gap-1">
           <button onclick="toggleEditorFullscreen()" class="tool-btn" style="padding:4px 8px" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
-          <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="Clear File"><i class="fa-solid fa-trash-can"></i></button>
+          <button onclick="clearEditors()" class="tool-btn" style="padding:4px 8px" title="All Clear" aria-label="All Clear"><i class="fa-solid fa-eraser"></i></button>
         </div>
 
       </div>
