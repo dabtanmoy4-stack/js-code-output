@@ -1116,7 +1116,7 @@
             if(el)el.classList.add('hidden');
         };
 
-        function jsMiniApplyTheme(theme){
+        window.jsMiniApplyTheme=function(theme){
             const allowed=['marvel','light','dark','ocean','purple','sunset'];
             if(!allowed.includes(theme)) theme='marvel';
 
