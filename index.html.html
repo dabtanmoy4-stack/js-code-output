@@ -216,32 +216,49 @@
     width: 100%; 
   }
   
-  /* HIGH-CONTRAST PURE BLACK CODEMIRROR THEME & HIGHLIGHTS */
-  .CodeMirror { height:100%!important;font-family:"Fira Code","Courier New",monospace;font-size:13px;background:#000000!important;color:#f8fafc!important;position:relative;z-index:30;pointer-events:auto!important; }
+  /* GITHUB-DARK-INSPIRED / PURE-BLACK HIGH-CONTRAST CODE EDITOR */
+  .CodeMirror {
+    height:100%!important;
+    font-family:"Fira Code","Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    font-size:13px;
+    line-height:1.65;
+    background:#000!important;
+    color:#c9d1d9!important;
+    position:relative;
+    z-index:30;
+    pointer-events:auto!important;
+    letter-spacing:.01em;
+  }
   .CodeMirror-scroll,.CodeMirror-sizer,.CodeMirror-lines,.CodeMirror-code,.CodeMirror-gutter-wrapper{pointer-events:auto!important;}
-  .CodeMirror-gutters { background:#050b14!important; border-right:1px solid #1e293b!important; }
-  .CodeMirror-linenumber { color:#64748b!important; }
-  .CodeMirror-cursor { border-left:2px solid #38bdf8!important; }
-  .CodeMirror-selected { background: rgba(56, 189, 248, 0.35) !important; }
-  .CodeMirror-focused .CodeMirror-selected { background: rgba(56, 189, 248, 0.45) !important; }
-  .cm-matchhighlight { background: rgba(245, 158, 11, 0.4) !important; border-bottom:1px solid #f59e0b; }
-  .cm-searching { background: rgba(236, 72, 153, 0.6) !important; border-radius:3px; color:#fff !important; }
-  .CodeMirror-matchingbracket { background: #0284c7 !important; color: #fff !important; font-weight: bold; border-radius: 2px; }
-  .CodeMirror-matchingtag { background: rgba(168, 85, 247, 0.45) !important; border-bottom: 2px solid #a855f7; }
-  
-  /* High contrast syntax tokens */
-  .cm-s-dracula .cm-keyword { color: #ff79c6 !important; font-weight: bold; }
-  .cm-s-dracula .cm-operator { color: #ff79c6 !important; }
-  .cm-s-dracula .cm-variable { color: #f8f8f2 !important; }
-  .cm-s-dracula .cm-variable-2 { color: #8be9fd !important; }
-  .cm-s-dracula .cm-variable-3 { color: #50fa7b !important; }
-  .cm-s-dracula .cm-string { color: #f1fa8c !important; }
-  .cm-s-dracula .cm-number { color: #bd93f9 !important; }
-  .cm-s-dracula .cm-atom { color: #bd93f9 !important; }
-  .cm-s-dracula .cm-def { color: #50fa7b !important; font-weight: bold; }
-  .cm-s-dracula .cm-tag { color: #ff79c6 !important; font-weight: bold; }
-  .cm-s-dracula .cm-attribute { color: #50fa7b !important; }
-  .cm-s-dracula .cm-comment { color: #6272a4 !important; font-style: italic; }
+  .CodeMirror-lines{padding:14px 0!important;}
+  .CodeMirror-gutters{background:#000!important;border-right:1px solid #21262d!important;padding-right:8px;}
+  .CodeMirror-linenumber{color:#6e7681!important;padding:0 8px 0 10px!important;}
+  .CodeMirror-cursor{border-left:2px solid #58a6ff!important;}
+  .CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected{background:rgba(56,139,253,.28)!important;}
+  .CodeMirror-activeline-background{background:rgba(110,118,129,.08)!important;}
+  .cm-matchhighlight{background:rgba(210,153,34,.25)!important;border-bottom:1px solid #d29922;}
+  .cm-searching{background:rgba(255,166,87,.32)!important;border-radius:3px;color:#fff!important;}
+  .CodeMirror-matchingbracket{background:#1f6feb!important;color:#fff!important;font-weight:800;border-radius:3px;outline:1px solid #58a6ff;}
+  .CodeMirror-matchingtag{background:rgba(163,113,247,.24)!important;border-bottom:2px solid #a371f7;}
+
+  /* GitHub-like high-contrast syntax colors */
+  .cm-s-dracula .cm-keyword{color:#ff7b72!important;font-weight:700;}
+  .cm-s-dracula .cm-operator{color:#ff7b72!important;}
+  .cm-s-dracula .cm-variable{color:#c9d1d9!important;}
+  .cm-s-dracula .cm-variable-2{color:#79c0ff!important;}
+  .cm-s-dracula .cm-variable-3{color:#ffa657!important;}
+  .cm-s-dracula .cm-def{color:#d2a8ff!important;font-weight:700;}
+  .cm-s-dracula .cm-property{color:#79c0ff!important;}
+  .cm-s-dracula .cm-builtin{color:#ffa657!important;}
+  .cm-s-dracula .cm-type{color:#ffa657!important;}
+  .cm-s-dracula .cm-string,.cm-s-dracula .cm-string-2{color:#a5d6ff!important;}
+  .cm-s-dracula .cm-number{color:#79c0ff!important;}
+  .cm-s-dracula .cm-atom{color:#79c0ff!important;}
+  .cm-s-dracula .cm-tag{color:#7ee787!important;font-weight:700;}
+  .cm-s-dracula .cm-attribute{color:#d2a8ff!important;}
+  .cm-s-dracula .cm-comment{color:#8b949e!important;font-style:italic;}
+  .cm-s-dracula .cm-meta{color:#ffa657!important;}
+  .cm-s-dracula .cm-qualifier{color:#7ee787!important;}
 
   .CodeMirror-dialog { background:#090d16!important; color:#f8fafc!important; border-bottom:1px solid #1e293b!important; font-family:"Fira Code",monospace; font-size:12px; padding:8px 16px!important; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .CodeMirror-dialog input { background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:4px 10px; outline:none; margin:0 4px; }
@@ -488,7 +505,7 @@
 
   .project-more{width:28px;height:28px;border:0;background:transparent;color:var(--muted);border-radius:7px;display:grid;place-items:center;flex:0 0 28px}
   .project-more:hover{background:var(--surface2);color:var(--brand)}
-  .context-menu.project-menu-context{min-width:190px;padding:6px;border-radius:12px;backdrop-filter:blur(18px)}
+  .context-menu.project-menu-context{min-width:210px;padding:6px;border-radius:12px;backdrop-filter:blur(18px)}
   .context-menu.project-menu-context button{padding:10px 12px;border-radius:8px}
   .context-menu.project-menu-context button.danger{color:#ef4444}
   .context-menu.project-menu-context button.danger:hover{background:rgba(239,68,68,.10);color:#ef4444}
@@ -543,6 +560,24 @@
     .desktop-toolbar-tools{display:flex!important}
   }
 
+
+/* High-contrast black code editor */
+.CodeMirror, .CodeMirror-scroll, .CodeMirror-gutters { background:#000 !important; }
+.CodeMirror { color:#f5f5f5 !important; font-family:"Fira Code","JetBrains Mono","SFMono-Regular",Consolas,monospace !important; }
+.CodeMirror-gutters { border-right:1px solid #202020 !important; color:#737373 !important; }
+.CodeMirror-linenumber { color:#666 !important; }
+.CodeMirror-cursor { border-left:2px solid #fff !important; }
+.CodeMirror-selected { background:rgba(255,255,255,.18) !important; }
+.cm-s-dracula .cm-comment { color:#8b949e !important; }
+.cm-s-dracula .cm-keyword, .cm-s-dracula .cm-operator { color:#ff7b72 !important; }
+.cm-s-dracula .cm-string, .cm-s-dracula .cm-string-2 { color:#a5d6ff !important; }
+.cm-s-dracula .cm-number { color:#79c0ff !important; }
+.cm-s-dracula .cm-def, .cm-s-dracula .cm-variable-2, .cm-s-dracula .cm-variable-3 { color:#d2a8ff !important; }
+.cm-s-dracula .cm-property, .cm-s-dracula .cm-variable { color:#ffa657 !important; }
+.cm-s-dracula .cm-tag { color:#7ee787 !important; }
+.cm-s-dracula .cm-attribute { color:#d2a8ff !important; }
+.cm-s-dracula .cm-bracket { color:#f0f6fc !important; }
+.cm-searching { background:rgba(255,214,0,.28) !important; }
 </style>
 
 <style id="public-viewer-extra-css">
@@ -1442,6 +1477,8 @@
     <button id="cm-add-folder" onclick="cmAddFolder()"><i class="fa-solid fa-folder-plus"></i> Add Folder</button>
     <button id="cm-rename" onclick="cmRename()"><i class="fa-solid fa-pen"></i> Rename</button>
     <button id="cm-delete" onclick="cmDelete()"><i class="fa-solid fa-trash text-red-500"></i> Delete</button>
+    <button id="cm-copy-file" onclick="cmCopyFile()"><i class="fa-solid fa-copy"></i> Copy File</button>
+    <button id="cm-download-file" onclick="cmDownloadFile()"><i class="fa-solid fa-download"></i> Download File</button>
 </div>
 
 <script type="module">
@@ -2173,6 +2210,8 @@ document.getElementById('cm-add-file').style.display = isDir ? 'flex' : 'none';
 document.getElementById('cm-add-folder').style.display = isDir ? 'flex' : 'none';
 document.getElementById('cm-rename').style.display = 'flex';
 document.getElementById('cm-delete').style.display = 'flex';
+ document.getElementById('cm-copy-file').style.display = isDir ? 'none' : 'flex';
+ document.getElementById('cm-download-file').style.display = isDir ? 'none' : 'flex';
 
 };
 
@@ -2185,6 +2224,26 @@ if(cmTarget) window.createNewFolder(cmTarget);
 window.cmDelete = function() {
 if(cmTarget) window.deleteItem(cmTarget);
 };
+window.cmCopyFile = async function() {
+ if(!cmTarget || cmIsDir) return;
+ try {
+   const content = files[cmTarget];
+   if(content === undefined) return showToast("File content not found.");
+   await navigator.clipboard.writeText(String(content));
+   showToast("File copied to clipboard.");
+ } catch(e) { console.error(e); showToast("Could not copy file."); }
+};
+window.cmDownloadFile = function() {
+ if(!cmTarget || cmIsDir) return;
+ const content = files[cmTarget];
+ if(content === undefined) return showToast("File content not found.");
+ const name = cmTarget.split('/').filter(Boolean).pop() || "file.txt";
+ const blob = new Blob([String(content)], {type:"text/plain;charset=utf-8"});
+ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ showToast("File downloaded.");
+};
+
 window.cmRename = function() {
 if(!cmTarget) return;
 const parts = cmTarget.split('/');
@@ -3457,7 +3516,7 @@ function hideProjectContextMenu(){document.getElementById("projectContextMenu")?
 function showProjectContextMenu(e,id,name,isCloud){
 e.preventDefault?.();e.stopPropagation?.();projectActionTarget=id;projectActionIsCloud=!!isCloud;projectActionName=name||"Project";
 const m=document.getElementById("projectContextMenu");if(!m)return;m.style.display="flex";
-let x=e.clientX||20,y=e.clientY||20;if(x+195>innerWidth)x=innerWidth-203;if(y+92>innerHeight)y=innerHeight-100;m.style.left=x+"px";m.style.top=y+"px";
+let x=e.clientX||20,y=e.clientY||20;if(x+215>innerWidth)x=innerWidth-223;if(y+190>innerHeight)y=innerHeight-198;m.style.left=x+"px";m.style.top=y+"px";
 }
 function bindProjectLongPress(el,id,name,isCloud){
 let timer=null;
@@ -3484,7 +3543,71 @@ if(id===window.currentProjectId){window.currentProjectId="";currentProjectId="";
 await loadProjects();loadHeaderProjects();showToast("Project deleted permanently.");
 }catch(e){console.error(e);showToast("Could not delete project.")}
 }
-function wireProjectContextActions(){document.getElementById("projectCtxRename")?.addEventListener("click",renameProjectByTarget);document.getElementById("projectCtxDelete")?.addEventListener("click",deleteProjectByTarget);}
+function getProjectFileForAction(projectFiles){
+const map=projectFiles||{};
+const keys=Object.keys(map).filter(k=>!k.endsWith("/"));
+if(!keys.length)return null;
+for(const key of ["index.html","index.htm"]){
+if(Object.prototype.hasOwnProperty.call(map,key))return {path:key,content:map[key]};
+}
+const textKeys=keys.filter(k=>!isBinary(getExt(k)));
+const path=textKeys[0]||keys[0];
+return {path,content:map[path]};
+}
+
+async function getProjectFilesForAction(){
+const id=projectActionTarget;
+if(!id)return null;
+if(projectActionIsCloud){
+const u=window.firebaseCurrentUser;
+if(!u){showToast("Sign in to access cloud project files.");return null;}
+const snap=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));
+if(!snap.exists())return null;
+return snap.data().files||{};
+}
+try{return JSON.parse(localStorage.getItem("js_files_"+id)||"{}");}
+catch(e){return {};}
+}
+
+async function copyProjectFileByTarget(){
+const id=projectActionTarget;
+hideProjectContextMenu();
+if(!id)return;
+try{
+const projectFiles=await getProjectFilesForAction();
+const selected=getProjectFileForAction(projectFiles);
+if(!selected){showToast("No file found in this project.");return;}
+if(isBinary(getExt(selected.path))){showToast("Copy File is available for text/code files.");return;}
+await navigator.clipboard.writeText(String(selected.content??""));
+showToast("Copied "+selected.path+" to clipboard.");
+}catch(e){console.error(e);showToast("Could not copy the project file.");}
+}
+
+async function downloadProjectFileByTarget(){
+const id=projectActionTarget;
+hideProjectContextMenu();
+if(!id)return;
+try{
+const projectFiles=await getProjectFilesForAction();
+const selected=getProjectFileForAction(projectFiles);
+if(!selected){showToast("No file found in this project.");return;}
+if(isBinary(getExt(selected.path))){showToast("This project file cannot be downloaded from the project menu.");return;}
+const blob=new Blob([String(selected.content??"")],{type:"text/plain;charset=utf-8"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download=selected.path.split("/").pop()||"project-file.txt";
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+showToast("Downloaded "+selected.path+".");
+}catch(e){console.error(e);showToast("Could not download the project file.");}
+}
+
+function wireProjectContextActions(){
+document.getElementById("projectCtxRename")?.addEventListener("click",renameProjectByTarget);
+document.getElementById("projectCtxDelete")?.addEventListener("click",deleteProjectByTarget);
+}
 
 async function loadHeaderProjects(){
 const el=document.getElementById("headerProjectsList");el.innerHTML="";
