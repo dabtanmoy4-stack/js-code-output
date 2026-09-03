@@ -67,4 +67,7 @@
   <changefreq>weekly</changefreq>
   <priority>0.8</priority>
 </url>
+    <url>
+  <loc>https://js-code-output.vercel.app/mini-browser.html</loc>
+</url>
 </urlset>
