@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>JS Mini Browser — Modern Browser for Developers</title>
+
+<meta
+  name="description"
+  content="JS Mini Browser — a modern browser experience for browsing, building and testing web projects."
+>
+
+<meta name="robots" content="index,follow">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:#050609;
+  color:#fff;
+  font-family:Inter,Arial,Helvetica,sans-serif;
+  overflow-x:hidden;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+button{
+  font:inherit;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+.page{
+  position:relative;
+  min-height:100vh;
+  background:
+    radial-gradient(
+      circle at 75% 10%,
+      rgba(74,118,255,.14),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 20% 60%,
+      rgba(126,74,255,.08),
+      transparent 30%
+    ),
+    #050609;
+}
+
+/* =========================
+   NAV
+========================= */
+
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:100;
+
+  padding:15px;
+}
+
+.navbar{
+  max-width:1180px;
+  height:58px;
+
+  margin:auto;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 9px 0 17px;
+
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:17px;
+
+  background:rgba(8,10,15,.68);
+
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.25);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.04em;
+}
+
+.logo-icon{
+  width:30px;
+  height:30px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4b8cff,
+      #9a68ff
+    );
+
+  font-size:9px;
+  font-weight:900;
+}
+
+.nav-links{
+  display:flex;
+  gap:28px;
+
+  color:rgba(255,255,255,.48);
+
+  font-size:9px;
+  font-weight:700;
+}
+
+.nav-links a{
+  transition:.2s;
+}
+
+.nav-links a:hover{
+  color:#fff;
+}
+
+.nav-cta{
+  padding:10px 15px;
+
+  border-radius:10px;
+
+  background:#fff;
+  color:#050609;
+
+  font-size:9px;
+  font-weight:850;
+
+  transition:.25s;
+}
+
+.nav-cta:hover{
+  transform:translateY(-2px);
+  background:#c8dcff;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  position:relative;
+
+  min-height:100svh;
+
+  display:flex;
+  align-items:center;
+
+  overflow:hidden;
+}
+
+.hero-video{
+  position:absolute;
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  opacity:.42;
+
+  filter:
+    brightness(.34)
+    contrast(1.2)
+    saturate(.7);
+
+  transform:scale(1.04);
+}
+
+.video-overlay{
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #050609 0%,
+      rgba(5,6,9,.88) 35%,
+      rgba(5,6,9,.45) 75%,
+      rgba(5,6,9,.72) 100%
+    ),
+    linear-gradient(
+      0deg,
+      #050609 0%,
+      transparent 55%,
+      rgba(5,6,9,.5) 100%
+    );
+}
+
+.grid{
+  position:absolute;
+  inset:0;
+
+  opacity:.035;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.7) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.7) 1px,
+      transparent 1px
+    );
+
+  background-size:65px 65px;
+}
+
+.hero-content{
+  position:relative;
+  z-index:5;
+
+  width:100%;
+
+  padding:
+    130px 0
+    90px;
+}
+
+.hero-inner{
+  max-width:1180px;
+  margin:auto;
+
+  padding:0 20px;
+}
+
+.hero-text{
+  max-width:560px;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  margin-bottom:22px;
+  padding:8px 12px;
+
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;
+
+  background:rgba(255,255,255,.04);
+
+  color:rgba(255,255,255,.6);
+
+  font-size:8px;
+  font-weight:800;
+
+  letter-spacing:.14em;
+}
+
+.status-dot{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:#62a2ff;
+
+  box-shadow:
+    0 0 0 5px rgba(98,162,255,.1);
+
+  animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{
+    opacity:.4;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+h1{
+  font-size:
+    clamp(
+      48px,
+      7.5vw,
+      88px
+    );
+
+  line-height:.88;
+
+  letter-spacing:-.07em;
+  font-weight:900;
+}
+
+.title-line{
+  display:block;
+}
+
+.title-gradient{
+  background:
+    linear-gradient(
+      100deg,
+      #fff,
+      #9fc6ff 50%,
+      #aa87ff
+    );
+
+  -webkit-background-clip:text;
+  background-clip:text;
+
+  color:transparent;
+}
+
+.hero-description{
+  max-width:480px;
+
+  margin-top:25px;
+
+  color:rgba(255,255,255,.47);
+
+  font-size:12px;
+  line-height:1.85;
+}
+
+.buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+
+  margin-top:27px;
+}
+
+.btn{
+  min-height:44px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0 17px;
+
+  border-radius:11px;
+
+  font-size:9px;
+  font-weight:850;
+
+  transition:.25s;
+}
+
+.btn-main{
+  background:#fff;
+  color:#050609;
+}
+
+.btn-main:hover{
+  transform:translateY(-2px);
+  background:#c6dcff;
+}
+
+.btn-outline{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.045);
+
+  color:#fff;
+}
+
+.btn-outline:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.1);
+}
+
+/* =========================
+   BROWSER VISUAL
+========================= */
+
+.browser{
+  position:absolute;
+
+  z-index:6;
+
+  right:5%;
+  top:50%;
+
+  width:min(490px,42vw);
+
+  transform:
+    translateY(-45%)
+    perspective(1200px)
+    rotateY(-8deg)
+    rotateX(2deg);
+
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;
+
+  overflow:hidden;
+
+  background:rgba(8,11,17,.82);
+
+  box-shadow:
+    0 45px 120px rgba(0,0,0,.6),
+    0 0 80px rgba(75,125,255,.08);
+
+  backdrop-filter:blur(20px);
+
+  animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:
+      translateY(-45%)
+      perspective(1200px)
+      rotateY(-8deg)
+      rotateX(2deg);
+  }
+
+  50%{
+    transform:
+      translateY(calc(-45% - 9px))
+      perspective(1200px)
+      rotateY(-7deg)
+      rotateX(2deg);
+  }
+}
+
+.browser-top{
+  height:40px;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:0 11px;
+
+  border-bottom:1px solid rgba(255,255,255,.08);
+
+  background:rgba(255,255,255,.035);
+}
+
+.window-dots{
+  display:flex;
+  gap:5px;
+}
+
+.window-dots span{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:#687184;
+}
+
+.url{
+  flex:1;
+
+  height:23px;
+
+  display:flex;
+  align-items:center;
+
+  padding:0 10px;
+
+  border-radius:7px;
+
+  background:rgba(255,255,255,.055);
+
+  color:rgba(255,255,255,.34);
+
+  font-size:7px;
+}
+
+.browser-body{
+  height:285px;
+
+  display:grid;
+  grid-template-columns:88px 1fr;
+}
+
+.sidebar{
+  padding:14px 8px;
+
+  border-right:1px solid rgba(255,255,255,.07);
+
+  background:rgba(0,0,0,.15);
+}
+
+.sidebar-label{
+  margin:0 5px 10px;
+
+  color:rgba(255,255,255,.25);
+
+  font-size:6px;
+  font-weight:850;
+
+  letter-spacing:.13em;
+}
+
+.side-item{
+  height:27px;
+
+  display:flex;
+  align-items:center;
+
+  padding:0 7px;
+
+  margin-bottom:3px;
+
+  border-radius:7px;
+
+  color:rgba(255,255,255,.38);
+
+  font-size:6.5px;
+}
+
+.side-item.active{
+  background:rgba(70,125,255,.36);
+  color:#fff;
+}
+
+.browser-main{
+  padding:17px;
+}
+
+.browser-title{
+  font-size:21px;
+  font-weight:850;
+  letter-spacing:-.05em;
+}
+
+.browser-subtitle{
+  max-width:250px;
+
+  margin-top:7px;
+
+  color:rgba(255,255,255,.3);
+
+  font-size:7px;
+  line-height:1.6;
+}
+
+.browser-cards{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+
+  gap:8px;
+
+  margin-top:21px;
+}
+
+.browser-card{
+  min-height:68px;
+
+  padding:11px;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:9px;
+
+  background:rgba(255,255,255,.025);
+}
+
+.browser-card-icon{
+  font-size:13px;
+}
+
+.browser-card-title{
+  margin-top:7px;
+
+  font-size:8px;
+  font-weight:800;
+}
+
+.browser-card-text{
+  margin-top:3px;
+
+  color:rgba(255,255,255,.26);
+
+  font-size:6px;
+}
+
+/* =========================
+   VIDEO LABEL
+========================= */
+
+.video-info{
+  position:absolute;
+
+  z-index:8;
+
+  right:7%;
+  bottom:8%;
+
+  width:180px;
+
+  padding:13px;
+
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:13px;
+
+  background:rgba(5,7,11,.66);
+
+  backdrop-filter:blur(18px);
+}
+
+.video-info small{
+  color:rgba(255,255,255,.3);
+
+  font-size:6px;
+  font-weight:850;
+
+  letter-spacing:.15em;
+}
+
+.video-info h3{
+  margin-top:7px;
+
+  font-size:10px;
+}
+
+.video-info p{
+  margin-top:5px;
+
+  color:rgba(255,255,255,.35);
+
+  font-size:7px;
+  line-height:1.5;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section{
+  padding:110px 0;
+}
+
+.container{
+  width:min(1120px,calc(100% - 34px));
+  margin:auto;
+}
+
+.eyebrow{
+  color:#70a5ff;
+
+  font-size:8px;
+  font-weight:850;
+
+  letter-spacing:.25em;
+}
+
+.section-heading{
+  max-width:680px;
+
+  margin-top:13px;
+
+  font-size:
+    clamp(
+      38px,
+      5.5vw,
+      67px
+    );
+
+  line-height:.96;
+
+  letter-spacing:-.06em;
+}
+
+.section-heading span{
+  color:rgba(255,255,255,.23);
+}
+
+/* =========================
+   FEATURE GRID
+========================= */
+
+.features{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap:11px;
+
+  margin-top:45px;
+}
+
+.feature{
+  min-height:230px;
+
+  padding:25px;
+
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.012)
+    );
+
+  transition:.3s;
+}
+
+.feature:hover{
+  transform:translateY(-6px);
+
+  border-color:
+    rgba(100,155,255,.3);
+}
+
+.feature-number{
+  color:rgba(255,255,255,.25);
+
+  font-size:8px;
+  font-weight:850;
+}
+
+.feature-icon{
+  margin-top:45px;
+
+  font-size:23px;
+}
+
+.feature h3{
+  margin-top:13px;
+
+  font-size:16px;
+}
+
+.feature p{
+  margin-top:7px;
+
+  color:rgba(255,255,255,.37);
+
+  font-size:10px;
+  line-height:1.7;
+}
+
+/* =========================
+   WORKFLOW
+========================= */
+
+.workflow{
+  margin-top:45px;
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:20px;
+
+  overflow:hidden;
+
+  background:#080b11;
+}
+
+.workflow-code{
+  padding:27px;
+
+  border-right:1px solid rgba(255,255,255,.07);
+
+  font-family:
+    Consolas,
+    Monaco,
+    monospace;
+
+  font-size:10px;
+  line-height:2;
+}
+
+.c-blue{
+  color:#70a5ff;
+}
+
+.c-purple{
+  color:#ad89ff;
+}
+
+.c-green{
+  color:#63d69a;
+}
+
+.c-gray{
+  color:#596273;
+}
+
+.workflow-preview{
+  padding:24px;
+
+  background:
+    radial-gradient(
+      circle at 90% 0,
+      rgba(80,130,255,.13),
+      transparent 45%
+    );
+}
+
+.preview-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  color:rgba(255,255,255,.3);
+
+  font-size:7px;
+}
+
+.live{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:#62d99a;
+}
+
+.preview-window{
+  margin-top:38px;
+
+  padding:25px;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+
+  background:rgba(255,255,255,.025);
+}
+
+.preview-window h3{
+  font-size:25px;
+  letter-spacing:-.05em;
+}
+
+.preview-window p{
+  max-width:270px;
+
+  margin-top:8px;
+
+  color:rgba(255,255,255,.32);
+
+  font-size:9px;
+  line-height:1.7;
+}
+
+.preview-button{
+  display:inline-block;
+
+  margin-top:17px;
+  padding:9px 12px;
+
+  border-radius:7px;
+
+  background:#fff;
+  color:#050609;
+
+  font-size:7px;
+  font-weight:850;
+}
+
+/* =========================
+   CTA
+========================= */
+
+.cta{
+  text-align:center;
+
+  padding:90px 20px;
+
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:25px;
+
+  background:
+    radial-gradient(
+      circle at 50% 0,
+      rgba(77,124,255,.18),
+      transparent 48%
+    ),
+    rgba(255,255,255,.025);
+}
+
+.cta h2{
+  font-size:
+    clamp(
+      40px,
+      6vw,
+      70px
+    );
+
+  line-height:.94;
+  letter-spacing:-.06em;
+}
+
+.cta p{
+  max-width:500px;
+
+  margin:15px auto 25px;
+
+  color:rgba(255,255,255,.36);
+
+  font-size:11px;
+  line-height:1.7;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  padding:32px 0;
+
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+.footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.footer-brand{
+  font-size:10px;
+  font-weight:850;
+}
+
+.footer-sub{
+  margin-top:4px;
+
+  color:rgba(255,255,255,.25);
+
+  font-size:7px;
+}
+
+.footer-links{
+  display:flex;
+  gap:17px;
+
+  color:rgba(255,255,255,.3);
+
+  font-size:8px;
+}
+
+.footer-links a:hover{
+  color:#fff;
+}
+
+/* =========================
+   REVEAL
+========================= */
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+
+  transition:
+    opacity .7s ease,
+    transform .7s ease;
+}
+
+.reveal.show{
+  opacity:1;
+  transform:none;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media(max-width:950px){
+
+  .browser{
+    right:2%;
+    width:390px;
+  }
+
+  .video-info{
+    display:none;
+  }
+
+  .features{
+    grid-template-columns:1fr 1fr;
+  }
+
+}
+
+/* =========================
+   PHONE
+========================= */
+
+@media(max-width:700px){
+
+  .nav{
+    padding:9px;
+  }
+
+  .navbar{
+    height:50px;
+    padding-left:12px;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .logo{
+    font-size:9px;
+  }
+
+  .logo-icon{
+    width:27px;
+    height:27px;
+  }
+
+  .nav-cta{
+    padding:8px 10px;
+    font-size:8px;
+  }
+
+  .hero{
+    min-height:920px;
+    align-items:flex-start;
+  }
+
+  .hero-video{
+    object-position:center;
+    opacity:.38;
+  }
+
+  .video-overlay{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5,6,9,.32),
+        rgba(5,6,9,.65) 42%,
+        #050609 75%
+      );
+  }
+
+  .hero-content{
+    padding-top:125px;
+    padding-bottom:410px;
+  }
+
+  .hero-inner{
+    padding:0 16px;
+  }
+
+  h1{
+    font-size:
+      clamp(
+        49px,
+        15vw,
+        70px
+      );
+  }
+
+  .hero-description{
+    max-width:340px;
+    font-size:10.5px;
+  }
+
+  .buttons{
+    flex-direction:column;
+
+    width:100%;
+    max-width:285px;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+  .browser{
+    top:auto;
+    bottom:45px;
+    left:50%;
+    right:auto;
+
+    width:calc(100% - 28px);
+
+    transform:
+      translateX(-50%)
+      perspective(1000px)
+      rotateY(-2deg);
+
+    animation:mobileFloat 6s ease-in-out infinite;
+  }
+
+  @keyframes mobileFloat{
+    0%,100%{
+      transform:
+        translateX(-50%)
+        translateY(0)
+        perspective(1000px)
+        rotateY(-2deg);
+    }
+
+    50%{
+      transform:
+        translateX(-50%)
+        translateY(-7px)
+        perspective(1000px)
+        rotateY(-2deg);
+    }
+  }
+
+  .browser-body{
+    height:205px;
+  }
+
+  .browser-main{
+    padding:12px;
+  }
+
+  .browser-title{
+    font-size:15px;
+  }
+
+  .browser-cards{
+    margin-top:13px;
+    gap:5px;
+  }
+
+  .browser-card{
+    min-height:47px;
+    padding:7px;
+  }
+
+  .browser-card-icon{
+    font-size:10px;
+  }
+
+  .browser-card-title{
+    margin-top:3px;
+    font-size:6px;
+  }
+
+  .browser-card-text{
+    display:none;
+  }
+
+  .section{
+    padding:75px 0;
+  }
+
+  .features{
+    grid-template-columns:1fr;
+    margin-top:30px;
+  }
+
+  .feature{
+    min-height:185px;
+  }
+
+  .feature-icon{
+    margin-top:30px;
+  }
+
+  .workflow{
+    grid-template-columns:1fr;
+  }
+
+  .workflow-code{
+    min-height:250px;
+
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.07);
+
+    overflow:hidden;
+  }
+
+  .workflow-preview{
+    min-height:270px;
+  }
+
+  .cta{
+    padding:60px 17px;
+  }
+
+  .footer{
+    flex-direction:column;
+    gap:18px;
+    text-align:center;
+  }
+
+  .footer-links{
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+}
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media(max-width:380px){
+
+  h1{
+    font-size:45px;
+  }
+
+  .hero{
+    min-height:875px;
+  }
+
+  .browser{
+    width:calc(100% - 18px);
+  }
+
+  .browser-body{
+    grid-template-columns:68px 1fr;
+  }
+
+  .sidebar{
+    padding:10px 5px;
+  }
+
+  .side-item{
+    font-size:5.5px;
+  }
+
+  .workflow-code{
+    font-size:8px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<header class="nav">
+
+  <nav class="navbar">
+
+    <a href="index.html" class="logo">
+
+      <span class="logo-icon">
+        JS
+      </span>
+
+      JS CODE OUTPUT
+
+    </a>
+
+    <div class="nav-links">
+
+      <a href="#features">
+        Features
+      </a>
+
+      <a href="#workflow">
+        Workflow
+      </a>
+
+      <a href="#launch">
+        Launch
+      </a>
+
+    </div>
+
+    <a
+      href="index.html.html"
+      class="nav-cta">
+
+      Open Editor →
+
+    </a>
+
+  </nav>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+  <!--
+    TECHNICAL VIDEO
+
+    Replace ONLY the URL below with
+    any direct MP4 URL you choose.
+
+    No local video file is required.
+  -->
+
+  <video
+    class="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto">
+
+    <source
+      src="https://cdn.coverr.co/videos/coverr-a-man-coding-on-a-laptop-1574/1080p.mp4"
+      type="video/mp4">
+
+  </video>
+
+  <div class="video-overlay"></div>
+  <div class="grid"></div>
+
+
+  <div class="hero-content">
+
+    <div class="hero-inner">
+
+      <div class="hero-text">
+
+        <div class="status">
+
+          <span class="status-dot"></span>
+
+          BUILT FOR DEVELOPERS
+
+        </div>
+
+
+        <h1>
+
+          <span class="title-line">
+            Browse.
+          </span>
+
+          <span class="title-line title-gradient">
+            Build.
+          </span>
+
+          <span class="title-line">
+            Create.
+          </span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+          JS Mini Browser is a focused browser
+          experience designed to work alongside
+          your web development workflow.
+
+        </p>
+
+
+        <div class="buttons">
+
+          <a
+            href="js-mini-browser.html"
+            class="btn btn-main">
+
+            🌐 Open JS Mini Browser
+
+          </a>
+
+
+          <a
+            href="index.html.html"
+            class="btn btn-outline">
+
+            💻 Open JS Code Editor
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- BROWSER UI -->
+
+  <div class="browser">
+
+    <div class="browser-top">
+
+      <div class="window-dots">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </div>
+
+      <div class="url">
+        🔒 js-code-output.vercel.app
+      </div>
+
+    </div>
+
+
+    <div class="browser-body">
+
+      <aside class="sidebar">
+
+        <div class="sidebar-label">
+          WORKSPACE
+        </div>
+
+        <div class="side-item active">
+          🌐 Browser
+        </div>
+
+        <div class="side-item">
+          📁 Projects
+        </div>
+
+        <div class="side-item">
+          📄 HTML
+        </div>
+
+        <div class="side-item">
+          🎨 CSS
+        </div>
+
+        <div class="side-item">
+          ⚡ JavaScript
+        </div>
+
+        <div class="side-item">
+          ▶ Preview
+        </div>
+
+      </aside>
+
+
+      <main class="browser-main">
+
+        <h2 class="browser-title">
+          Build the Web.
+        </h2>
+
+        <p class="browser-subtitle">
+          Browse and build your projects
+          from one modern workspace.
+        </p>
+
+
+        <div class="browser-cards">
+
+          <div class="browser-card">
+
+            <div class="browser-card-icon">
+              🌐
+            </div>
+
+            <div class="browser-card-title">
+              Browse
+            </div>
+
+            <div class="browser-card-text">
+              Explore the web
+            </div>
+
+          </div>
+
+
+          <div class="browser-card">
+
+            <div class="browser-card-icon">
+              💻
+            </div>
+
+            <div class="browser-card-title">
+              Code
+            </div>
+
+            <div class="browser-card-text">
+              Write your project
+            </div>
+
+          </div>
+
+
+          <div class="browser-card">
+
+            <div class="browser-card-icon">
+              ⚡
+            </div>
+
+            <div class="browser-card-title">
+              Run
+            </div>
+
+            <div class="browser-card-text">
+              Test instantly
+            </div>
+
+          </div>
+
+
+          <div class="browser-card">
+
+            <div class="browser-card-icon">
+              🚀
+            </div>
+
+            <div class="browser-card-title">
+              Deploy
+            </div>
+
+            <div class="browser-card-text">
+              Publish your work
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <div class="video-info">
+
+    <small>
+      TECHNICAL VISUAL
+    </small>
+
+    <h3>
+      Developer Workflow
+    </h3>
+
+    <p>
+      Coding footage plays behind the
+      Mini Browser experience.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section
+  class="section"
+  id="features">
+
+  <div class="container">
+
+    <div class="reveal">
+
+      <div class="eyebrow">
+        THE EXPERIENCE
+      </div>
+
+      <h2 class="section-heading">
+
+        One focused place
+        <span>for your web workflow.</span>
+
+      </h2>
+
+    </div>
+
+
+    <div class="features">
+
+
+      <article class="feature reveal">
+
+        <div class="feature-number">
+          01
+        </div>
+
+        <div class="feature-icon">
+          🌐
+        </div>
+
+        <h3>
+          Modern Browsing
+        </h3>
+
+        <p>
+          Open and explore websites inside
+          the dedicated Mini Browser experience.
+        </p>
+
+      </article>
+
+
+      <article class="feature reveal">
+
+        <div class="feature-number">
+          02
+        </div>
+
+        <div class="feature-icon">
+          💻
+        </div>
+
+        <h3>
+          Build With Code
+        </h3>
+
+        <p>
+          Jump directly into JS CODE OUTPUT's
+          web development editor.
+        </p>
+
+      </article>
+
+
+      <article class="feature reveal">
+
+        <div class="feature-number">
+          03
+        </div>
+
+        <div class="feature-icon">
+          ⚡
+        </div>
+
+        <h3>
+          Fast Workflow
+        </h3>
+
+        <p>
+          Move between browsing, coding and
+          previewing without unnecessary steps.
+        </p>
+
+      </article>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     WORKFLOW
+========================= -->
+
+<section
+  class="section"
+  id="workflow">
+
+  <div class="container">
+
+    <div class="reveal">
+
+      <div class="eyebrow">
+        DEVELOPER WORKFLOW
+      </div>
+
+      <h2 class="section-heading">
+
+        Write it.
+        <span>See it.</span>
+
+      </h2>
+
+    </div>
+
+
+    <div class="workflow reveal">
+
+
+      <div class="workflow-code">
+
+        <span class="c-blue">
+          &lt;!DOCTYPE html&gt;
+        </span>
+
+        <br>
+
+        <span class="c-blue">
+          &lt;html&gt;
+        </span>
+
+        <br>
+
+        &nbsp;&nbsp;
+        <span class="c-purple">
+          &lt;body&gt;
+        </span>
+
+        <br><br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="c-blue">
+          &lt;h1&gt;
+        </span>
+
+        <span class="c-green">
+          JS CODE OUTPUT
+        </span>
+
+        <span class="c-blue">
+          &lt;/h1&gt;
+        </span>
+
+        <br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="c-blue">
+          &lt;p&gt;
+        </span>
+
+        <span class="c-green">
+          Build for the web.
+        </span>
+
+        <span class="c-blue">
+          &lt;/p&gt;
+        </span>
+
+        <br><br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="c-blue">
+          &lt;button&gt;
+        </span>
+
+        <span class="c-green">
+          Run
+        </span>
+
+        <span class="c-blue">
+          &lt;/button&gt;
+        </span>
+
+        <br><br>
+
+        &nbsp;&nbsp;
+        <span class="c-purple">
+          &lt;/body&gt;
+        </span>
+
+        <br>
+
+        <span class="c-blue">
+          &lt;/html&gt;
+        </span>
+
+      </div>
+
+
+      <div class="workflow-preview">
+
+        <div class="preview-bar">
+
+          <span>
+            LIVE PREVIEW
+          </span>
+
+          <span class="live"></span>
+
+        </div>
+
+
+        <div class="preview-window">
+
+          <h3>
+            Your website.
+          </h3>
+
+          <p>
+            Write your HTML, CSS and JavaScript
+            and preview the result while you build.
+          </p>
+
+          <span class="preview-button">
+            RUN PROJECT
+          </span>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+
+<section
+  class="section"
+  id="launch">
+
+  <div class="container">
+
+    <div class="cta reveal">
+
+      <h2>
+        Start building.
+      </h2>
+
+      <p>
+        Launch JS Mini Browser or open the
+        JS CODE OUTPUT editor and start creating.
+      </p>
+
+
+      <div
+        class="buttons"
+        style="justify-content:center">
+
+        <a
+          href="js-mini-browser.html"
+          class="btn btn-main">
+
+          🌐 Launch Mini Browser
+
+        </a>
+
+
+        <a
+          href="index.html.html"
+          class="btn btn-outline">
+
+          💻 Open Code Editor
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+  <div class="container footer">
+
+    <div>
+
+      <div class="footer-brand">
+        JS CODE OUTPUT
+      </div>
+
+      <div class="footer-sub">
+        Browse. Build. Create.
+      </div>
+
+    </div>
+
+
+    <div class="footer-links">
+
+      <a href="index.html">
+        Home
+      </a>
+
+      <a href="index.html.html">
+        Code Editor
+      </a>
+
+      <a href="js-mini-browser.html">
+        Mini Browser
+      </a>
+
+      <a href="privacy.html">
+        Privacy
+      </a>
+
+      <a href="terms.html">
+        Terms
+      </a>
+
+    </div>
+
+  </div>
+
+</footer>
+
+</div>
+
+
+<script>
+
+/* =========================
+   SCROLL ANIMATION
+========================= */
+
+const reveals =
+  document.querySelectorAll(".reveal");
+
+const observer =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+
+          entry.target.classList.add("show");
+
+          observer.unobserve(entry.target);
+
+        }
+
+      });
+
+    },
+    {
+      threshold:.12
+    }
+  );
+
+
+reveals.forEach(el => {
+  observer.observe(el);
+});
+
+
+/* =========================
+   VIDEO AUTOPLAY
+========================= */
+
+const video =
+  document.querySelector(".hero-video");
+
+if(video){
+
+  video.muted = true;
+
+  video.play().catch(() => {});
+
+}
+
+
+/* =========================
+   VIDEO FALLBACK
+========================= */
+
+if(video){
+
+  video.addEventListener(
+    "error",
+    () => {
+
+      video.style.display = "none";
+
+    }
+  );
+
+}
+
+
+/* =========================
+   BUTTON PRESS EFFECT
+========================= */
+
+document
+.querySelectorAll(".btn,.nav-cta")
+.forEach(button => {
+
+  button.addEventListener(
+    "pointerdown",
+    () => {
+
+      button.style.transform =
+        "scale(.97)";
+
+    }
+  );
+
+  button.addEventListener(
+    "pointerup",
+    () => {
+
+      button.style.transform = "";
+
+    }
+  );
+
+});
+
+</script>
+
+</body>
+</html>
