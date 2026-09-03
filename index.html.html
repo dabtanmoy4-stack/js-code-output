@@ -176,6 +176,12 @@
   .explorer-body { padding:12px 6px; overflow:auto;flex:1; }
   .tree-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-size: 11px; color: var(--muted); margin-bottom: 2px; user-select: none; }
   .tree-item:hover { background: var(--surface2); color: var(--ink); }
+  .tree-item[draggable="true"] { cursor: grab; }
+  .tree-item.dragging { opacity: .45; transform: scale(.985); }
+  .tree-item.drag-over { background: rgba(20,86,184,.16) !important; color: var(--brand) !important; outline: 1px dashed var(--brand); outline-offset: -2px; box-shadow: inset 0 0 0 1px rgba(20,86,184,.12), 0 0 0 2px rgba(20,86,184,.06); }
+  .tree-item.drag-over .fa-folder,
+  .tree-item.drag-over .fa-folder-open { color: var(--brand) !important; }
+
   .tree-item.active { background: rgba(20,86,184,.11); color: var(--brand); font-weight: 800; }
   .tree-actions { display: none; gap: 8px; align-items: center;}
   .tree-item:hover .tree-actions { display: flex; }
@@ -2601,8 +2607,58 @@ let partName = parts[i];
           current[partName] = { _isFile: true, _path: path };
       }
   }
-
 });
+
+function attachDragDrop(div, path, isDir) {
+  div.draggable = true;
+  div.dataset.path = path;
+  div.dataset.dir = isDir ? "true" : "false";
+
+  div.addEventListener("dragstart", (e) => {
+    e.stopPropagation();
+    window.__explorerDraggedPath = path;
+    window.__explorerDraggedIsDir = isDir;
+    div.classList.add("dragging");
+    if(e.dataTransfer){
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", path);
+    }
+  });
+
+  div.addEventListener("dragend", () => {
+    div.classList.remove("dragging");
+    window.__explorerDraggedPath = null;
+    window.__explorerDraggedIsDir = false;
+    document.querySelectorAll(".tree-item.drag-over").forEach(x => x.classList.remove("drag-over"));
+  });
+
+  if(isDir){
+    div.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const source = window.__explorerDraggedPath || e.dataTransfer?.getData("text/plain");
+      if(!source || source === path || (source.endsWith("/") && path.startsWith(source))) {
+        if(e.dataTransfer) e.dataTransfer.dropEffect = "none";
+        div.classList.remove("drag-over");
+        return;
+      }
+      if(e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      div.classList.add("drag-over");
+    });
+
+    div.addEventListener("dragleave", (e) => {
+      if(!div.contains(e.relatedTarget)) div.classList.remove("drag-over");
+    });
+
+    div.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      div.classList.remove("drag-over");
+      const source = window.__explorerDraggedPath || e.dataTransfer?.getData("text/plain");
+      if(source) window.moveExplorerItem(source, path);
+    });
+  }
+}
 
 function buildDOM(node, container, level = 0) {
 const ul = document.createElement("div");
@@ -2621,7 +2677,7 @@ if(level > 0) ul.className = "tree-indent";
       const div = document.createElement("div");
 
       if(item._isDir) {
-          let isOpen = folderState[item._path] !== false; 
+          let isOpen = folderState[item._path] !== false;
           div.className = "tree-item";
           div.innerHTML = `
               <span class="flex items-center gap-2 truncate flex-1" onclick="toggleFolder('${item._path}', event)" oncontextmenu="showContextMenu(event, '${item._path}', true)">
@@ -2634,6 +2690,7 @@ if(level > 0) ul.className = "tree-indent";
                   <button onclick="deleteItem('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete Folder"><i class="fa-solid fa-trash"></i></button>
               </div>
           `;
+          attachDragDrop(div, item._path, true);
           ul.appendChild(div);
           if(isOpen) {
               buildDOM(item, ul, level + 1);
@@ -2649,6 +2706,7 @@ if(level > 0) ul.className = "tree-indent";
                   <button onclick="deleteItem('${item._path}'); event.stopPropagation()" class="text-gray-400 hover:text-red-500" title="Delete File"><i class="fa-solid fa-trash"></i></button>
               </div>
           `;
+          attachDragDrop(div, item._path, false);
           ul.appendChild(div);
       }
   });
@@ -2664,6 +2722,86 @@ buildDOM(root, el, 0);
 
 renderEditorTabs();
 }
+
+window.moveExplorerItem = function(sourcePath, targetFolderPath) {
+  if(!sourcePath || !targetFolderPath || !targetFolderPath.endsWith("/")) return;
+  if(sourcePath === targetFolderPath) return;
+
+  const sourceIsFolder = sourcePath.endsWith("/");
+  if(sourceIsFolder && targetFolderPath.startsWith(sourcePath)) {
+    showToast("A folder cannot be moved inside itself.");
+    return;
+  }
+
+  const sourceName = sourcePath.split("/").filter(Boolean).pop();
+  if(!sourceName) return;
+
+  const destinationPath = targetFolderPath + sourceName + (sourceIsFolder ? "/" : "");
+
+  if(destinationPath === sourcePath) return;
+
+  const movingKeys = Object.keys(files).filter(k =>
+    k === sourcePath || (sourceIsFolder && k.startsWith(sourcePath))
+  );
+
+  if(!movingKeys.length) {
+    showToast("Item not found.");
+    return;
+  }
+
+  const conflicts = movingKeys.some(k => {
+    const suffix = k.substring(sourcePath.length);
+    const newKey = destinationPath + suffix;
+    return files[newKey] !== undefined && !movingKeys.includes(newKey);
+  });
+
+  if(conflicts) {
+    showToast("An item with the same name already exists in that folder.");
+    return;
+  }
+
+  const newFiles = {};
+  Object.keys(files).forEach(k => {
+    if(movingKeys.includes(k)) {
+      const suffix = k.substring(sourcePath.length);
+      newFiles[destinationPath + suffix] = files[k];
+    } else {
+      newFiles[k] = files[k];
+    }
+  });
+
+  const newFolderState = {};
+  Object.keys(folderState).forEach(k => {
+    if(k === sourcePath || (sourceIsFolder && k.startsWith(sourcePath))) {
+      const suffix = k.substring(sourcePath.length);
+      newFolderState[destinationPath + suffix] = folderState[k];
+    } else {
+      newFolderState[k] = folderState[k];
+    }
+  });
+
+  if(sourceIsFolder && newFolderState[destinationPath] === undefined) {
+    newFolderState[destinationPath] = true;
+  }
+
+  if(activeFile && movingKeys.includes(activeFile)) {
+    activeFile = destinationPath + activeFile.substring(sourcePath.length);
+    window.activeFile = activeFile;
+  }
+
+  files = newFiles;
+  window.files = files;
+  folderState = newFolderState;
+  projectDirty = true;
+
+  saveLocalProjectFiles();
+  scheduleCloudSave();
+  renderFileExplorer();
+  if(activeFile) openFile(activeFile);
+  updatePreview(true);
+
+  showToast(`Moved "${sourceName}" into "${targetFolderPath}"`);
+};
 
 window.toggleFolder = function(path, e) {
 e.stopPropagation();
