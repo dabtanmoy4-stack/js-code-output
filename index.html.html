@@ -3255,6 +3255,121 @@ const consoleProxy = `
 
 ${consoleProxy}
 
+
+<style id="workspace-fit-adjustment">
+/* Workspace fit adjustment — layout only; all existing features remain unchanged. */
+
+/* Keep toolbar controls visible even when the editor/preview pane becomes narrow. */
+.editor-tabs,
+.preview-toolbar{
+  min-width:0;
+  overflow:hidden;
+}
+
+.editor-tabs > .flex,
+.preview-toolbar > .flex{
+  flex:0 0 auto;
+  min-width:max-content;
+}
+
+.editor-tabs .tabs{
+  min-width:0;
+  flex:1 1 auto;
+}
+
+.editor-tabs .tabs > *{
+  flex:0 0 auto;
+}
+
+/* Prevent the editor/preview bodies from being squeezed by their toolbars. */
+.editor-container-wrapper,
+.editor-content,
+#iframeContainer{
+  min-width:0;
+  min-height:0;
+}
+
+/* At medium desktop/tablet widths, keep both work areas usable. */
+@media (min-width:701px) and (max-width:1200px){
+  .editor-panel,
+  .preview-panel{
+    min-width:0;
+  }
+
+  .editor-tabs,
+  .preview-toolbar{
+    padding-left:7px;
+    padding-right:7px;
+  }
+
+  .editor-tab{
+    padding-left:9px;
+    padding-right:9px;
+  }
+}
+
+/* Mobile: size the editor + output from the actual workspace height,
+   not from 100vh. This prevents the header from stealing their space
+   and makes the lower toolbar/output area reachable. */
+@media (max-width:700px){
+  #workspace{
+    min-height:0;
+    height:auto;
+  }
+
+  .main-area{
+    flex:1 1 auto;
+    min-height:0;
+    height:100%;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+
+  .editor-panel{
+    flex:0 0 50%;
+    height:50%;
+    min-height:0;
+    max-height:none;
+  }
+
+  .preview-panel{
+    flex:0 0 50%;
+    height:50%;
+    min-height:0;
+    max-height:none;
+  }
+
+  .editor-container-wrapper,
+  .editor-content,
+  #iframeContainer{
+    min-height:0;
+  }
+
+  .preview-toolbar{
+    flex:0 0 40px;
+  }
+
+  #iframeContainer{
+    min-height:0;
+  }
+}
+
+/* Very short screens: give the code/output bodies the available space
+   instead of allowing the panels to force the workspace taller. */
+@media (max-width:700px) and (max-height:650px){
+  .editor-panel,
+  .preview-panel{
+    flex-basis:50%;
+    height:50%;
+  }
+
+  .editor-tabs,
+  .preview-toolbar{
+    height:36px;
+    flex-basis:36px;
+  }
+}
+</style>
 </head>
 <body>
   ${html}
