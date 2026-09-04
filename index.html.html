@@ -584,6 +584,17 @@
 .cm-s-dracula .cm-attribute { color:#d2a8ff !important; }
 .cm-s-dracula .cm-bracket { color:#f0f6fc !important; }
 .cm-searching { background:rgba(255,214,0,.28) !important; }
+
+  /* =========================================================
+     PERFORMANCE LAYER — keeps existing UI/features unchanged
+     ========================================================= */
+  .section{content-visibility:auto;contain-intrinsic-size:1px 700px}
+  .feature-card,.step,.project-card{contain:layout paint style}
+  @media (prefers-reduced-motion: reduce){
+    .wire,.wire-dot,.hero-card,.float-row,.scan,.orbit,.floating-theme:before,
+    .pulse-ring,.run-beam-glow,.run-laser-line,.tour-spotlight::before{animation:none!important}
+  }
+
 </style>
 
 <style id="public-viewer-extra-css">
@@ -1374,6 +1385,13 @@ onAuthStateChanged(auth, user => {
 
   <script>
 "use strict";
+
+  // Performance state: prevents repeated heavy work while typing.
+  let localSaveTimer = null;
+  let hintTimer = null;
+  let previewVersion = 0;
+  let renderedPreviewVersion = -1;
+
 
 (function(){
   const TOUR_KEY = "jco_workspace_tour_seen_v4";
@@ -2263,6 +2281,14 @@ window.files = files;
 return files;
 }
 
+function scheduleLocalProjectSave(){
+  clearTimeout(localSaveTimer);
+  localSaveTimer = setTimeout(() => {
+    localSaveTimer = null;
+    saveLocalProjectFiles();
+  }, 450);
+}
+
 function loadLocalProjectFiles(id){
 const saved = localStorage.getItem("js_files_" + id);
 if(saved){
@@ -3142,6 +3168,7 @@ function updatePreview(force=false){
 if(!editor) return;
 syncEditor();
 if(!hasTypedInSession && !force) return;
+if(!force && renderedPreviewVersion === previewVersion) return;
 
 document.getElementById("placeholderView")?.classList.add("hidden");
 
@@ -3234,6 +3261,7 @@ ${consoleProxy}
   <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
 </body>
 </html>`;
+renderedPreviewVersion = previewVersion;
 
 }
 
@@ -3846,7 +3874,12 @@ editor.focus();
 
 editor.on("inputRead", (cm, change) => {
 if (/^[a-zA-Z.<$]$/.test(change.text[0])) {
-cm.showHint({ completeSingle: false });
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(() => {
+    if (editor === cm && !cm.getOption("readOnly")) {
+      cm.showHint({ completeSingle: false });
+    }
+  }, 70);
 }
 });
 
@@ -3854,10 +3887,11 @@ editor.on("change", (cm, changeObj) => {
 if (isSwitchingProject) return;
 hasTypedInSession = true;
 projectDirty = true;
+previewVersion++;
 syncEditor();
 // Persist changes for both local and authenticated cloud projects.
 if (window.currentProjectId?.startsWith("local_proj_")) {
-  saveLocalProjectFiles();
+  scheduleLocalProjectSave();
 } else if (window.currentProjectId) {
   scheduleCloudSave();
 }
