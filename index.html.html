@@ -3218,9 +3218,53 @@ showToast("Local Project created.");
 }
 }
 
-function createProjectCardHTML(id,name,isCloud){
+function getProjectLogoFromFiles(projectFiles){
+  if(!projectFiles || typeof projectFiles !== "object") return "";
+  const filesMap = normalizeFileMap(projectFiles);
+  const htmlKeys = Object.keys(filesMap).filter(k => /\.html?$/i.test(k));
+  const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html" || k.toLowerCase() === "index.htm") || htmlKeys[0];
+  const html = rootIndex ? String(filesMap[rootIndex] || "") : "";
+
+  // Prefer an explicitly declared site icon/logo from the project's own HTML.
+  const iconPatterns = [
+    /<link[^>]+rel=["'](?:shortcut\s+icon|icon|apple-touch-icon)["'][^>]+href=["']([^"']+)["']/i,
+    /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut\s+icon|icon|apple-touch-icon)["']/i,
+    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i
+  ];
+
+  let src = "";
+  for(const re of iconPatterns){
+    const m = html.match(re);
+    if(m?.[1]) { src = m[1].trim(); break; }
+  }
+
+  // Also accept a conventional logo image when no favicon/meta image is declared.
+  if(!src){
+    const logoFile = Object.keys(filesMap).find(k => /(^|\/)(favicon|logo|icon)\.(png|jpe?g|gif|webp|svg|ico)$/i.test(k));
+    if(logoFile) src = logoFile;
+  }
+
+  if(!src) return "";
+  if(/^data:image\//i.test(src) || /^https?:\/\//i.test(src) || /^blob:/i.test(src)) return src;
+
+  // Resolve the project's local asset path to the stored file content.
+  const clean = src.split("#")[0].split("?")[0].replace(/^\.\//, "").replace(/^\//, "");
+  const htmlDir = rootIndex && rootIndex.includes("/") ? rootIndex.slice(0, rootIndex.lastIndexOf("/")+1) : "";
+  const candidates = [clean, htmlDir + clean, decodeURIComponent(clean)];
+  for(const key of candidates){
+    if(filesMap[key] && /^data:image\//i.test(String(filesMap[key]))) return String(filesMap[key]);
+  }
+  return "";
+}
+
+function createProjectCardHTML(id,name,isCloud,projectFiles){
 const card=document.createElement("div");card.className="project-card";
-card.innerHTML=`<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
+const projectLogo = getProjectLogoFromFiles(projectFiles);
+const projectIcon = projectLogo
+  ? `<img src="${escapeHTML(projectLogo)}" alt="" style="width:34px;height:34px;border-radius:9px;object-fit:cover;margin-bottom:8px;border:1px solid var(--line);background:var(--surface2);">`
+  : `<span style="width:34px;height:34px;border-radius:9px;display:grid;place-items:center;margin-bottom:8px;background:var(--surface2);border:1px solid var(--line);color:#4285f4;"><i class="fa-brands fa-chrome" style="font-size:20px"></i></span>`;
+card.innerHTML=`<div>${projectIcon}<h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
 card.onclick=()=>requestProjectSwitch(id,name);card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
 card.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,isCloud)};bindProjectLongPress(card,id,name,isCloud);return card;
 }
@@ -3234,7 +3278,9 @@ let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]"
 let hasProjects = localProjects.length > 0;
 
 localProjects.forEach(p => {
-list.appendChild(createProjectCardHTML(p.id, p.name, false));
+let localFiles = {};
+  try { localFiles = JSON.parse(localStorage.getItem("js_files_" + p.id) || "{}"); } catch(e) {}
+  list.appendChild(createProjectCardHTML(p.id, p.name, false, localFiles));
 });
 
 const u = window.firebaseCurrentUser;
@@ -3248,7 +3294,7 @@ if(ids.length > 0) hasProjects = true;
     const pDoc = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id));
     if(!pDoc.exists()) continue;
     const d = pDoc.data();
-    list.appendChild(createProjectCardHTML(id, d.name, true));
+    list.appendChild(createProjectCardHTML(id, d.name, true, d.files || {}));
   }
 } catch(e) {
   console.error(e);
