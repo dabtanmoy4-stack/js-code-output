@@ -824,6 +824,420 @@
 
 @media(prefers-reduced-motion:reduce){#landingPage *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 </style>
+
+<style id="professional-ui-overhaul">
+/* =========================================================
+   JS CODE OUTPUT — Professional / CodePen-inspired UI layer
+   UI-only styling: existing functionality and JS are untouched.
+   ========================================================= */
+:root{
+  --ui-bg:#0b0f14;
+  --ui-panel:#11161d;
+  --ui-panel-2:#171d26;
+  --ui-panel-3:#1c2430;
+  --ui-border:#293241;
+  --ui-border-soft:#202833;
+  --ui-text:#e7edf5;
+  --ui-muted:#8995a5;
+  --ui-accent:#3b82f6;
+  --ui-accent-2:#60a5fa;
+  --ui-green:#22c55e;
+  --ui-shadow:0 18px 50px rgba(0,0,0,.28);
+}
+
+html.dark body{background:var(--ui-bg)!important}
+#app{
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+}
+
+/* Header */
+#topHeader{
+  height:54px!important;
+  flex-basis:54px!important;
+  padding:0 12px!important;
+  background:#0d1218!important;
+  border-bottom:1px solid var(--ui-border)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.025),0 8px 24px rgba(0,0,0,.16);
+  gap:10px!important;
+}
+.header-left,.header-actions-scroll{gap:7px!important}
+.app-brand h1{font-size:11px!important;color:#f8fafc}
+.app-brand p{font-size:7px!important;color:#64748b}
+.current-project{
+  height:34px!important;
+  background:#151b23!important;
+  border-color:#2b3543!important;
+  color:#dce5ef!important;
+  border-radius:7px!important;
+}
+.project-search-actions .tool-btn,
+#topHeader .app-btn{
+  min-height:34px;
+  border-radius:7px!important;
+  background:#151b23!important;
+  border-color:#2b3543!important;
+  color:#aeb9c8!important;
+  transition:background .16s,border-color .16s,color .16s,transform .16s;
+}
+#topHeader .app-btn:hover{
+  background:#1c2530!important;
+  border-color:#3b4b60!important;
+  color:#f1f5f9!important;
+}
+#topHeader .app-btn.run{
+  background:#166534!important;
+  border-color:#15803d!important;
+  color:#fff!important;
+}
+#topHeader .app-btn.publish{
+  background:#1d4ed8!important;
+  border-color:#2563eb!important;
+}
+#topHeader .app-btn.save-draft-toolbar{
+  background:#164e63!important;
+  border-color:#155e75!important;
+}
+#topHeader .app-btn.deploy-js-mini{
+  background:#18212d!important;
+  border-color:#334155!important;
+}
+#topHeader .project-search-actions .tool-btn{
+  min-height:30px!important;
+  height:30px!important;
+  padding:0 9px!important;
+}
+
+/* Workspace shell */
+#workspace{
+  background:#0b0f14!important;
+}
+.explorer{
+  width:225px!important;
+  flex-basis:225px!important;
+  background:#0f141b!important;
+  border-right:1px solid var(--ui-border)!important;
+}
+.explorer-head{
+  height:42px!important;
+  background:#11171f!important;
+  border-bottom:1px solid var(--ui-border)!important;
+  color:#cbd5e1!important;
+}
+.explorer-body{padding:9px 7px!important}
+.tree-item{
+  min-height:30px!important;
+  padding:5px 8px!important;
+  border-radius:6px!important;
+  color:#8d99a9!important;
+}
+.tree-item:hover{background:#18202a!important;color:#e5edf7!important}
+.tree-item.active{
+  background:rgba(59,130,246,.14)!important;
+  color:#60a5fa!important;
+  box-shadow:inset 2px 0 0 #3b82f6;
+}
+.explorer-actions{
+  padding:9px!important;
+  background:#0d1218!important;
+  border-top:1px solid var(--ui-border)!important;
+}
+.explorer-actions button,.tool-btn{
+  background:#151b23!important;
+  border-color:#2a3442!important;
+  color:#aab6c5!important;
+}
+.explorer-actions button:hover,.tool-btn:hover{
+  background:#1b2430!important;
+  border-color:#3b82f6!important;
+  color:#dbeafe!important;
+}
+
+/* Main split */
+.main-area{background:#0b0f14!important}
+.editor-panel,.preview-panel{background:#0d1218!important}
+.editor-panel{border-right:1px solid #293241!important}
+.editor-tabs,.preview-toolbar{
+  height:42px!important;
+  flex-basis:42px!important;
+  background:#11171f!important;
+  border-bottom:1px solid var(--ui-border)!important;
+}
+.tabs{gap:1px!important}
+.editor-tab{
+  height:34px!important;
+  margin-top:4px;
+  border-radius:6px 6px 0 0!important;
+  color:#7f8b9c!important;
+  padding:0 13px!important;
+}
+.editor-tab:hover{background:#19212b!important;color:#dbe4ef!important}
+.editor-tab.active-file-tab{
+  background:#0b0f14!important;
+  color:#e7eef8!important;
+  border-top:2px solid #3b82f6!important;
+  box-shadow:0 -1px 0 rgba(59,130,246,.12);
+}
+
+/* Code editor */
+.CodeMirror{
+  background:#0b0f14!important;
+  color:#d7dee8!important;
+  font-size:13px!important;
+  line-height:1.7!important;
+}
+.CodeMirror-gutters{
+  background:#0b0f14!important;
+  border-right:1px solid #202833!important;
+}
+.CodeMirror-linenumber{color:#4f5c6d!important}
+.CodeMirror-lines{padding:15px 0!important}
+.CodeMirror-activeline-background{background:rgba(255,255,255,.025)!important}
+.CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected{
+  background:rgba(59,130,246,.22)!important;
+}
+.CodeMirror-cursor{border-left:2px solid #60a5fa!important}
+.cm-s-dracula .cm-keyword{color:#ff7b72!important}
+.cm-s-dracula .cm-tag{color:#7ee787!important}
+.cm-s-dracula .cm-attribute{color:#d2a8ff!important}
+.cm-s-dracula .cm-string,.cm-s-dracula .cm-string-2{color:#a5d6ff!important}
+.cm-s-dracula .cm-property{color:#79c0ff!important}
+.cm-s-dracula .cm-comment{color:#8b949e!important}
+
+/* Search */
+.code-search-panel{
+  top:8px!important;
+  right:10px!important;
+  background:#111820!important;
+  border-color:#334155!important;
+  border-radius:9px!important;
+}
+
+/* Preview */
+.preview-toolbar{
+  color:#cbd5e1!important;
+}
+.preview-toolbar .screen-btn{
+  width:30px;
+  height:30px;
+  border-radius:6px!important;
+}
+.preview-toolbar .screen-btn.active{
+  background:#1d4ed8!important;
+  color:#fff!important;
+}
+#iframeContainer{
+  background:#090d12!important;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px)!important;
+  background-size:24px 24px!important;
+  padding:14px!important;
+}
+#outputIframe{
+  background:#fff!important;
+  border-radius:5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.34);
+}
+
+/* Preview placeholder */
+.placeholder-view{
+  background:radial-gradient(circle at 50% 40%,#172335 0%,#090d13 72%)!important;
+  color:#f8fafc!important;
+}
+.placeholder-view .pulse-ring{
+  width:66px!important;height:66px!important;
+  margin-bottom:16px!important;
+  border-color:#3b82f6!important;
+  box-shadow:0 0 28px rgba(59,130,246,.2)!important;
+}
+
+/* Console */
+.console-panel{
+  height:170px!important;
+  background:#090d12!important;
+  border-top:1px solid #293241!important;
+}
+.console-header{
+  height:34px;
+  align-items:center;
+  background:#11171f!important;
+  border-bottom:1px solid #202833!important;
+  padding:0 12px!important;
+}
+.console-output{padding:8px 10px!important}
+
+/* Menus + dialogs */
+.project-menu,.account-menu,.context-menu{
+  background:#111820!important;
+  border-color:#2b3543!important;
+  box-shadow:var(--ui-shadow)!important;
+}
+.project-menu-head,.account-menu-head{border-bottom-color:#26303c!important}
+.header-project-item,.account-item,.context-menu button{
+  color:#cbd5e1!important;
+}
+.header-project-item:hover,.account-item:hover,.context-menu button:hover{
+  background:#1a222d!important;
+}
+.overlay{background:rgba(0,0,0,.68)!important}
+.modal,.login-card{
+  background:#111820!important;
+  border-color:#2b3543!important;
+  box-shadow:0 30px 80px rgba(0,0,0,.5)!important;
+}
+.modal input,.modal textarea{
+  background:#0b1016!important;
+  border-color:#2b3543!important;
+}
+.toast{
+  background:#e5edf7!important;
+  color:#0b0f14!important;
+}
+
+/* Mobile tools */
+.mobile-tools-menu{
+  background:#111820!important;
+  border-color:#2b3543!important;
+}
+
+/* Mobile: comfortable, touch-first CodePen-like workspace */
+@media(max-width:700px){
+  #topHeader{
+    height:52px!important;
+    flex-basis:52px!important;
+    padding:0 7px!important;
+  }
+  #topHeader .header-left{gap:5px!important;min-width:0}
+  .mobile-explorer-toggle{
+    width:36px!important;
+    min-width:36px!important;
+    padding:0!important;
+  }
+  .project-switcher{min-width:0!important}
+  .current-project{
+    max-width:145px!important;
+    height:34px!important;
+    padding:6px 9px!important;
+  }
+  .project-search-actions{gap:4px!important}
+  .project-search-actions .tool-btn{
+    width:32px!important;
+    padding:0!important;
+  }
+  .header-actions-scroll{gap:5px!important}
+  .mobile-tools-button{
+    min-width:70px!important;
+    padding:0 10px!important;
+    background:#1d4ed8!important;
+    color:#fff!important;
+    border-color:#2563eb!important;
+  }
+  .mobile-tools-menu{
+    top:43px!important;
+    right:5px!important;
+    width:min(330px,calc(100vw - 10px))!important;
+    padding:9px!important;
+    border-radius:12px!important;
+    box-shadow:0 24px 60px rgba(0,0,0,.5)!important;
+  }
+  .mobile-tools-menu.show{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .mobile-tools-menu>.app-btn{
+    min-height:44px!important;
+    border-radius:9px!important;
+    font-size:11px!important;
+  }
+
+  #workspace{overflow:hidden!important}
+  .explorer{
+    width:min(285px,88vw)!important;
+    flex-basis:min(285px,88vw)!important;
+    background:#0e141b!important;
+  }
+  .explorer-head{height:44px!important}
+  .tree-item{
+    min-height:38px!important;
+    font-size:12px!important;
+    padding:7px 9px!important;
+  }
+  .explorer-actions button{
+    min-height:40px!important;
+    font-size:11px!important;
+  }
+
+  .main-area{
+    flex-direction:column!important;
+    overflow:hidden!important;
+    position:relative!important;
+  }
+  .editor-panel{
+    flex:none!important;
+    width:100%!important;
+    height:56vh!important;
+    min-height:0!important;
+    border-right:0!important;
+    border-bottom:1px solid #293241!important;
+  }
+  .preview-panel{
+    flex:none!important;
+    width:100%!important;
+    height:44vh!important;
+    min-height:0!important;
+  }
+  .editor-tabs,.preview-toolbar{
+    height:42px!important;
+    flex-basis:42px!important;
+    padding:0 7px!important;
+  }
+  .editor-tab{
+    height:35px!important;
+    padding:0 11px!important;
+    font-size:11px!important;
+  }
+  .editor-container-wrapper,.editor-content{
+    min-height:0!important;
+  }
+  .CodeMirror{
+    font-size:12px!important;
+    line-height:1.68!important;
+  }
+  .CodeMirror-lines{padding:12px 0!important}
+  .CodeMirror-gutters{min-width:38px}
+  .CodeMirror-linenumber{padding-left:6px!important;padding-right:7px!important}
+  #iframeContainer{padding:8px!important}
+  #outputIframe{border-radius:4px!important}
+  .preview-toolbar .screen-btn{
+    width:34px!important;height:34px!important;
+  }
+  .console-panel{height:130px!important}
+  .code-search-panel{
+    width:calc(100% - 12px)!important;
+    top:5px!important;
+    right:6px!important;
+  }
+}
+
+/* Very small phones */
+@media(max-width:380px){
+  .current-project{max-width:118px!important}
+  .project-search-actions .tool-btn{display:none!important}
+  .mobile-tools-button{min-width:62px!important}
+  .editor-panel{height:58vh!important}
+  .preview-panel{height:42vh!important}
+  .editor-tab{padding:0 8px!important}
+}
+
+/* Reduce motion for accessibility */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
 </head>
 <body>
 <a class="mini-browser-launcher"
