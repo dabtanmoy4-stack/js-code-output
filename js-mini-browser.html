@@ -1550,13 +1550,16 @@
 
                 status.textContent='Preparing your website...';
 
-                const htmlBundle=buildJSMiniStandalone(state.data.files||{});
+                const projectFiles=state.data.files||{};
+                const htmlBundle=buildJSMiniStandalone(projectFiles);
+                const siteIcon=getJSMiniProjectIcon(projectFiles,htmlBundle);
 
                 const site={
                     id:state.id,
                     ownerUid:jsMiniUser.uid,
                     ownerName:jsMiniUser.displayName||'',
                     ownerPhoto:jsMiniUser.photoURL||'',
+                    siteIcon,
                     name,
                     description,
                     virtualDomain:domain,
@@ -1602,6 +1605,78 @@
                 status.textContent='Deployment failed. Please try again.';
                 btn.disabled=false;
             }
+        }
+
+        function jsMiniNormalizeProjectPath(path){
+            return String(path||'').trim().replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
+        }
+
+        function jsMiniChromeFallbackIcon(){
+            return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+                '<circle cx="32" cy="32" r="30" fill="#fff"/>' +
+                '<path fill="#ea4335" d="M32 2a30 30 0 0 1 26 15H32a15 15 0 0 0-13 7L10 12A30 30 0 0 1 32 2z"/>' +
+                '<path fill="#fbbc05" d="M58 17a30 30 0 0 1-15 42l-13-22a15 15 0 0 0 2-8h26z"/>' +
+                '<path fill="#34a853" d="M43 59a30 30 0 0 1-33-47l26 0a15 15 0 0 0-6 25z"/>' +
+                '<circle cx="32" cy="32" r="13" fill="#4285f4"/>' +
+                '</svg>'
+            );
+        }
+
+        function jsMiniIconValue(value,path){
+            const v=String(value||'').trim();
+            if(!v)return '';
+            if(/^data:image\//i.test(v) || /^(https?:|blob:|\/\/)/i.test(v)) return v;
+            const ext=(String(path||'').split('?')[0].split('#')[0].split('.').pop()||'').toLowerCase();
+            if(ext==='svg' || /^<svg[\s>]/i.test(v)){
+                return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(v);
+            }
+            // Some project asset editors keep binary images as base64 text.
+            if(/^(?:[A-Za-z0-9+/]{40,}={0,2})$/.test(v.replace(/\s+/g,''))){
+                const mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',ico:'image/x-icon'}[ext];
+                if(mime)return 'data:'+mime+';base64,'+v.replace(/\s+/g,'');
+            }
+            return '';
+        }
+
+        function getJSMiniProjectIcon(files,htmlBundle=''){
+            const map=files&&typeof files==='object'?files:{};
+            const keys=Object.keys(map).filter(k=>!k.endsWith('/'));
+            let html='';
+            const htmlKey=keys.find(k=>k.toLowerCase()==='index.html')||keys.find(k=>/\.html?$/i.test(k));
+            if(htmlKey)html=String(map[htmlKey]||'');
+            if(!html && htmlBundle)html=String(htmlBundle);
+
+            const iconRefs=[];
+            const patterns=[
+                /<link[^>]+rel=["'][^"']*(?:icon|apple-touch-icon)[^"']*["'][^>]+href=["']([^"']+)["']/i,
+                /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'][^"']*(?:icon|apple-touch-icon)[^"']*["']/i,
+                /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+                /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i
+            ];
+            for(const re of patterns){const m=html.match(re);if(m?.[1])iconRefs.push(m[1].trim());}
+
+            // If no explicit icon is declared, accept a conventional project logo/image file.
+            for(const k of keys){
+                if(/(^|\/)(favicon|logo|icon)\.(svg|png|jpe?g|gif|webp|ico)$/i.test(k)) iconRefs.push(k);
+            }
+            if(!iconRefs.length){
+                const firstImage=keys.find(k=>/\.(svg|png|jpe?g|gif|webp|ico)$/i.test(k));
+                if(firstImage)iconRefs.push(firstImage);
+            }
+
+            for(const ref of iconRefs){
+                if(/^data:image\//i.test(ref)||/^(https?:|blob:|\/\/)/i.test(ref))return ref;
+                const clean=jsMiniNormalizeProjectPath(ref.split('?')[0].split('#')[0]);
+                const candidates=[clean,clean.replace(/^\.\//,''),keys.find(k=>jsMiniNormalizeProjectPath(k)===clean)];
+                for(const k of candidates){
+                    if(k && Object.prototype.hasOwnProperty.call(map,k)){
+                        const icon=jsMiniIconValue(map[k],k);
+                        if(icon)return icon;
+                    }
+                }
+            }
+            return jsMiniChromeFallbackIcon();
         }
 
         function buildJSMiniStandalone(files){
@@ -1700,9 +1775,9 @@
             el.innerHTML=sites.slice(0,12).map(s=>`
                 <div class="jsmini-site-card" onclick="loadSite('${escapeHTML((s.virtualDomain||'')+'.jsmini')}')">
                     <div class="jsmini-home-site-card">
-                        ${s.ownerPhoto
-                            ? `<img class="jsmini-home-site-photo" src="${escapeHTML(s.ownerPhoto)}" alt="" referrerpolicy="no-referrer">`
-                            : `<div class="jsmini-home-site-photo flex items-center justify-center"><i data-lucide="globe" class="w-4 h-4 text-gray-400"></i></div>`}
+                        ${s.siteIcon
+                            ? `<img class="jsmini-home-site-photo" src="${escapeHTML(s.siteIcon)}" alt="${escapeHTML(s.name||'Website')}" referrerpolicy="no-referrer">`
+                            : `<img class="jsmini-home-site-photo" src="${escapeHTML(jsMiniChromeFallbackIcon())}" alt="Website" referrerpolicy="no-referrer">`}
                         <div style="min-width:0">
                             <h3>${escapeHTML(s.name||'Untitled')}</h3>
                             <div class="domain">${escapeHTML((s.virtualDomain||'')+'.jsmini')}</div>
@@ -1751,12 +1826,10 @@
             }else{
                 c.className='jsmini-chrome-results';
                 c.innerHTML=sites.map(s=>{
-                    const photo = s.cloud && s.site && s.site.ownerPhoto
-                        ? escapeHTML(s.site.ownerPhoto)
-                        : '';
-                    const avatar = photo
-                        ? `<img src="${photo}" alt="" referrerpolicy="no-referrer">`
-                        : `<i data-lucide="globe" class="w-5 h-5 text-gray-400"></i>`;
+                    const projectIcon = s.cloud && s.site && s.site.siteIcon
+                        ? escapeHTML(s.site.siteIcon)
+                        : escapeHTML(jsMiniChromeFallbackIcon());
+                    const avatar = `<img src="${projectIcon}" alt="${escapeHTML(s.title||'Website')}" referrerpolicy="no-referrer">`;
                     return `
                     <div class="jsmini-chrome-result"
                         onclick="loadSite('${escapeHTML(s.url)}')">
