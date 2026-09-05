@@ -752,6 +752,76 @@
 @keyframes premiumPulse{50%{transform:scale(1.35);opacity:.65}}@keyframes miniSweep{50%,100%{transform:translateX(110%)}}@keyframes stageGlow{50%{transform:scale(1.08);opacity:.75}}@keyframes videoFloat{50%{transform:perspective(1400px) rotateY(-2deg) rotateX(1deg) translateY(-8px)}}@keyframes codeIn{to{opacity:1;transform:none}}@keyframes previewReveal{from{opacity:0;transform:translateX(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes previewOrb{50%{transform:translate(-35px,15px)}}@keyframes cursorTour{0%,8%{left:55%;top:70%}22%{left:72%;top:30%}39%{left:28%;top:34%}56%{left:72%;top:72%}74%{left:42%;top:48%}100%{left:55%;top:70%}}@keyframes videoBeam{from{top:-3px}to{top:100%}}@keyframes badgeFloat{50%{transform:translateY(-7px)}}@keyframes sparkMove{50%{transform:translate(55px,-25px);opacity:.35}}
 @media(max-width:1000px){.premium-hero{grid-template-columns:1fr;gap:40px;padding-top:105px}.premium-stage{min-height:500px}.mini-ad-inner{grid-template-columns:1fr;padding:42px}.premium-feature-grid{grid-template-columns:1fr 1fr}.premium-timeline{grid-template-columns:1fr 1fr}.timeline-card:after{display:none}}
 @media(max-width:700px){#landingPage .site-nav{height:64px}.premium-hero{padding:90px 18px 55px;min-height:auto}.premium-title{font-size:45px}.premium-copy>p{font-size:15px}.premium-stage{min-height:390px}.browser-video{transform:none}.video-screen{height:285px}.video-code,.video-preview{top:12px;height:calc(100% - 24px)}.video-code{left:12px}.video-preview{right:12px}.premium-stat{min-width:105px}.premium-section{padding:70px 18px}.premium-feature-grid,.premium-timeline{grid-template-columns:1fr}.mini-ad-inner{padding:30px 22px;gap:25px}.mini-demo{min-height:230px}.mini-demo-browser{min-height:205px}.premium-final{padding:20px 18px 70px}.premium-final-box{padding:50px 22px}.premium-badges{display:none}}
+
+  /* Start-page advertising cards — scoped only to the landing page */
+  #landingPage .start-ad-section{
+    max-width:1200px;margin:0 auto;padding:0 5vw 35px;position:relative;z-index:4;
+  }
+  #landingPage .start-ad-grid{
+    display:grid;grid-template-columns:1.18fr .82fr;gap:18px;align-items:stretch;
+  }
+  #landingPage .start-ad-card{
+    position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;
+    background:var(--surface);box-shadow:0 24px 70px rgba(15,35,65,.10);
+    min-height:270px;isolation:isolate;transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;
+  }
+  #landingPage .start-ad-card:hover{
+    transform:translateY(-5px);box-shadow:0 32px 85px rgba(15,35,65,.16);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));
+  }
+  #landingPage .start-ad-card::after{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:linear-gradient(90deg,rgba(7,16,29,.94) 0%,rgba(7,16,29,.74) 43%,rgba(7,16,29,.10) 100%);
+    pointer-events:none;
+  }
+  #landingPage .start-ad-card img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;
+    transition:transform .7s cubic-bezier(.16,1,.3,1),filter .5s ease;
+  }
+  #landingPage .start-ad-card:hover img{transform:scale(1.045);filter:saturate(1.06)}
+  #landingPage .start-ad-content{
+    min-height:270px;display:flex;flex-direction:column;justify-content:center;
+    padding:32px 36px;color:#fff;max-width:690px;
+  }
+  #landingPage .start-ad-small{
+    display:inline-flex;align-items:center;gap:7px;width:max-content;
+    padding:6px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;
+    background:rgba(255,255,255,.08);backdrop-filter:blur(10px);
+    color:#dbeafe;font-size:9px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;
+  }
+  #landingPage .start-ad-small i{color:#60a5fa}
+  #landingPage .start-ad-content h3{
+    margin:13px 0 9px;font-size:clamp(25px,3vw,39px);line-height:1.02;
+    letter-spacing:-.055em;font-weight:950;
+  }
+  #landingPage .start-ad-content p{
+    margin:0;color:rgba(235,242,252,.82);font-size:12px;line-height:1.7;max-width:560px;
+  }
+  #landingPage .start-ad-content strong{color:#fff}
+  #landingPage .start-ad-link{
+    display:inline-flex;align-items:center;gap:8px;margin-top:17px;width:max-content;
+    color:#fff;font-size:10px;font-weight:900;padding:9px 12px;border-radius:9px;
+    border:1px solid rgba(255,255,255,.20);background:rgba(255,255,255,.09);
+    transition:.2s;
+  }
+  #landingPage .start-ad-link:hover{background:rgba(255,255,255,.16);transform:translateX(2px)}
+  #landingPage .start-ad-card.beginner::after{
+    background:linear-gradient(90deg,rgba(10,22,38,.95) 0%,rgba(10,22,38,.78) 48%,rgba(10,22,38,.14) 100%);
+  }
+  #landingPage .start-ad-card.beginner .start-ad-small i{color:#22c55e}
+  #landingPage .start-ad-card.beginner .start-ad-link{border-color:rgba(34,197,94,.30)}
+  @media(max-width:900px){
+    #landingPage .start-ad-grid{grid-template-columns:1fr}
+    #landingPage .start-ad-card{min-height:290px}
+    #landingPage .start-ad-content{min-height:290px}
+  }
+  @media(max-width:700px){
+    #landingPage .start-ad-section{padding:0 18px 20px}
+    #landingPage .start-ad-content{padding:28px 23px;min-height:270px}
+    #landingPage .start-ad-card{min-height:270px;border-radius:20px}
+    #landingPage .start-ad-content h3{font-size:27px}
+    #landingPage .start-ad-content p{font-size:11px}
+  }
+
 @media(prefers-reduced-motion:reduce){#landingPage *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -847,6 +917,31 @@
           </div>
         </div>
         <div class="video-badge"><i class="fa-solid fa-circle-check"></i>Live output while you code</div>
+      </div>
+    </section>
+
+
+    <section class="start-ad-section" aria-label="JS CODE OUTPUT advertising highlights">
+      <div class="start-ad-grid">
+        <article class="start-ad-card">
+          <img src="ad.jpeg" alt="A professional working on JS CODE OUTPUT in an office" loading="eager">
+          <div class="start-ad-content">
+            <span class="start-ad-small"><i class="fa-solid fa-bolt"></i> BUILT FOR REAL BUILDERS</span>
+            <h3>Turn your ideas into something people can see.</h3>
+            <p><strong>Code with confidence. See every change instantly.</strong> JS CODE OUTPUT brings your editor, live output, projects and publishing workflow together in one professional browser workspace — so you can spend less time switching tools and more time building.</p>
+            <a class="start-ad-link" href="#features">Explore the workspace <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </article>
+
+        <article class="start-ad-card beginner">
+          <img src="av.jpeg" alt="Beginners learning and creating with computers" loading="eager">
+          <div class="start-ad-content">
+            <span class="start-ad-small"><i class="fa-solid fa-graduation-cap"></i> MADE FOR BEGINNERS</span>
+            <h3>Start simple. Learn fast. Build for real.</h3>
+            <p>A friendly place to take your first steps into web development. Write HTML, CSS and JavaScript, run your code instantly, experiment freely and watch your ideas become live results.</p>
+            <a class="start-ad-link" href="#" onclick="startBuilding();return false;">Start building free <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </article>
       </div>
     </section>
 
