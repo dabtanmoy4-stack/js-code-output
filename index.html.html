@@ -1349,18 +1349,17 @@ window.firebaseAnonymousSignIn = () => signInAnonymously(auth);
 
 
 function serializeFilesForFirestore(source) {
-  const safe = {};
-  if (!source || typeof source !== "object") return safe;
+  // Firestore-safe representation:
+  // every real file is stored as a plain string, and folder markers are
+  // stored as empty strings. This avoids File/Blob/DOM/custom-object values.
+  const safe = Object.create(null);
+  if (!source || typeof source !== "object") return {};
 
-  Object.entries(source).forEach(([rawPath, rawValue]) => {
-    if (!rawPath) return;
-
+  const add = (rawPath, rawValue) => {
+    if (rawPath == null) return;
     const path = String(rawPath).replace(/^\/+/, "");
     if (!path) return;
 
-    // Firestore only receives plain strings for file contents.
-    // This prevents File/Blob/DOM/Firebase special objects from being
-    // interpreted as unsupported nested entities.
     if (path.endsWith("/")) {
       safe[path] = "";
       return;
@@ -1371,11 +1370,14 @@ function serializeFilesForFirestore(source) {
       return;
     }
 
-    if (rawValue == null) {
+    if (rawValue == null || typeof rawValue === "undefined") {
       safe[path] = "";
       return;
     }
 
+    // Uploaded binary files should already be Data URLs because
+    // readUploadedFile() uses FileReader.readAsDataURL(). If an unusual
+    // object reaches this point, NEVER pass that object to Firestore.
     try {
       if (rawValue instanceof Blob) {
         safe[path] = "";
@@ -1383,29 +1385,54 @@ function serializeFilesForFirestore(source) {
       }
     } catch (_) {}
 
-    if (rawValue instanceof ArrayBuffer) {
-      safe[path] = "";
-      return;
-    }
+    try {
+      if (rawValue instanceof ArrayBuffer || ArrayBuffer.isView(rawValue)) {
+        safe[path] = "";
+        return;
+      }
+    } catch (_) {}
 
-    if (ArrayBuffer.isView(rawValue)) {
-      safe[path] = "";
+    if (typeof rawValue === "number" || typeof rawValue === "boolean" || typeof rawValue === "bigint") {
+      safe[path] = String(rawValue);
       return;
     }
 
     if (typeof rawValue === "object") {
       try {
-        safe[path] = JSON.stringify(rawValue);
+        const json = JSON.stringify(rawValue);
+        safe[path] = typeof json === "string" ? json : String(rawValue);
       } catch (_) {
-        safe[path] = String(rawValue);
+        try { safe[path] = String(rawValue); } catch (__) { safe[path] = ""; }
       }
       return;
     }
 
     safe[path] = String(rawValue);
-  });
+  };
 
-  return safe;
+  try {
+    Object.keys(source).forEach(key => add(key, source[key]));
+  } catch (_) {
+    try {
+      Object.entries(source).forEach(([key, value]) => add(key, value));
+    } catch (__) {}
+  }
+
+  // Return an ordinary object so Firebase receives a normal JS map.
+  return Object.assign({}, safe);
+}
+
+function firestoreSafeProjectFiles(source) {
+  return serializeFilesForFirestore(source);
+}
+
+function projectFilesSizeBytes(source) {
+  try {
+    return new Blob([JSON.stringify(firestoreSafeProjectFiles(source))]).size;
+  } catch (_) {
+    try { return JSON.stringify(firestoreSafeProjectFiles(source)).length; }
+    catch (__) { return 0; }
+  }
 }
 
 window.saveProjectDraft = async (idOverride=null) => {
@@ -1415,7 +1442,7 @@ window.saveProjectDraft = async (idOverride=null) => {
   if (!window.isSwitchingProject) syncEditor();
   try {
     await setDoc(doc(db, "users", user.uid, "projects", id), {
-      files: serializeFilesForFirestore(window.files),
+      files: firestoreSafeProjectFiles(window.files),
       updatedAt: serverTimestamp()
     }, {merge:true});
     return true;
@@ -1841,7 +1868,7 @@ async function deployToJSMiniBrowser() {
         id,
         name: projectName,
         ownerId: user.uid,
-        files: serializeFilesForFirestore(window.files),
+        files: firestoreSafeProjectFiles(window.files),
         createdAt: window.firebaseServerTimestamp(),
         updatedAt: window.firebaseServerTimestamp()
       });
@@ -1863,44 +1890,183 @@ async function deployToJSMiniBrowser() {
   }
 }
 
-function buildStandaloneProjectHTML(projFiles) {
-  const fileSet = projFiles || files;
-  const allFileKeys = Object.keys(fileSet).filter(k => !k.endsWith("/"));
-  const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
-  const cssKeys = allFileKeys.filter(k => /\.css$/i.test(k));
-  const jsKeys = allFileKeys.filter(k => /\.(js|mjs)$/i.test(k));
+function normalizeProjectPath(path) {
+  return String(path || "")
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "")
+    .replace(/^\.\//, "");
+}
 
-  const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html");
-  let html = rootIndex ? fileSet[rootIndex] : (htmlKeys.length ? fileSet[htmlKeys[0]] : "");
-  let css = cssKeys.map(k => fileSet[k] || "").join("\n");
-  const js = jsKeys.map(k => fileSet[k] || "").join(";\n");
+function dirnameProjectPath(path) {
+  const p = normalizeProjectPath(path);
+  const i = p.lastIndexOf("/");
+  return i >= 0 ? p.slice(0, i + 1) : "";
+}
 
-  Object.keys(fileSet).forEach(filename => {
-     if(isBinary(getExt(filename))) {
-        const safeKey = filename.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        const rx = new RegExp('(["\'])(\\.\\/)?' + safeKey + '\\1', 'g');
-        html = html.replace(rx, '$1' + fileSet[filename] + '$1');
-        css = css.replace(rx, '$1' + fileSet[filename] + '$1');
-     }
+function resolveProjectPath(fromFile, ref) {
+  let r = String(ref || "").trim();
+  if (!r || r.startsWith("#") || /^(data:|blob:|https?:|\/\/|mailto:|javascript:)/i.test(r)) return null;
+
+  // Strip query/hash while preserving the original URL behavior elsewhere.
+  r = r.split("#")[0].split("?")[0].replace(/\\/g, "/");
+  if (!r) return null;
+
+  const base = dirnameProjectPath(fromFile);
+  const parts = (base + r).split("/");
+  const out = [];
+
+  for (const part of parts) {
+    if (!part || part === ".") continue;
+    if (part === "..") { if (out.length) out.pop(); }
+    else out.push(part);
+  }
+  return out.join("/");
+}
+
+function projectMimeType(path) {
+  const e = getExt(path);
+  const map = {
+    png:"image/png", jpg:"image/jpeg", jpeg:"image/jpeg", gif:"image/gif",
+    webp:"image/webp", avif:"image/avif", bmp:"image/bmp", ico:"image/x-icon",
+    svg:"image/svg+xml", mp3:"audio/mpeg", wav:"audio/wav", ogg:"audio/ogg",
+    m4a:"audio/mp4", mp4:"video/mp4", webm:"video/webm", ogv:"video/ogg",
+    vtt:"text/vtt", woff:"font/woff", woff2:"font/woff2", ttf:"font/ttf",
+    otf:"font/otf"
+  };
+  return map[e] || "application/octet-stream";
+}
+
+function escapeInlineScriptText(text) {
+  return String(text ?? "").replace(/<\/script/gi, "<\\/script");
+}
+
+function escapeInlineStyleText(text) {
+  return String(text ?? "").replace(/<\/style/gi, "<\\/style");
+}
+
+function inlineBinaryProjectReferences(text, currentFile, fileSet) {
+  let result = String(text ?? "");
+
+  Object.keys(fileSet || {}).forEach(assetPath => {
+    if (assetPath.endsWith("/") || !isBinary(getExt(assetPath))) return;
+    const content = fileSet[assetPath];
+    if (typeof content !== "string" || !content) return;
+
+    const candidates = new Set([
+      assetPath,
+      "./" + assetPath,
+      "/" + assetPath
+    ]);
+
+    // References such as ../img/a.png must be resolved relative to the file.
+    const relativeFromCurrent = (() => {
+      const base = dirnameProjectPath(currentFile).split("/").filter(Boolean);
+      const target = normalizeProjectPath(assetPath).split("/").filter(Boolean);
+      while (base.length) {
+        const candidate = base.join("/") + "/" + target.join("/");
+        if (candidate === assetPath) return "./" + target.join("/");
+        base.pop();
+      }
+      return null;
+    })();
+    if (relativeFromCurrent) candidates.add(relativeFromCurrent);
+
+    candidates.forEach(ref => {
+      const escaped = ref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      // Quoted HTML/CSS/JS references.
+      result = result.replace(new RegExp("([\"'])" + escaped + "\\1", "g"), "$1" + content + "$1");
+      // CSS url(...) references.
+      result = result.replace(new RegExp("(url\\(\\s*[\"']?)" + escaped + "([\"']?\\s*\\))", "g"), "$1" + content + "$2");
+    });
   });
 
+  return result;
+}
+
+function inlineProjectHtmlReferences(html, htmlFile, fileSet) {
+  let result = String(html || "");
+
+  // Inline local CSS files while respecting each CSS file's own relative asset paths.
+  result = result.replace(
+    /<link\b[^>]*\brel\s*=\s*["']stylesheet["'][^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi,
+    (full, href) => {
+      const resolved = resolveProjectPath(htmlFile, href);
+      if (!resolved || !fileSet[resolved] || !/\.css$/i.test(resolved)) return full;
+      const css = inlineBinaryProjectReferences(String(fileSet[resolved]), resolved, fileSet);
+      return "<style data-jco-inline-css>" + escapeInlineStyleText(css) + "</style>";
+    }
+  );
+
+  // Also handle href before rel.
+  result = result.replace(
+    /<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*\brel\s*=\s*["']stylesheet["'][^>]*>/gi,
+    (full, href) => {
+      const resolved = resolveProjectPath(htmlFile, href);
+      if (!resolved || !fileSet[resolved] || !/\.css$/i.test(resolved)) return full;
+      const css = inlineBinaryProjectReferences(String(fileSet[resolved]), resolved, fileSet);
+      return "<style data-jco-inline-css>" + escapeInlineStyleText(css) + "</style>";
+    }
+  );
+
+  // Inline classic local JS files. Module imports remain untouched so external
+  // modules can still resolve from their original URLs.
+  result = result.replace(
+    /<script\b([^>]*?)\bsrc\s*=\s*["']([^"']+)["']([^>]*)>\s*<\/script>/gi,
+    (full, before, src, after) => {
+      const resolved = resolveProjectPath(htmlFile, src);
+      if (!resolved || !Object.prototype.hasOwnProperty.call(fileSet, resolved) || !/\.(?:js|mjs|cjs)$/i.test(resolved)) return full;
+      const code = String(fileSet[resolved] ?? "");
+      if (/\btype\s*=\s*["']module["']/i.test(before + after)) {
+        return "<script" + before + 'data-jco-original-src="' + String(src).replace(/"/g, "&quot;") + '"' + after + ">" +
+               escapeInlineScriptText(code) + "<\/script>";
+      }
+      return "<script" + before + after + ">" + escapeInlineScriptText(code) + "<\/script>";
+    }
+  );
+
+  // Inline remaining binary references (images, fonts, media, etc.).
+  result = inlineBinaryProjectReferences(result, htmlFile, fileSet);
+  return result;
+}
+
+function buildStandaloneProjectHTML(projFiles) {
+  const fileSet = firestoreSafeProjectFiles(projFiles || files);
+  const allFileKeys = Object.keys(fileSet).filter(k => !k.endsWith("/"));
+  const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
+
+  const rootIndex = htmlKeys.find(k => k.toLowerCase() === "index.html" || k.toLowerCase() === "index.htm");
+  const htmlFile = rootIndex || htmlKeys[0] || "";
+  let html = htmlFile ? String(fileSet[htmlFile] || "") : "";
+
+  // If there is no HTML entry point, create a useful document from available code.
+  if (!html.trim()) {
+    const cssKeys = allFileKeys.filter(k => /\.css$/i.test(k));
+    const jsKeys = allFileKeys.filter(k => /\.(js|mjs|cjs)$/i.test(k));
+    const css = cssKeys.map(k => inlineBinaryProjectReferences(String(fileSet[k] || ""), k, fileSet)).join("\n");
+    const js = jsKeys.map(k => String(fileSet[k] || "")).join("\n;\n");
+    html = "<!doctype html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>" +
+      escapeInlineStyleText(css) + "</style></head><body><script>" +
+      escapeInlineScriptText(js) + "<\/script></body></html>";
+  } else {
+    html = inlineProjectHtmlReferences(html, htmlFile, fileSet);
+  }
+
+  // Keep the existing external libraries available, while the user's local
+  // project CSS/JS/assets are bundled into the published document.
   const tw = '<script src="https://cdn.tailwindcss.com"><\/script>';
   const fa = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
 
-  return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  ${tw}${fa}
-  <style>${css}</style>
+  if (!/<meta[^>]+charset=/i.test(html)) {
+    html = html.replace(/<head\b[^>]*>/i, "$&<meta charset=\"UTF-8\">");
+  }
 
-</head>
-<body>
-  ${html}
-  <script>try{ ${js} }catch(err){ console.error(err.message); }<\/script>
-</body>
-</html>`;
+  if (/<head\b[^>]*>/i.test(html)) {
+    html = html.replace(/<head\b[^>]*>/i, "$&" + tw + fa);
+  } else {
+    html = tw + fa + html;
+  }
+
+  return html;
 }
 
 async function handlePublishProject() {
@@ -1922,7 +2088,7 @@ const newId = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", newId), {
 id: newId, name: projectName, ownerId: user.uid,
-files: serializeFilesForFirestore(window.files),
+files: firestoreSafeProjectFiles(window.files),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
@@ -1943,6 +2109,16 @@ await window.saveProjectDraft(id);
 
 try {
 const fullHtml = buildStandaloneProjectHTML(window.files);
+const bundleBytes = new Blob([fullHtml]).size;
+
+// public_projects is a single Firestore document. Keep the current publish
+// architecture safe instead of writing a value that Firestore will reject.
+if (bundleBytes >= 900000) {
+  showToast("Project is too large to publish in one live bundle.");
+  console.warn("Publish bundle too large:", bundleBytes, "bytes");
+  return;
+}
+
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "public_projects", id), {
 id: id,
 name: projectName,
@@ -1952,6 +2128,8 @@ publishedAt: window.firebaseServerTimestamp()
 }, {merge:true});
 } catch(e) {
 console.error("Public bundle error:", e);
+showToast("Publish failed. Check the project files and try again.");
+return;
 }
 
 const shareUrl = window.location.origin + window.location.pathname + '?live=' + id;
@@ -2494,7 +2672,7 @@ const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
 id, name, ownerId: u.uid,
-files: serializeFilesForFirestore(initialFiles),
+files: firestoreSafeProjectFiles(initialFiles),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
