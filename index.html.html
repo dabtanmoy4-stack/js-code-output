@@ -1349,78 +1349,79 @@ window.firebaseAnonymousSignIn = () => signInAnonymously(auth);
 
 
 function serializeFilesForFirestore(source) {
-  // Firestore-safe representation:
-  // every real file is stored as a plain string, and folder markers are
-  // stored as empty strings. This avoids File/Blob/DOM/custom-object values.
-  const safe = Object.create(null);
-  if (!source || typeof source !== "object") return {};
+  // Convert the project's file map into a Firestore-safe plain object.
+  // Firestore must never receive File/Blob/DOM/custom class instances.
+  const safe = {};
 
-  const add = (rawPath, rawValue) => {
-    if (rawPath == null) return;
-    const path = String(rawPath).replace(/^\/+/, "");
-    if (!path) return;
+  if (!source || typeof source !== "object") return safe;
 
-    if (path.endsWith("/")) {
-      safe[path] = "";
+  Object.keys(source).forEach(function(rawKey) {
+    const key = String(rawKey || "").replace(/^\/+/, "");
+    if (!key) return;
+
+    const value = source[rawKey];
+
+    if (key.endsWith("/")) {
+      safe[key] = "";
       return;
     }
 
-    if (typeof rawValue === "string") {
-      safe[path] = rawValue;
+    if (typeof value === "string") {
+      safe[key] = value;
       return;
     }
 
-    if (rawValue == null || typeof rawValue === "undefined") {
-      safe[path] = "";
+    if (value === null || value === undefined) {
+      safe[key] = "";
       return;
     }
 
-    // Uploaded binary files should already be Data URLs because
-    // readUploadedFile() uses FileReader.readAsDataURL(). If an unusual
-    // object reaches this point, NEVER pass that object to Firestore.
+    // Never send browser binary/object instances directly to Firestore.
     try {
-      if (rawValue instanceof Blob) {
-        safe[path] = "";
+      if (value instanceof Blob) {
+        // Uploaded assets in this app are normally already Data URLs.
+        safe[key] = "";
         return;
       }
     } catch (_) {}
 
     try {
-      if (rawValue instanceof ArrayBuffer || ArrayBuffer.isView(rawValue)) {
-        safe[path] = "";
+      if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
+        safe[key] = "";
         return;
       }
     } catch (_) {}
 
-    if (typeof rawValue === "number" || typeof rawValue === "boolean" || typeof rawValue === "bigint") {
-      safe[path] = String(rawValue);
+    if (
+      typeof value === "number" ||
+      typeof value === "boolean" ||
+      typeof value === "bigint"
+    ) {
+      safe[key] = String(value);
       return;
     }
 
-    if (typeof rawValue === "object") {
+    if (typeof value === "object") {
       try {
-        const json = JSON.stringify(rawValue);
-        safe[path] = typeof json === "string" ? json : String(rawValue);
+        const json = JSON.stringify(value);
+        safe[key] = typeof json === "string" ? json : "";
       } catch (_) {
-        try { safe[path] = String(rawValue); } catch (__) { safe[path] = ""; }
+        safe[key] = "";
       }
       return;
     }
 
-    safe[path] = String(rawValue);
-  };
+    safe[key] = String(value);
+  });
 
-  try {
-    Object.keys(source).forEach(key => add(key, source[key]));
-  } catch (_) {
-    try {
-      Object.entries(source).forEach(([key, value]) => add(key, value));
-    } catch (__) {}
-  }
-
-  // Return an ordinary object so Firebase receives a normal JS map.
-  return Object.assign({}, safe);
+  return safe;
 }
+
+// Global alias: deployment, save, publish and any other code can safely call it.
+window.serializeFilesForFirestore = serializeFilesForFirestore;
+window.firestoreSafeProjectFiles = function(source) {
+  return serializeFilesForFirestore(source);
+};
 
 function firestoreSafeProjectFiles(source) {
   return serializeFilesForFirestore(source);
@@ -1428,13 +1429,15 @@ function firestoreSafeProjectFiles(source) {
 
 function projectFilesSizeBytes(source) {
   try {
-    return new Blob([JSON.stringify(firestoreSafeProjectFiles(source))]).size;
+    return new Blob([JSON.stringify(serializeFilesForFirestore(source))]).size;
   } catch (_) {
-    try { return JSON.stringify(firestoreSafeProjectFiles(source)).length; }
-    catch (__) { return 0; }
+    try {
+      return JSON.stringify(serializeFilesForFirestore(source)).length;
+    } catch (__) {
+      return 0;
+    }
   }
 }
-
 window.saveProjectDraft = async (idOverride=null) => {
   const user = auth.currentUser;
   const id = idOverride || window.currentProjectId;
@@ -1442,7 +1445,7 @@ window.saveProjectDraft = async (idOverride=null) => {
   if (!window.isSwitchingProject) syncEditor();
   try {
     await setDoc(doc(db, "users", user.uid, "projects", id), {
-      files: firestoreSafeProjectFiles(window.files),
+      files: window.firestoreSafeProjectFiles(window.files),
       updatedAt: serverTimestamp()
     }, {merge:true});
     return true;
@@ -1868,7 +1871,7 @@ async function deployToJSMiniBrowser() {
         id,
         name: projectName,
         ownerId: user.uid,
-        files: firestoreSafeProjectFiles(window.files),
+        files: window.firestoreSafeProjectFiles(window.files),
         createdAt: window.firebaseServerTimestamp(),
         updatedAt: window.firebaseServerTimestamp()
       });
@@ -2030,7 +2033,7 @@ function inlineProjectHtmlReferences(html, htmlFile, fileSet) {
 }
 
 function buildStandaloneProjectHTML(projFiles) {
-  const fileSet = firestoreSafeProjectFiles(projFiles || files);
+  const fileSet = window.firestoreSafeProjectFiles(projFiles || files);
   const allFileKeys = Object.keys(fileSet).filter(k => !k.endsWith("/"));
   const htmlKeys = allFileKeys.filter(k => /\.html?$/i.test(k));
 
@@ -2088,7 +2091,7 @@ const newId = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", newId), {
 id: newId, name: projectName, ownerId: user.uid,
-files: firestoreSafeProjectFiles(window.files),
+files: window.firestoreSafeProjectFiles(window.files),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
@@ -2672,7 +2675,7 @@ const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
 id, name, ownerId: u.uid,
-files: firestoreSafeProjectFiles(initialFiles),
+files: window.firestoreSafeProjectFiles(initialFiles),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
