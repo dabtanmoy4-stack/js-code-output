@@ -1347,6 +1347,67 @@ window.firebaseSignOut = signOut;
 window.googleSignIn = () => signInWithPopup(auth, provider);
 window.firebaseAnonymousSignIn = () => signInAnonymously(auth);
 
+
+function serializeFilesForFirestore(source) {
+  const safe = {};
+  if (!source || typeof source !== "object") return safe;
+
+  Object.entries(source).forEach(([rawPath, rawValue]) => {
+    if (!rawPath) return;
+
+    const path = String(rawPath).replace(/^\/+/, "");
+    if (!path) return;
+
+    // Firestore only receives plain strings for file contents.
+    // This prevents File/Blob/DOM/Firebase special objects from being
+    // interpreted as unsupported nested entities.
+    if (path.endsWith("/")) {
+      safe[path] = "";
+      return;
+    }
+
+    if (typeof rawValue === "string") {
+      safe[path] = rawValue;
+      return;
+    }
+
+    if (rawValue == null) {
+      safe[path] = "";
+      return;
+    }
+
+    try {
+      if (rawValue instanceof Blob) {
+        safe[path] = "";
+        return;
+      }
+    } catch (_) {}
+
+    if (rawValue instanceof ArrayBuffer) {
+      safe[path] = "";
+      return;
+    }
+
+    if (ArrayBuffer.isView(rawValue)) {
+      safe[path] = "";
+      return;
+    }
+
+    if (typeof rawValue === "object") {
+      try {
+        safe[path] = JSON.stringify(rawValue);
+      } catch (_) {
+        safe[path] = String(rawValue);
+      }
+      return;
+    }
+
+    safe[path] = String(rawValue);
+  });
+
+  return safe;
+}
+
 window.saveProjectDraft = async (idOverride=null) => {
   const user = auth.currentUser;
   const id = idOverride || window.currentProjectId;
@@ -1354,7 +1415,7 @@ window.saveProjectDraft = async (idOverride=null) => {
   if (!window.isSwitchingProject) syncEditor();
   try {
     await setDoc(doc(db, "users", user.uid, "projects", id), {
-      files: JSON.parse(JSON.stringify(window.files || {})),
+      files: serializeFilesForFirestore(window.files),
       updatedAt: serverTimestamp()
     }, {merge:true});
     return true;
@@ -1780,7 +1841,7 @@ async function deployToJSMiniBrowser() {
         id,
         name: projectName,
         ownerId: user.uid,
-        files: JSON.parse(JSON.stringify(window.files || {})),
+        files: serializeFilesForFirestore(window.files),
         createdAt: window.firebaseServerTimestamp(),
         updatedAt: window.firebaseServerTimestamp()
       });
@@ -1861,7 +1922,7 @@ const newId = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", user.uid, "projects", newId), {
 id: newId, name: projectName, ownerId: user.uid,
-files: JSON.parse(JSON.stringify(window.files || {})),
+files: serializeFilesForFirestore(window.files),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
@@ -2433,7 +2494,7 @@ const id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 
 try {
 await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id), {
 id, name, ownerId: u.uid,
-files: initialFiles,
+files: serializeFilesForFirestore(initialFiles),
 createdAt: window.firebaseServerTimestamp(),
 updatedAt: window.firebaseServerTimestamp()
 });
