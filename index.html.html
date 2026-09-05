@@ -1089,8 +1089,8 @@
       </div>
     </div>
   </aside>
-  <input type="file" id="fileUpload" multiple hidden onchange="handleFileUpload(event)">
-  <input type="file" id="folderUpload" webkitdirectory directory multiple hidden onchange="handleFolderUpload(event)">
+  <input type="file" id="fileUpload" multiple hidden accept="*" title="Supported file size: under 900 KB" onchange="handleFileUpload(event)">
+  <input type="file" id="folderUpload" webkitdirectory directory multiple hidden accept="*" title="Supported file size: under 900 KB per file" onchange="handleFolderUpload(event)">
 
   <div class="main-area">
     <section class="editor-panel" id="editorPanelContainer" data-tour="editor-panel">
@@ -3238,6 +3238,8 @@ renderFileExplorer();
 }
 };
 
+window.JS_CODE_OUTPUT_MAX_UPLOAD_BYTES = 900 * 1024; // 900 KB per file
+
 function readUploadedFile(file){
 return new Promise((resolve, reject) => {
 const reader = new FileReader();
@@ -3272,7 +3274,7 @@ async function processFilesWithProgress(fileList) {
 const results = [];
 const failed = [];
 const chunkSize = 10;
-const maxFileSize = 5 * 1024 * 1024;
+const maxFileSize = window.JS_CODE_OUTPUT_MAX_UPLOAD_BYTES;
 
 const overlay = document.getElementById("uploadProgressOverlay");
 const text = document.getElementById("uploadProgressText");
@@ -3292,7 +3294,7 @@ if(text) {
 
 const chunkPromises = chunk.map(async (f) => {
   if (f.size > maxFileSize) {
-     failed.push(`${f.name} (Too large)`);
+     failed.push(`${f.name} (Over 900 KB)`);
      return null;
   }
   try {
@@ -3331,7 +3333,7 @@ if(!fileList.length) return;
 const { results, failed } = await processFilesWithProgress(fileList);
 
 if(!results.length){
-showToast(failed.length ? "Files too large (Max 5MB limit)." : "Could not read the selected file(s).");
+showToast(failed.length ? "Upload blocked: only files under 900 KB are supported." : "Could not read the selected file(s).");
 e.target.value = "";
 return;
 }
@@ -3351,7 +3353,7 @@ try { updatePreview(true); } catch(err) { }
 projectDirty = true;
 
 if(failed.length){
-showToast(`${results.length} uploaded; ${failed.length} skipped.`);
+showToast(`${results.length} uploaded; ${failed.length} skipped (files must be under 900 KB).`);
 } else {
 showToast(`${results.length} file(s) uploaded successfully.`);
 }
@@ -3366,7 +3368,7 @@ if(!uploadedFiles.length) return;
 const { results, failed } = await processFilesWithProgress(uploadedFiles);
 
 if(!results.length){
-showToast(failed.length ? "Files too large (Max 5MB)." : "Could not read the folder.");
+showToast(failed.length ? "Upload blocked: only files under 900 KB are supported." : "Could not read the folder.");
 e.target.value = "";
 return;
 }
@@ -3391,7 +3393,7 @@ try { updatePreview(true); } catch(err) { }
 projectDirty = true;
 
 if(failed.length){
-showToast(`${results.length} uploaded; ${failed.length} skipped.`);
+showToast(`${results.length} uploaded; ${failed.length} skipped (files must be under 900 KB).`);
 } else {
 showToast(`${results.length} file(s) from folder uploaded.`);
 }
