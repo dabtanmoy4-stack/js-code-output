@@ -490,10 +490,94 @@
         .jsmini-empty-deployed{text-align:center;padding:30px 15px;background:#181818;border:1px dashed #333;border-radius:12px;margin-top:15px}.jsmini-empty-deployed h3{font-size:15px;font-weight:900;margin:0 0 7px}.jsmini-empty-deployed p{font-size:11px;color:#888;margin:0 0 15px;line-height:1.5}
         .jsmini-primary{background:#E23636;color:#fff;border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-primary:hover{background:#b91c1c}
         @media(max-width:600px){.jsmini-feature-modal{padding:17px;border-radius:13px}.jsmini-deployed-top{flex-direction:column}.jsmini-history-time{display:none}}
+
+        /* ================= REQUIRED GOOGLE SIGN-IN GATE ================= */
+        body.jsmini-auth-locked > *:not(#jsmini-auth-gate){
+            filter: blur(8px);
+            pointer-events:none !important;
+            user-select:none !important;
+        }
+        #jsmini-auth-gate{
+            position:fixed;
+            inset:0;
+            z-index:999999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(226,54,54,.18), transparent 38%),
+                rgba(5,5,5,.96);
+            backdrop-filter:blur(12px);
+        }
+        #jsmini-auth-gate.hidden{display:none!important}
+        .jsmini-auth-card{
+            width:min(430px,100%);
+            background:rgba(18,18,18,.98);
+            border:1px solid #333;
+            border-top:3px solid #E23636;
+            border-radius:22px;
+            padding:30px 24px;
+            text-align:center;
+            box-shadow:0 30px 100px rgba(0,0,0,.75);
+            animation:jsminiAuthIn .35s ease-out;
+        }
+        @keyframes jsminiAuthIn{
+            from{opacity:0;transform:translateY(14px) scale(.98)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+        .jsmini-auth-logo{
+            width:72px;height:72px;margin:0 auto 16px;border-radius:20px;
+            display:flex;align-items:center;justify-content:center;
+            background:#E23636;color:#fff;font-weight:1000;font-size:20px;
+            box-shadow:0 10px 30px rgba(226,54,54,.25);
+        }
+        .jsmini-auth-card h1{font-size:25px;font-weight:900;margin:0 0 8px;color:#fff}
+        .jsmini-auth-card p{font-size:13px;line-height:1.6;color:#9ca3af;margin:0 auto 22px;max-width:340px}
+        #jsmini-google-signin{
+            width:100%;height:48px;border:1px solid #dadce0;border-radius:10px;
+            background:#fff;color:#202124;display:flex;align-items:center;
+            justify-content:center;gap:11px;font-size:14px;font-weight:700;
+            cursor:pointer;transition:.18s;box-shadow:0 2px 6px rgba(0,0,0,.2);
+        }
+        #jsmini-google-signin:hover{background:#f8f9fa;transform:translateY(-1px)}
+        #jsmini-google-signin:disabled{opacity:.65;cursor:wait;transform:none}
+        .jsmini-google-icon{width:20px;height:20px;display:block}
+        #jsmini-auth-status{min-height:18px;margin-top:12px;font-size:12px;color:#9ca3af}
+        #jsmini-auth-status.error{color:#fca5a5}
+        #jsmini-auth-status.success{color:#86efac}
+        .jsmini-auth-note{font-size:10px!important;color:#666!important;margin-top:16px!important;margin-bottom:0!important}
+        @media(max-width:480px){
+            #jsmini-auth-gate{padding:14px}
+            .jsmini-auth-card{padding:26px 18px;border-radius:18px}
+            .jsmini-auth-card h1{font-size:22px}
+        }
+
     </style>
 </head>
 
 <body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
+
+
+    <!-- Google Sign-In is mandatory before using JS mini.Browser -->
+    <div id="jsmini-auth-gate" aria-modal="true" role="dialog">
+        <div class="jsmini-auth-card">
+            <div class="jsmini-auth-logo">JS</div>
+            <h1>Sign in to continue</h1>
+            <p>Google Sign-In is required to enter JS mini.Browser. Sign in with your Google account to access the browser and your synced data.</p>
+            <button id="jsmini-google-signin" type="button" onclick="window.jsMiniRequiredGoogleSignIn && window.jsMiniRequiredGoogleSignIn()">
+                <svg class="jsmini-google-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#4285F4" d="M21.35 12.27c0-.79-.07-1.55-.22-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
+                    <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.75 9.75 0 0 0 12 21.67z"/>
+                    <path fill="#FBBC05" d="M6.54 13.77A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.22.31-1.77V7.7H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.3l3.24-2.53z"/>
+                    <path fill="#EA4335" d="M12 6.2c1.43 0 2.71.49 3.72 1.46l2.79-2.79C16.84 3.22 14.63 2.33 12 2.33A9.75 9.75 0 0 0 3.3 7.7l3.24 2.53C7.31 7.92 9.46 6.2 12 6.2z"/>
+                </svg>
+                Continue with Google
+            </button>
+            <div id="jsmini-auth-status">Checking Google sign-in…</div>
+            <p class="jsmini-auth-note">Your Google account is used only for Firebase authentication and syncing JS mini.Browser data.</p>
+        </div>
+    </div>
 
     <header class="bg-[#0a0a0a] border-b-2 border-marvelRed p-2 flex items-center justify-between shadow-md z-20">
         <div class="flex items-center gap-2">
@@ -957,7 +1041,7 @@
 
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
         const jsMiniFirebaseConfig = {
@@ -983,10 +1067,69 @@
         let jsMiniHistory = [];
         let jsMiniHistoryIndex = -1;
 
+        function setJSMiniAuthGate(locked, message=""){
+            const gate = document.getElementById("jsmini-auth-gate");
+            const status = document.getElementById("jsmini-auth-status");
+            const btn = document.getElementById("jsmini-google-signin");
+
+            if(locked){
+                document.body.classList.add("jsmini-auth-locked");
+                if(gate) gate.classList.remove("hidden");
+                if(status && message) status.textContent = message;
+                if(status) status.className = message && /failed|cancelled|error/i.test(message) ? "error" : "";
+            }else{
+                document.body.classList.remove("jsmini-auth-locked");
+                if(gate) gate.classList.add("hidden");
+                if(status){
+                    status.textContent = "Signed in with Google.";
+                    status.className = "success";
+                }
+            }
+
+            if(btn) btn.disabled = false;
+        }
+
+        window.jsMiniRequiredGoogleSignIn = async function(){
+            const btn = document.getElementById("jsmini-google-signin");
+            const status = document.getElementById("jsmini-auth-status");
+
+            if(jsMiniUser){
+                setJSMiniAuthGate(false);
+                return;
+            }
+
+            if(btn) btn.disabled = true;
+            if(status){
+                status.textContent = "Opening Google Sign-In…";
+                status.className = "";
+            }
+
+            try{
+                await signInWithPopup(jsMiniAuth, jsMiniProvider);
+                // onAuthStateChanged will unlock the page.
+            }catch(e){
+                console.error("Required Google Sign-In failed:", e);
+                if(status){
+                    status.textContent = e && e.code === "auth/popup-closed-by-user"
+                        ? "Google Sign-In was cancelled. Please try again."
+                        : "Google Sign-In failed. Please try again.";
+                    status.className = "error";
+                }
+                if(btn) btn.disabled = false;
+            }
+        };
+
         onAuthStateChanged(jsMiniAuth, user => {
             jsMiniUser = user || null;
             window.jsMiniUser = jsMiniUser;
             jsMiniAuthReadyResolve(jsMiniUser);
+
+            if(jsMiniUser){
+                setJSMiniAuthGate(false);
+            }else{
+                setJSMiniAuthGate(true, "Google Sign-In is required to enter JS mini.Browser.");
+            }
+
             if (typeof updateJSMiniAccountUI === "function") updateJSMiniAccountUI();
         });
 
@@ -1712,22 +1855,7 @@
                         )
                     );
                 }catch(e){
-                    if(!jsMiniUser){
-                        try{
-                            await signInAnonymously(jsMiniAuth);
-
-                            snap=await getDocs(
-                                query(
-                                    collection(jsMiniDb,'public_projects'),
-                                    where('jsMiniPublished','==',true)
-                                )
-                            );
-                        }catch(e2){
-                            throw e2;
-                        }
-                    }else{
-                        throw e;
-                    }
+                    throw e;
                 }
 
                 jsMiniCloudSites=[];
@@ -1985,12 +2113,18 @@
             home.appendChild(sec);
         }
 
-        window.addEventListener('DOMContentLoaded',()=>{
+        window.addEventListener('DOMContentLoaded',async ()=>{
             ensureJSMiniUI();
             ensureJSMiniFeatureUI();
             addCloudSection();
-            loadCloudSites();
             updateJSMiniAccountUI();
+
+            const user = await jsMiniAuthReady;
+
+            // Never initialize protected cloud features for signed-out users.
+            if(!user) return;
+
+            await loadCloudSites();
 
             setTimeout(
                 ()=>window.handleJSMiniDeployFromURL(),
