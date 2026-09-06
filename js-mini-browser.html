@@ -765,10 +765,10 @@
             </div>
 
             <div class="jsmini-notice-actions">
-                <button type="button" class="jsmini-notice-btn secondary" onclick="closeJSMiniInfoNotice()">
+                <button type="button" id="jsmini-notice-continue" class="jsmini-notice-btn secondary">
                     No thanks, continue to Mini Browser
                 </button>
-                <button type="button" class="jsmini-notice-btn primary" onclick="goToJSCodeOutput()">
+                <button type="button" id="jsmini-notice-code-output" class="jsmini-notice-btn primary">
                     <i data-lucide="external-link" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"></i>
                     Go to JS CODE OUTPUT
                 </button>
@@ -1355,8 +1355,17 @@
         }
 
         function goToJSCodeOutput(){
-            window.location.href = "index.html.html";
+            // Use an absolute root path so it works even when Mini Browser is opened from a sub-folder.
+            window.location.assign("/index.html.html");
         }
+
+        // This file uses a JavaScript module, so normal function declarations are not
+        // automatically available to inline onclick handlers. Expose them explicitly.
+        window.closeJSMiniInfoNotice = closeJSMiniInfoNotice;
+        window.goToJSCodeOutput = goToJSCodeOutput;
+
+        document.getElementById("jsmini-notice-continue")?.addEventListener("click", closeJSMiniInfoNotice);
+        document.getElementById("jsmini-notice-code-output")?.addEventListener("click", goToJSCodeOutput);
 
         onAuthStateChanged(jsMiniAuth, user => {
             jsMiniUser = user || null;
