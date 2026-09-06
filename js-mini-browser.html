@@ -481,6 +481,11 @@
         .jsmini-info-block{background:#181818;border:1px solid #2f2f2f;border-radius:12px;padding:14px;margin-top:12px}
         .jsmini-info-block h3{font-size:13px;font-weight:900;margin:0 0 6px}.jsmini-info-block p{font-size:12px;color:#b7b7b7;line-height:1.65;margin:0}
         .jsmini-history-toolbar{display:flex;gap:8px;margin:15px 0}.jsmini-history-search{flex:1;background:#0b0b0b;border:1px solid #333;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:12px}
+        @media (max-width:640px){
+            #js-code-output-switch{height:46px;padding:0 13px;font-size:11px}
+            #js-code-output-switch span{display:none}
+            #js-code-output-switch i{width:20px;height:20px}
+        }
         .jsmini-history-list{display:flex;flex-direction:column;gap:8px}.jsmini-history-item{display:flex;align-items:center;gap:11px;background:#181818;border:1px solid #2e2e2e;border-radius:11px;padding:11px;cursor:pointer}
         .jsmini-history-item:hover{border-color:#E23636;background:#1b1b1b}.jsmini-history-icon{width:32px;height:32px;border-radius:9px;background:#202A44;display:flex;align-items:center;justify-content:center;flex:none}
         .jsmini-history-main{min-width:0;flex:1}.jsmini-history-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jsmini-history-url{font-size:10px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.jsmini-history-time{font-size:9px;color:#777;white-space:nowrap}
@@ -865,12 +870,21 @@
                     <span class="text-gray-300 text-3xl font-light ml-2 tracking-wide block mt-2">.Browser</span>
                 </div>
 
-                <div class="w-full max-w-2xl relative">
-                    <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6"></i>
-                    <input type="text" id="main-search"
-                        class="w-full bg-[#151515] bg-opacity-80 border-2 border-gray-700 text-white rounded-full py-4 pl-14 pr-6 text-lg focus:outline-none focus:border-marvelRed focus:ring-4 focus:ring-red-900/50 shadow-2xl transition-all"
-                        placeholder="Search for alien tech or .JS websites from around the world..."
-                        onkeydown="if(event.key === 'Enter') executeSearch(this.value)">
+                <div class="w-full max-w-2xl flex items-center gap-3">
+                    <div class="relative flex-1 min-w-0">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6"></i>
+                        <input type="text" id="main-search"
+                            class="w-full bg-[#151515] bg-opacity-80 border-2 border-gray-700 text-white rounded-full py-4 pl-14 pr-6 text-lg focus:outline-none focus:border-marvelRed focus:ring-4 focus:ring-red-900/50 shadow-2xl transition-all"
+                            placeholder="Search for alien tech or .JS websites from around the world..."
+                            onkeydown="if(event.key === 'Enter') executeSearch(this.value)">
+                    </div>
+                    <button type="button" id="js-code-output-switch"
+                        onclick="window.location.href='index.html.html'"
+                        class="shrink-0 h-12 px-5 rounded-full bg-white text-black font-bold text-sm flex items-center gap-2 border border-gray-300 shadow-xl hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+                        title="Go to JS CODE OUTPUT">
+                        <i data-lucide="code-2" class="w-5 h-5"></i>
+                        <span>JS CODE OUTPUT</span>
+                    </button>
                 </div>
 
                 <div class="flex gap-4 mt-8">
