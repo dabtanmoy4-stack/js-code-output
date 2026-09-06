@@ -491,6 +491,150 @@
         .jsmini-primary{background:#E23636;color:#fff;border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-primary:hover{background:#b91c1c}
         @media(max-width:600px){.jsmini-feature-modal{padding:17px;border-radius:13px}.jsmini-deployed-top{flex-direction:column}.jsmini-history-time{display:none}}
 
+
+        /* ================= POST-SIGN-IN MINI BROWSER INFORMATION NOTICE ================= */
+        #jsmini-info-notice{
+            position:fixed;
+            inset:0;
+            z-index:999998;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+            background:rgba(3,5,10,.84);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            animation:jsminiNoticeFade .28s ease-out;
+        }
+        #jsmini-info-notice.hidden{display:none!important}
+        @keyframes jsminiNoticeFade{
+            from{opacity:0}
+            to{opacity:1}
+        }
+        .jsmini-notice-card{
+            width:min(680px,100%);
+            max-height:min(88vh,760px);
+            overflow:auto;
+            position:relative;
+            background:linear-gradient(145deg,#171717,#0d0d0d);
+            border:1px solid #343434;
+            border-top:3px solid #E23636;
+            border-radius:22px;
+            padding:28px;
+            color:#fff;
+            box-shadow:0 30px 100px rgba(0,0,0,.78);
+            animation:jsminiNoticeCard .35s cubic-bezier(.2,.8,.2,1);
+        }
+        @keyframes jsminiNoticeCard{
+            from{opacity:0;transform:translateY(18px) scale(.97)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+        .jsmini-notice-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:7px;
+            padding:7px 11px;
+            border-radius:999px;
+            background:rgba(226,54,54,.12);
+            border:1px solid rgba(226,54,54,.3);
+            color:#ff9b9b;
+            font-size:10px;
+            font-weight:900;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            margin-bottom:15px;
+        }
+        .jsmini-notice-title{
+            font-size:clamp(24px,4vw,34px);
+            line-height:1.12;
+            font-weight:950;
+            letter-spacing:-.03em;
+            margin:0 0 10px;
+        }
+        .jsmini-notice-subtitle{
+            color:#b7b7b7;
+            font-size:13px;
+            line-height:1.7;
+            margin:0 0 20px;
+        }
+        .jsmini-notice-section{
+            display:flex;
+            gap:13px;
+            align-items:flex-start;
+            padding:15px;
+            margin:10px 0;
+            background:#131313;
+            border:1px solid #292929;
+            border-radius:14px;
+        }
+        .jsmini-notice-icon{
+            width:38px;
+            height:38px;
+            min-width:38px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:11px;
+            background:#202A44;
+            color:#F78F3F;
+        }
+        .jsmini-notice-section h3{
+            font-size:13px;
+            font-weight:900;
+            margin:0 0 5px;
+        }
+        .jsmini-notice-section p{
+            color:#9ca3af;
+            font-size:11.5px;
+            line-height:1.65;
+            margin:0;
+        }
+        .jsmini-notice-highlight{
+            color:#fff;
+            font-weight:800;
+        }
+        .jsmini-notice-actions{
+            display:flex;
+            gap:10px;
+            margin-top:21px;
+        }
+        .jsmini-notice-btn{
+            flex:1;
+            min-height:46px;
+            border-radius:11px;
+            padding:11px 15px;
+            font-size:12px;
+            font-weight:900;
+            cursor:pointer;
+            transition:.18s ease;
+        }
+        .jsmini-notice-btn.primary{
+            border:0;
+            color:#fff;
+            background:linear-gradient(135deg,#E23636,#b91c1c);
+            box-shadow:0 8px 24px rgba(226,54,54,.2);
+        }
+        .jsmini-notice-btn.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+        .jsmini-notice-btn.secondary{
+            border:1px solid #3a3a3a;
+            color:#d1d5db;
+            background:#202020;
+        }
+        .jsmini-notice-btn.secondary:hover{background:#292929;color:#fff}
+        .jsmini-notice-footer{
+            text-align:center;
+            color:#666;
+            font-size:9.5px;
+            line-height:1.5;
+            margin:14px 0 0;
+        }
+        @media(max-width:600px){
+            #jsmini-info-notice{padding:12px}
+            .jsmini-notice-card{padding:20px 16px;border-radius:17px;max-height:92vh}
+            .jsmini-notice-actions{flex-direction:column}
+            .jsmini-notice-btn{width:100%}
+        }
+
         /* ================= REQUIRED GOOGLE SIGN-IN GATE ================= */
         body.jsmini-auth-locked > *:not(#jsmini-auth-gate){
             filter: blur(8px);
@@ -558,6 +702,83 @@
 
 <body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
 
+
+
+    <!-- Post-login information notice -->
+    <div id="jsmini-info-notice" class="hidden" aria-modal="true" role="dialog" aria-labelledby="jsminiInfoTitle">
+        <div class="jsmini-notice-card">
+            <div class="jsmini-notice-badge">
+                <i data-lucide="info" style="width:13px;height:13px"></i>
+                Important platform information
+            </div>
+
+            <h2 id="jsminiInfoTitle" class="jsmini-notice-title">
+                Welcome to JS mini.Browser
+            </h2>
+
+            <p class="jsmini-notice-subtitle">
+                Before you continue, here is something important you should know about this platform.
+                JS mini.Browser is built for developers who want a simple place to explore, preview,
+                and test projects published through Team JS Builder.
+            </p>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="monitor-check" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>This is not a real web browser</h3>
+                    <p>
+                        JS mini.Browser is <span class="jsmini-notice-highlight">not an actual internet browser</span>
+                        like Chrome, Edge, Firefox, or Safari. It is a dedicated platform environment created by
+                        <span class="jsmini-notice-highlight">Team JS Builder</span> for testing and previewing developer projects.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="flask-conical" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>Built for testing & project preview</h3>
+                    <p>
+                        Developers can publish a project here and use JS mini.Browser to
+                        <span class="jsmini-notice-highlight">open, inspect, preview, and test</span> how that project
+                        behaves inside the Team JS Builder platform.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="rocket" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>Want to create and publish your own project?</h3>
+                    <p>
+                        If you want to build your own website or web project and publish it here for testing,
+                        go to <span class="jsmini-notice-highlight">JS CODE OUTPUT</span>. Create your project,
+                        prepare it for deployment, and then publish it to the JS Builder ecosystem.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-actions">
+                <button type="button" class="jsmini-notice-btn secondary" onclick="closeJSMiniInfoNotice()">
+                    No thanks, continue to Mini Browser
+                </button>
+                <button type="button" class="jsmini-notice-btn primary" onclick="goToJSCodeOutput()">
+                    <i data-lucide="external-link" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"></i>
+                    Go to JS CODE OUTPUT
+                </button>
+            </div>
+
+            <p class="jsmini-notice-footer">
+                Team JS Builder • JS mini.Browser is a developer testing and preview platform.
+            </p>
+        </div>
+    </div>
 
     <!-- Google Sign-In is mandatory before using JS mini.Browser -->
     <div id="jsmini-auth-gate" aria-modal="true" role="dialog">
@@ -1119,6 +1340,24 @@
             }
         };
 
+
+        function showJSMiniInfoNotice(){
+            const notice = document.getElementById("jsmini-info-notice");
+            if(!notice) return;
+            notice.classList.remove("hidden");
+            try{ sessionStorage.setItem("jsmini-info-notice-shown","1"); }catch(e){}
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function closeJSMiniInfoNotice(){
+            const notice = document.getElementById("jsmini-info-notice");
+            if(notice) notice.classList.add("hidden");
+        }
+
+        function goToJSCodeOutput(){
+            window.location.href = "index.html.html";
+        }
+
         onAuthStateChanged(jsMiniAuth, user => {
             jsMiniUser = user || null;
             window.jsMiniUser = jsMiniUser;
@@ -1126,6 +1365,13 @@
 
             if(jsMiniUser){
                 setJSMiniAuthGate(false);
+                try{
+                    if(sessionStorage.getItem("jsmini-info-notice-shown") !== "1"){
+                        setTimeout(showJSMiniInfoNotice, 180);
+                    }
+                }catch(e){
+                    setTimeout(showJSMiniInfoNotice, 180);
+                }
             }else{
                 setJSMiniAuthGate(true, "Google Sign-In is required to enter JS mini.Browser.");
             }
