@@ -113,6 +113,30 @@
   .site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
   .floating-theme{position:fixed;right:22px;bottom:22px;z-index:100;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 12px 30px rgba(0,0,0,.16);display:grid;place-items:center}.floating-theme:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(20,86,184,.25);animation:sunPulse 2.5s infinite}.floating-theme i{position:relative}@keyframes sunPulse{50%{transform:scale(1.12);opacity:.35}}
 
+  /* High-contrast code editor: light theme uses a clean white canvas only for the typing area */
+  html:not(.dark) .CodeMirror,
+  html:not(.dark) .CodeMirror-gutters,
+  html:not(.dark) .CodeMirror-scroll,
+  html:not(.dark) .CodeMirror-sizer{
+    background:#fff!important;
+  }
+  html:not(.dark) .CodeMirror{color:#111827!important;font-family:"Fira Code","Cascadia Code",Consolas,monospace!important}
+  html:not(.dark) .CodeMirror-gutters{border-right:1px solid #d7dde5!important;color:#4b5563!important}
+  html:not(.dark) .CodeMirror-linenumber{color:#6b7280!important}
+  html:not(.dark) .CodeMirror-cursor{border-left:2px solid #111827!important}
+  html:not(.dark) .CodeMirror-selected{background:#cfe3ff!important}
+  html:not(.dark) .CodeMirror-focused .CodeMirror-selected{background:#bcd9ff!important}
+  html:not(.dark) .CodeMirror-activeline-background{background:#f3f6fa!important}
+  html:not(.dark) .cm-s-default .cm-keyword{color:#7c3aed!important;font-weight:600}
+  html:not(.dark) .cm-s-default .cm-def{color:#075985!important}
+  html:not(.dark) .cm-s-default .cm-variable{color:#111827!important}
+  html:not(.dark) .cm-s-default .cm-property{color:#0f4c81!important}
+  html:not(.dark) .cm-s-default .cm-string{color:#047857!important}
+  html:not(.dark) .cm-s-default .cm-number{color:#b45309!important}
+  html:not(.dark) .cm-s-default .cm-comment{color:#64748b!important}
+  html:not(.dark) .cm-s-default .cm-tag{color:#b91c1c!important}
+  html:not(.dark) .cm-s-default .cm-attribute{color:#92400e!important}
+
   #app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
   #topHeader { height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--line);padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px; }
   .header-left { display:flex;align-items:center;gap:14px; }
@@ -247,33 +271,48 @@
   .console-badge.warn { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
   .console-badge.error { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
+  /* Classic loading-style Run animation */
   .run-execution-overlay {
-    position: absolute; inset: 0; z-index: 200;
-    background: rgba(3, 7, 18, 0.94);
-    backdrop-filter: blur(14px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: #fff; font-family: 'Inter', sans-serif;
-    animation: fadeIn 0.2s ease-out;
+     position:absolute; inset:0; z-index:200; overflow:hidden;
+     background:rgba(15,23,42,.94);
+     backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+     display:flex; flex-direction:column; align-items:center; justify-content:center;
+     color:#fff; font-family:Inter,sans-serif; animation:classicRunIn .16s ease-out;
   }
-  .scanner-matrix-grid {
-    position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-    background-size: 24px 24px; pointer-events: none;
+  .run-execution-overlay::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.018);pointer-events:none}
+  .scanner-matrix-grid{display:none}
+  .run-beam-glow{
+     width:58px;height:58px;border-radius:50%;position:relative;z-index:2;
+     display:grid;place-items:center;background:transparent;color:#fff;
   }
-  .run-beam-glow {
-    width: 120px; height: 120px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(147, 51, 234, 0.2) 60%, transparent 100%);
-    display: flex; align-items: center; justify-content: center;
-    position: relative; animation: pulseBeam 1s ease-in-out infinite alternate;
+  .run-beam-glow i{
+     font-size:34px!important;color:#fff!important;
+     animation:classicSpinner .8s linear infinite!important;
   }
-  @keyframes pulseBeam { 0% { transform: scale(0.92); opacity: 0.7; } 100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 25px #38bdf8); } }
-  .run-laser-line {
-    position: absolute; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, transparent, #38bdf8, #c084fc, transparent);
-    box-shadow: 0 0 20px #38bdf8;
-    animation: sweepLaser 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  .run-laser-line{
+     position:relative;left:auto;right:auto;width:220px;height:3px;z-index:2;
+     margin-top:18px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.16);
+     box-shadow:none;animation:none;
   }
-  @keyframes sweepLaser { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+  .run-laser-line::after{
+     content:"";display:block;height:100%;width:65%;border-radius:999px;background:#fff;
+     animation:classicLoadingBar 1.15s ease-in-out infinite;
+  }
+  #runVisualizerStatus{position:relative;z-index:2;margin-top:17px!important;letter-spacing:.02em;font-size:13px!important;font-weight:700!important;text-transform:none!important}
+  #runVisualizerStep{position:relative;z-index:2;opacity:.62;margin-top:5px!important;font-size:11px!important}
+  @keyframes classicRunIn{from{opacity:0}to{opacity:1}}
+  @keyframes classicSpinner{to{transform:rotate(360deg)}}
+  @keyframes classicLoadingBar{0%{transform:translateX(-115%)}50%{transform:translateX(55%)}100%{transform:translateX(165%)}}
+  @media (prefers-reduced-motion:reduce){.run-beam-glow i,.run-laser-line::after{animation:none!important}}
+  .theme-switch-btn { transition:transform .22s ease,background .22s ease,border-color .22s ease,color .22s ease; }
+  .theme-switch-btn:hover { transform:rotate(-8deg) scale(1.04); }
+  html { transition:background-color .25s ease,color .25s ease; }
+  html.theme-animating body, html.theme-animating #app, html.theme-animating .site-nav,
+  html.theme-animating .feature-card, html.theme-animating .step, html.theme-animating .project-card,
+  html.theme-animating .modal, html.theme-animating .login-card, html.theme-animating .explorer,
+  html.theme-animating .editor-tabs, html.theme-animating .preview-toolbar, html.theme-animating #topHeader {
+     transition:background-color .28s ease,color .28s ease,border-color .28s ease,box-shadow .28s ease;
+  }
 
   .placeholder-view { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at center, #111d33 0%, #080f1d 100%);color:#f8fafc;padding:30px;text-align:center;z-index:20; }
   .pulse-ring { width:80px;height:80px;border-radius:50%;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(59,130,246,0.35);animation:glow 3s infinite;margin-bottom:20px; }
@@ -552,6 +591,26 @@
     .pulse-ring,.run-beam-glow,.run-laser-line,.tour-spotlight::before{animation:none!important}
   }
 
+
+  /* High-contrast editor themes */
+  .CodeMirror { transition: background-color .22s ease, color .22s ease; }
+  html:not(.dark) .CodeMirror {
+    background:#ffffff!important; color:#111827!important;
+    border-color:#cbd5e1!important;
+    text-shadow:none!important;
+  }
+  html:not(.dark) .CodeMirror-gutters {
+    background:#f8fafc!important; border-right:1px solid #cbd5e1!important;
+  }
+  html:not(.dark .CodeMirror), html:not(.dark) .CodeMirror-linenumber { color:#475569!important; }
+  html:not(.dark) .CodeMirror-cursor { border-left:2px solid #111827!important; }
+  html:not(.dark) .CodeMirror-selected { background:#bfdbfe!important; }
+  html:not(.dark) .cm-s-dracula .cm-keyword { color:#7c3aed!important; }
+  html:not(.dark) .cm-s-dracula .cm-string { color:#047857!important; }
+  html:not(.dark) .cm-s-dracula .cm-number { color:#b45309!important; }
+  html:not(.dark) .cm-s-dracula .cm-comment { color:#64748b!important; }
+  html:not(.dark) .cm-s-dracula .cm-variable, html:not(.dark) .cm-s-dracula .cm-property { color:#1d4ed8!important; }
+  html.dark .CodeMirror { background:#0b1220!important; }
 </style>
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -1311,7 +1370,7 @@ html.dark body{background:var(--ui-bg)!important}
 </div>
 </div>
 </div>
-<button class="app-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-sun"></i></button>
+<button class="app-btn theme-switch-btn" id="workspaceThemeButton" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme"><i class="fa-solid fa-sun" id="themeIcon"></i></button>
 </div>
 <div class="mobile-toolbar-wrap">
 <button aria-expanded="false" aria-haspopup="true" class="app-btn mobile-tools-button" id="mobileToolsButton" onclick="toggleMobileTools(event)" title="Workspace Tools" type="button">
@@ -1326,7 +1385,7 @@ html.dark body{background:var(--ui-bg)!important}
 <button class="app-btn" onclick="toggleLibraries();closeMobileTools()"><i class="fa-solid fa-cubes"></i><span>Libraries</span></button>
 <button class="app-btn" onclick="handleProtectedDownload();closeMobileTools()"><i class="fa-solid fa-download"></i><span>Download</span></button>
 <button class="app-btn" onclick="toggleAccountMenu(event);closeMobileTools()"><i class="fa-solid fa-user"></i><span>Account</span></button>
-<button class="app-btn" onclick="toggleTheme();closeMobileTools()"><i class="fa-solid fa-sun"></i><span>Theme</span></button>
+<button class="app-btn theme-switch-btn" id="mobileThemeButton" onclick="toggleTheme();closeMobileTools()" title="Toggle Theme" aria-label="Toggle Theme"><i class="fa-solid fa-sun" id="mobileThemeIcon"></i><span>Theme</span></button>
 </div>
 </div>
 </div>
@@ -1400,7 +1459,7 @@ html.dark body{background:var(--ui-bg)!important}
 <div class="run-execution-overlay hidden" id="runVisualizerOverlay">
 <div class="scanner-matrix-grid"></div>
 <div class="run-beam-glow">
-<i class="fa-solid fa-atom text-cyan-400 text-4xl animate-spin" style="animation-duration: 4s;"></i>
+<i class="fa-solid fa-spinner"></i>
 </div>
 <div class="run-laser-line"></div>
 <h3 class="text-base font-black mt-5 tracking-wider uppercase text-cyan-300" id="runVisualizerStatus">Compiling AST Nodes...</h3>
@@ -2008,25 +2067,31 @@ function triggerCinematicRun() {
   const overlay = document.getElementById("runVisualizerOverlay");
   const status = document.getElementById("runVisualizerStatus");
   const step = document.getElementById("runVisualizerStep");
+  if(!overlay || !status || !step) return;
 
   overlay.classList.remove("hidden");
-  status.textContent = "Analyzing AST & Modules...";
-  step.textContent = "Scanning active DOM trees & CSS rules";
+  status.textContent = "Preparing Preview";
+  step.textContent = "Reading project files…";
 
   setTimeout(() => {
-    status.textContent = "Linking Components & Scripts...";
-    step.textContent = "Injecting virtual runtime sandbox";
-  }, 350);
+    status.textContent = "Building Workspace";
+    step.textContent = "Resolving HTML, CSS & JavaScript";
+  }, 280);
 
   setTimeout(() => {
-    status.textContent = "Rendering Live Output...";
-    step.textContent = "Executing compiled bytecode";
-  }, 700);
+    status.textContent = "Launching Runtime";
+    step.textContent = "Mounting secure preview sandbox";
+  }, 560);
+
+  setTimeout(() => {
+    status.textContent = "Live Preview Ready";
+    step.textContent = "Rendering your latest changes";
+  }, 820);
 
   setTimeout(() => {
     overlay.classList.add("hidden");
     updatePreview(true);
-  }, 1050);
+  }, 1080);
 }
 
 function showRequireAuthModal(title, desc, actionCallback) {
@@ -3952,9 +4017,31 @@ if(s==="mobile"){ f.style.width="375px"; f.style.height="92%"; f.style.borderRad
 }
 
 function toggleLibraries(){ document.getElementById("librariesModal").classList.toggle("hidden"); }
+function applyTheme(isDark, persist=true){
+  const root = document.documentElement;
+  root.classList.toggle("dark", !!isDark);
+  root.classList.add("theme-animating");
+  if(persist){
+    try { localStorage.setItem("jco_theme", isDark ? "dark" : "light"); } catch(e) {}
+  }
+  const iconClass = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+  ["themeIcon","mobileThemeIcon"].forEach(id => {
+    const icon = document.getElementById(id);
+    if(icon) icon.className = iconClass;
+  });
+  const buttons = [document.getElementById("workspaceThemeButton"),document.getElementById("mobileThemeButton")];
+  buttons.forEach(btn => {
+    if(btn) btn.setAttribute("aria-pressed", isDark ? "true" : "false");
+  });
+  if(window.editor && typeof window.editor.setOption === "function") {
+    window.editor.setOption("theme", isDark ? "dracula" : "default");
+    window.editor.refresh();
+  }
+  setTimeout(() => root.classList.remove("theme-animating"), 320);
+}
 function toggleTheme(){
-const isDark = document.documentElement.classList.toggle("dark");
-document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+  const isDark = !document.documentElement.classList.contains("dark");
+  applyTheme(isDark, true);
 }
 
 function getWorkspaceAccounts(){
@@ -4377,7 +4464,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 const isLive = await checkForLiveViewerMode();
 if (isLive) return;
 
-document.documentElement.classList.add("dark");
+let savedTheme = null;
+try { savedTheme = localStorage.getItem("jco_theme"); } catch(e) {}
+const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+applyTheme(savedTheme ? savedTheme === "dark" : prefersDark, false);
 
 let initialId = localStorage.getItem("js-code-output-active-project-id");
 
@@ -4442,7 +4532,7 @@ wrapper.innerHTML = "";
 editor = CodeMirror(wrapper, {
 value: (activeFile && files[activeFile] && !isBinary(getExt(activeFile))) ? files[activeFile] : (files["index.html"] || ""),
 mode: getMode(activeFile || "index.html"),
-theme: "dracula",
+theme: document.documentElement.classList.contains("dark") ? "dracula" : "default",
 lineNumbers: true,
 autoCloseTags: true,
 autoCloseBrackets: true,
@@ -4535,7 +4625,10 @@ document.addEventListener('click',function(e){
 </script><script>
 (function(){
   function bootWorkspace(){
-    document.documentElement.classList.add("dark");
+    let savedTheme = null;
+    try { savedTheme = localStorage.getItem("jco_theme"); } catch(e) {}
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(savedTheme ? savedTheme === "dark" : prefersDark, false);
     const app = document.getElementById("app");
     if(app) app.classList.remove("hidden");
 
