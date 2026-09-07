@@ -70,4 +70,7 @@
     <url>
   <loc>https://js-code-output.vercel.app/mini-browser.html</loc>
 </url>
+    <url>
+        <loc>https://js-code-output.vercel.app/workspace.html</loc>
+    </url>
 </urlset>
