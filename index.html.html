@@ -1348,7 +1348,15 @@ html.dark body{background:var(--ui-bg)!important}
   .auth-status{
     min-height:18px;margin-top:12px;font-size:10px;
     color:var(--muted);line-height:1.5;
+    display:flex;align-items:center;justify-content:center;gap:7px;
   }
+  .auth-spinner{
+    width:12px;height:12px;border:2px solid currentColor;
+    border-top-color:transparent;border-radius:50%;
+    display:inline-block;animation:authSpin .7s linear infinite;
+    flex:0 0 12px;
+  }
+  @keyframes authSpin{to{transform:rotate(360deg)}}
   .auth-status.error{color:#ef4444}
   .auth-status.success{color:#16a34a}
 </style>
@@ -1584,7 +1592,7 @@ html.dark body{background:var(--ui-bg)!important}
 </style>
 <body>
 <a class="mini-browser-launcher"
-   href="js-mini-browser.html"
+   href="javascript:openMiniBrowserAuth();"
    title="Open JS mini.Browser"
    aria-label="Open JS mini.Browser">
   <span class="mini-live-dot"></span>
@@ -1817,6 +1825,14 @@ html.dark body{background:var(--ui-bg)!important}
 function startBuilding(){
   openAuthModal();
 }
+function openMiniBrowserAuth(){
+  openAuthModal();
+}
+function continueAsGuest(){
+  setAuthBusy(true, "Continuing as guest…");
+  window.location.href = "projects.html";
+}
+
 
 function openAuthModal(){
   const overlay = document.getElementById("authOverlay");
@@ -1844,7 +1860,9 @@ function setAuthBusy(busy, message){
   if(guestBtn) guestBtn.disabled = busy;
   const status = document.getElementById("authStatus");
   if(status){
-    status.textContent = message || "";
+    status.innerHTML = busy && message
+      ? '<span class="auth-spinner" aria-hidden="true"></span><span>' + message + '</span>'
+      : (message || "");
     status.className = "auth-status";
   }
 }
@@ -1866,23 +1884,6 @@ async function signInWithGoogle(){
     const guestBtn = document.getElementById("guestBtn");
     if(googleBtn) googleBtn.disabled = false;
     if(guestBtn) guestBtn.disabled = false;
-  }
-}
-
-async function continueAsGuest(){
-  setAuthBusy(true, "Continuing as guest…");
-  try{
-    // Guest mode uses Firebase Anonymous Auth when it is enabled.
-    // If Anonymous Auth is disabled, the local guest workflow still continues.
-    try{
-      await auth.signInAnonymously();
-    }catch(error){
-      console.warn("Anonymous sign-in unavailable; continuing locally as guest.", error);
-    }
-    window.location.href = "projects.html";
-  }catch(error){
-    console.error("Guest continuation error:", error);
-    window.location.href = "projects.html";
   }
 }
 
