@@ -1,0 +1,2399 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>JS CODE OUTPUT — Projects</title>
+
+  <link rel="icon" href="logo.jpeg" type="image/jpeg">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --surface:#fff;
+      --surface2:#f1f4f8;
+      --ink:#111827;
+      --muted:#667085;
+      --line:#dfe4ea;
+      --brand:#1456b8;
+      --brand2:#2f7be5;
+      --shadow:0 20px 60px rgba(15,35,65,.10);
+    }
+
+    html.dark{
+      --bg:#07101d;
+      --surface:#0c1624;
+      --surface2:#111d2d;
+      --ink:#f8fafc;
+      --muted:#94a3b8;
+      --line:#223149;
+      --brand:#4f8fe8;
+      --brand2:#6ea8ff;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+
+    body{
+      overflow-x:hidden;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    button{
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    ::-webkit-scrollbar{
+      width:6px;
+      height:6px;
+    }
+
+    ::-webkit-scrollbar-thumb{
+      background:rgba(100,116,139,.3);
+      border-radius:3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover{
+      background:rgba(100,116,139,.5);
+    }
+
+    /* =========================
+       PROJECT PAGE
+       ========================= */
+
+    .projects-page{
+      position:fixed;
+      inset:0;
+      z-index:900;
+      background:var(--bg);
+      color:var(--ink);
+      overflow:auto;
+    }
+
+    .projects-header{
+      height:68px;
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 5vw;
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+
+    .projects-main{
+      width:100%;
+      max-width:1150px;
+      margin:auto;
+      padding:45px 5vw 70px;
+    }
+
+    .projects-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .project-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:22px;
+      cursor:pointer;
+      transition:.2s;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:140px;
+      user-select:none;
+    }
+
+    .project-card:hover{
+      transform:translateY(-3px);
+      border-color:var(--brand);
+      box-shadow:var(--shadow);
+    }
+
+    .project-card:active{
+      transform:scale(.985);
+    }
+
+    .project-card-title{
+      font-size:14px;
+      font-weight:800;
+      color:var(--ink);
+      margin-top:5px;
+      word-break:break-word;
+    }
+
+    .project-card-type{
+      font-size:10px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .project-card-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .open-project-text{
+      font-size:10px;
+      color:#60a5fa;
+      font-weight:700;
+    }
+
+    .project-more{
+      width:28px;
+      height:28px;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      border-radius:7px;
+      display:grid;
+      place-items:center;
+      flex:0 0 28px;
+    }
+
+    .project-more:hover{
+      background:var(--surface2);
+      color:var(--brand);
+    }
+
+    /* New project button */
+
+    .primary-btn{
+      border-radius:12px;
+      padding:14px 20px;
+      border:1px solid var(--line);
+      font-weight:850;
+      font-size:13px;
+      cursor:pointer;
+      background:var(--ink);
+      color:var(--surface);
+      box-shadow:0 14px 35px rgba(15,35,65,.16);
+      transition:.2s;
+      white-space:nowrap;
+    }
+
+    .primary-btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .app-btn{
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      border-radius:8px;
+      padding:7px 12px;
+      font-size:11px;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+
+    .app-btn:hover{
+      border-color:var(--brand);
+      color:var(--brand);
+    }
+
+    /* Context menu */
+
+    .context-menu{
+      position:fixed;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:8px;
+      box-shadow:var(--shadow);
+      padding:4px;
+      z-index:10000;
+      display:none;
+      flex-direction:column;
+      min-width:180px;
+    }
+
+    .context-menu button{
+      text-align:left;
+      padding:9px 12px;
+      font-size:11px;
+      border-radius:4px;
+      border:none;
+      background:transparent;
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .context-menu button:hover{
+      background:var(--surface2);
+      color:var(--brand);
+    }
+
+    .context-menu button.danger{
+      color:#ef4444;
+    }
+
+    .context-menu button.danger:hover{
+      background:rgba(239,68,68,.1);
+      color:#ef4444;
+    }
+
+    /* Modal */
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      background:rgba(2,8,23,.6);
+      backdrop-filter:blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .modal{
+      width:min(440px,94vw);
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .modal h3{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .modal p{
+      color:var(--muted);
+      font-size:12px;
+      margin:8px 0 16px;
+    }
+
+    .modal input{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      border-radius:10px;
+      padding:11px;
+      outline:0;
+    }
+
+    .modal input:focus{
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(20,86,184,.12);
+    }
+
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:20px;
+    }
+
+    .modal-btn{
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      padding:9px 15px;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .modal-btn:hover{
+      border-color:var(--brand);
+    }
+
+    .modal-btn.primary{
+      background:var(--ink);
+      color:var(--surface);
+    }
+
+    /* Toast */
+
+    .toast{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:2000;
+      background:var(--ink);
+      color:var(--surface);
+      padding:12px 18px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:700;
+      box-shadow:var(--shadow);
+      opacity:0;
+      transform:translateY(15px);
+      pointer-events:none;
+      transition:.25s;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:none;
+    }
+
+    /* Empty */
+
+    .empty-projects{
+      text-align:center;
+      padding:80px 20px;
+    }
+
+    .empty-projects-icon{
+      font-size:50px;
+      margin-bottom:16px;
+    }
+
+    /* Loading */
+
+    .loading-projects{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:60px 20px;
+      color:var(--muted);
+      font-size:12px;
+      gap:8px;
+    }
+
+    /* Mobile */
+
+    @media(max-width:1000px){
+      .projects-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:700px){
+      .projects-header{
+        height:64px;
+        padding:0 16px;
+      }
+
+      .projects-header .brand-text{
+        display:none;
+      }
+
+      .projects-main{
+        padding:30px 16px 60px;
+      }
+
+      .projects-grid{
+        grid-template-columns:1fr;
+        gap:13px;
+      }
+
+      .project-card{
+        min-height:145px;
+        padding:19px;
+      }
+
+      .projects-heading{
+        flex-direction:column;
+        align-items:stretch!important;
+        gap:18px!important;
+      }
+
+      .projects-heading .primary-btn{
+        width:100%;
+      }
+
+      .projects-heading h2{
+        font-size:28px;
+      }
+
+      .toast{
+        left:15px;
+        right:15px;
+        bottom:15px;
+        text-align:center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="projectsPage" class="projects-page">
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+
+    <header class="projects-header">
+
+      <div class="flex items-center gap-3">
+
+        <img
+          src="logo.jpeg"
+          alt="JS CODE OUTPUT Logo"
+          class="w-8 h-8 rounded-md shadow-sm object-cover"
+        >
+
+        <div class="brand-text">
+          <strong class="text-sm block">
+            JS CODE OUTPUT
+          </strong>
+
+          <span class="text-[10px] text-gray-500">
+            Dashboard & Projects
+          </span>
+        </div>
+
+      </div>
+
+      <div class="flex items-center gap-3">
+
+        <span
+          id="projectsUserName"
+          class="text-xs text-gray-400 font-medium"
+        >
+          Guest Mode
+        </span>
+
+        <button
+          class="app-btn hidden"
+          id="signOutBtn"
+          onclick="firebaseLogout()"
+        >
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Sign Out
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         PROJECT CONTENT
+         ========================= -->
+
+    <main class="projects-main">
+
+      <div
+        class="projects-heading flex justify-between items-end gap-4 mb-8"
+      >
+
+        <div>
+
+          <div
+            class="text-xs font-bold uppercase tracking-wider text-blue-500"
+          >
+            Workspace
+          </div>
+
+          <h2
+            class="text-3xl font-extrabold tracking-tight mt-1"
+          >
+            Select a Project
+          </h2>
+
+          <p class="text-xs text-gray-500 mt-1">
+            Every project contains its own separate HTML, CSS,
+            JavaScript, and asset files.
+          </p>
+
+        </div>
+
+        <button
+          class="primary-btn"
+          onclick="showCreateProject()"
+        >
+          + New Project
+        </button>
+
+      </div>
+
+
+      <div
+        id="projectsList"
+        class="projects-grid"
+      ></div>
+
+
+      <div
+        id="projectsLoading"
+        class="loading-projects"
+      >
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Loading projects...
+      </div>
+
+
+      <div
+        id="noProjects"
+        class="hidden empty-projects"
+      >
+
+        <div class="empty-projects-icon">
+          📂
+        </div>
+
+        <h3 class="text-lg font-bold">
+          No Projects Found
+        </h3>
+
+        <p class="text-xs text-gray-500 mb-4">
+          Create your first isolated project workspace.
+        </p>
+
+        <button
+          class="primary-btn"
+          onclick="showCreateProject()"
+        >
+          + Create Project
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================
+       CREATE PROJECT MODAL
+       ========================= -->
+
+  <div
+    id="createProjectModal"
+    class="overlay hidden"
+  >
+
+    <div class="modal">
+
+      <div class="flex justify-between items-center">
+
+        <h3>
+          Create New Project
+        </h3>
+
+        <button
+          onclick="closeCreateProject()"
+          class="text-gray-400 text-lg font-bold"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <p>
+        Give your new project a distinctive name.
+      </p>
+
+      <input
+        id="newProjectName"
+        placeholder="e.g. Portfolio Website, Canvas Game"
+        autocomplete="off"
+      >
+
+      <div class="modal-actions">
+
+        <button
+          class="modal-btn"
+          onclick="closeCreateProject()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="modal-btn primary"
+          onclick="createProject()"
+        >
+          Create Project
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       PROJECT CONTEXT MENU
+       ========================= -->
+
+  <div
+    id="projectContextMenu"
+    class="context-menu"
+  >
+
+    <button
+      id="projectCtxRename"
+      onclick="renameProjectByTarget()"
+    >
+      <i class="fa-solid fa-pen"></i>
+      Rename Project
+    </button>
+
+    <button
+      id="projectCtxDelete"
+      class="danger"
+      onclick="deleteProjectByTarget()"
+    >
+      <i class="fa-solid fa-trash"></i>
+      Delete Project
+    </button>
+
+    <button
+      id="projectCtxCopy"
+      onclick="copyProjectFileByTarget()"
+    >
+      <i class="fa-solid fa-copy"></i>
+      Copy File
+    </button>
+
+    <button
+      id="projectCtxDownload"
+      onclick="downloadProjectFileByTarget()"
+    >
+      <i class="fa-solid fa-download"></i>
+      Download File
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       TOAST
+       ========================= -->
+
+  <div
+    id="toast"
+    class="toast"
+  >
+    <i class="fa-solid fa-circle-check mr-2"></i>
+    <span id="toastMsg">Saved</span>
+  </div>
+
+
+  <!-- =========================
+       FIREBASE
+       ========================= -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      deleteDoc,
+      arrayUnion,
+      arrayRemove,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+      authDomain: "js-code-output.firebaseapp.com",
+      projectId: "js-code-output",
+      storageBucket: "js-code-output.firebasestorage.app",
+      messagingSenderId: "600350018167",
+      appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+      measurementId: "G-L47M0E9V96"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    const provider = new GoogleAuthProvider();
+
+    provider.setCustomParameters({
+      prompt:"select_account"
+    });
+
+    const db = getFirestore(app);
+
+
+    window.firebaseAuth = auth;
+    window.firebaseDB = db;
+
+    window.firebaseDoc = doc;
+    window.firebaseSetDoc = setDoc;
+    window.firebaseGetDoc = getDoc;
+    window.firebaseArrayUnion = arrayUnion;
+    window.firebaseArrayRemove = arrayRemove;
+    window.firebaseDeleteDoc = deleteDoc;
+    window.firebaseServerTimestamp = serverTimestamp;
+    window.firebaseSignOut = signOut;
+
+    window.googleSignIn = () =>
+      signInWithPopup(auth, provider);
+
+
+    onAuthStateChanged(auth, async user => {
+
+      window.firebaseCurrentUser = user || null;
+      window.currentUser = user || null;
+
+      updateUserUI(user);
+
+      await loadProjects();
+
+    });
+
+  </script>
+
+
+  <!-- =========================
+       PROJECT PAGE JAVASCRIPT
+       ========================= -->
+
+  <script>
+
+    let projectActionTarget = null;
+    let projectActionName = "";
+    let projectActionIsCloud = false;
+
+
+    /* --------------------------------
+       Utilities
+       -------------------------------- */
+
+    function escapeHTML(value){
+
+      return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+    }
+
+
+    function showToast(message){
+
+      const toast =
+        document.getElementById("toast");
+
+      const msg =
+        document.getElementById("toastMsg");
+
+      if(!toast || !msg) return;
+
+      msg.textContent = message;
+
+      toast.classList.add("show");
+
+      clearTimeout(toast._timer);
+
+      toast._timer =
+        setTimeout(() => {
+
+          toast.classList.remove("show");
+
+        },2500);
+
+    }
+
+
+    function getExt(filename){
+
+      const parts =
+        String(filename || "").split(".");
+
+      return parts.length > 1
+        ? parts.pop().toLowerCase()
+        : "";
+
+    }
+
+
+    function isBinary(ext){
+
+      return [
+        "png","jpg","jpeg","gif","webp",
+        "svg","ico","bmp",
+        "mp3","wav","ogg",
+        "mp4","webm",
+        "zip","pdf",
+        "woff","woff2","ttf",
+        "otf"
+      ].includes(String(ext || "").toLowerCase());
+
+    }
+
+
+    /* --------------------------------
+       Workspace navigation
+       -------------------------------- */
+
+    function openWorkspace(id,name){
+
+      if(!id) return;
+
+      /*
+       * IMPORTANT:
+       * Project page now ONLY opens workspace.html.
+       * Editor code is NOT kept in this page.
+       */
+
+      localStorage.setItem(
+        "js-code-output-active-project-id",
+        id
+      );
+
+      localStorage.setItem(
+        "js-code-output-active-project-name",
+        name || "Untitled Project"
+      );
+
+
+      const projectParam =
+        encodeURIComponent(id);
+
+      const nameParam =
+        encodeURIComponent(name || "Untitled Project");
+
+
+      window.location.href =
+        "workspace.html?project=" +
+        projectParam +
+        "&name=" +
+        nameParam;
+
+    }
+
+
+    /* --------------------------------
+       Create project
+       -------------------------------- */
+
+    function showCreateProject(){
+
+      const modal =
+        document.getElementById("createProjectModal");
+
+      const input =
+        document.getElementById("newProjectName");
+
+      modal.classList.remove("hidden");
+
+      input.value = "";
+
+      setTimeout(() => {
+        input.focus();
+      },100);
+
+    }
+
+
+    function closeCreateProject(){
+
+      document
+        .getElementById("createProjectModal")
+        .classList.add("hidden");
+
+    }
+
+
+    async function createProject(){
+
+      const input =
+        document.getElementById("newProjectName");
+
+      const name =
+        input.value.trim();
+
+      if(!name){
+
+        alert("Please enter a project name.");
+
+        input.focus();
+
+        return;
+
+      }
+
+
+      const user =
+        window.firebaseCurrentUser;
+
+
+      /*
+       * Cloud project
+       */
+
+      if(user){
+
+        const id =
+          "proj_" +
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .substring(2,8);
+
+
+        try{
+
+          /*
+           * Project page no longer creates editor files.
+           * Workspace.html will initialize/load the project.
+           */
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            ),
+            {
+              id:id,
+              name:name,
+              ownerId:user.uid,
+              files:{},
+              createdAt:
+                window.firebaseServerTimestamp(),
+              updatedAt:
+                window.firebaseServerTimestamp()
+            }
+          );
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid
+            ),
+            {
+              projectIds:
+                window.firebaseArrayUnion(id)
+            },
+            {
+              merge:true
+            }
+          );
+
+
+          closeCreateProject();
+
+          showToast(
+            "Cloud Project created."
+          );
+
+
+          setTimeout(() => {
+            openWorkspace(id,name);
+          },300);
+
+        }
+        catch(error){
+
+          console.error(error);
+
+          alert(
+            "Could not create cloud project."
+          );
+
+        }
+
+        return;
+
+      }
+
+
+      /*
+       * Local project
+       */
+
+      const id =
+        "local_proj_" +
+        Date.now();
+
+
+      let localProjects =
+        JSON.parse(
+          localStorage.getItem(
+            "js_local_projects"
+          ) || "[]"
+        );
+
+
+      localProjects.push({
+        id:id,
+        name:name,
+        updatedAt:Date.now()
+      });
+
+
+      localStorage.setItem(
+        "js_local_projects",
+        JSON.stringify(localProjects)
+      );
+
+
+      /*
+       * No editor/defaultTemplate is stored here.
+       * workspace.html handles project files.
+       */
+
+      closeCreateProject();
+
+      showToast(
+        "Local Project created."
+      );
+
+
+      setTimeout(() => {
+        openWorkspace(id,name);
+      },300);
+
+    }
+
+
+    /* --------------------------------
+       Project cards
+       -------------------------------- */
+
+    function createProjectCardHTML(
+      id,
+      name,
+      isCloud
+    ){
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "project-card";
+
+
+      card.innerHTML = `
+
+        <div>
+
+          <i
+            class="fa-solid fa-${isCloud ? "cloud" : "folder"} text-blue-500 text-2xl"
+          ></i>
+
+          <h3 class="project-card-title">
+            ${escapeHTML(name || "Untitled")}
+          </h3>
+
+          <p class="project-card-type">
+            ${isCloud ? "Cloud Workspace" : "Local Workspace"}
+          </p>
+
+        </div>
+
+
+        <div class="project-card-bottom">
+
+          <div class="open-project-text">
+            Open Project →
+          </div>
+
+          <button
+            class="project-more"
+            type="button"
+            title="Project actions"
+            aria-label="Project actions"
+          >
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+
+        </div>
+
+      `;
+
+
+      /*
+       * Normal click:
+       * open workspace.html
+       */
+
+      card.onclick = () => {
+
+        openWorkspace(id,name);
+
+      };
+
+
+      /*
+       * Right click:
+       * existing project actions
+       */
+
+      card.oncontextmenu = event => {
+
+        showProjectContextMenu(
+          event,
+          id,
+          name,
+          isCloud
+        );
+
+      };
+
+
+      const moreButton =
+        card.querySelector(".project-more");
+
+
+      moreButton.onclick = event => {
+
+        event.stopPropagation();
+
+        showProjectContextMenu(
+          event,
+          id,
+          name,
+          isCloud
+        );
+
+      };
+
+
+      /*
+       * Mobile long press
+       */
+
+      bindProjectLongPress(
+        card,
+        id,
+        name,
+        isCloud
+      );
+
+
+      return card;
+
+    }
+
+
+    /* --------------------------------
+       Load projects
+       -------------------------------- */
+
+    async function loadProjects(){
+
+      const list =
+        document.getElementById("projectsList");
+
+      const empty =
+        document.getElementById("noProjects");
+
+      const loading =
+        document.getElementById("projectsLoading");
+
+
+      if(!list) return;
+
+
+      list.innerHTML = "";
+
+      loading.classList.remove("hidden");
+
+      empty.classList.add("hidden");
+
+
+      let hasProjects = false;
+
+
+      /*
+       * Local projects
+       */
+
+      let localProjects = [];
+
+      try{
+
+        localProjects =
+          JSON.parse(
+            localStorage.getItem(
+              "js_local_projects"
+            ) || "[]"
+          );
+
+        if(!Array.isArray(localProjects)){
+          localProjects = [];
+        }
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        localProjects = [];
+
+      }
+
+
+      localProjects.forEach(project => {
+
+        hasProjects = true;
+
+        list.appendChild(
+          createProjectCardHTML(
+            project.id,
+            project.name,
+            false
+          )
+        );
+
+      });
+
+
+      /*
+       * Cloud projects
+       */
+
+      const user =
+        window.firebaseCurrentUser;
+
+
+      if(user){
+
+        try{
+
+          const userDoc =
+            await window.firebaseGetDoc(
+              window.firebaseDoc(
+                window.firebaseDB,
+                "users",
+                user.uid
+              )
+            );
+
+
+          const ids =
+            userDoc.exists()
+              ? userDoc.data().projectIds || []
+              : [];
+
+
+          if(ids.length){
+
+            hasProjects = true;
+
+          }
+
+
+          for(const id of ids){
+
+            try{
+
+              const projectDoc =
+                await window.firebaseGetDoc(
+                  window.firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid,
+                    "projects",
+                    id
+                  )
+                );
+
+
+              if(!projectDoc.exists()){
+                continue;
+              }
+
+
+              const data =
+                projectDoc.data();
+
+
+              list.appendChild(
+                createProjectCardHTML(
+                  id,
+                  data.name || "Untitled",
+                  true
+                )
+              );
+
+            }
+            catch(error){
+
+              console.warn(
+                "Could not load project:",
+                id,
+                error
+              );
+
+            }
+
+          }
+
+        }
+        catch(error){
+
+          console.error(
+            "Cloud project loading failed:",
+            error
+          );
+
+        }
+
+      }
+
+
+      loading.classList.add("hidden");
+
+
+      if(!hasProjects){
+
+        empty.classList.remove("hidden");
+
+      }
+      else{
+
+        empty.classList.add("hidden");
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Project context menu
+       -------------------------------- */
+
+    function showProjectContextMenu(
+      event,
+      id,
+      name,
+      isCloud
+    ){
+
+      event.preventDefault?.();
+      event.stopPropagation?.();
+
+
+      projectActionTarget = id;
+      projectActionName =
+        name || "Project";
+      projectActionIsCloud =
+        !!isCloud;
+
+
+      const menu =
+        document.getElementById(
+          "projectContextMenu"
+        );
+
+
+      if(!menu) return;
+
+
+      menu.style.display = "flex";
+
+
+      let x =
+        event.clientX || 20;
+
+      let y =
+        event.clientY || 20;
+
+
+      const width = 190;
+      const height = 180;
+
+
+      if(x + width > window.innerWidth){
+        x = window.innerWidth - width - 10;
+      }
+
+
+      if(y + height > window.innerHeight){
+        y = window.innerHeight - height - 10;
+      }
+
+
+      menu.style.left =
+        Math.max(10,x) + "px";
+
+      menu.style.top =
+        Math.max(10,y) + "px";
+
+    }
+
+
+    function hideProjectContextMenu(){
+
+      const menu =
+        document.getElementById(
+          "projectContextMenu"
+        );
+
+      if(menu){
+
+        menu.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Rename
+       -------------------------------- */
+
+    async function renameProjectByTarget(){
+
+      const id =
+        projectActionTarget;
+
+      const oldName =
+        projectActionName;
+
+      const isCloud =
+        projectActionIsCloud;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      const newName =
+        prompt(
+          "Rename project:",
+          oldName
+        );
+
+
+      if(
+        !newName ||
+        newName.trim() === oldName
+      ){
+
+        return;
+
+      }
+
+
+      const name =
+        newName.trim();
+
+
+      try{
+
+        if(isCloud){
+
+          const user =
+            window.firebaseCurrentUser;
+
+
+          if(!user){
+
+            showToast(
+              "Sign in to rename cloud projects."
+            );
+
+            return;
+
+          }
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            ),
+            {
+              name:name,
+              updatedAt:
+                window.firebaseServerTimestamp()
+            },
+            {
+              merge:true
+            }
+          );
+
+        }
+        else{
+
+          let projects =
+            JSON.parse(
+              localStorage.getItem(
+                "js_local_projects"
+              ) || "[]"
+            );
+
+
+          projects =
+            projects.map(project => {
+
+              if(project.id === id){
+
+                return {
+                  ...project,
+                  name:name,
+                  updatedAt:Date.now()
+                };
+
+              }
+
+              return project;
+
+            });
+
+
+          localStorage.setItem(
+            "js_local_projects",
+            JSON.stringify(projects)
+          );
+
+        }
+
+
+        await loadProjects();
+
+        showToast(
+          "Project renamed."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not rename project."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Delete
+       -------------------------------- */
+
+    async function deleteProjectByTarget(){
+
+      const id =
+        projectActionTarget;
+
+      const name =
+        projectActionName;
+
+      const isCloud =
+        projectActionIsCloud;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      const confirmed =
+        confirm(
+          `Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`
+        );
+
+
+      if(!confirmed) return;
+
+
+      try{
+
+        if(isCloud){
+
+          const user =
+            window.firebaseCurrentUser;
+
+
+          if(!user){
+
+            showToast(
+              "Sign in to delete cloud projects."
+            );
+
+            return;
+
+          }
+
+
+          await window.firebaseDeleteDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            )
+          );
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid
+            ),
+            {
+              projectIds:
+                window.firebaseArrayRemove(id)
+            },
+            {
+              merge:true
+            }
+          );
+
+
+          /*
+           * Delete public copy if it exists.
+           */
+
+          try{
+
+            await window.firebaseDeleteDoc(
+              window.firebaseDoc(
+                window.firebaseDB,
+                "public_projects",
+                id
+              )
+            );
+
+          }
+          catch(_){}
+
+        }
+        else{
+
+          let projects =
+            JSON.parse(
+              localStorage.getItem(
+                "js_local_projects"
+              ) || "[]"
+            );
+
+
+          projects =
+            projects.filter(
+              project =>
+                project.id !== id
+            );
+
+
+          localStorage.setItem(
+            "js_local_projects",
+            JSON.stringify(projects)
+          );
+
+
+          /*
+           * Clean old project storage if it exists.
+           * The project page itself does not use it.
+           */
+
+          localStorage.removeItem(
+            "js_files_" + id
+          );
+
+          localStorage.removeItem(
+            "js_active_file_" + id
+          );
+
+        }
+
+
+        const activeId =
+          localStorage.getItem(
+            "js-code-output-active-project-id"
+          );
+
+
+        if(activeId === id){
+
+          localStorage.removeItem(
+            "js-code-output-active-project-id"
+          );
+
+          localStorage.removeItem(
+            "js-code-output-active-project-name"
+          );
+
+        }
+
+
+        await loadProjects();
+
+
+        showToast(
+          "Project deleted permanently."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not delete project."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Project file actions
+       -------------------------------- */
+
+    function getProjectFileForAction(
+      projectFiles
+    ){
+
+      const map =
+        projectFiles || {};
+
+
+      const keys =
+        Object.keys(map)
+          .filter(
+            key => !key.endsWith("/")
+          );
+
+
+      if(!keys.length){
+        return null;
+      }
+
+
+      for(
+        const key of [
+          "index.html",
+          "index.htm"
+        ]
+      ){
+
+        if(
+          Object.prototype
+            .hasOwnProperty
+            .call(map,key)
+        ){
+
+          return {
+            path:key,
+            content:map[key]
+          };
+
+        }
+
+      }
+
+
+      const textKeys =
+        keys.filter(
+          key =>
+            !isBinary(getExt(key))
+        );
+
+
+      const path =
+        textKeys[0] || keys[0];
+
+
+      return {
+        path:path,
+        content:map[path]
+      };
+
+    }
+
+
+    async function getProjectFilesForAction(){
+
+      const id =
+        projectActionTarget;
+
+
+      if(!id){
+        return null;
+      }
+
+
+      /*
+       * Cloud
+       */
+
+      if(projectActionIsCloud){
+
+        const user =
+          window.firebaseCurrentUser;
+
+
+        if(!user){
+
+          showToast(
+            "Sign in to access cloud project files."
+          );
+
+          return null;
+
+        }
+
+
+        const snapshot =
+          await window.firebaseGetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            )
+          );
+
+
+        if(!snapshot.exists()){
+          return null;
+        }
+
+
+        return snapshot.data().files || {};
+
+      }
+
+
+      /*
+       * Local
+       */
+
+      try{
+
+        return JSON.parse(
+          localStorage.getItem(
+            "js_files_" + id
+          ) || "{}"
+        );
+
+      }
+      catch(error){
+
+        return {};
+
+      }
+
+    }
+
+
+    async function copyProjectFileByTarget(){
+
+      const id =
+        projectActionTarget;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      try{
+
+        const projectFiles =
+          await getProjectFilesForAction();
+
+
+        const selected =
+          getProjectFileForAction(
+            projectFiles
+          );
+
+
+        if(!selected){
+
+          showToast(
+            "No file found in this project."
+          );
+
+          return;
+
+        }
+
+
+        if(
+          isBinary(
+            getExt(selected.path)
+          )
+        ){
+
+          showToast(
+            "Copy File is available for text/code files."
+          );
+
+          return;
+
+        }
+
+
+        await navigator.clipboard.writeText(
+          String(
+            selected.content ?? ""
+          )
+        );
+
+
+        showToast(
+          "Copied " +
+          selected.path +
+          " to clipboard."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not copy the project file."
+        );
+
+      }
+
+    }
+
+
+    async function downloadProjectFileByTarget(){
+
+      const id =
+        projectActionTarget;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      try{
+
+        const projectFiles =
+          await getProjectFilesForAction();
+
+
+        const selected =
+          getProjectFileForAction(
+            projectFiles
+          );
+
+
+        if(!selected){
+
+          showToast(
+            "No file found in this project."
+          );
+
+          return;
+
+        }
+
+
+        if(
+          isBinary(
+            getExt(selected.path)
+          )
+        ){
+
+          showToast(
+            "This project file cannot be downloaded from the project menu."
+          );
+
+          return;
+
+        }
+
+
+        const blob =
+          new Blob(
+            [
+              String(
+                selected.content ?? ""
+              )
+            ],
+            {
+              type:
+                "text/plain;charset=utf-8"
+            }
+          );
+
+
+        const url =
+          URL.createObjectURL(blob);
+
+
+        const a =
+          document.createElement("a");
+
+
+        a.href = url;
+
+        a.download =
+          selected.path
+            .split("/")
+            .pop() ||
+          "project-file.txt";
+
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+
+        setTimeout(
+          () => URL.revokeObjectURL(url),
+          1000
+        );
+
+
+        showToast(
+          "Downloaded " +
+          selected.path +
+          "."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not download the project file."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Mobile long press
+       -------------------------------- */
+
+    function bindProjectLongPress(
+      element,
+      id,
+      name,
+      isCloud
+    ){
+
+      let timer = null;
+
+
+      element.addEventListener(
+        "touchstart",
+        () => {
+
+          timer =
+            setTimeout(() => {
+
+              showProjectContextMenu(
+                {
+                  preventDefault(){},
+                  stopPropagation(){},
+                  clientX:20,
+                  clientY:
+                    Math.max(
+                      20,
+                      window.innerHeight * .45
+                    )
+                },
+                id,
+                name,
+                isCloud
+              );
+
+            },650);
+
+        },
+        {
+          passive:true
+        }
+      );
+
+
+      [
+        "touchend",
+        "touchmove",
+        "touchcancel"
+      ].forEach(eventName => {
+
+        element.addEventListener(
+          eventName,
+          () => {
+
+            clearTimeout(timer);
+
+          },
+          {
+            passive:true
+          }
+        );
+
+      });
+
+    }
+
+
+    /* --------------------------------
+       User UI
+       -------------------------------- */
+
+    function updateUserUI(user){
+
+      const nameElement =
+        document.getElementById(
+          "projectsUserName"
+        );
+
+      const signOutButton =
+        document.getElementById(
+          "signOutBtn"
+        );
+
+
+      if(user){
+
+        nameElement.textContent =
+          user.displayName ||
+          user.email ||
+          "Developer";
+
+        signOutButton.classList.remove(
+          "hidden"
+        );
+
+      }
+      else{
+
+        nameElement.textContent =
+          "Guest Mode";
+
+        signOutButton.classList.add(
+          "hidden"
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Logout
+       -------------------------------- */
+
+    async function firebaseLogout(){
+
+      try{
+
+        if(
+          window.firebaseSignOut &&
+          window.firebaseAuth
+        ){
+
+          await window.firebaseSignOut(
+            window.firebaseAuth
+          );
+
+        }
+
+        window.firebaseCurrentUser =
+          null;
+
+        window.currentUser =
+          null;
+
+        updateUserUI(null);
+
+        await loadProjects();
+
+        showToast(
+          "Logged out successfully."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not sign out."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Outside click
+       -------------------------------- */
+
+    document.addEventListener(
+      "click",
+      event => {
+
+        const menu =
+          document.getElementById(
+            "projectContextMenu"
+          );
+
+
+        if(
+          menu &&
+          menu.style.display === "flex" &&
+          !menu.contains(event.target)
+        ){
+
+          hideProjectContextMenu();
+
+        }
+
+      }
+    );
+
+
+    /* --------------------------------
+       Escape key
+       -------------------------------- */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Escape"){
+
+          hideProjectContextMenu();
+
+          closeCreateProject();
+
+        }
+
+      }
+    );
+
+
+    /* --------------------------------
+       Modal Enter key
+       -------------------------------- */
+
+    document
+      .getElementById("newProjectName")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if(event.key === "Enter"){
+
+            createProject();
+
+          }
+
+        }
+      );
+
+
+    /* --------------------------------
+       Initial local load
+       -------------------------------- */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        /*
+         * Firebase onAuthStateChanged will
+         * load again when Firebase is ready.
+         */
+
+        const localProjects =
+          JSON.parse(
+            localStorage.getItem(
+              "js_local_projects"
+            ) || "[]"
+          );
+
+
+        if(localProjects.length){
+
+          loadProjects();
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
+```
