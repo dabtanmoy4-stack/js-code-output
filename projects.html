@@ -662,6 +662,10 @@
       }
     }
   </style>
+    <!-- logo.jpeg is also used as the website/browser logo -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    <link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
+    <link rel="apple-touch-icon" href="logo.jpeg">
 </head>
 
 <body>
@@ -2629,11 +2633,8 @@
 
     function initTheme(){
       const saved = localStorage.getItem("js-code-output-theme");
-      const theme = saved ||
-        (window.matchMedia &&
-         window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light");
+      // Dark mode is the default appearance.
+      const theme = saved || "dark";
 
       applyTheme(theme, false);
 
