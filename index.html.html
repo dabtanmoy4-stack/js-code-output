@@ -1238,6 +1238,78 @@ html.dark body{background:var(--ui-bg)!important}
   }
 }
 </style>
+
+<style id="web-basics-sections">
+  #landingPage .web-basics-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:22px;
+  }
+  #landingPage .web-basics-card{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:360px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:var(--surface);
+    box-shadow:0 20px 60px rgba(15,35,65,.08);
+  }
+  #landingPage .web-basics-card:nth-child(even) .web-basics-image{order:-1}
+  #landingPage .web-basics-copy{
+    padding:38px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  #landingPage .web-basics-kicker{
+    font-size:9px;
+    letter-spacing:.16em;
+    font-weight:900;
+    color:var(--brand);
+    text-transform:uppercase;
+  }
+  #landingPage .web-basics-copy h3{
+    margin:10px 0 13px;
+    font-size:clamp(28px,3.5vw,44px);
+    line-height:1;
+    letter-spacing:-.055em;
+  }
+  #landingPage .web-basics-copy p{
+    margin:0 0 12px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.8;
+  }
+  #landingPage .web-basics-image{
+    min-height:360px;
+    background:var(--surface2,var(--bg));
+    overflow:hidden;
+  }
+  #landingPage .web-basics-image img{
+    width:100%;
+    height:100%;
+    min-height:360px;
+    display:block;
+    object-fit:cover;
+  }
+  @media(max-width:900px){
+    #landingPage .web-basics-card{
+      grid-template-columns:1fr;
+    }
+    #landingPage .web-basics-card:nth-child(even) .web-basics-image{order:0}
+    #landingPage .web-basics-image,
+    #landingPage .web-basics-image img{
+      min-height:280px;
+      height:280px;
+    }
+  }
+  @media(max-width:700px){
+    #landingPage .web-basics-copy{padding:28px 23px}
+    #landingPage .web-basics-copy p{font-size:12px;line-height:1.75}
+  }
+</style>
+
 </head>
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -1494,15 +1566,15 @@ html.dark body{background:var(--ui-bg)!important}
       <div class="premium-copy">
         <span class="premium-pill"><span class="live-dot"></span> THE PROFESSIONAL WEB BUILDING WORKSPACE</span>
         <h1 class="premium-title">Code it.<br><span class="gradient">See it live.</span><br>Ship it.</h1>
-        <p>Build polished websites directly in your browser with a powerful editor, instant live output, isolated projects, cloud saving, publishing and the new <strong>JS mini.Browser</strong> experience.</p>
+        <p>JS CODE OUTPUT is a browser-based coding workspace where you can build websites without setting up a separate desktop editor. You can use HTML to create the page structure, CSS to design it, and JavaScript to add interactions and behavior. When you write your code and press <strong>Run</strong>, the result appears immediately in the live preview, so you can see what your changes actually do without repeatedly switching to another browser tab. Your files can be organized by project, and when your work is ready, you can save, publish, export, or present the finished project through JS mini.Browser.
         <div class="premium-actions">
           <button class="primary-btn premium-primary" onclick="startBuilding()">🚀 Get Started Free <i class="fa-solid fa-arrow-right ml-2"></i></button>
           <a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Open JS mini.Browser</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
         </div>
         <div class="premium-stats">
-          <div class="premium-stat"><strong>Live Preview</strong><span>See changes instantly</span></div>
-          <div class="premium-stat"><strong>Cloud Projects</strong><span>Save your work securely</span></div>
-          <div class="premium-stat"><strong>Publish</strong><span>Turn projects into live links</span></div>
+          <div class="premium-stat"><strong>Live Preview</strong><span>See your result instantly</span></div>
+          <div class="premium-stat"><strong>Cloud Projects</strong><span>Keep projects organized</span></div>
+          <div class="premium-stat"><strong>Publish</strong><span>Make finished projects live</span></div>
         </div>
       </div>
 
@@ -1556,48 +1628,100 @@ html.dark body{background:var(--ui-bg)!important}
     </section>
 
     <section class="premium-section" id="mini-browser-ad">
-      <div class="premium-heading"><div class="kicker">NEW · JS MINI.BROWSER</div><h2>Your published project gets its own browser experience.</h2><p>A cinematic product showcase that explains the flow from code to deployment to a clean browser-style project experience.</p></div>
+      <div class="premium-heading"><div class="kicker">NEW · JS MINI.BROWSER</div><h2>Your published project can also be experienced in a simple, focused way.</h2><p>After creating a project, writing your code, and testing it with Run, you can publish the finished work. A published project can then be opened through the JS mini.Browser browser-style experience, giving people a clean and focused way to experience the website you created.</div>
       <div class="mini-ad">
         <div class="mini-ad-inner">
-          <div class="mini-ad-copy"><div class="ad-label">DEPLOY → OPEN → EXPERIENCE</div><h3>Meet<br>JS mini.Browser.</h3><p>Deploy a project from JS CODE OUTPUT and open it inside the dedicated JS mini.Browser experience. The same signed-in Firebase session is used for deployment, so an existing login can continue directly into the deployment flow.</p><div class="mini-ad-features"><span class="mini-chip">Browser-style UI</span><span class="mini-chip">Deploy from editor</span><span class="mini-chip">Live project view</span><span class="mini-chip">Google session aware</span></div><div class="premium-actions"><a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Explore JS mini.Browser</span><i class="fa-solid fa-arrow-right"></i></a></div></div>
+          <div class="mini-ad-copy"><div class="ad-label">DEPLOY → OPEN → EXPERIENCE</div><h3>Meet<br>JS mini.Browser.</h3><p>When you finish creating your project in JS CODE OUTPUT, you can publish or deploy it to create a live project experience. JS mini.Browser is used to open and present that published project inside a dedicated browser-style environment. In simple terms: <strong>Write your code → Run and test it → Publish/Deploy when it is ready → Experience the project in JS mini.Browser</strong>.<div class="mini-ad-features"><span class="mini-chip">Browser-style project view</span><span class="mini-chip">Deploy from the editor</span><span class="mini-chip">Live project experience</span><span class="mini-chip">Signed-in session</span></div><div class="premium-actions"><a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Explore JS mini.Browser</span><i class="fa-solid fa-arrow-right"></i></a></div></div>
           <div class="mini-demo"><div class="mini-spark s1"></div><div class="mini-spark s2"></div><div class="mini-spark s3"></div><div class="mini-demo-browser"><div class="mini-demo-bar"><i class="bd1"></i><i class="bd2"></i><i class="bd3"></i><div class="mini-demo-url">🔒 js-mini-browser.html</div></div><div class="mini-demo-home"><small>JS mini.Browser</small><h4>Open your<br>deployed project.</h4><p>A focused browser-style environment for experiencing projects created with JS CODE OUTPUT.</p><div class="mini-demo-card"></div></div></div></div>
         </div>
       </div>
     </section>
 
     <section class="premium-section" id="features">
-      <div class="premium-heading"><div class="kicker">THE TOOLKIT</div><h2>Everything important. Nothing in your way.</h2><p>A focused environment for turning an idea into working web output.</p></div>
+      <div class="premium-heading"><div class="kicker">WHAT YOU CAN DO</div><h2>From writing code to your final project, everything important is in one place.</h2><p>Each part of JS CODE OUTPUT is designed to make the workflow easy to understand, even for a new user. You can see where to write code, where to run it, how to review the result, and how an idea gradually becomes a working website.</p></div>
       <div class="premium-feature-grid">
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-code"></i></div><h3>Professional Editor</h3><p>CodeMirror editing with syntax highlighting, autocomplete, bracket pairing, search, linting and multiple file tabs.</p></article>
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-bolt"></i></div><h3>Instant Live Output</h3><p>Run HTML, CSS and JavaScript together and see the rendered result immediately beside your code.</p></article>
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-folder-tree"></i></div><h3>Isolated Projects</h3><p>Keep files organized per project and move between projects without mixing their workspaces.</p></article>
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-cloud"></i></div><h3>Cloud Saving</h3><p>With Google sign-in, project files can be saved to your cloud workspace and restored later.</p></article>
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-rocket"></i></div><h3>Publish & Share</h3><p>Publish projects into shareable live views and let other people experience your finished work.</p></article>
-        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-download"></i></div><h3>Export & Download</h3><p>Download project code as a single HTML file or ZIP when you are ready to take your work elsewhere.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-code"></i></div><h3>Code Editor — where you write your code</h3><p>In the editor area of the workspace, you can work with HTML, CSS, JavaScript, and other project files. Syntax highlighting makes different parts of your code easier to recognize, autocomplete provides useful code suggestions, bracket pairing helps reduce mistakes, search helps you find specific text inside larger files, and linting can help identify common code problems. Multiple file tabs also make it easy to switch between the files in the same project.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-bolt"></i></div><h3>Live Output — see what your code creates</h3><p>After your HTML, CSS, and JavaScript work together, press Run to see the website in the live preview beside the editor. You can change a heading, button, layout, color, animation, or JavaScript interaction and immediately check the result. This code-to-output workflow is one of the main advantages of JS CODE OUTPUT.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-folder-tree"></i></div><h3>Projects — keep each piece of work organized</h3><p>When you have multiple projects, each project's files and work can be kept separate. This helps prevent files from different websites from becoming mixed together, while allowing you to create a new project or reopen an existing project whenever you want to continue working.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-cloud"></i></div><h3>Cloud Saving — continue your work later</h3><p>With Google sign-in, project files can be saved to your cloud workspace and restored later so you can continue working. This means your project does not have to remain limited to a single session and can be kept for future work.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-rocket"></i></div><h3>Publish & Share — show what you built</h3><p>Once your project is created and tested, you can publish the finished work as a live view. This allows other people to experience the actual website you built instead of only seeing its source code, and you can use the shareable project view when you want to show your work to others.</p></article>
+        <article class="premium-feature"><div class="pf-icon"><i class="fa-solid fa-download"></i></div><h3>Export & Download — take your code with you</h3><p>When your work is finished, you can download the project code and take it elsewhere. Depending on what you need, the project can be exported as a complete HTML file or as a ZIP package containing multiple project files, making it useful for backup, sharing, or further development.</p></article>
       </div>
     </section>
 
     <section class="premium-section" id="workspace-showcase">
-      <div class="premium-heading"><div class="kicker">THE FULL ANIMATION</div><h2>Watch the workflow happen.</h2><p>The animated demo above cycles through the core experience: writing code, rendering the preview, moving through the interface and showcasing JS mini.Browser.</p></div>
+      <div class="premium-heading"><div class="kicker">HOW THE WORKSPACE FEELS</div><h2>See how your code becomes a working website.</h2><p>The animation below shows the core workflow: first you write the code, then that code is rendered into a live preview, after that you test and refine the project through the interface, and finally you can publish the project or move it into the JS mini.Browser experience.</p></div>
       <div class="premium-stage" style="min-height:540px"><div class="stage-glow"></div><div class="browser-video" style="width:min(900px,100%)"><div class="browser-top"><div class="browser-dots"><i class="bd1"></i><i class="bd2"></i><i class="bd3"></i></div><div class="browser-address"><span>https://</span><span class="address-blue">js-code-output.vercel.app</span><span>/workspace</span></div><span class="browser-live">● BUILDING</span></div><div class="video-screen" style="height:430px"><div class="video-grid"></div><div class="video-beam"></div><div class="video-code" style="width:42%"><div class="vline" style="animation-delay:.1s">&lt;!DOCTYPE <span class="vtag">html</span>&gt;</div><div class="vline" style="animation-delay:.4s">&lt;<span class="vtag">html</span>&gt;</div><div class="vline" style="animation-delay:.7s">&nbsp;&nbsp;&lt;<span class="vtag">head</span>&gt;</div><div class="vline" style="animation-delay:1s">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="vtag">title</span>&gt;My App&lt;/<span class="vtag">title</span>&gt;</div><div class="vline" style="animation-delay:1.3s">&nbsp;&nbsp;&lt;/<span class="vtag">head</span>&gt;</div><div class="vline" style="animation-delay:1.6s">&nbsp;&nbsp;&lt;<span class="vtag">body</span>&gt;</div><div class="vline" style="animation-delay:1.9s">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="vtag">h1</span>&gt;Hello World&lt;/<span class="vtag">h1</span>&gt;</div><div class="vline" style="animation-delay:2.2s">&nbsp;&nbsp;&lt;/<span class="vtag">body</span>&gt;</div></div><div class="video-preview" style="width:52%"><div class="preview-topline">RESPONSIVE LIVE PREVIEW</div><div class="preview-hero">Your <span>idea.</span><br>Now real.</div><div class="preview-line"></div><div class="preview-line short"></div><div class="preview-card"></div><div class="preview-button">DEPLOY TO JS MINI.BROWSER →</div></div><div class="video-cursor"></div><div class="video-caption"><b>LIVE</b> EDIT · RUN · DEPLOY</div></div></div></div>
     </section>
 
     <section class="premium-section" id="how-it-works">
-      <div class="premium-heading"><div class="kicker">HOW IT WORKS</div><h2>Four steps from idea to experience.</h2><p>Designed so the path from first line of code to a finished project feels simple.</p></div>
+      <div class="premium-heading"><div class="kicker">HOW IT WORKS</div><h2>From your first step to a finished website.</h2><p>The workflow is designed to be simple even for a new user: enter the builder, create or open a project, write your code, press Run to check the output, and when everything looks right, save, publish, export, or deploy your work.</p></div>
       <div class="premium-timeline">
-        <div class="timeline-card"><div class="num">01 / START</div><h3>Enter the builder</h3><p>Start building with Google sign-in for cloud features or continue locally when appropriate.</p></div>
-        <div class="timeline-card"><div class="num">02 / BUILD</div><h3>Create your project</h3><p>Open a project and work across HTML, CSS, JavaScript and project assets.</p></div>
-        <div class="timeline-card"><div class="num">03 / RUN</div><h3>See it live</h3><p>Run your code and use the live preview to iterate quickly across screen sizes.</p></div>
-        <div class="timeline-card"><div class="num">04 / SHIP</div><h3>Publish to mini.Browser</h3><p>Save, publish, export or deploy your project into the JS mini.Browser flow.</p></div>
+        <div class="timeline-card"><div class="num">01 / START</div><h3>Enter the builder</h3><p>Press Start Building to begin the coding workflow. You can use Google sign-in when you want cloud-based project saving, or start with the local workflow when appropriate.</p></div>
+        <div class="timeline-card"><div class="num">02 / BUILD</div><h3>Create or open a project</h3><p>Next, create a project or open an existing one. Inside the project, work with HTML, CSS, JavaScript, and the files or assets you need to build your website's structure, design, and behavior.</p></div>
+        <div class="timeline-card"><div class="num">03 / RUN</div><h3>Run and see the live output</h3><p>After writing or changing your code, press Run. Check the result in the preview panel and test the layout across different screen sizes such as desktop, tablet, and mobile. Then make further changes whenever needed.</p></div>
+        <div class="timeline-card"><div class="num">04 / SHIP</div><h3>Save, Publish, or Export</h3><p>When everything is ready, save your project. Then, depending on your needs, publish and share it, download it as HTML or ZIP, or experience the deployed project through the JS mini.Browser flow.</p></div>
       </div>
     </section>
 
-    <section class="premium-final" id="about"><div class="premium-final-box"><div class="kicker" style="color:#93c5fd">JS CODE OUTPUT</div><h2>Build something worth seeing.</h2><p>One browser-first workspace for writing code, watching it render and turning your finished project into a polished experience.</p><button class="primary-btn" style="background:#fff;color:#111827" onclick="startBuilding()">🚀 Start Building Free <i class="fa-solid fa-arrow-right ml-2"></i></button></div></section>
+
+    <section class="premium-section" id="web-basics">
+      <div class="premium-heading">
+        <div class="kicker">WEB DEVELOPMENT BASICS</div>
+        <h2>Understand the three building blocks of the web.</h2>
+        <p>Before you start building, it helps to understand what HTML, CSS, and JavaScript each do. Together, they turn a simple idea into an interactive website.</p>
+      </div>
+
+      <div class="web-basics-grid">
+
+        <article class="web-basics-card">
+          <div class="web-basics-copy">
+            <div class="web-basics-kicker">01 · HTML</div>
+            <h3>What is HTML?</h3>
+            <p><strong>HTML stands for HyperText Markup Language.</strong> It is the basic structure of a web page. HTML tells the browser what elements exist on the page, such as headings, paragraphs, images, links, buttons, lists, forms, sections, and other content.</p>
+            <p>You can think of HTML as the skeleton of a website. If you want to create a title, write some text, add an image, create a button, or place different sections on a page, HTML provides the elements that make those things possible.</p>
+            <p><strong>Why is JS CODE OUTPUT good for HTML?</strong> You can write your HTML directly in the browser and use the live output to immediately see how the structure appears as a real web page. This makes it easier for beginners to learn by writing something, running it, seeing the result, and then changing the code.</p>
+          </div>
+          <div class="web-basics-image">
+            <img src="html.jpeg" alt="HTML illustration">
+          </div>
+        </article>
+
+        <article class="web-basics-card">
+          <div class="web-basics-copy">
+            <div class="web-basics-kicker">02 · CSS</div>
+            <h3>What is CSS?</h3>
+            <p><strong>CSS stands for Cascading Style Sheets.</strong> CSS is used to control how a website looks. It can change colors, fonts, spacing, borders, backgrounds, sizes, alignment, layouts, responsive behavior, transitions, and animations.</p>
+            <p>If HTML is the structure of a website, CSS is what gives that structure its visual design. The same HTML content can look completely different depending on the CSS applied to it. CSS is what helps turn a plain page into a polished, professional interface.</p>
+            <p><strong>Why is JS CODE OUTPUT good for CSS?</strong> You can edit your CSS and use Run or the live preview to see the visual changes immediately. This makes experimenting with layouts, responsive designs, colors, spacing, cards, buttons, and animations much easier because you can compare your code with the result as you build.</p>
+          </div>
+          <div class="web-basics-image">
+            <img src="css.jpeg" alt="CSS illustration">
+          </div>
+        </article>
+
+        <article class="web-basics-card">
+          <div class="web-basics-copy">
+            <div class="web-basics-kicker">03 · JAVASCRIPT</div>
+            <h3>What is JavaScript?</h3>
+            <p><strong>JavaScript is a programming language used to make websites interactive and dynamic.</strong> While HTML provides the structure and CSS controls the appearance, JavaScript can make the page respond to user actions and perform logic.</p>
+            <p>With JavaScript, you can create interactions such as opening and closing menus, responding to button clicks, changing content, validating forms, updating values, controlling animations, working with data, and building more advanced browser-based experiences.</p>
+            <p><strong>Why is JS CODE OUTPUT good for JavaScript?</strong> You can write JavaScript alongside your HTML and CSS and run the project in the same browser-based workspace. Seeing the code and its live result together helps you understand how your JavaScript changes the behavior of the page, making it easier to experiment, test, debug, and build complete interactive projects.</p>
+          </div>
+          <div class="web-basics-image">
+            <img src="js.jpeg" alt="JavaScript illustration">
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="premium-final" id="about"><div class="premium-final-box"><div class="kicker" style="color:#93c5fd">JS CODE OUTPUT</div><h2>Now turn your idea into a real website.</h2><p>JS CODE OUTPUT is designed to make the complete journey from writing code and seeing the result to fixing problems and finishing a project simple inside one browser-first workspace. Whether you are a beginner or already know how to code, you can start with a project and build your website step by step.</p><button class="primary-btn" style="background:#fff;color:#111827" onclick="startBuilding()">🚀 Start Building Free <i class="fa-solid fa-arrow-right ml-2"></i></button></div></section>
 
     <footer class="site-footer">
       <div class="footer-inner"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-10 h-10 rounded-full shadow-sm object-cover"><div><strong style="font-size:14px">JS CODE OUTPUT</strong><div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div></div></div>
       <div class="footer-links" style="flex-wrap:wrap;justify-content:flex-end"><a href="https://js-code-output.vercel.app/about.html">About</a><a href="https://js-code-output.vercel.app/contact.html">Contact</a><a href="https://js-code-output.vercel.app/privacy.html">Privacy</a><a href="https://js-code-output.vercel.app/terms.html">Terms</a><a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a><a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a><a href="https://js-code-output.vercel.app/css-editor.html">CSS Editor</a><a href="https://js-code-app.vercel.app/javascript-editor.html">JavaScript Editor</a><a href="https://js-code-output.vercel.app/javascript-playground.html">JavaScript Playground</a><a href="https://js-code-output.vercel.app/html-css-javascript-editor.html">HTML/CSS/JS Editor</a><a href="https://js-code-output.vercel.app/online-css-editor.html">Online CSS Editor</a><a href="https://js-code-output.vercel.app/online-javascript-editor.html">Online JavaScript Editor</a><a href="https://js-code-output.vercel.app/html-playground.html">HTML Playground</a><a href="https://js-code-output.vercel.app/online-html-editor.html">Online HTML Editor</a><a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a><a href="https://js-code-output.vercel.app/js-playground.html">JS Playground</a><a href="https://js-code-output.vercel.app/online-js-editor.html">Online JS Editor</a><a href="https://js-code-output.vercel.app/live-code-editor.html">Live Code Editor</a><a href="https://js-code-output.vercel.app/live-code-playground.html">Live Code Playground</a><a href="https://js-code-output.vercel.app/online-web-editor.html">Online Web Editor</a><a href="https://js-code-output.vercel.app/web-code-editor.html">Web Code Editor</a><a href="https://js-code-output.vercel.app/code-editor-with-live-preview.html">Editor with Live Preview</a><a href="https://js-code-output.vercel.app/code-output.html">Code Output</a><a href="https://js-code-output.vercel.app/live-output-code.html">Live Output Code</a>
-        <a href="mini-browser.html">Mini Browser</a><a href="https://js-code-output.vercel.app/real-time-code-output.html">Real Time Code Output</a></div><div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT</div></div>
+        <a href="mini-browser.html">Mini Browser</a><a href="https://js-code-output.vercel.app/real-time-code-output.html">Real Time Code Output</a></div><div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT · Code. Build. See it live.</div></div>
     </footer>
   </div>
 
