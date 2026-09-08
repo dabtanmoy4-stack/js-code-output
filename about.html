@@ -4,252 +4,611 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>About Us - JS CODE OUTPUT</title>
-
-    <meta name="description"
-        content="Learn about JS CODE OUTPUT, a free online code editor and web builder for HTML, CSS and JavaScript.">
-
+    <title>About JS CODE OUTPUT — Learn, Build & Publish</title>
+    <meta name="description" content="Learn how JS CODE OUTPUT works — from starting a project and editing HTML, CSS and JavaScript to running, previewing and deploying projects to JS mini.Browser.">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jscodoutput.in/about.html">
 
-    <link rel="canonical" href="https://js-code-output.vercel.app/about.html">
-
-    <!-- ✅ Favicon & Apple Touch Icon (Tab এবং Mobile-এর জন্য) -->
     <link rel="icon" href="/logo.jpeg">
     <link rel="apple-touch-icon" href="/logo.jpeg">
 
-    <!-- ✅ Social Media ও Google Search প্রিভিউর জন্য লোগো (Open Graph) -->
-    <meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
-    <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
+    <meta property="og:title" content="About JS CODE OUTPUT">
+    <meta property="og:description" content="A beginner-friendly online workspace for building, testing and publishing web projects.">
+    <meta property="og:url" content="https://jscodoutput.in/about.html">
+    <meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://jscodoutput.in/logo.jpeg">
 
-    <!-- ✅ Google-কে লোগো চেনানোর জন্য Schema Markup -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "JS CODE OUTPUT",
-      "url": "https://js-code-output.vercel.app/",
-      "logo": "https://js-code-output.vercel.app/logo.jpeg"
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "JS CODE OUTPUT",
+        "url": "https://jscodoutput.in/",
+        "logo": "https://jscodoutput.in/logo.jpeg"
     }
     </script>
 
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#050b18">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        html { scroll-behavior: smooth; }
+
         body {
             background:
-                radial-gradient(circle at top, #1e293b 0%, #0f172a 45%, #020617 100%);
+                radial-gradient(circle at 10% 0%, rgba(37, 99, 235, .16), transparent 30%),
+                radial-gradient(circle at 90% 15%, rgba(124, 58, 237, .13), transparent 28%),
+                linear-gradient(180deg, #07101f 0%, #030712 55%, #020617 100%);
             min-height: 100vh;
         }
 
         .glass {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, .68);
             backdrop-filter: blur(18px);
-            border: 1px solid rgba(148, 163, 184, 0.15);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(148, 163, 184, .14);
+            box-shadow: 0 20px 60px rgba(0,0,0,.18);
+        }
+
+        .glass-soft {
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-grid {
+            background-image:
+                linear-gradient(rgba(148,163,184,.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148,163,184,.055) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .shot {
+            transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+        }
+
+        .shot:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 70px rgba(0,0,0,.42);
+            border-color: rgba(96,165,250,.35);
+        }
+
+        .step-line {
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .step-line::after {
+                content: "";
+                position: absolute;
+                top: 27px;
+                left: calc(100% + 10px);
+                width: calc(100% - 20px);
+                height: 1px;
+                background: linear-gradient(90deg, rgba(96,165,250,.45), transparent);
+            }
         }
     </style>
 </head>
 
-<body class="text-white">
+<body class="text-white selection:bg-blue-500/30">
 
     <!-- Header -->
-    <header class="w-full border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-
-            <a href="/" class="text-xl font-bold tracking-wide">
-                <span class="text-blue-400">JS</span>
-                <span>CODE OUTPUT</span>
+    <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+            <a href="/" class="text-lg sm:text-xl font-bold tracking-wide whitespace-nowrap">
+                <span class="text-blue-400">JS</span> CODE OUTPUT
             </a>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm text-slate-400">
+                <a href="#how-it-works" class="hover:text-white transition">How it works</a>
+                <a href="#workspace" class="hover:text-white transition">Workspace</a>
+                <a href="#deploy" class="hover:text-white transition">Deploy</a>
+                <a href="#why" class="hover:text-white transition">Why JS CODE OUTPUT?</a>
+            </nav>
 
             <a href="/"
-               class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-                ← Back to Editor
+               class="px-3 sm:px-4 py-2 rounded-lg bg-white text-slate-950 hover:bg-slate-200 transition font-semibold text-sm">
+                Back to Editor
             </a>
-
         </div>
     </header>
 
+    <!-- Hero -->
+    <main>
+        <section class="relative overflow-hidden">
+            <div class="absolute inset-0 hero-grid opacity-70 pointer-events-none"></div>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-6 py-16">
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-14">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full
+                                bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs sm:text-sm font-medium">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,.8)]"></span>
+                        The beginner-friendly web building workspace
+                    </div>
 
-        <!-- Hero -->
-        <section class="text-center mb-12">
+                    <h1 class="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+                        Code it. <span class="gradient-text">See it live.</span><br>
+                        Ship it.
+                    </h1>
 
-            <div class="inline-block px-4 py-2 mb-5 rounded-full
-                        bg-blue-500/10 border border-blue-400/20
-                        text-blue-300 text-sm">
-                About JS CODE OUTPUT
+                    <p class="mt-6 text-slate-400 text-base sm:text-lg md:text-xl leading-8 max-w-3xl mx-auto">
+                        JS CODE OUTPUT is a free online coding and web-building platform where you can
+                        create projects with HTML, CSS and JavaScript, see your work live, organize your
+                        project files, and publish finished projects without needing a complicated local setup.
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap justify-center gap-3">
+                        <a href="/"
+                           class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 transition font-semibold shadow-lg shadow-blue-950/30">
+                            Start Building →
+                        </a>
+                        <a href="#how-it-works"
+                           class="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition font-semibold">
+                            See How It Works
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is JS CODE OUTPUT -->
+        <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+            <div class="glass rounded-3xl p-6 sm:p-9">
+                <div class="max-w-3xl">
+                    <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">About the platform</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">What is JS CODE OUTPUT?</h2>
+
+                    <p class="text-slate-300 leading-8">
+                        JS CODE OUTPUT is an online coding platform designed to make web development
+                        simple, visual and approachable. You can write HTML, CSS and JavaScript in one
+                        workspace and use the live output to understand what your code is doing.
+                    </p>
+
+                    <p class="text-slate-400 leading-8 mt-4">
+                        Instead of starting with a complicated development environment, a beginner can
+                        open the platform, create a project, work with the project files, run the code,
+                        inspect the result and continue improving it. The platform is built around a
+                        straightforward idea: <strong class="text-slate-200">write code, see the result, learn by doing.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section id="how-it-works" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">The complete flow</span>
+                <h2 class="text-3xl sm:text-4xl font-bold mt-2">How JS CODE OUTPUT works</h2>
+                <p class="text-slate-400 mt-4 leading-7">
+                    From your first visit to a finished project, the workflow is designed to stay clear
+                    and easy to follow.
+                </p>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold mb-5">
-                Build. Code. Create.
-            </h1>
+            <div class="grid md:grid-cols-4 gap-5">
+                <div class="step-line glass rounded-2xl p-6">
+                    <div class="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-400/20 flex items-center justify-center text-blue-300 font-bold mb-5">01</div>
+                    <h3 class="font-bold text-lg mb-2">Start</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Begin from the main start page and choose to start building your web project.
+                    </p>
+                </div>
 
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-                JS CODE OUTPUT is a free online code editor and web builder
-                designed to make web development simple, fast and accessible.
-            </p>
+                <div class="step-line glass rounded-2xl p-6">
+                    <div class="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-400/20 flex items-center justify-center text-violet-300 font-bold mb-5">02</div>
+                    <h3 class="font-bold text-lg mb-2">Create a project</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Give your project a clear name so your idea becomes an organized workspace.
+                    </p>
+                </div>
 
+                <div class="step-line glass rounded-2xl p-6">
+                    <div class="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-400/20 flex items-center justify-center text-indigo-300 font-bold mb-5">03</div>
+                    <h3 class="font-bold text-lg mb-2">Code & preview</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Work with your HTML, CSS and JavaScript files while watching the live output.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-400/20 flex items-center justify-center text-emerald-300 font-bold mb-5">04</div>
+                    <h3 class="font-bold text-lg mb-2">Publish</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        When your project is ready, use the publishing/deployment workflow to take it beyond the editor.
+                    </p>
+                </div>
+            </div>
         </section>
 
+        <!-- Start Page -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">Step 01 · Start page</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Start with a clear idea</h2>
 
-        <!-- About -->
-        <section class="glass rounded-2xl p-8 mb-6">
+                    <p class="text-slate-300 leading-8">
+                        The start page introduces the core experience: build directly in the browser,
+                        see your output live and move from an idea to a working web project.
+                    </p>
 
-            <h2 class="text-2xl font-bold mb-4">
-                What is JS CODE OUTPUT?
-            </h2>
+                    <div class="mt-6 grid sm:grid-cols-3 gap-3">
+                        <div class="glass-soft rounded-xl p-4">
+                            <div class="text-blue-300 font-semibold">Live Output</div>
+                            <p class="text-xs text-slate-500 mt-1">See changes as you build.</p>
+                        </div>
+                        <div class="glass-soft rounded-xl p-4">
+                            <div class="text-violet-300 font-semibold">Projects</div>
+                            <p class="text-xs text-slate-500 mt-1">Keep work organized.</p>
+                        </div>
+                        <div class="glass-soft rounded-xl p-4">
+                            <div class="text-emerald-300 font-semibold">Publish</div>
+                            <p class="text-xs text-slate-500 mt-1">Take finished work further.</p>
+                        </div>
+                    </div>
+                </div>
 
-            <p class="text-slate-300 leading-8">
-                JS CODE OUTPUT is an online coding platform where you can
-                write HTML, CSS and JavaScript and see your code running
-                instantly in your browser.
-            </p>
-
-            <p class="text-slate-300 leading-8 mt-4">
-                You don't need to install a complicated development
-                environment just to experiment with web development.
-                Open the editor, write your code and see the result live.
-            </p>
-
+                <figure class="shot glass rounded-2xl p-2 sm:p-3">
+                    <img
+                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/start%20page%20pic.jpeg"
+                        alt="JS CODE OUTPUT start page showing the live web-building experience"
+                        class="w-full rounded-xl border border-white/10"
+                        loading="lazy">
+                    <figcaption class="px-2 pt-3 pb-1 text-xs text-slate-500">
+                        The JS CODE OUTPUT start page — the entry point to the building experience.
+                    </figcaption>
+                </figure>
+            </div>
         </section>
 
+        <!-- Project Page -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <figure class="shot glass rounded-2xl p-2 sm:p-3 order-2 lg:order-1">
+                    <img
+                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/project%20page.jpeg"
+                        alt="JS CODE OUTPUT create new project screen"
+                        class="w-full rounded-xl border border-white/10"
+                        loading="lazy">
+                    <figcaption class="px-2 pt-3 pb-1 text-xs text-slate-500">
+                        Creating a new project with a distinctive project name.
+                    </figcaption>
+                </figure>
+
+                <div class="order-1 lg:order-2">
+                    <span class="text-violet-400 text-sm font-semibold uppercase tracking-widest">Step 02 · Project page</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Turn an idea into a project</h2>
+
+                    <p class="text-slate-300 leading-8">
+                        A project gives your work a clear home. You can start by choosing a distinctive
+                        project name — whether you are experimenting with a portfolio, a game, a landing
+                        page or another web idea.
+                    </p>
+
+                    <p class="text-slate-400 leading-8 mt-4">
+                        Keeping each idea inside its own project makes it easier to return to your work,
+                        continue experimenting and understand what belongs to which project.
+                    </p>
+
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        <span class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-slate-300">Project name</span>
+                        <span class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-slate-300">Organized work</span>
+                        <span class="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-slate-300">Build & experiment</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workspace -->
+        <section id="workspace" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-cyan-400 text-sm font-semibold uppercase tracking-widest">Step 03 · Workspace</span>
+                <h2 class="text-3xl sm:text-4xl font-bold mt-2">One workspace for the whole build</h2>
+                <p class="text-slate-400 mt-4 leading-7">
+                    The workspace brings your project files, code editor, live output and development
+                    controls together so you can build and test without constantly changing tools.
+                </p>
+            </div>
+
+            <figure class="shot glass rounded-2xl p-2 sm:p-3 max-w-5xl mx-auto">
+                <img
+                    src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/workspace.jpeg"
+                    alt="JS CODE OUTPUT workspace with file explorer, code editor and live output"
+                    class="w-full rounded-xl border border-white/10"
+                    loading="lazy">
+                <figcaption class="px-2 pt-3 pb-1 text-xs text-slate-500">
+                    The workspace combines the project explorer, editor and live output in one screen.
+                </figcaption>
+            </figure>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-7">
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="font-bold mb-2">Explorer</h3>
+                    <p class="text-slate-400 text-sm leading-6">
+                        Manage the files and folders that make up your project.
+                    </p>
+                </div>
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="font-bold mb-2">Editor</h3>
+                    <p class="text-slate-400 text-sm leading-6">
+                        Work with files such as HTML, CSS and JavaScript directly in the workspace.
+                    </p>
+                </div>
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="font-bold mb-2">Live Output</h3>
+                    <p class="text-slate-400 text-sm leading-6">
+                        Run your project and see the resulting webpage beside your code.
+                    </p>
+                </div>
+                <div class="glass rounded-2xl p-5">
+                    <h3 class="font-bold mb-2">Build Controls</h3>
+                    <p class="text-slate-400 text-sm leading-6">
+                        Use actions such as Save as Draft, Run, Publish, Format, Console and Libraries as available in the workspace.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-5 glass-soft rounded-2xl p-5 sm:p-6">
+                <h3 class="font-bold text-lg mb-3">Why this layout matters</h3>
+                <p class="text-slate-400 leading-7">
+                    Beginners can learn the relationship between code and output visually. Instead of
+                    writing code in one place and opening another application to check it, the workspace
+                    keeps the source and result close together. That makes experimenting, finding mistakes
+                    and improving a page much easier.
+                </p>
+            </div>
+        </section>
+
+        <!-- Technologies -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div class="glass rounded-3xl p-6 sm:p-9">
+                <div class="text-center max-w-2xl mx-auto mb-8">
+                    <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">Core building blocks</span>
+                    <h2 class="text-3xl font-bold mt-2">HTML · CSS · JavaScript</h2>
+                    <p class="text-slate-400 mt-3 leading-7">
+                        JS CODE OUTPUT is centered around the three technologies beginners commonly use
+                        to build interactive webpages.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="rounded-2xl bg-orange-400/5 border border-orange-300/10 p-6">
+                        <div class="text-orange-300 font-bold text-xl mb-2">HTML</div>
+                        <p class="text-slate-400 text-sm leading-7">
+                            Build the structure and content of your webpage.
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl bg-blue-400/5 border border-blue-300/10 p-6">
+                        <div class="text-blue-300 font-bold text-xl mb-2">CSS</div>
+                        <p class="text-slate-400 text-sm leading-7">
+                            Style your project and shape its visual appearance.
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl bg-yellow-400/5 border border-yellow-300/10 p-6">
+                        <div class="text-yellow-300 font-bold text-xl mb-2">JavaScript</div>
+                        <p class="text-slate-400 text-sm leading-7">
+                            Add interaction, logic and functionality to your webpage.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deploy -->
+        <section id="deploy" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="text-emerald-400 text-sm font-semibold uppercase tracking-widest">Step 04 · Deploy</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">When the project is ready, take it further</h2>
+
+                    <p class="text-slate-300 leading-8">
+                        Building is only half of the journey. Once your project is working, JS CODE OUTPUT
+                        provides a deployment flow for publishing it inside the <strong class="text-white">JS mini.Browser</strong>
+                        ecosystem.
+                    </p>
+
+                    <p class="text-slate-400 leading-8 mt-4">
+                        The deployment screen lets you provide information such as the project name,
+                        description, virtual domain, category and visibility before deploying. This turns
+                        a project you created in the editor into something that can be presented and shared
+                        through the platform's publishing experience.
+                    </p>
+
+                    <div class="mt-6 grid sm:grid-cols-2 gap-3">
+                        <div class="glass-soft rounded-xl p-4">
+                            <div class="font-semibold">Virtual domain</div>
+                            <p class="text-xs text-slate-500 mt-1">Give the published project its own recognizable name.</p>
+                        </div>
+                        <div class="glass-soft rounded-xl p-4">
+                            <div class="font-semibold">Visibility</div>
+                            <p class="text-xs text-slate-500 mt-1">Choose the publishing visibility offered by the deployment screen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <figure class="shot glass rounded-2xl p-2 sm:p-3">
+                    <img
+                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/deploy.jpeg"
+                        alt="JS CODE OUTPUT deployment screen for publishing a project to JS mini.Browser"
+                        class="w-full rounded-xl border border-white/10"
+                        loading="lazy">
+                    <figcaption class="px-2 pt-3 pb-1 text-xs text-slate-500">
+                        The deployment form for publishing a project into the JS mini.Browser ecosystem.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- Why -->
+        <section id="why" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-violet-400 text-sm font-semibold uppercase tracking-widest">Built for learning</span>
+                <h2 class="text-3xl sm:text-4xl font-bold mt-2">Why JS CODE OUTPUT is great for beginners</h2>
+                <p class="text-slate-400 mt-4 leading-7">
+                    The goal is not to make coding feel complicated. The goal is to make the first steps
+                    understandable and the next steps easy to explore.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">⚡</div>
+                    <h3 class="font-bold text-lg mb-2">Fast feedback</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        See the relationship between your code and the webpage quickly through live output.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">🧩</div>
+                    <h3 class="font-bold text-lg mb-2">Learn by experimenting</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Change a line, run the project and observe what happens. That makes concepts easier to understand.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">🗂️</div>
+                    <h3 class="font-bold text-lg mb-2">Project-based learning</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Learning becomes more practical when you build actual pages, small apps and creative experiments.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">💻</div>
+                    <h3 class="font-bold text-lg mb-2">Browser-based</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Get started from the browser without first setting up a large local development environment.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">🚀</div>
+                    <h3 class="font-bold text-lg mb-2">From idea to publishing</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        The workflow connects creating, testing and publishing instead of treating them as completely separate tasks.
+                    </p>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-2xl mb-4">🌱</div>
+                    <h3 class="font-bold text-lg mb-2">Beginner first</h3>
+                    <p class="text-slate-400 text-sm leading-7">
+                        Students, first-time learners, creators and hobby developers can start small and grow from there.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- Mission -->
-        <section class="glass rounded-2xl p-8 mb-6">
-
-            <h2 class="text-2xl font-bold mb-4">
-                Our Mission
-            </h2>
-
-            <p class="text-slate-300 leading-8">
-                Our goal is to make coding easier and more accessible for
-                everyone. Whether you are a student learning your first
-                HTML page, a beginner experimenting with JavaScript, or a
-                developer testing a quick idea, JS CODE OUTPUT is built to
-                provide a simple coding experience.
-            </p>
-
-        </section>
-
-
-        <!-- Features -->
-        <section class="glass rounded-2xl p-8 mb-6">
-
-            <h2 class="text-2xl font-bold mb-6">
-                What You Can Do
-            </h2>
-
-            <div class="grid md:grid-cols-3 gap-4">
-
-                <div class="rounded-xl bg-white/5 border border-white/10 p-5">
-                    <h3 class="font-semibold text-lg mb-2">
-                        HTML
-                    </h3>
-                    <p class="text-slate-400 text-sm">
-                        Create and experiment with HTML webpages.
-                    </p>
-                </div>
-
-                <div class="rounded-xl bg-white/5 border border-white/10 p-5">
-                    <h3 class="font-semibold text-lg mb-2">
-                        CSS
-                    </h3>
-                    <p class="text-slate-400 text-sm">
-                        Design and style your web projects with CSS.
-                    </p>
-                </div>
-
-                <div class="rounded-xl bg-white/5 border border-white/10 p-5">
-                    <h3 class="font-semibold text-lg mb-2">
-                        JavaScript
-                    </h3>
-                    <p class="text-slate-400 text-sm">
-                        Add interaction and functionality using JavaScript.
-                    </p>
-                </div>
-
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+            <div class="glass rounded-3xl p-7 sm:p-10 text-center">
+                <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">Our mission</span>
+                <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Make web development easier to approach</h2>
+                <p class="text-slate-300 leading-8 max-w-3xl mx-auto">
+                    Our goal is to make coding more accessible for people who are learning, experimenting
+                    or simply trying to turn an idea into a working webpage. JS CODE OUTPUT is designed
+                    to give beginners a practical place to start while still providing a useful workflow
+                    for building and testing real web projects.
+                </p>
             </div>
-
         </section>
-
 
         <!-- Who is it for -->
-        <section class="glass rounded-2xl p-8 mb-6">
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="glass rounded-2xl p-7">
+                    <h2 class="text-2xl font-bold mb-4">Who is it for?</h2>
+                    <p class="text-slate-400 leading-7">
+                        JS CODE OUTPUT can be useful for students, beginners, creators, hobby developers
+                        and anyone who wants to quickly experiment with HTML, CSS and JavaScript.
+                    </p>
+                </div>
 
-            <h2 class="text-2xl font-bold mb-4">
-                Who Is It For?
-            </h2>
-
-            <p class="text-slate-300 leading-8">
-                JS CODE OUTPUT can be useful for students, beginners,
-                creators, hobby developers and anyone who wants to quickly
-                experiment with web technologies.
-            </p>
-
+                <div class="glass rounded-2xl p-7">
+                    <h2 class="text-2xl font-bold mb-4">What can you build?</h2>
+                    <p class="text-slate-400 leading-7">
+                        Start with a simple webpage and gradually experiment with portfolios, landing pages,
+                        interactive components, small web apps, games and other browser-based ideas.
+                    </p>
+                </div>
+            </div>
         </section>
 
+        <!-- Contact -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div class="glass rounded-3xl p-7 sm:p-10">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                        <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest">Need help?</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold mt-2 mb-3">Have a question or feedback?</h2>
+                        <p class="text-slate-400 leading-7 max-w-2xl">
+                            Use the Contact Us page for the platform's available contact and support information.
+                            Feedback from users can help make the experience clearer and more useful.
+                        </p>
+                    </div>
 
-        <!-- Closing -->
-        <section class="text-center py-10">
-
-            <h2 class="text-2xl font-bold mb-3">
-                Start Creating Today
-            </h2>
-
-            <p class="text-slate-400 mb-6">
-                Open the editor and turn your ideas into working web projects.
-            </p>
-
-            <a href="/"
-               class="inline-block px-6 py-3 rounded-xl
-                      bg-blue-600 hover:bg-blue-500
-                      font-semibold transition shadow-lg">
-                Open JS CODE OUTPUT →
-            </a>
-
+                    <a href="/contact.html"
+                       class="shrink-0 inline-flex items-center justify-center px-5 py-3 rounded-xl
+                              bg-white/10 hover:bg-white/15 border border-white/10 transition font-semibold">
+                        Contact Us →
+                    </a>
+                </div>
+            </div>
         </section>
 
+        <!-- Closing CTA -->
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+            <div class="relative overflow-hidden glass rounded-3xl p-8 sm:p-12 text-center">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-violet-600/10 pointer-events-none"></div>
+
+                <div class="relative">
+                    <span class="text-blue-300 text-sm font-semibold uppercase tracking-widest">Your next project starts here</span>
+                    <h2 class="text-3xl sm:text-5xl font-black mt-3 mb-5">
+                        Learn. Build. <span class="gradient-text">See it live.</span>
+                    </h2>
+                    <p class="text-slate-400 leading-7 max-w-2xl mx-auto mb-7">
+                        You do not need to know everything before you begin. Start with an idea,
+                        create a project, write your code, watch the result and keep improving.
+                    </p>
+
+                    <a href="/"
+                       class="inline-flex items-center justify-center px-7 py-3.5 rounded-xl
+                              bg-blue-600 hover:bg-blue-500 transition font-bold shadow-lg shadow-blue-950/30">
+                        Open JS CODE OUTPUT →
+                    </a>
+                </div>
+            </div>
+        </section>
     </main>
-
 
     <!-- Footer -->
     <footer class="border-t border-white/10 mt-8">
-
-        <div class="max-w-6xl mx-auto px-6 py-8 text-center">
-
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
             <p class="text-slate-500 text-sm mb-4">
                 © 2026 JS CODE OUTPUT. All rights reserved.
             </p>
 
-            <div class="flex flex-wrap justify-center gap-5 text-sm">
-
-                <a href="/about.html"
-                   class="text-blue-400 hover:text-blue-300">
-                    About Us
-                </a>
-
-                <a href="/contact.html"
-                   class="text-slate-400 hover:text-white">
-                    Contact Us
-                </a>
-
-                <a href="/privacy.html"
-                   class="text-slate-400 hover:text-white">
-                    Privacy Policy
-                </a>
-
-                <a href="/terms.html"
-                   class="text-slate-400 hover:text-white">
-                    Terms & Conditions
-                </a>
-
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
+                <a href="/about.html" class="text-blue-400 hover:text-blue-300 transition">About Us</a>
+                <a href="/contact.html" class="text-slate-400 hover:text-white transition">Contact Us</a>
+                <a href="/privacy.html" class="text-slate-400 hover:text-white transition">Privacy Policy</a>
+                <a href="/terms.html" class="text-slate-400 hover:text-white transition">Terms & Conditions</a>
             </div>
-
         </div>
-
     </footer>
 
 </body>
