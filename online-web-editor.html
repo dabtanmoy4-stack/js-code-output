@@ -118,6 +118,33 @@
         transform:translateY(-1px);
     }
 
+
+    .brand-logo{
+        width:38px;
+        height:38px;
+        object-fit:contain;
+        display:block;
+        border-radius:9px;
+        flex:0 0 38px;
+    }
+    .brand{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+    }
+    .brand-text{display:inline}
+    .footer-brand-logo{
+        width:46px;
+        height:46px;
+        object-fit:contain;
+        display:block;
+        border-radius:10px;
+        margin-bottom:13px;
+    }
+    @media (max-width:680px){
+        .brand-logo{width:34px;height:34px;flex-basis:34px}
+    }
+
     /* Hero */
     .hero{
         position:relative;
@@ -151,6 +178,20 @@
         margin:0 auto;
         text-align:center;
         padding:90px 0 100px;
+    }
+
+
+    .hero-logo-wrap{
+        display:flex;
+        justify-content:center;
+        margin-bottom:18px;
+    }
+    .hero-logo{
+        width:74px;
+        height:74px;
+        object-fit:contain;
+        border-radius:18px;
+        box-shadow:0 10px 28px rgba(75,57,34,.12);
     }
 
     .eyebrow{
@@ -486,13 +527,37 @@
         .footer-keywords{text-align:left}
     }
 </style>
+
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
+<link rel="apple-touch-icon" href="logo.jpeg">
+<meta property="og:site_name" content="JS CODE OUTPUT">
+<meta property="og:title" content="Web Code Editor | JS CODE OUTPUT">
+<meta property="og:description" content="Free online coding and web-building platform for HTML, CSS and JavaScript.">
+<meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jscodoutput.in/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Web Code Editor | JS CODE OUTPUT">
+<meta name="twitter:description" content="Free online coding and web-building platform for HTML, CSS and JavaScript.">
+<meta name="twitter:image" content="https://jscodoutput.in/logo.jpeg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "JS CODE OUTPUT",
+  "url": "https://jscodoutput.in/",
+  "logo": "https://jscodoutput.in/logo.jpeg"
+}
+</script>
+
 </head>
 
 <body>
 
 <header>
     <div class="container nav">
-        <a class="brand" href="https://jscodoutput.in/"><span>JS</span> CODE OUTPUT</a>
+        <a class="brand" href="https://jscodoutput.in/" aria-label="JS CODE OUTPUT Home"><img class="brand-logo" src="logo.jpeg" alt="JS CODE OUTPUT logo"><span class="brand-text">JS CODE OUTPUT</span></a>
 
         <nav class="nav-links" aria-label="Main navigation">
             <a href="#what-is">How it works</a>
@@ -507,6 +572,9 @@
 
 <section class="hero">
     <div class="container hero-content">
+        <div class="hero-logo-wrap" aria-label="JS CODE OUTPUT">
+            <img class="hero-logo" src="logo.jpeg" alt="JS CODE OUTPUT logo">
+        </div>
         <div class="eyebrow">The beginner-friendly web building workspace</div>
 
         <h1>Build for the web.<br>See your code live.</h1>
@@ -637,6 +705,7 @@
 <div class="container">
     <div class="footer-top">
         <div class="footer-brand">
+            <img class="footer-brand-logo" src="logo.jpeg" alt="JS CODE OUTPUT logo">
             <div class="brand-name">JS CODE OUTPUT</div>
             <p>Code. Build. See it live. A browser-first environment for learning, experimenting and building web projects.</p>
         </div>
