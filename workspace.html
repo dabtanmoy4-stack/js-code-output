@@ -1615,7 +1615,7 @@ https://unpkg.com/react@18/umd/react.production.min.js"></textarea>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAnalytics} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,setDoc,getDoc,deleteDoc,arrayUnion,arrayRemove,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1641,7 +1641,30 @@ window.firebaseArrayRemove = arrayRemove;
 window.firebaseDeleteDoc = deleteDoc;
 window.firebaseServerTimestamp = serverTimestamp;
 window.firebaseSignOut = signOut;
-window.googleSignIn = () => signInWithPopup(auth, provider);
+window.googleSignIn = async () => {
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (e) {
+    // Popup/redirect fallback. An unauthorized-domain error cannot be fixed by
+    // JavaScript; Firebase requires the hosting domain to be Authorized.
+    if (e?.code === "auth/popup-blocked" || e?.code === "auth/popup-closed-by-user" || e?.code === "auth/cancelled-popup-request") {
+      await signInWithRedirect(auth, provider);
+      return null;
+    }
+    throw e;
+  }
+};
+
+// Complete a pending Google redirect sign-in when the workspace loads.
+getRedirectResult(auth).then(result => {
+  if (result?.user) {
+    window.firebaseCurrentUser = result.user;
+    window.currentUser = result.user;
+    if (typeof rememberWorkspaceAccount === "function") rememberWorkspaceAccount(result.user);
+  }
+}).catch(e => {
+  console.error("Google redirect sign-in failed:", e);
+});
 window.firebaseAnonymousSignIn = () => signInAnonymously(auth);
 
 
@@ -4155,7 +4178,13 @@ async function addWorkspaceAccount(){
     }
   }catch(e){
     console.error("Add account failed:", e);
-    showToast("Account sign-in cancelled or failed.");
+    if(e?.code === "auth/unauthorized-domain") {
+      showToast("This website domain is not authorized in Firebase.");
+    } else if(e?.code === "auth/popup-blocked") {
+      showToast("Popup was blocked. Please allow popups for this site.");
+    } else {
+      showToast("Account sign-in cancelled or failed.");
+    }
   }
 }
 
