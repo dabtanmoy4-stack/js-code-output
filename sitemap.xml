@@ -3,77 +3,191 @@
 
     <!-- Main Homepage -->
     <url>
-        <loc>https://js-code-output.vercel.app/</loc>
+        <loc>https://jscodoutput.in/</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
 
     <!-- Important Core Pages -->
-    <url><loc>https://js-code-output.vercel.app/about.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-    <url><loc>https://js-code-output.vercel.app/contact.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-    <url><loc>https://js-code-output.vercel.app/privacy.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-    <url><loc>https://js-code-output.vercel.app/terms.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+    <url>
+        <loc>https://jscodoutput.in/about.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/contact.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/privacy.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/terms.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
 
     <!-- Existing Editors -->
-    <url><loc>https://js-code-output.vercel.app/online-code-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/css-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/html-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/javascript-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/javascript-playground.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/html-css-javascript-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/online-css-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/online-javascript-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- New HTML & CSS Playgrounds -->
-    <url><loc>https://js-code-output.vercel.app/html-playground.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/online-html-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/css-playground.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- New JS Playgrounds -->
-    <url><loc>https://js-code-output.vercel.app/js-playground.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-    <url><loc>https://js-code-output.vercel.app/online-js-editor.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- New Live Code Editors -->
-    <url><loc>https://js-code-output.vercel.app/live-code-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/live-code-playground.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/online-web-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/web-code-editor.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://js-code-output.vercel.app/code-editor-with-live-preview.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-<!-- Code Output -->
-  <url>
-    <loc>https://js-code-output.vercel.app/code-output</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Live Output Code -->
-  <url>
-    <loc>https://js-code-output.vercel.app/live-output-code</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Real Time Code Output -->
-  <url>
-    <loc>https://js-code-output.vercel.app/real-time-code-output</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
     <url>
-  <loc>https://js-code-output.vercel.app/js-mini-browser.html</loc>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-</url>
-    <url>
-  <loc>https://js-code-output.vercel.app/mini-browser.html</loc>
-</url>
-    <url>
-        <loc>https://js-code-output.vercel.app/workspace.html</loc>
+        <loc>https://jscodoutput.in/online-code-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
     </url>
+
     <url>
-        <loc>https://js-code-output.vercel.app/projects.html</loc>
-        <url/>
+        <loc>https://jscodoutput.in/css-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/html-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/javascript-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/javascript-playground.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/html-css-javascript-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/online-css-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/online-javascript-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- HTML & CSS Playgrounds -->
+    <url>
+        <loc>https://jscodoutput.in/html-playground.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/online-html-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/css-playground.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- JS Playgrounds -->
+    <url>
+        <loc>https://jscodoutput.in/js-playground.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/online-js-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Live Code Editors -->
+    <url>
+        <loc>https://jscodoutput.in/live-code-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/live-code-playground.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/online-web-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/web-code-editor.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/code-editor-with-live-preview.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Code Output -->
+    <url>
+        <loc>https://jscodoutput.in/code-output</loc>
+        <lastmod>2026-08-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Live Output Code -->
+    <url>
+        <loc>https://jscodoutput.in/live-output-code</loc>
+        <lastmod>2026-08-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Real Time Code Output -->
+    <url>
+        <loc>https://jscodoutput.in/real-time-code-output</loc>
+        <lastmod>2026-08-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Mini Browser -->
+    <url>
+        <loc>https://jscodoutput.in/js-mini-browser.html</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://jscodoutput.in/mini-browser.html</loc>
+    </url>
+
+    <!-- Workspace -->
+    <url>
+        <loc>https://jscodoutput.in/workspace.html</loc>
+    </url>
+
+    <!-- Projects -->
+    <url>
+        <loc>https://jscodoutput.in/projects.html</loc>
+    </url>
+
 </urlset>
