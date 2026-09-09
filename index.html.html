@@ -2050,10 +2050,31 @@ html.dark .thumbnail-card {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+  // Keep Google login active across page reloads and future visits.
+  // Firebase's LOCAL persistence stores the signed-in session in the browser.
+  let currentFirebaseUser = null;
+  let authReadyResolve;
+  const authReady = new Promise(resolve => { authReadyResolve = resolve; });
+
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .catch(error => console.warn("Could not set local auth persistence:", error));
+
+  auth.onAuthStateChanged(function(user){
+    currentFirebaseUser = user || null;
+    authReadyResolve(currentFirebaseUser);
+  });
 </script>
 
 <script>
-function startBuilding(){
+async function startBuilding(){
+  // Wait for Firebase to restore the previous Google session.
+  const user = await authReady;
+  if(user){
+    // Already signed in — never show the Google sign-in screen again.
+    window.location.href = "projects.html";
+    return;
+  }
   openAuthModal();
 }
 function openMiniBrowserAuth(){
@@ -2101,6 +2122,9 @@ function setAuthBusy(busy, message){
 async function signInWithGoogle(){
   setAuthBusy(true, "Opening Google sign-in…");
   try{
+    // Explicit LOCAL persistence means the user stays signed in after
+    // closing/reopening the browser and returning to this site.
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     await auth.signInWithPopup(googleProvider);
     setAuthBusy(true, "Signed in successfully. Opening workspace…");
     window.location.href = "projects.html";
