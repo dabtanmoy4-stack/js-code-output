@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -666,6 +666,824 @@
     <link rel="icon" type="image/jpeg" href="logo.jpeg">
     <link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
     <link rel="apple-touch-icon" href="logo.jpeg">
+
+<style id="reference-visual-theme">
+/* Visual-only theme layer — functionality untouched */
+:root{
+ --bg:#f8f6ee!important; --surface:#fffdf8!important; --surface2:#eee7dc!important;
+ --ink:#17130d!important; --muted:#776f64!important; --line:#d9cfbf!important;
+ --brand:#8a6a3f!important; --brand2:#a7895d!important;
+ --shadow:0 20px 60px rgba(79,57,31,.12)!important;
+}
+html.dark{--bg:#000!important;--surface:#000!important;--surface2:#0b0b09!important;--ink:#f8f6ee!important;--muted:#b8afa3!important;--line:#4a4034!important;--brand:#b8892e!important;--brand2:#d9b66f!important;--shadow:0 20px 60px rgba(0,0,0,.55)!important}
+html,body{background:var(--bg)!important;color:var(--ink)!important}
+body{position:relative;isolation:isolate}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(circle at 10% 10%,rgba(167,137,93,.12),transparent 30%),radial-gradient(circle at 90% 85%,rgba(138,106,63,.10),transparent 30%);animation:ambientDrift 14s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.32;background-image:linear-gradient(rgba(138,106,63,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(138,106,63,.055) 1px,transparent 1px);background-size:44px 44px;animation:gridFloat 20s linear infinite}
+@keyframes ambientDrift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.06) translate3d(12px,-8px,0)}}
+@keyframes gridFloat{from{background-position:0 0,0 0}to{background-position:44px 44px,44px 44px}}
+
+#app{background:transparent!important;color:var(--ink)!important}
+#topHeader{background:rgba(255,253,248,.88)!important;border-bottom:1px solid var(--line)!important;box-shadow:0 8px 30px rgba(79,57,31,.08)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+html.dark #topHeader{background:rgba(0,0,0,.84)!important}
+.app-brand h1{color:var(--ink)!important}.app-brand p{color:var(--muted)!important}
+.current-project,.project-search-actions .tool-btn,#topHeader .app-btn{background:rgba(255,253,248,.72)!important;border-color:var(--line)!important;color:var(--ink)!important;transition:transform .22s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease}
+html.dark .current-project,html.dark .project-search-actions .tool-btn,html.dark #topHeader .app-btn{background:#0b0b09!important}
+.current-project:hover,.project-search-actions .tool-btn:hover,#topHeader .app-btn:hover{transform:translateY(-2px);border-color:var(--brand2)!important;box-shadow:0 10px 26px rgba(138,106,63,.14)!important}
+#topHeader .app-btn.run{background:linear-gradient(135deg,#8a6a3f,#d9b66f)!important;color:#17130d!important;border-color:#d9b66f!important;box-shadow:0 8px 24px rgba(138,106,63,.22)!important}
+#topHeader .app-btn.run:hover{box-shadow:0 12px 32px rgba(138,106,63,.34)!important}
+
+.card,.panel,.project-card,.project-item,.modal,.dropdown,.menu,.section-card,.glass{background:rgba(255,253,248,.82)!important;border-color:var(--line)!important;box-shadow:var(--shadow)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease,background .28s ease}
+html.dark .card,html.dark .panel,html.dark .project-card,html.dark .project-item,html.dark .modal,html.dark .dropdown,html.dark .menu,html.dark .section-card,html.dark .glass{background:rgba(8,8,7,.9)!important}
+.card:hover,.project-card:hover,.project-item:hover{transform:translateY(-4px);border-color:rgba(167,137,93,.72)!important;box-shadow:0 18px 48px rgba(79,57,31,.16)!important}
+html.dark .card:hover,html.dark .project-card:hover,html.dark .project-item:hover{box-shadow:0 18px 48px rgba(0,0,0,.55)!important}
+
+button,.btn,.primary,.action-btn,.run-btn,.publish-btn,.editor-btn{background:linear-gradient(135deg,#8a6a3f,#b8892e)!important;color:#fffdf8!important;border-color:#a7895d!important;box-shadow:0 8px 22px rgba(138,106,63,.20)!important;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease!important}
+button:hover,.btn:hover,.primary:hover,.action-btn:hover,.run-btn:hover,.publish-btn:hover,.editor-btn:hover{transform:translateY(-2px);filter:saturate(1.08);box-shadow:0 12px 30px rgba(138,106,63,.30)!important}
+button:active,.btn:active,.primary:active,.action-btn:active{transform:translateY(0)!important}
+
+h1,h2,h3,h4,.title,.heading{color:var(--ink)!important;text-shadow:0 0 10px rgba(138,106,63,.10)}
+a{color:var(--brand)!important;transition:color .2s ease}
+a:hover{color:var(--brand2)!important}
+input,textarea,select{background:rgba(255,253,248,.78)!important;color:var(--ink)!important;border-color:var(--line)!important;transition:border-color .2s,box-shadow .2s,background .2s}
+html.dark input,html.dark textarea,html.dark select{background:#090908!important}
+input:focus,textarea:focus,select:focus{border-color:var(--brand2)!important;box-shadow:0 0 0 3px rgba(167,137,93,.14)!important;outline:none}
+::-webkit-scrollbar-thumb{background:rgba(138,106,63,.35)!important}.::-webkit-scrollbar-thumb:hover{background:rgba(138,106,63,.58)!important}
+
+/* subtle floating accent on major visual blocks */
+.project-card,.section-card{animation:cardFloat 7s ease-in-out infinite}
+.project-card:nth-child(2n),.section-card:nth-child(2n){animation-delay:-2.5s}
+@keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){body::before,body::after,.project-card,.section-card{animation:none!important}}
+</style>
+
+
+<style id="gold-projects-visual-polish">
+/* =========================================================
+   GOLD PROJECTS VISUAL POLISH
+   Visual-only layer: no HTML structure or JavaScript changed.
+   ========================================================= */
+
+/* Main background: deep black, replacing the blue ambient tone */
+html.dark .projects-page,
+html.dark .projects-page::before,
+html.dark .projects-page::after{
+  background:#050505 !important;
+}
+html.dark .projects-page{
+  background:
+    radial-gradient(circle at 50% -10%, rgba(212,170,82,.055), transparent 34%),
+    #050505 !important;
+}
+
+/* Keep the page background black while adding a very subtle moving gold atmosphere */
+html.dark .ambient-background{
+  background:
+    radial-gradient(circle at 15% 20%, rgba(212,170,82,.045), transparent 28%),
+    radial-gradient(circle at 85% 78%, rgba(184,137,46,.035), transparent 30%) !important;
+}
+html.dark .ambient-grid{
+  opacity:.18 !important;
+  background-image:
+    linear-gradient(rgba(212,170,82,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,170,82,.055) 1px,transparent 1px) !important;
+  animation:goldGridDrift 18s linear infinite !important;
+}
+@keyframes goldGridDrift{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(18px,-12px,0) scale(1.02)}
+  100%{transform:translate3d(0,0,0) scale(1)}
+}
+
+/* Header */
+html.dark .projects-header{
+  background:rgba(5,5,5,.88) !important;
+  border-bottom:1px solid rgba(212,170,82,.28) !important;
+  box-shadow:0 8px 30px rgba(0,0,0,.55),0 1px 0 rgba(212,170,82,.08) !important;
+}
+
+/* Make normally white/light text warm and subtly luminous gold */
+html.dark .projects-page h1,
+html.dark .projects-page h2,
+html.dark .projects-page h3,
+html.dark .projects-page .font-extrabold,
+html.dark .projects-page .font-bold,
+html.dark .projects-page .app-brand h1,
+html.dark .projects-page .brand-text,
+html.dark .projects-page label{
+  color:#f5dfaa !important;
+  text-shadow:0 0 10px rgba(212,170,82,.24);
+}
+html.dark .projects-page p,
+html.dark .projects-page .text-gray-500,
+html.dark .projects-page .text-gray-400,
+html.dark .projects-page .text-gray-300{
+  color:#c8b88f !important;
+}
+html.dark .projects-page a{
+  color:#e2bd68 !important;
+}
+
+/* Workspace kicker */
+html.dark .projects-heading .text-blue-500{
+  color:#d4aa52 !important;
+  text-shadow:0 0 12px rgba(212,170,82,.42);
+}
+
+/* NEW PROJECT — blue card/button with warm-white lettering */
+html.dark .projects-heading .primary-btn{
+  background:
+    linear-gradient(135deg,#174f91 0%,#2167b8 48%,#2f7be5 100%) !important;
+  color:#fff8e8 !important;
+  border:1px solid #5b91d5 !important;
+  box-shadow:
+    0 8px 28px rgba(31,111,210,.28),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
+  position:relative;
+  overflow:hidden;
+}
+html.dark .projects-heading .primary-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.24) 48%,transparent 68%);
+  transform:translateX(-120%);
+  animation:newProjectShine 3.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes newProjectShine{
+  0%,55%{transform:translateX(-120%)}
+  100%{transform:translateX(120%)}
+}
+html.dark .projects-heading .primary-btn:hover{
+  transform:translateY(-3px) !important;
+  box-shadow:
+    0 14px 36px rgba(31,111,210,.38),
+    0 0 24px rgba(47,123,229,.18) !important;
+}
+
+/* Project cards — gold plated finish */
+html.dark .project-card{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg,
+      #17130b 0%,
+      #2b2111 24%,
+      #17130b 52%,
+      #3a2a12 76%,
+      #17130b 100%) !important;
+  border:1px solid rgba(212,170,82,.62) !important;
+  border-top-color:#e6c46f !important;
+  border-bottom-color:#8f6828 !important;
+  border-radius:16px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,236,177,.20),
+    inset 0 -1px 0 rgba(95,61,12,.55),
+    0 10px 30px rgba(0,0,0,.40),
+    0 0 0 1px rgba(212,170,82,.08) !important;
+  animation:goldCardFloat 5.5s ease-in-out infinite;
+}
+html.dark .project-card:nth-child(2n){animation-delay:-1.4s}
+html.dark .project-card:nth-child(3n){animation-delay:-2.7s}
+html.dark .project-card:nth-child(4n){animation-delay:-3.8s}
+
+/* Gold plated animated reflection */
+html.dark .project-card::before{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-70%;
+  width:45%;
+  height:180%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,239,181,.22),
+    rgba(255,255,255,.10),
+    transparent
+  );
+  transform:rotate(18deg);
+  animation:goldPlateSweep 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+html.dark .project-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  box-shadow:inset 0 0 24px rgba(212,170,82,.055);
+  pointer-events:none;
+}
+@keyframes goldPlateSweep{
+  0%,38%{left:-70%;opacity:0}
+  48%{opacity:1}
+  68%,100%{left:135%;opacity:0}
+}
+@keyframes goldCardFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+html.dark .project-card:hover{
+  transform:translateY(-7px) scale(1.012) !important;
+  border-color:#f0c96b !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,190,.28),
+    0 16px 42px rgba(0,0,0,.52),
+    0 0 26px rgba(212,170,82,.20) !important;
+}
+html.dark .project-card:active{
+  transform:scale(.985) !important;
+}
+
+/* Project card typography */
+html.dark .project-card-title{
+  color:#ffe9ae !important;
+  text-shadow:
+    0 0 8px rgba(212,170,82,.24),
+    0 1px 0 rgba(0,0,0,.7);
+}
+html.dark .project-card-type{
+  color:#c9b477 !important;
+}
+html.dark .open-project-text{
+  color:#e2bd68 !important;
+  text-shadow:0 0 8px rgba(212,170,82,.35);
+}
+html.dark .project-more{
+  color:#d8b866 !important;
+}
+html.dark .project-more:hover{
+  background:rgba(212,170,82,.12) !important;
+  color:#ffe6a0 !important;
+}
+
+/* Other project controls */
+html.dark .app-btn,
+html.dark .current-project{
+  background:#101010 !important;
+  color:#e7cf93 !important;
+  border-color:rgba(212,170,82,.30) !important;
+}
+html.dark .app-btn:hover{
+  background:#19140c !important;
+  border-color:#d4aa52 !important;
+  color:#ffe9ae !important;
+  box-shadow:0 0 16px rgba(212,170,82,.14);
+}
+
+/* Loading / empty state */
+html.dark .loading-projects{
+  color:#d4aa52 !important;
+}
+html.dark .loading-projects i{
+  color:#e0b95e !important;
+  filter:drop-shadow(0 0 8px rgba(212,170,82,.5));
+}
+html.dark .empty-projects-icon{
+  filter:drop-shadow(0 0 14px rgba(212,170,82,.32));
+}
+
+/* Create-project modal also follows the black + gold visual language */
+html.dark #createProjectModal .modal{
+  background:
+    linear-gradient(145deg,#0a0a0a,#17120b) !important;
+  border-color:rgba(212,170,82,.42) !important;
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.65),
+    0 0 30px rgba(212,170,82,.10) !important;
+}
+html.dark #createProjectModal input{
+  background:#090909 !important;
+  color:#f5dfaa !important;
+  border-color:rgba(212,170,82,.32) !important;
+}
+html.dark #createProjectModal input::placeholder{
+  color:#76694f !important;
+}
+html.dark #createProjectModal .modal-btn.primary{
+  background:linear-gradient(135deg,#b8892e,#e0b95e) !important;
+  color:#171109 !important;
+}
+
+/* Respect reduced-motion preferences */
+@media(prefers-reduced-motion:reduce){
+  html.dark .ambient-grid,
+  html.dark .project-card,
+  html.dark .project-card::before,
+  html.dark .projects-heading .primary-btn::after{
+    animation:none !important;
+  }
+}
+</style>
+
+
+<style id="new-project-gold-frame">
+/* Gold frame around the blue New Project button */
+.projects-heading .primary-btn {
+  position: relative !important;
+  border: 2px solid #d8ad4a !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 226, 132, .45) inset,
+    0 0 12px rgba(212, 166, 58, .55),
+    0 6px 22px rgba(0, 0, 0, .35) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+/* Bright gold edge */
+.projects-heading .primary-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    #fff1a8 0%,
+    #c8922e 18%,
+    #ffe58a 38%,
+    #b67b20 58%,
+    #f9d66a 78%,
+    #fff2ad 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  animation: goldFrameShimmer 2.8s linear infinite;
+}
+
+/* Soft gold glow around all four sides */
+.projects-heading .primary-btn::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 220, 112, .7);
+  box-shadow:
+    0 0 7px rgba(255, 214, 86, .75),
+    0 0 18px rgba(194, 143, 39, .55);
+  pointer-events: none;
+  z-index: 2;
+  opacity: .9;
+}
+
+.projects-heading .primary-btn:hover {
+  border-color: #ffe58a !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 170, .7) inset,
+    0 0 16px rgba(255, 210, 77, .8),
+    0 0 30px rgba(181, 126, 27, .5),
+    0 9px 28px rgba(0, 0, 0, .4) !important;
+}
+
+@keyframes goldFrameShimmer {
+  0%   { filter: brightness(.95); opacity: .78; }
+  50%  { filter: brightness(1.35); opacity: 1; }
+  100% { filter: brightness(.95); opacity: .78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-heading .primary-btn::after {
+    animation: none;
+  }
+}
+</style>
+
+
+<style id="theme-switch-warm-white-black">
+/*
+  Theme behavior:
+  - Dark mode: existing black surfaces stay black.
+  - Light mode: ONLY black surfaces become warm white.
+  - Gold framing, gold cards, blue New Project button, borders, shadows,
+    animations and all other styling remain unchanged.
+*/
+
+/* Light mode: convert only the main black page/header surfaces to warm white.
+   Gold cards/elements are explicitly excluded below. */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .app-shell,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .modal-content,
+html:not(.dark) .projects-page .dropdown-menu,
+html:not(.dark) .projects-page .context-menu,
+html:not(.dark) .projects-page .project-actions-menu {
+  background-color: #fffdf8 !important;
+}
+
+/* NEVER recolor gold elements in light mode */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page [class*="gold"],
+html:not(.dark) .projects-page .gold,
+html:not(.dark) .projects-page .gold-text,
+html:not(.dark) .projects-page .gold-border {
+  background-color: revert-layer !important;
+  color: revert-layer !important;
+}
+
+/* Light mode: black-looking panels/backgrounds only */
+html:not(.dark) .projects-page [style*="background:#000"],
+html:not(.dark) .projects-page [style*="background: #000"],
+html:not(.dark) .projects-page [style*="background:black"],
+html:not(.dark) .projects-page [style*="background: black"],
+html:not(.dark) .projects-page [style*="background-color:#000"],
+html:not(.dark) .projects-page [style*="background-color: #000"],
+html:not(.dark) .projects-page [style*="background-color:black"],
+html:not(.dark) .projects-page [style*="background-color: black"] {
+  background-color: #fffdf8 !important;
+}
+
+/* Keep the gold frame around New Project in BOTH modes */
+.projects-heading .primary-btn {
+  border-color: #d8ad4a !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 226, 132, .45) inset,
+    0 0 12px rgba(212, 166, 58, .55),
+    0 6px 22px rgba(0, 0, 0, .35) !important;
+}
+
+.projects-heading .primary-btn::before {
+  border-color: rgba(255, 220, 112, .7) !important;
+  box-shadow:
+    0 0 7px rgba(255, 214, 86, .75),
+    0 0 18px rgba(194, 143, 39, .55) !important;
+}
+
+/* Light mode should not alter the gold-plated project cards */
+/* Gold project-card background is preserved from its existing styles. */
+
+/* Explicitly preserve the blue New Project surface and warm-white text */
+html:not(.dark) .projects-heading .primary-btn {
+  color: #fff8e8 !important;
+}
+</style>
+
+
+<style id="refined-light-theme">
+/* Refined light mode: softer warm-white, while gold styling stays untouched */
+html:not(.dark) .projects-page {
+  background-color: #eee6d3 !important;
+}
+
+/* Only the BLACK UI surfaces become a softer warm white */
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .app-shell,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .modal-content,
+html:not(.dark) .projects-page .dropdown-menu,
+html:not(.dark) .projects-page .context-menu,
+html:not(.dark) .projects-page .project-actions-menu {
+  background-color: #f6f0df !important;
+}
+
+/* Preserve every gold element exactly in light mode */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page .gold-card,
+html:not(.dark) .projects-page .gold-plated,
+html:not(.dark) .projects-page [class*="gold"] {
+  /* Do not override existing gold backgrounds, gradients or effects */
+  color-scheme: light;
+}
+
+/* Keep New Project blue + warm-white text + gold frame unchanged */
+html:not(.dark) .projects-heading .primary-btn {
+  background: linear-gradient(135deg, #174f91, #2167b8, #2f7be5) !important;
+  color: #fff8e8 !important;
+  border: 2px solid #d8ad4a !important;
+}
+
+/* Gold borders/text/icons keep their existing colors */
+html:not(.dark) .projects-page .gold,
+html:not(.dark) .projects-page .gold-text,
+html:not(.dark) .projects-page .gold-border,
+html:not(.dark) .projects-page [class*="gold"] {
+  /* intentionally no color/background override */
+}
+
+/* Prevent broad theme rules from turning gold into white */
+html:not(.dark) .projects-page .project-card h1,
+html:not(.dark) .projects-page .project-card h2,
+html:not(.dark) .projects-page .project-card h3,
+html:not(.dark) .projects-page .project-card h4,
+html:not(.dark) .projects-page .project-card p,
+html:not(.dark) .projects-page .project-card span,
+html:not(.dark) .projects-page .project-card i,
+html:not(.dark) .projects-page .project-card svg {
+  /* preserve the existing gold-plated card styling */
+}
+</style>
+
+
+<style id="light-mode-black-to-warm-white">
+/* ONLY light-mode inversion requested:
+   black backgrounds -> warm white
+   warm-white text -> black
+   everything else remains unchanged.
+*/
+html:not(.dark) .projects-page{
+  background:#f6f0df !important;
+  color:#17130d !important;
+}
+
+html:not(.dark) .projects-header{
+  background:#f6f0df !important;
+  color:#17130d !important;
+  border-bottom-color:var(--line) !important;
+}
+
+/* Text that was warm-white in dark mode */
+html:not(.dark) .projects-page h1,
+html:not(.dark) .projects-page h2,
+html:not(.dark) .projects-page h3,
+html:not(.dark) .projects-page h4,
+html:not(.dark) .projects-page .app-brand h1,
+html:not(.dark) .projects-page .brand-text,
+html:not(.dark) .projects-page label,
+html:not(.dark) .projects-page .font-extrabold,
+html:not(.dark) .projects-page .font-bold{
+  color:#17130d !important;
+  text-shadow:none !important;
+}
+
+html:not(.dark) .projects-page p,
+html:not(.dark) .projects-page .text-gray-300,
+html:not(.dark) .projects-page .text-gray-400,
+html:not(.dark) .projects-page .text-gray-500{
+  color:#17130d !important;
+}
+
+/* Black UI surfaces -> warm white */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .context-menu{
+  background-color:#f6f0df !important;
+}
+
+/* Explicit black surfaces used by the dark theme */
+html:not(.dark) .projects-page [style*="background:#000"],
+html:not(.dark) .projects-page [style*="background: #000"],
+html:not(.dark) .projects-page [style*="background:#050505"],
+html:not(.dark) .projects-page [style*="background: #050505"],
+html:not(.dark) .projects-page [style*="background:#090909"],
+html:not(.dark) .projects-page [style*="background: #090909"],
+html:not(.dark) .projects-page [style*="background:#101010"],
+html:not(.dark) .projects-page [style*="background: #101010"],
+html:not(.dark) .projects-page [style*="background:black"],
+html:not(.dark) .projects-page [style*="background: black"],
+html:not(.dark) .projects-page [style*="background-color:#000"],
+html:not(.dark) .projects-page [style*="background-color: #000"],
+html:not(.dark) .projects-page [style*="background-color:#050505"],
+html:not(.dark) .projects-page [style*="background-color: #050505"],
+html:not(.dark) .projects-page [style*="background-color:#090909"],
+html:not(.dark) .projects-page [style*="background-color: #090909"],
+html:not(.dark) .projects-page [style*="background-color:#101010"],
+html:not(.dark) .projects-page [style*="background-color: #101010"],
+html:not(.dark) .projects-page [style*="background-color:black"],
+html:not(.dark) .projects-page [style*="background-color: black"]{
+  background-color:#f6f0df !important;
+}
+
+/* The dark-mode warm-white text colors -> black in light mode */
+html:not(.dark) .projects-page [style*="color:#f8f6ee"],
+html:not(.dark) .projects-page [style*="color: #f8f6ee"],
+html:not(.dark) .projects-page [style*="color:#f5dfaa"],
+html:not(.dark) .projects-page [style*="color: #f5dfaa"],
+html:not(.dark) .projects-page [style*="color:#fff8e8"],
+html:not(.dark) .projects-page [style*="color: #fff8e8"]{
+  color:#17130d !important;
+}
+
+/* Keep the blue New Project button exactly as it is. */
+html:not(.dark) .projects-heading .primary-btn{
+  color:#fff8e8 !important;
+}
+</style>
+
+<style id="final-light-gold-ambient">
+html:not(.dark) {
+  --bg:#eee3c5 !important;
+  --surface:#f7efd8 !important;
+  --surface2:#eadbb5 !important;
+  --ink:#17130b !important;
+}
+
+html:not(.dark) body {
+  background:#eee3c5 !important;
+}
+
+html:not(.dark) .ambient-background {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(218,176,72,.20), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(167,119,45,.16), transparent 32%),
+    linear-gradient(135deg,#f2e7c9,#e9d9ad 55%,#f4ead0) !important;
+}
+
+html:not(.dark) .ambient-grid {
+  opacity:.18 !important;
+  background-image:
+    linear-gradient(rgba(154,108,35,.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(154,108,35,.075) 1px, transparent 1px) !important;
+}
+
+html:not(.dark) .ambient-orb {
+  opacity:.22 !important;
+  mix-blend-mode:multiply !important;
+}
+
+html:not(.dark) .ambient-orb-a { background:#d7b35b !important; }
+html:not(.dark) .ambient-orb-b { background:#a97832 !important; }
+html:not(.dark) .ambient-orb-c { background:#c99b45 !important; }
+</style>
+
+<style id="final-light-mode-only">
+/* FINAL LIGHT MODE ONLY — no functionality or dark-mode styling changed */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-header {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(218,176,72,.20), transparent 32%),
+    radial-gradient(circle at 86% 82%, rgba(167,119,45,.14), transparent 30%),
+    linear-gradient(135deg, #f4e8c8 0%, #ead8a8 52%, #f5ebd2 100%) !important;
+  color: #17130d !important;
+}
+
+/* Warm-white surfaces become warm/golden-white in light mode */
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .context-menu {
+  background: #f7efd9 !important;
+  color: #17130d !important;
+}
+
+/* Light-mode warm-white text -> black */
+html:not(.dark) .projects-page h1,
+html:not(.dark) .projects-page h2,
+html:not(.dark) .projects-page h3,
+html:not(.dark) .projects-page h4,
+html:not(.dark) .projects-page p,
+html:not(.dark) .projects-page span,
+html:not(.dark) .projects-page label,
+html:not(.dark) .projects-page .brand-text,
+html:not(.dark) .projects-page .font-bold,
+html:not(.dark) .projects-page .font-extrabold,
+html:not(.dark) .projects-page .text-gray-300,
+html:not(.dark) .projects-page .text-gray-400,
+html:not(.dark) .projects-page .text-gray-500 {
+  color: #17130d !important;
+  text-shadow: none !important;
+}
+
+/* Keep the existing gold/blue controls and card styling unchanged */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page .projects-heading .primary-btn {
+  /* intentionally untouched */
+}
+
+/* Keep the ambient background visibly golden in light mode */
+html:not(.dark) .ambient-background {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(218,176,72,.22), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(167,119,45,.17), transparent 32%),
+    linear-gradient(135deg, #f3e6c4, #e8d6a5 55%, #f5ead0) !important;
+}
+</style>
+
+
+<style id="dark-new-project-gold-animation">
+/* DARK MODE ONLY — keep the blue New Project card and add its gold animation */
+html.dark .projects-heading .primary-btn {
+  border: 2px solid #d8ad4a !important;
+  animation: darkNewProjectGoldGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes darkNewProjectGoldGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 226, 132, .45) inset,
+      0 0 8px rgba(212, 166, 58, .38),
+      0 8px 28px rgba(31,111,210,.28) !important;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 238, 170, .75) inset,
+      0 0 18px rgba(255, 210, 77, .82),
+      0 0 30px rgba(181, 126, 27, .42),
+      0 8px 28px rgba(31,111,210,.28) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dark .projects-heading .primary-btn {
+    animation: none !important;
+  }
+}
+</style>
+
+
+<style id="dark-new-project-gold-inside">
+/* DARK MODE ONLY — subtle moving gold tint inside the blue New Project card */
+html.dark .projects-heading .primary-btn::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 18% 50%, rgba(255,210,77,.20), transparent 30%),
+    linear-gradient(115deg, transparent 25%, rgba(255,220,112,.18) 48%, transparent 70%);
+  background-size: 100% 100%, 220% 100%;
+  background-position: 0 0, -120% 0;
+  pointer-events: none;
+  z-index: 2;
+  animation: newProjectGoldInside 3.2s ease-in-out infinite;
+}
+
+@keyframes newProjectGoldInside {
+  0%, 55% {
+    background-position: 0 0, -120% 0;
+    opacity: .45;
+  }
+  75% {
+    background-position: 0 0, 120% 0;
+    opacity: .9;
+  }
+  100% {
+    background-position: 0 0, 120% 0;
+    opacity: .45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dark .projects-heading .primary-btn::before {
+    animation: none !important;
+  }
+}
+</style>
+
+
+<style id="luxury-blue-new-project">
+/* DARK MODE ONLY — luxury glossy finish for New Project */
+html.dark .projects-heading .primary-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #123f78 0%,
+      #1b5da8 28%,
+      #2f7be5 50%,
+      #1d5ca8 72%,
+      #17477f 100%
+    ) !important;
+  box-shadow:
+    0 8px 28px rgba(31,111,210,.30),
+    0 0 18px rgba(212,170,82,.22),
+    inset 0 1px 0 rgba(255,255,255,.30),
+    inset 0 -2px 8px rgba(5,20,45,.28) !important;
+}
+
+/* Soft luxury highlight across the blue surface */
+html.dark .projects-heading .primary-btn::before {
+  background:
+    linear-gradient(
+      115deg,
+      transparent 15%,
+      rgba(255,255,255,.10) 32%,
+      rgba(255,224,132,.14) 46%,
+      rgba(255,255,255,.16) 52%,
+      transparent 68%
+    ) !important;
+  background-size:220% 100% !important;
+  animation:newProjectLuxurySheen 3.6s ease-in-out infinite !important;
+}
+
+@keyframes newProjectLuxurySheen {
+  0%, 48% {
+    background-position:-130% 0;
+    opacity:.45;
+  }
+  72% {
+    background-position:130% 0;
+    opacity:1;
+  }
+  100% {
+    background-position:130% 0;
+    opacity:.45;
+  }
+}
+
+html.dark .projects-heading .primary-btn:hover {
+  box-shadow:
+    0 14px 38px rgba(31,111,210,.40),
+    0 0 24px rgba(255,210,77,.32),
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -2px 10px rgba(5,20,45,.25) !important;
+}
+</style>
+
 </head>
 
 <body>
