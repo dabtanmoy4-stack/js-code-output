@@ -8,13 +8,13 @@
 <meta name="keywords" content="online CSS editor, CSS playground, CSS live preview, CSS tester, web editor, JS CODE OUTPUT">
 <meta name="author" content="Tanmoy Dab">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="canonical" href="https://js-code-output.vercel.app/css-editor.html">
+<link rel="canonical" href="https://jscodoutput.in/css-editor.html">
 <link rel="icon" type="image/jpeg" href="logo.jpeg">
 <link rel="apple-touch-icon" href="logo.jpeg">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Free Online CSS Editor & Live Preview | JS CODE OUTPUT">
 <meta property="og:description" content="Write, edit and preview CSS directly in your browser with JS CODE OUTPUT.">
-<meta property="og:url" content="https://js-code-output.vercel.app/css-editor.html">
+<meta property="og:url" content="https://jscodoutput.in/css-editor.html">
 <meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
 <meta property="og:site_name" content="JS CODE OUTPUT">
 <meta name="twitter:card" content="summary">
@@ -23,244 +23,346 @@
 <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
 
 <style>
-:root{--bg:#070b14;--bg2:#0d1321;--card:rgba(18,26,42,.78);--border:rgba(255,255,255,.10);--text:#f7f9fc;--muted:#a9b4c7;--blue:#5b8cff;--purple:#7c5cff;--gold:#e7c978;--green:#6ee7b7;--max:1180px}
+
+:root{
+  --bg:#f7f1e3;
+  --bg2:#fffaf0;
+  --ink:#090909;
+  --gold:#c99624;
+  --gold2:#e8c96b;
+  --brown:#8b671c;
+  --muted:#655b48;
+  --line:rgba(9,9,9,.14);
+  --shadow:0 24px 70px rgba(63,43,10,.14);
+  --max:1180px;
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;color:var(--text);background:radial-gradient(circle at 12% 8%,rgba(91,140,255,.18),transparent 28%),radial-gradient(circle at 88% 12%,rgba(124,92,255,.16),transparent 30%),linear-gradient(180deg,var(--bg),var(--bg2));font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
-a{color:inherit;text-decoration:none}.container{width:min(var(--max),calc(100% - 32px));margin:auto}
-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(7,11,20,.82);border-bottom:1px solid var(--border)}
-.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.025em;white-space:nowrap}
+body{
+  margin:0;color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 10%,rgba(232,201,107,.22),transparent 25%),
+    radial-gradient(circle at 92% 20%,rgba(201,150,36,.16),transparent 28%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.65;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;
+  background-image:linear-gradient(115deg,transparent 0 46%,rgba(201,150,36,.08) 48%,transparent 50%);
+  background-size:420px 420px;animation:drift 16s linear infinite;z-index:-1
+}
+@keyframes drift{to{background-position:420px 420px}}
+@keyframes shine{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+@keyframes float{50%{transform:translateY(-8px)}}
+a{color:inherit;text-decoration:none}
+.container{width:min(var(--max),calc(100% - 34px));margin:auto}
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(247,241,227,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line)
+}
+.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:-.025em;white-space:nowrap}
 .brand img{width:42px;height:42px;object-fit:contain;border-radius:11px}
-.navlinks{display:flex;align-items:center;gap:20px;color:var(--muted);font-size:14px}
-.navlinks a{transition:.2s}.navlinks a:hover{color:#fff}
-.button{min-height:44px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1px solid var(--border);font-weight:750;transition:.2s}
-.button:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.22)}
-.button.primary{border:0;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 14px 38px rgba(91,140,255,.23)}
-.hero{padding:74px 0 48px;text-align:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;border:1px solid rgba(231,201,120,.25);background:rgba(231,201,120,.07);color:#f2d990;font-size:13px;font-weight:750}
-h1{max-width:900px;margin:20px auto 16px;font-size:clamp(40px,6vw,68px);line-height:1.04;letter-spacing:-.055em}
-.gradient{background:linear-gradient(90deg,#fff,#a9c4ff 45%,#cbbaff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-copy{max-width:750px;margin:0 auto 25px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.navlinks{display:flex;align-items:center;gap:20px;color:#514936;font-size:14px}
+.navlinks a{transition:.2s}.navlinks a:hover{color:var(--gold)}
+.button{
+  min-height:44px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:12px;border:1px solid rgba(9,9,9,.16);font-weight:800;transition:.25s
+}
+.button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(104,75,18,.14)}
+.button.primary{
+  border:1px solid #a87913;color:#080808;
+  background:linear-gradient(110deg,#a87913,#f3d878,#b98418,#f0d06d);
+  background-size:240% 100%;animation:shine 5s ease infinite;
+}
+.hero{padding:78px 0 52px;text-align:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;
+  border:1px solid rgba(201,150,36,.38);background:rgba(232,201,107,.13);
+  color:#785611;font-size:13px;font-weight:850
+}
+h1{
+  max-width:920px;margin:20px auto 16px;font-size:clamp(42px,6vw,72px);
+  line-height:1.03;letter-spacing:-.06em
+}
+.gold-text{
+  background:linear-gradient(90deg,#8b6418,#d7a92f,#fff0a0,#b57d12,#e6c764);
+  background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 6s ease infinite
+}
+.hero-copy{max-width:780px;margin:0 auto 25px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
 .actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:11px}
-.editor-shell{margin:36px auto 0;max-width:1160px;padding:1px;border-radius:23px;background:linear-gradient(135deg,rgba(91,140,255,.58),rgba(124,92,255,.2),rgba(231,201,120,.28));box-shadow:0 35px 100px rgba(0,0,0,.4)}
-.editor-window{overflow:hidden;border-radius:22px;background:#080c14;border:1px solid rgba(255,255,255,.06)}
-.editor-top{height:54px;display:flex;align-items:center;gap:7px;padding:0 16px;border-bottom:1px solid var(--border);background:#0b101b}
-.dot{width:9px;height:9px;border-radius:50%;background:#566174}.editor-title{margin-left:8px;color:#9ba8bc;font-size:12px}
-.editor-controls{margin-left:auto;display:flex;gap:7px}.control{border:1px solid var(--border);background:rgba(255,255,255,.04);color:#cbd5e1;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px}.control.primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;border:0}
+.editor-shell{
+  margin:36px auto 0;max-width:1160px;padding:1px;border-radius:23px;
+  background:linear-gradient(135deg,#8c6519,#f2d777,#17130b,#c18e20);
+  box-shadow:var(--shadow)
+}
+.editor-window{overflow:hidden;border-radius:22px;background:#0b0b0b;border:1px solid rgba(255,255,255,.08)}
+.editor-top{height:54px;display:flex;align-items:center;gap:7px;padding:0 16px;border-bottom:1px solid #27231a;background:#11100d}
+.dot{width:9px;height:9px;border-radius:50%;background:#c99b35}
+.editor-title{margin-left:8px;color:#d9bd69;font-size:12px}
+.editor-controls{margin-left:auto;display:flex;gap:7px}
+.control{border:1px solid #3c321e;background:#18150f;color:#ead58e;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px}
+.control.primary{background:linear-gradient(135deg,#a87913,#e8c96b);color:#080808;border:0}
 .workspace{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
-.editor-pane{min-width:0;border-right:1px solid var(--border);display:flex;flex-direction:column}
-.pane-tabs{display:flex;height:43px;border-bottom:1px solid var(--border);background:#0d1320}
-.tab{border:0;background:transparent;color:#8490a4;padding:0 16px;font-weight:700;font-size:11px}.tab.active{color:#fff;border-bottom:2px solid var(--blue)}
-.code-wrap{flex:1;display:flex;min-height:0;background:#080c13}
-.line-numbers{width:42px;padding:16px 9px;text-align:right;color:#485367;font:12px/1.8 Consolas,monospace;user-select:none;border-right:1px solid rgba(255,255,255,.045)}
-#css-code{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:#dce6f6;padding:16px;font:13px/1.8 Consolas,Monaco,monospace;tab-size:2}
-.preview-pane{display:flex;flex-direction:column;min-width:0;background:#0a0f19}
-.preview-head{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid var(--border);color:#aab5c7;font-size:11px;font-weight:700}
-.live{display:flex;align-items:center;gap:6px;color:#7e8a9f;font-size:10px}.live i{width:6px;height:6px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 9px rgba(110,231,183,.8)}
-.preview-frame{flex:1;background:#eef2f7;padding:18px;min-height:0}
+.editor-pane{min-width:0;border-right:1px solid #2b261c;display:flex;flex-direction:column}
+.pane-tabs{display:flex;height:43px;border-bottom:1px solid #2b261c;background:#15130f}
+.tab{border:0;background:transparent;color:#aa9256;padding:0 16px;font-weight:800;font-size:11px}
+.tab.active{color:#f3d77f;border-bottom:2px solid #d2a62d}
+.code-wrap{flex:1;display:flex;min-height:0;background:#0b0b0b}
+.line-numbers{width:42px;padding:16px 9px;text-align:right;color:#675a3c;font:12px/1.8 Consolas,monospace;user-select:none;border-right:1px solid #242018}
+#css-code{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:#eee0b1;padding:16px;font:13px/1.8 Consolas,Monaco,monospace;tab-size:2}
+.preview-pane{display:flex;flex-direction:column;min-width:0;background:#17130c}
+.preview-head{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid #2d2618;color:#d8bd6d;font-size:11px;font-weight:800}
+.live{display:flex;align-items:center;gap:6px;color:#c4ad72;font-size:10px}.live i{width:6px;height:6px;border-radius:50%;background:#d9ad35;box-shadow:0 0 9px rgba(217,173,53,.8)}
+.preview-frame{flex:1;background:#eee6d5;padding:18px;min-height:0}
 #preview{width:100%;height:100%;min-height:430px;border:0;border-radius:13px;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.18)}
-.console{height:0;overflow:hidden;background:#070a10;border-top:1px solid var(--border);transition:.25s}.console.open{height:145px}.console-head{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#9aa6b9;font-size:11px}.console-body{height:calc(100% - 34px);overflow:auto;padding:7px 12px;font:11px Consolas,monospace}.ok{color:#6ee7b7}.err{color:#f87171}
-section{padding:72px 0}.section-title{max-width:720px;margin:0 auto 38px;text-align:center}.section-title h2{margin:0 0 10px;font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:-.045em}.section-title p{margin:0;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card,.large{padding:25px;border:1px solid var(--border);border-radius:18px;background:var(--card);box-shadow:0 15px 45px rgba(0,0,0,.16)}
-.icon{width:43px;height:43px;display:grid;place-items:center;margin-bottom:15px;border-radius:12px;background:rgba(91,140,255,.12);border:1px solid rgba(91,140,255,.15);font-size:18px}.card h3,.large h3{margin:0 0 7px;font-size:18px}.card p,.large p{margin:0;color:var(--muted);font-size:14px}
-.benefits{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}.check-list{list-style:none;padding:0;margin:16px 0 0}.check-list li{display:flex;gap:10px;padding:7px 0;color:#d8e0ed;font-size:14px}.check{color:var(--green);font-weight:900}
-.related{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.related a{padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.03);color:#cbd6e8;font-size:14px;transition:.2s}.related a:hover{color:#fff;border-color:rgba(91,140,255,.5);transform:translateY(-2px)}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{padding:25px;border:1px solid var(--border);border-radius:18px;background:rgba(255,255,255,.035)}.number{width:37px;height:37px;display:grid;place-items:center;margin-bottom:14px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--purple));font-size:12px;font-weight:850}.step h3{margin:0 0 7px;font-size:18px}.step p{margin:0;color:var(--muted);font-size:14px}
-.faq{max-width:830px;margin:auto}details{margin-bottom:11px;padding:16px 18px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.025)}summary{cursor:pointer;font-weight:750}details p{margin:11px 0 0;color:var(--muted)}
-.cta{padding:58px 25px;border-radius:24px;text-align:center;border:1px solid var(--border);background:radial-gradient(circle at 50% 0%,rgba(91,140,255,.21),transparent 48%),rgba(255,255,255,.035)}.cta h2{margin:0 0 9px;font-size:clamp(30px,5vw,45px);letter-spacing:-.045em}.cta p{max-width:650px;margin:0 auto 21px;color:var(--muted)}
-footer{padding:30px 0;border-top:1px solid var(--border);color:var(--muted);font-size:13px}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer-links{display:flex;flex-wrap:wrap;gap:15px}.footer-links a:hover{color:#fff}
-@media(max-width:900px){.navlinks{display:none}.grid,.steps{grid-template-columns:1fr 1fr}.benefits{grid-template-columns:1fr}}
-@media(max-width:700px){.container{width:min(var(--max),calc(100% - 22px))}.hero{padding:58px 0 38px}.workspace{grid-template-columns:1fr}.editor-pane{border-right:0;border-bottom:1px solid var(--border);min-height:420px}.preview-pane{min-height:500px}.grid,.steps{grid-template-columns:1fr}.editor-controls .control:not(.primary){display:none}.brand span{font-size:14px}.brand img{width:38px;height:38px}}
+.console{height:0;overflow:hidden;background:#090909;border-top:1px solid #2b261c;transition:.25s}.console.open{height:145px}
+.console-head{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#d0b66d;font-size:11px}
+.console-body{height:calc(100% - 34px);overflow:auto;padding:7px 12px;font:11px Consolas,monospace}.ok{color:#e1bf54}.err{color:#e57373}
+section{padding:74px 0}
+.section-title{max-width:760px;margin:0 auto 38px;text-align:center}
+.section-title h2{margin:0 0 10px;font-size:clamp(30px,5vw,48px);line-height:1.1;letter-spacing:-.045em}
+.section-title p{margin:0;color:var(--muted)}
+.black-band{background:#090909;color:#fff}
+.black-band .section-title p,.black-band .card p,.black-band .large p,.black-band .step p{color:#c9bfa9}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card,.large{
+  padding:25px;border:1px solid var(--line);border-radius:18px;
+  background:rgba(255,255,255,.48);box-shadow:var(--shadow)
+}
+.black-band .card,.black-band .large{background:#12110e;border-color:rgba(232,201,107,.2)}
+.icon{
+  width:43px;height:43px;display:grid;place-items:center;margin-bottom:15px;border-radius:12px;
+  background:rgba(201,150,36,.13);border:1px solid rgba(201,150,36,.28);color:#9a6f16;font-size:18px
+}
+.black-band .icon{color:#e5c35e}
+.card h3,.large h3{margin:0 0 7px;font-size:18px}.card p,.large p{margin:0;color:var(--muted);font-size:14px}
+.benefits{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}
+.check-list{list-style:none;padding:0;margin:16px 0 0}.check-list li{display:flex;gap:10px;padding:7px 0;color:inherit;font-size:14px}.check{color:#b98516;font-weight:900}
+.related{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.related a{
+  padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.38);
+  color:#5e4c29;font-size:14px;transition:.2s
+}.related a:hover{color:#090909;border-color:#b88619;transform:translateY(-2px)}
+.black-band .related a{background:#17140f;color:#e5ce8d;border-color:#3a301e}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{padding:25px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.42)}
+.number{
+  width:37px;height:37px;display:grid;place-items:center;margin-bottom:14px;border-radius:11px;
+  background:linear-gradient(135deg,#9a6e17,#e8c96b);font-size:12px;font-weight:900;color:#080808
+}
+.step h3{margin:0 0 7px;font-size:18px}.step p{margin:0;color:var(--muted);font-size:14px}
+.faq{max-width:830px;margin:auto}
+details{margin-bottom:11px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.42)}
+summary{cursor:pointer;font-weight:800}details p{margin:11px 0 0;color:var(--muted)}
+.cta{
+  padding:58px 25px;border-radius:24px;text-align:center;border:1px solid #b48722;
+  background:#090909;color:#fff;box-shadow:var(--shadow)
+}
+.cta h2{margin:0 0 9px;font-size:clamp(30px,5vw,45px);letter-spacing:-.045em}
+.cta p{max-width:650px;margin:0 auto 21px;color:#cfc3a9}
+footer{padding:50px 0 25px;border-top:1px solid #2c2619;background:#090909;color:#d7c8a2;font-size:13px}
+.footer-top{display:grid;grid-template-columns:1.35fr .8fr 1fr 1.1fr;gap:30px}
+.footer-brand .brand-name{font-size:22px;font-weight:950;letter-spacing:-.04em;color:#f0d77f;margin-bottom:10px}
+.footer-brand p{margin:0;color:#a99d82;max-width:360px}
+footer h4{margin:0 0 12px;color:#f0d77f;font-size:14px}
+footer .footer-links{display:flex;flex-direction:column;gap:8px}
+footer .footer-links a{color:#b9ad93;transition:.2s}footer .footer-links a:hover{color:#f0d77f}
+.footer-bottom{margin-top:34px;padding-top:20px;border-top:1px solid #2b261c;display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;color:#9f937b}
+.footer-keywords{max-width:760px;text-align:right}
+@media(max-width:900px){.navlinks{display:none}.grid,.steps{grid-template-columns:1fr 1fr}.benefits{grid-template-columns:1fr}.footer-top{grid-template-columns:1fr 1fr}.footer-keywords{text-align:left}}
+@media(max-width:700px){
+  .container{width:min(var(--max),calc(100% - 22px))}.hero{padding:58px 0 38px}
+  .workspace{grid-template-columns:1fr}.editor-pane{border-right:0;border-bottom:1px solid #2b261c;min-height:420px}
+  .preview-pane{min-height:500px}.grid,.steps,.footer-top{grid-template-columns:1fr}
+  .editor-controls .control:not(.primary){display:none}.brand span{font-size:14px}.brand img{width:38px;height:38px}
+}
+
+
+.content-copy{max-width:900px;margin:0 auto;font-size:18px;line-height:1.85;color:var(--muted)}
+.content-copy p{margin:0 0 24px}
+.black-band .content-copy{color:#d2c6ad}
+.black-band .section-title h2{background:linear-gradient(90deg,#b98518,#f0d87d,#fff0aa,#b98518);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s ease infinite}
+.css-feature-image{
+  display:block;width:min(100%,900px);height:260px;object-fit:cover;margin:22px auto;
+  border-radius:20px;border:1px solid rgba(9,9,9,.12);box-shadow:0 18px 50px rgba(63,43,10,.12)
+}
+@media(max-width:700px){.content-copy{font-size:16px;line-height:1.75}.css-feature-image{height:190px}}
+
 </style>
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"JS CODE OUTPUT CSS Editor","url":"https://js-code-output.vercel.app/css-editor.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web Browser","description":"Free online CSS editor with live preview.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"JS CODE OUTPUT CSS Editor","url":"https://jscodoutput.in/css-editor.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web Browser","description":"Free online CSS editor with live preview.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 </script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an online CSS editor?","acceptedAnswer":{"@type":"Answer","text":"An online CSS editor is a browser-based environment where you can write, edit and test CSS."}},{"@type":"Question","name":"Can I preview CSS online?","acceptedAnswer":{"@type":"Answer","text":"Yes. JS CODE OUTPUT provides a browser-based live preview workflow for testing CSS."}},{"@type":"Question","name":"Is the CSS editor free?","acceptedAnswer":{"@type":"Answer","text":"JS CODE OUTPUT provides a free online CSS editing experience."}}]}
-</script>
+
 </head>
 
 <body>
 <header>
 <div class="container nav">
-<a class="brand" href="https://js-code-output.vercel.app/" aria-label="JS CODE OUTPUT home">
+<a class="brand" href="index.html.html" aria-label="JS CODE OUTPUT home">
 <img src="logo.jpeg" alt="JS CODE OUTPUT logo" width="42" height="42">
 <span>JS CODE OUTPUT</span>
 </a>
 <nav class="navlinks">
-<a href="https://js-code-output.vercel.app/">Home</a>
+<a href="index.html.html">Home</a>
 <a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
 <a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
 <a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
 <a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a>
 </nav>
-<a class="button primary" href="https://js-code-output.vercel.app/">Open Main Website</a>
+<a class="button primary" href="index.html.html">Open Main Website</a>
 </div>
 </header>
 
+
+
 <main>
-<section class="hero">
-<div class="container">
-<div class="eyebrow">✦ Free Online CSS Editor</div>
-<h1>Style Your Web.<br><span class="gradient">See Every Change.</span></h1>
-<p class="hero-copy">Write, edit and preview CSS directly in your browser with JS CODE OUTPUT. Experiment with layouts, colors, spacing and responsive designs.</p>
-<div class="actions">
-<a class="button primary" href="#editor">Start Coding Free →</a>
-<a class="button" href="#how-it-works">How It Works</a>
-<a class="button" href="https://js-code-output.vercel.app/">Visit JS CODE OUTPUT ↗</a>
-</div>
+  <section class="hero">
+    <div class="container">
+      <div class="eyebrow">✦ CSS EDITOR</div>
+      <h1>CSS.<br><span class="gold-text">Styled to Perfection.</span></h1>
+      <img class="css-feature-image" src="css.png" alt="CSS Editor">
+      <p class="hero-copy">Write CSS, test your ideas and see the output instantly. JS CODE OUTPUT gives you a focused browser-first workspace for creating and experimenting with modern web styles.</p>
 
-<div class="editor-shell" id="editor">
-<div class="editor-window">
-<div class="editor-top">
-<span class="dot"></span><span class="dot"></span><span class="dot"></span>
-<span class="editor-title">css-editor.html — JS CODE OUTPUT</span>
-<div class="editor-controls">
-<button class="control" onclick="resetEditor()">Reset</button>
-<button class="control" onclick="toggleConsole()">Console</button>
-<button class="control primary" onclick="runCode()">▶ Run</button>
-</div>
-</div>
+      <div class="actions">
+        <a class="button primary" href="#editor">Start Coding Free →</a>
+        <a class="button" href="index.html.html">Open Main Website ↗</a>
+      </div>
 
-<div class="workspace">
-<div class="editor-pane">
-<div class="pane-tabs">
-<button class="tab active">CSS Editor</button>
-</div>
-<div class="code-wrap">
-<div class="line-numbers" id="numbers">1</div>
-<textarea id="css-code" spellcheck="false" aria-label="CSS code editor" oninput="scheduleRun()" onscroll="syncScroll()" onkeydown="handleTab(event)"></textarea>
-</div>
-</div>
+      <div class="editor-shell" id="editor">
+        <div class="editor-window">
+          <div class="editor-top">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="editor-title">css-editor.html — JS CODE OUTPUT</span>
+            <div class="editor-controls">
+              <button class="control" onclick="resetEditor()">Reset</button>
+              <button class="control" onclick="toggleConsole()">Console</button>
+              <button class="control primary" onclick="runCode()">▶ Run</button>
+            </div>
+          </div>
+          <div class="workspace">
+            <div class="editor-pane">
+              <div class="pane-tabs"><button class="tab active">CSS Editor</button></div>
+              <div class="code-wrap">
+                <div class="line-numbers" id="numbers">1</div>
+                <textarea id="css-code" spellcheck="false" aria-label="CSS code editor" oninput="scheduleRun()" onscroll="syncScroll()" onkeydown="handleTab(event)"></textarea>
+              </div>
+            </div>
+            <div class="preview-pane">
+              <div class="preview-head"><span>LIVE PREVIEW</span><span class="live"><i></i> Live</span></div>
+              <div class="preview-frame"><iframe id="preview" title="CSS live preview" sandbox="allow-scripts"></iframe></div>
+            </div>
+          </div>
+          <div class="console" id="console">
+            <div class="console-head"><span>Developer Console</span><button class="control" onclick="clearConsole()">Clear</button></div>
+            <div class="console-body" id="console-body"><div class="ok">› Ready.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="preview-pane">
-<div class="preview-head">
-<span>LIVE PREVIEW</span>
-<span class="live"><i></i> Live</span>
-</div>
-<div class="preview-frame">
-<iframe id="preview" title="CSS live preview" sandbox="allow-scripts"></iframe>
-</div>
-</div>
-</div>
+  <section class="black-band">
+    <div class="container">
+      <div class="section-title">
+        <h2>JS CODE OUTPUT</h2>
+        <p>Write code. Run it. See the output.</p>
+      </div>
+      <div class="content-copy">
+        <p>JS CODE OUTPUT is a focused browser-first environment for learning, testing and building. Instead of moving between multiple tools, you can write your code, run it and immediately see what your work produces.</p>
+        <p>For CSS work, this is especially useful because styling is visual. You can change a selector or property and quickly compare the result in the live preview. That makes experimenting with colors, spacing, typography, borders, backgrounds and layouts much easier.</p>
+      </div>
+    </div>
+  </section>
 
-<div class="console" id="console">
-<div class="console-head"><span>Developer Console</span><button class="control" onclick="clearConsole()">Clear</button></div>
-<div class="console-body" id="console-body"><div class="ok">› Ready.</div></div>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<section id="features">
-<div class="container">
-<div class="section-title"><h2>Build better styles directly in your browser</h2><p>Experiment with CSS properties, layouts and visual ideas while keeping your workflow simple.</p></div>
-<div class="grid">
-<article class="card"><div class="icon">◈</div><h3>Write CSS Online</h3><p>Create and edit styles directly in your browser for quick experiments and frontend projects.</p></article>
-<article class="card"><div class="icon">▶</div><h3>Live Preview</h3><p>See your CSS changes immediately inside the built-in preview.</p></article>
-<article class="card"><div class="icon">✦</div><h3>Design Experiments</h3><p>Test colors, spacing, borders, typography, backgrounds and layouts.</p></article>
-<article class="card"><div class="icon">⚡</div><h3>Fast Workflow</h3><p>Open the browser and start working without a separate stylesheet editor.</p></article>
-<article class="card"><div class="icon">▣</div><h3>Project Friendly</h3><p>Use your CSS alongside HTML and JavaScript in frontend projects.</p></article>
-<article class="card"><div class="icon">✓</div><h3>Free to Start</h3><p>Begin experimenting with CSS using the JS CODE OUTPUT workspace.</p></article>
-</div>
-</div>
-</section>
-
-<section>
-<div class="container">
-<div class="benefits">
-<article class="large">
-<h3>Turn plain HTML into polished webpages</h3>
-<p>HTML provides the structure. CSS gives that structure its visual personality. Experiment with the design layer of your webpage.</p>
-<ul class="check-list">
-<li><span class="check">✓</span> Style HTML elements</li>
-<li><span class="check">✓</span> Experiment with colors and backgrounds</li>
-<li><span class="check">✓</span> Test spacing and layouts</li>
-<li><span class="check">✓</span> Create responsive design ideas</li>
-<li><span class="check">✓</span> Combine CSS with HTML and JavaScript</li>
-</ul>
-</article>
-<article class="large">
-<h3>Keep your complete web workflow together</h3>
-<p>CSS works best alongside HTML and JavaScript. Explore the related editors to build complete frontend projects.</p>
-<div class="related">
-<a href="https://js-code-output.vercel.app/html-editor.html">HTML Editor</a>
-<a href="https://js-code-output.vercel.app/javascript-editor.html">JavaScript Editor</a>
-<a href="https://js-code-output.vercel.app/html-css-editor.html">HTML + CSS Editor</a>
-<a href="https://js-code-output.vercel.app/html-css-javascript-editor.html">Full Web Editor</a>
-</div>
-</article>
-</div>
-</div>
-</section>
-
-<section id="how-it-works">
-<div class="container">
-<div class="section-title"><h2>How to use the online CSS editor</h2><p>Start with your webpage and transform its design with a simple browser-based workflow.</p></div>
-<div class="steps">
-<article class="step"><div class="number">01</div><h3>Open the editor</h3><p>Start JS CODE OUTPUT and open this CSS editor page.</p></article>
-<article class="step"><div class="number">02</div><h3>Write your CSS</h3><p>Add selectors and properties to control colors, spacing, typography and layout.</p></article>
-<article class="step"><div class="number">03</div><h3>Preview the result</h3><p>Run your code and inspect the visual result in the live preview.</p></article>
-</div>
-</div>
-</section>
-
-<section>
-<div class="container">
-<div class="section-title"><h2>Explore more web development tools</h2><p>Continue exploring related editors and playgrounds from JS CODE OUTPUT.</p></div>
-<div class="related">
-<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
-<a href="https://js-code-output.vercel.app/html-editor.html">Online HTML Editor</a>
-<a href="https://js-code-output.vercel.app/javascript-editor.html">Online JavaScript Editor</a>
-<a href="https://js-code-output.vercel.app/css-playground.html">CSS Playground</a>
-<a href="https://js-code-output.vercel.app/css-live-preview.html">CSS Live Preview</a>
-<a href="https://js-code-output.vercel.app/css-sandbox.html">CSS Sandbox</a>
-<a href="https://js-code-output.vercel.app/css-tester.html">CSS Tester</a>
-<a href="https://js-code-output.vercel.app/html-css-editor.html">HTML CSS Editor</a>
-<a href="https://js-code-output.vercel.app/responsive-css-editor.html">Responsive CSS Editor</a>
-</div>
-</div>
-</section>
-
-<section>
-<div class="container">
-<div class="section-title"><h2>Frequently asked questions</h2><p>Common questions about using an online CSS editor.</p></div>
-<div class="faq">
-<details><summary>What is an online CSS editor?</summary><p>An online CSS editor is a browser-based environment where you can write, edit and test CSS.</p></details>
-<details><summary>Can I write CSS online for free?</summary><p>Yes. JS CODE OUTPUT provides a free browser-based CSS editing experience.</p></details>
-<details><summary>Can I preview CSS online?</summary><p>Yes. Apply CSS to webpage content and inspect the visual result through the live preview.</p></details>
-<details><summary>Can CSS be used with HTML?</summary><p>Yes. CSS is commonly used with HTML to control the visual presentation and layout of webpage content.</p></details>
-<details><summary>Can I use this page on mobile?</summary><p>Yes. The page is responsive and works with modern desktop and mobile browsers.</p></details>
-</div>
-</div>
-</section>
-
-<section>
-<div class="container">
-<div class="cta">
-<h2>Give your webpage a better design</h2>
-<p>Open JS CODE OUTPUT and start experimenting with CSS directly in your browser.</p>
-<a class="button primary" href="https://js-code-output.vercel.app/">Open JS CODE OUTPUT →</a>
-</div>
-</div>
-</section>
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <h2>Why JS CODE OUTPUT is best for a CSS editor</h2>
+        <p>A simple workflow keeps your CSS work focused and visual.</p>
+      </div>
+      <div class="content-copy">
+        <p>CSS is the design layer of a webpage. You often need to write a small change and immediately see whether the page looks right. JS CODE OUTPUT keeps the CSS editor and live output together, so you can learn by doing instead of repeatedly switching between files and browser windows.</p>
+        <p>The browser-first workflow is useful for beginners practicing CSS as well as developers testing a design idea. You can experiment with layouts, colors, responsive styling, typography and visual effects while keeping the code and result side by side.</p>
+        <ul class="check-list">
+          <li><span class="check">✓</span> Write and edit CSS directly in the browser</li>
+          <li><span class="check">✓</span> See the visual result through live preview</li>
+          <li><span class="check">✓</span> Experiment quickly with design ideas</li>
+          <li><span class="check">✓</span> Learn CSS through immediate visual feedback</li>
+          <li><span class="check">✓</span> Keep your frontend workflow simple and focused</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 </main>
 
+
+
+
 <footer>
-<div class="container footer-inner">
-<div>© 2026 JS CODE OUTPUT. All rights reserved.</div>
-<div class="footer-links">
-<a href="https://js-code-output.vercel.app/">Home</a>
-<a href="https://js-code-output.vercel.app/online-code-editor.html">Online Code Editor</a>
-<a href="https://js-code-output.vercel.app/about.html">About</a>
-<a href="https://js-code-output.vercel.app/contact.html">Contact</a>
-<a href="https://js-code-output.vercel.app/privacy.html">Privacy</a>
-<a href="https://js-code-output.vercel.app/terms.html">Terms</a>
-</div>
-</div>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand-name">JS CODE OUTPUT</div>
+        <p>Write code. Run it. See the output. A focused browser-first environment for learning, testing and building.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/">Home</a>
+          <a href="https://jscodoutput.in/about.html">About</a>
+          <a href="https://jscodoutput.in/contact.html">Contact</a>
+          <a href="https://jscodoutput.in/privacy.html">Privacy</a>
+          <a href="https://jscodoutput.in/terms.html">Terms</a>
+        </div>
+      </div>
+      <div>
+        <h4>Editors</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
+          <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
+          <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
+          <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
+          <a href="https://jscodoutput.in/javascript-playground.html">JavaScript Playground</a>
+          <a href="https://jscodoutput.in/html-css-js-editor.html">HTML/CSS/JS Editor</a>
+          <a href="https://jscodoutput.in/html-playground.html">HTML Playground</a>
+          <a href="https://jscodoutput.in/css-playground.html">CSS Playground</a>
+          <a href="https://jscodoutput.in/js-playground.html">JS Playground</a>
+        </div>
+      </div>
+      <div>
+        <h4>More</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/online-css-editor.html">Online CSS Editor</a>
+          <a href="https://jscodoutput.in/online-javascript-editor.html">Online JavaScript Editor</a>
+          <a href="https://jscodoutput.in/online-html-editor.html">Online HTML Editor</a>
+          <a href="https://jscodoutput.in/online-js-editor.html">Online JS Editor</a>
+          <a href="https://jscodoutput.in/live-code-editor.html">Live Code Editor</a>
+          <a href="https://jscodoutput.in/live-code-playground.html">Live Code Playground</a>
+          <a href="https://jscodoutput.in/online-web-editor.html">Online Web Editor</a>
+          <a href="https://jscodoutput.in/web-code-editor.html">Web Code Editor</a>
+          <a href="https://jscodoutput.in/code-editor-with-live-preview.html">Editor with Live Preview</a>
+          <a href="https://jscodoutput.in/code-output.html">Code Output</a>
+          <a href="https://jscodoutput.in/live-output-code.html">LIVE OUTPUT Code</a>
+          <a href="https://jscodoutput.in/mini-browser.html">Mini Browser</a>
+          <a href="https://jscodoutput.in/real-time-code-output.html">Real Time Code Output</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 JS CODE OUTPUT. All rights reserved.</div>
+      <span class="footer-keywords">Online Code Editor · HTML Editor · CSS Editor · JavaScript Editor · JavaScript Playground · HTML/CSS/JS Editor · Online CSS Editor · Online JavaScript Editor · HTML Playground · Online HTML Editor · CSS Playground · JS Playground · Online JS Editor · Live Code Editor · Live Code Playground · Online Web Editor · Web Code Editor · Editor with Live Preview · Code Output · LIVE OUTPUT Code · Mini Browser · Real Time Code Output</span>
+    </div>
+  </div>
 </footer>
+
+
 
 <script>
 const defaultCSS=`body {
@@ -279,13 +381,8 @@ const defaultCSS=`body {
   border-radius: 20px;
   box-shadow: 0 20px 55px rgba(0,0,0,.12);
 }
-.demo h2 {
-  margin-top: 0;
-  color: #172033;
-}
-.demo p {
-  color: #667085;
-}
+.demo h2 { margin-top: 0; color: #172033; }
+.demo p { color: #667085; }
 .demo button {
   border: 0;
   padding: 11px 18px;
@@ -305,6 +402,27 @@ editor.value=defaultCSS;
 function runCode(){
   const css=editor.value.replace(/<\/style/gi,'<\\/style');
   document.getElementById('preview').srcdoc='<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+css+'</style></head><body>'+html+'</body></html>';
+  updateNumbers();
+  log('Preview updated successfully.','ok');
+}
+function scheduleRun(){clearTimeout(timer);timer=setTimeout(runCode,180);updateNumbers()}
+function updateNumbers(){
+  const n=Math.max(1,editor.value.split('\n').length);
+  document.getElementById('numbers').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');
+}
+function syncScroll(){document.getElementById('numbers').scrollTop=editor.scrollTop}
+function handleTab(e){
+  if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,e2=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'  '+editor.value.slice(e2);editor.selectionStart=editor.selectionEnd=s+2;scheduleRun()}
+}
+function resetEditor(){editor.value=defaultCSS;runCode();log('Editor reset.','ok')}
+function toggleConsole(){document.getElementById('console').classList.toggle('open')}
+function clearConsole(){document.getElementById('console-body').innerHTML=''}
+function log(text,type){const b=document.getElementById('console-body');const d=document.createElement('div');d.className=type||'ok';d.textContent='› '+text;b.appendChild(d);b.scrollTop=b.scrollHeight}
+runCode();
+</script>
+
+
+</head><body>'+html+'</body></html>';
   updateNumbers();
   log('Preview updated successfully.','ok');
 }
