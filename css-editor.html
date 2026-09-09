@@ -422,24 +422,8 @@ runCode();
 </script>
 
 
-</head><body>'+html+'</body></html>';
-  updateNumbers();
-  log('Preview updated successfully.','ok');
-}
-function scheduleRun(){clearTimeout(timer);timer=setTimeout(runCode,180);updateNumbers()}
-function updateNumbers(){
-  const n=Math.max(1,editor.value.split('\n').length);
-  document.getElementById('numbers').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');
-}
-function syncScroll(){document.getElementById('numbers').scrollTop=editor.scrollTop}
-function handleTab(e){
-  if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,e2=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'  '+editor.value.slice(e2);editor.selectionStart=editor.selectionEnd=s+2;scheduleRun()}
-}
-function resetEditor(){editor.value=defaultCSS;runCode();log('Editor reset.','ok')}
-function toggleConsole(){document.getElementById('console').classList.toggle('open')}
-function clearConsole(){document.getElementById('console-body').innerHTML=''}
-function log(text,type){const b=document.getElementById('console-body');const d=document.createElement('div');d.className=type||'ok';d.textContent='› '+text;b.appendChild(d);b.scrollTop=b.scrollHeight}
-runCode();
+</head>
+
 </script>
 </body>
 </html>
