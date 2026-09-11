@@ -13,15 +13,15 @@
     <meta name="robots" content="index, follow">
 
     <link rel="canonical"
-        href="https://js-code-output.vercel.app/privacy.html">
+        href="https://jscodoutput.in/privacy.html">
 
     <!-- ✅ Favicon & Apple Touch Icon (Tab এবং Mobile-এর জন্য) -->
     <link rel="icon" href="/logo.jpeg">
     <link rel="apple-touch-icon" href="/logo.jpeg">
 
     <!-- ✅ Social Media ও Google Search প্রিভিউর জন্য লোগো (Open Graph) -->
-    <meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
-    <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
+    <meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
+    <meta name="twitter:image" content="https://jscodoutput.in/logo.jpeg">
 
     <!-- ✅ Google-কে লোগো চেনানোর জন্য Schema Markup -->
     <script type="application/ld+json">
@@ -29,8 +29,8 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "JS CODE OUTPUT",
-      "url": "https://js-code-output.vercel.app/",
-      "logo": "https://js-code-output.vercel.app/logo.jpeg"
+      "url": "https://jscodoutput.in/",
+      "logo": "https://jscodoutput.in/logo.jpeg"
     }
     </script>
 
@@ -51,6 +51,25 @@
             border: 1px solid rgba(148, 163, 184, 0.15);
         }
     </style>
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
 </head>
 
 <body class="text-white">
