@@ -21,8 +21,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="JS CODE OUTPUT">
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1737041538621289" crossorigin="anonymous"></script>
+   
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,7 +50,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "JS CODE OUTPUT Online Code Editor",
-        "url": "https://js-code-output.vercel.app/online-code-editor.html",
+        "url": "https://jscodoutput.in/online-code-editor.html",
         "image": "https://js-code-output.vercel.app/logo.jpeg",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web Browser",
@@ -128,6 +127,25 @@
             -webkit-text-fill-color: transparent;
         }
     </style>
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
 </head>
 
 <body class="antialiased selection:bg-indigo-500/30">
