@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5efe3">
+  <meta name="description" content="Discover JS CODE OUTPUT — a modern browser-first coding environment for learning, experimenting, and building.">
+  <title>Code Output Generoter | JS CODE OUTPUT</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #f5efe3;
+      --cream-light: #fbf8f1;
+      --cream-deep: #e9deca;
+
+      --charcoal: #181511;
+      --charcoal-soft: #28231c;
+      --brown: #6f4b20;
+      --brown-deep: #3d2915;
+
+      --gold: #b7832d;
+      --gold-light: #e0b75e;
+      --gold-bright: #f2d48a;
+      --gold-dark: #805518;
+
+      --text: #211d17;
+      --muted: #716858;
+      --line: rgba(111, 75, 32, .25);
+
+      --shadow: 0 18px 50px rgba(67, 47, 23, .12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::selection {
+      background: var(--gold);
+      color: white;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    /* =========================
+       GOLDEN ANIMATION
+    ========================= */
+
+    .gold-shimmer {
+      background: linear-gradient(
+        110deg,
+        var(--gold-dark),
+        var(--gold),
+        var(--gold-light),
+        #fff0bd,
+        var(--gold),
+        var(--gold-dark)
+      );
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: goldShimmer 8s linear infinite;
+    }
+
+    @keyframes goldShimmer {
+      0% {
+        background-position: 0% center;
+      }
+      100% {
+        background-position: 300% center;
+      }
+    }
+
+    .gold-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold-light),
+        var(--gold),
+        transparent
+      );
+      opacity: .6;
+    }
+
+    .gold-spark {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 14px 3px rgba(183, 131, 45, .35);
+      pointer-events: none;
+      animation: sparkFloat 7s ease-in-out infinite;
+    }
+
+    .spark-one {
+      top: 25%;
+      left: 7%;
+      animation-delay: -2s;
+    }
+
+    .spark-two {
+      top: 15%;
+      right: 12%;
+      animation-delay: -4s;
+    }
+
+    .spark-three {
+      bottom: 22%;
+      left: 44%;
+      animation-delay: -1s;
+    }
+
+    .spark-four {
+      bottom: 12%;
+      right: 8%;
+      animation-delay: -5s;
+    }
+
+    @keyframes sparkFloat {
+      0%, 100% {
+        opacity: .2;
+        transform: translateY(0) scale(.7);
+      }
+      50% {
+        opacity: .8;
+        transform: translateY(-12px) scale(1);
+      }
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      position: relative;
+      z-index: 10;
+      background: rgba(245, 239, 227, .92);
+      border-bottom: 1px solid rgba(111, 75, 32, .16);
+      backdrop-filter: blur(15px);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo {
+      width: 43px;
+      height: 43px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(111, 75, 32, .18);
+      box-shadow: 0 5px 18px rgba(67, 47, 23, .08);
+    }
+
+    .brand-name {
+      color: var(--charcoal);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      display: block;
+      color: var(--gold-dark);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      margin-top: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-left: auto;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: #4b4133;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: color .25s ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width .25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-dark);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Main CTA: no box-card styling */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 45px;
+      padding: 0 20px;
+      border-radius: 50px;
+      color: #fff8e8;
+      background: var(--charcoal);
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 5px 18px rgba(30, 23, 14, .14);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      white-space: nowrap;
+      transition: .3s ease;
+    }
+
+    .nav-cta span {
+      color: var(--gold-light);
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .nav-cta:hover {
+      background: var(--brown-deep);
+      border-color: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 9px 25px rgba(30, 23, 14, .2);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      position: relative;
+      min-height: 690px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 95px 0 110px;
+      background:
+        radial-gradient(
+          ellipse at 92% 40%,
+          rgba(224, 183, 94, .15),
+          transparent 38%
+        ),
+        linear-gradient(180deg, var(--cream-light), var(--cream));
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -250px;
+      left: -180px;
+      width: 600px;
+      height: 600px;
+      border: 1px solid rgba(183, 131, 45, .16);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -170px;
+      bottom: -290px;
+      width: 700px;
+      height: 500px;
+      border: 1px solid rgba(183, 131, 45, .16);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 65px;
+    }
+
+    .hero-content {
+      max-width: 620px;
+    }
+
+    .hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      color: var(--gold-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .hero-kicker::before {
+      content: "";
+      width: 58px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-kicker::after {
+      content: "";
+      width: 58px;
+      height: 1px;
+      background: var(--gold);
+      opacity: .5;
+    }
+
+    .hero-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(44px, 5.3vw, 75px);
+      line-height: 1.08;
+      letter-spacing: -2.5px;
+      color: var(--charcoal);
+      font-weight: 700;
+    }
+
+    .hero-title .gold-title {
+      display: block;
+      background: linear-gradient(
+        110deg,
+        var(--gold-dark),
+        var(--gold),
+        var(--gold-light),
+        var(--gold-dark)
+      );
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: goldShimmer 8s linear infinite;
+    }
+
+    .hero-description {
+      max-width: 555px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.95;
+      margin-top: 27px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 17px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0 25px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: .3s ease;
+    }
+
+    .btn-dark {
+      color: #fff8e8;
+      background: var(--charcoal);
+      border: 1px solid var(--gold-dark);
+      box-shadow: 0 7px 22px rgba(36, 28, 17, .14);
+    }
+
+    .btn-dark span {
+      color: var(--gold-light);
+      font-size: 17px;
+    }
+
+    .btn-dark:hover {
+      background: var(--brown-deep);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(36, 28, 17, .2);
+    }
+
+    .btn-text {
+      position: relative;
+      color: var(--gold-dark);
+      padding: 0 5px;
+      border-radius: 0;
+      min-height: 45px;
+    }
+
+    .btn-text::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      right: 5px;
+      bottom: 6px;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(.35);
+      transform-origin: left;
+      transition: transform .3s ease;
+    }
+
+    .btn-text:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Hero image — classic frame, no animated box */
+    .hero-visual {
+      position: relative;
+      padding: 12px;
+      background: rgba(255, 252, 245, .65);
+      border: 1px solid rgba(111, 75, 32, .35);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border: 1px solid rgba(183, 131, 45, .22);
+      border-radius: 27px;
+      pointer-events: none;
+    }
+
+    .hero-visual img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 13px;
+    }
+
+    .hero-visual-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 5px 2px;
+      color: var(--gold-dark);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .hero-visual-caption span:last-child {
+      color: #927d5d;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* =========================
+       GOLD DIVIDER / STATS
+    ========================= */
+
+    .stats {
+      position: relative;
+      z-index: 2;
+      background: var(--charcoal);
+      color: var(--cream);
+      padding: 26px 0;
+      border-top: 1px solid var(--gold);
+      border-bottom: 1px solid rgba(224, 183, 94, .45);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 38px;
+      border-right: 1px solid rgba(224, 183, 94, .18);
+    }
+
+    .stat:last-child {
+      border-right: none;
+    }
+
+    .stat strong {
+      font-family: "Playfair Display", serif;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+
+    .stat span {
+      color: #c8b99e;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+
+    /* =========================
+       WORLD CLASS SECTION
+    ========================= */
+
+    .world-class {
+      position: relative;
+      padding: 125px 0;
+      overflow: hidden;
+      background: var(--cream-light);
+    }
+
+    .world-class::before {
+      content: "";
+      position: absolute;
+      left: -200px;
+      top: 80px;
+      width: 500px;
+      height: 1px;
+      background: var(--gold);
+      opacity: .22;
+      transform: rotate(-25deg);
+    }
+
+    .world-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      align-items: center;
+      gap: 90px;
+    }
+
+    /* Static logo area — no orbit animation */
+    .logo-stage {
+      position: relative;
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(224, 183, 94, .18),
+          transparent 60%
+        ),
+        var(--cream);
+      border-top: 1px solid rgba(111, 75, 32, .28);
+      border-bottom: 1px solid rgba(111, 75, 32, .28);
+    }
+
+    .logo-stage::before {
+      content: "";
+      position: absolute;
+      width: 85%;
+      height: 85%;
+      border: 1px solid rgba(183, 131, 45, .22);
+      border-radius: 50%;
+    }
+
+    .logo-stage::after {
+      content: "JS CODE OUTPUT";
+      position: absolute;
+      bottom: 26px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: var(--gold-dark);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+    }
+
+    .large-logo {
+      position: relative;
+      z-index: 1;
+      width: min(65%, 290px);
+      border-radius: 28px;
+      border: 1px solid rgba(111, 75, 32, .25);
+      box-shadow: 0 20px 55px rgba(67, 47, 23, .12);
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--gold-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: "";
+      width: 45px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(35px, 4vw, 58px);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      color: var(--charcoal);
+    }
+
+    .section-title em {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: .68em;
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--gold-dark);
+      margin-bottom: 6px;
+    }
+
+    .section-description {
+      max-width: 570px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.95;
+      margin-top: 23px;
+    }
+
+    .classic-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        var(--gold),
+        rgba(183, 131, 45, .1)
+      );
+      margin: 32px 0;
+    }
+
+    .world-points {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 35px;
+    }
+
+    .world-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 19px 0;
+      border-bottom: 1px solid rgba(111, 75, 32, .15);
+    }
+
+    .world-point-icon {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      color: var(--gold-dark);
+      border: 1px solid rgba(183, 131, 45, .45);
+      border-radius: 50%;
+      font-size: 13px;
+      margin-top: 1px;
+    }
+
+    .world-point h3 {
+      color: var(--charcoal);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .world-point p {
+      color: #897a65;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       BEGINNER SECTION
+    ========================= */
+
+    .beginner {
+      position: relative;
+      padding: 0 0 125px;
+      background: var(--cream-light);
+    }
+
+    .beginner-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 90px;
+    }
+
+    .beginner-visual {
+      position: relative;
+    }
+
+    .beginner-visual::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: -18px;
+      right: 18px;
+      bottom: -18px;
+      border: 1px solid rgba(183, 131, 45, .28);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .beginner-visual img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 15px;
+      border: 1px solid rgba(111, 75, 32, .25);
+      box-shadow: var(--shadow);
+    }
+
+    .beginner-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .beginner-list {
+      display: grid;
+      gap: 15px;
+      margin-top: 30px;
+      list-style: none;
+    }
+
+    .beginner-list li {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: #665947;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .beginner-list li::before {
+      content: "✓";
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      color: var(--cream-light);
+      background: var(--gold-dark);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* =========================
+       CTA
+    ========================= */
+
+    .cta-section {
+      position: relative;
+      padding: 0 0 115px;
+      background: var(--cream-light);
+    }
+
+    .cta-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 42px 48px;
+      border-top: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      background:
+        linear-gradient(
+          90deg,
+          rgba(224, 183, 94, .07),
+          transparent 45%,
+          rgba(224, 183, 94, .08)
+        );
+      overflow: hidden;
+    }
+
+    .cta-box::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -100px;
+      width: 80px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 231, 170, .25),
+        transparent
+      );
+      transform: skewX(-20deg);
+      animation: ctaLight 7s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes ctaLight {
+      0% {
+        left: -100px;
+      }
+      100% {
+        left: 120%;
+      }
+    }
+
+    .cta-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .cta-symbol {
+      display: grid;
+      place-items: center;
+      width: 55px;
+      height: 55px;
+      flex: 0 0 auto;
+      color: var(--gold-dark);
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 29px;
+    }
+
+    .cta-left h3 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 29px;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 5px;
+    }
+
+    .cta-left p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      position: relative;
+      background: var(--charcoal);
+      color: var(--cream);
+      border-top: 1px solid var(--gold-dark);
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.45fr .65fr 1.15fr 1.35fr;
+      gap: 45px;
+      padding: 72px 0 58px;
+    }
+
+    .footer-brand .brand-name {
+      color: var(--gold-light);
+      font-family: "Playfair Display", serif;
+      font-size: 20px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .footer-brand p {
+      max-width: 320px;
+      color: #b3a58e;
+      font-size: 12px;
+      line-height: 1.95;
+    }
+
+    footer h4 {
+      color: var(--gold-light);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 21px;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 11px;
+    }
+
+    .footer-links a {
+      color: #b3a58e;
+      font-size: 11px;
+      line-height: 1.5;
+      transition: .25s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold-light);
+      transform: translateX(3px);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 25px;
+      padding: 23px 0;
+      border-top: 1px solid rgba(224, 183, 94, .2);
+      color: #8f816c;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    .footer-keywords {
+      max-width: 650px;
+      text-align: right;
+    }
+
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 1050px) {
+      .nav-links {
+        gap: 17px;
+      }
+
+      .nav-links a {
+        font-size: 11px;
+      }
+
+      .hero-grid {
+        gap: 40px;
+      }
+
+      .world-grid,
+      .beginner-grid {
+        gap: 55px;
+      }
+
+      .footer-top {
+        gap: 28px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .container {
+        width: min(100% - 38px, 1180px);
+      }
+
+      .navbar {
+        min-height: 72px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 75px 0 85px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 55px;
+      }
+
+      .hero-content {
+        max-width: 680px;
+      }
+
+      .hero-visual {
+        max-width: 680px;
+      }
+
+      .world-class {
+        padding: 90px 0;
+      }
+
+      .world-grid,
+      .beginner-grid {
+        grid-template-columns: 1fr;
+        gap: 55px;
+      }
+
+      .logo-stage {
+        min-height: 360px;
+        max-width: 600px;
+      }
+
+      .large-logo {
+        width: min(55%, 250px);
+      }
+
+      .beginner {
+        padding-bottom: 90px;
+      }
+
+      .beginner-visual {
+        max-width: 680px;
+      }
+
+      .cta-section {
+        padding-bottom: 90px;
+      }
+
+      .footer-top {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+      }
+    }
+
+    /* =========================
+       PHONE
+    ========================= */
+
+    @media (max-width: 600px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      .navbar {
+        min-height: 68px;
+        gap: 12px;
+      }
+
+      .brand {
+        gap: 9px;
+      }
+
+      .brand-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+      }
+
+      .brand-name {
+        font-size: 11px;
+        letter-spacing: .8px;
+      }
+
+      .brand-subtitle {
+        font-size: 7px;
+        letter-spacing: 1.7px;
+      }
+
+      .nav-cta {
+        min-height: 39px;
+        padding: 0 12px;
+        gap: 7px;
+        font-size: 8px;
+        letter-spacing: .3px;
+      }
+
+      .nav-cta span {
+        font-size: 14px;
+      }
+
+      .hero {
+        padding: 62px 0 65px;
+      }
+
+      .hero-kicker {
+        gap: 10px;
+        font-size: 9px;
+        letter-spacing: 3px;
+        margin-bottom: 21px;
+      }
+
+      .hero-kicker::before,
+      .hero-kicker::after {
+        width: 25px;
+      }
+
+      .hero-title {
+        font-size: clamp(39px, 12vw, 58px);
+        letter-spacing: -1.8px;
+      }
+
+      .hero-description {
+        font-size: 13px;
+        line-height: 1.85;
+        margin-top: 22px;
+      }
+
+      .hero-actions {
+        align-items: stretch;
+        gap: 13px;
+        margin-top: 28px;
+      }
+
+      .btn {
+        min-height: 48px;
+        padding: 0 17px;
+        font-size: 9px;
+        letter-spacing: .7px;
+      }
+
+      .btn-text {
+        padding: 0 4px;
+      }
+
+      .hero-visual {
+        padding: 7px;
+        border-radius: 16px;
+      }
+
+      .hero-visual::before {
+        inset: -5px;
+        border-radius: 20px;
+      }
+
+      .hero-visual img {
+        border-radius: 10px;
+      }
+
+      .hero-visual-caption {
+        padding: 13px 3px 1px;
+        font-size: 7px;
+        letter-spacing: 1.3px;
+      }
+
+      .hero-visual-caption span:last-child {
+        font-size: 7px;
+        letter-spacing: .6px;
+      }
+
+      .stats {
+        padding: 20px 0;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+      }
+
+      .stat {
+        justify-content: flex-start;
+        padding: 13px 9px;
+        gap: 8px;
+        border-right: none;
+        border-bottom: 1px solid rgba(224, 183, 94, .16);
+      }
+
+      .stat:nth-child(odd) {
+        border-right: 1px solid rgba(224, 183, 94, .16);
+      }
+
+      .stat:nth-child(3),
+      .stat:nth-child(4) {
+        border-bottom: none;
+      }
+
+      .stat strong {
+        font-size: 20px;
+      }
+
+      .stat span {
+        font-size: 7px;
+        letter-spacing: 1px;
+      }
+
+      .world-class {
+        padding: 72px 0;
+      }
+
+      .section-label {
+        font-size: 9px;
+        letter-spacing: 3px;
+        gap: 10px;
+      }
+
+      .section-label::before {
+        width: 28px;
+      }
+
+      .section-title {
+        font-size: 38px;
+        letter-spacing: -1px;
+      }
+
+      .section-title em {
+        font-size: .7em;
+      }
+
+      .section-description {
+        font-size: 13px;
+        line-height: 1.85;
+        margin-top: 20px;
+      }
+
+      .logo-stage {
+        min-height: 285px;
+        border-radius: 0;
+      }
+
+      .logo-stage::before {
+        width: 75%;
+        height: 75%;
+      }
+
+      .logo-stage::after {
+        bottom: 17px;
+        font-size: 8px;
+        letter-spacing: 2.5px;
+      }
+
+      .large-logo {
+        width: 58%;
+        border-radius: 20px;
+      }
+
+      .classic-rule {
+        margin: 27px 0;
+      }
+
+      .world-points {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .world-point {
+        padding: 17px 0;
+      }
+
+      .world-point h3 {
+        font-size: 12px;
+      }
+
+      .world-point p {
+        font-size: 11px;
+      }
+
+      .beginner {
+        padding-bottom: 72px;
+      }
+
+      .beginner-grid {
+        gap: 43px;
+      }
+
+      .beginner-visual::before {
+        top: 13px;
+        left: -9px;
+        right: 9px;
+        bottom: -10px;
+        border-radius: 15px;
+      }
+
+      .beginner-visual img {
+        border-radius: 11px;
+      }
+
+      .beginner-list {
+        gap: 13px;
+        margin-top: 26px;
+      }
+
+      .beginner-list li {
+        font-size: 12px;
+      }
+
+      .beginner-list li::before {
+        width: 21px;
+        height: 21px;
+        font-size: 10px;
+      }
+
+      .cta-section {
+        padding-bottom: 70px;
+      }
+
+      .cta-box {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 27px;
+        padding: 31px 20px;
+      }
+
+      .cta-left {
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .cta-symbol {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
+      }
+
+      .cta-left h3 {
+        font-size: 25px;
+      }
+
+      .cta-left p {
+        font-size: 11px;
+      }
+
+      .cta-box .btn {
+        width: 100%;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        padding: 55px 0 45px;
+      }
+
+      .footer-brand p {
+        max-width: 100%;
+        font-size: 11px;
+      }
+
+      footer h4 {
+        margin-bottom: 17px;
+      }
+
+      .footer-links {
+        gap: 10px;
+      }
+
+      .footer-links a {
+        font-size: 11px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 13px;
+        padding: 21px 0;
+      }
+
+      .footer-keywords {
+        max-width: 100%;
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Subtle golden particles -->
+  <span class="gold-spark spark-one"></span>
+  <span class="gold-spark spark-two"></span>
+  <span class="gold-spark spark-three"></span>
+  <span class="gold-spark spark-four"></span>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container navbar">
+
+      <a href="index.html.html" class="brand">
+        <img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="brand-logo">
+
+        <div>
+          <div class="brand-name">JS CODE OUTPUT</div>
+          <span class="brand-subtitle">LEARN · BUILD · PUBLISH</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="https://jscodoutput.in/">Home</a>
+        <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
+        <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
+        <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
+        <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
+      </nav>
+
+      <!-- Replaced CODE · LEARN · BUILD -->
+      <a href="index.html.html" class="nav-cta">
+        Test Your Code Here
+        <span>→</span>
+      </a>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <div class="hero-content">
+
+          <div class="hero-kicker">
+            JS CODE OUTPUT
+          </div>
+
+          <h1 class="hero-title">
+            Write Code.
+            <span class="gold-title">See It Come Alive.</span>
+          </h1>
+
+          <p class="hero-description">
+            JS CODE OUTPUT is a focused browser-first coding environment
+            designed to make learning, testing, experimenting, and building
+            feel simple and practical. Write your code, run it, and see
+            the result directly in your browser.
+          </p>
+
+          <div class="hero-actions">
+            <a href="index.html.html" class="btn btn-dark">
+              Test Your Code Here
+              <span>→</span>
+            </a>
+
+            <a href="#how-it-works" class="btn btn-text">
+              Discover the Experience
+            </a>
+          </div>
+
+        </div>
+
+        <div class="hero-visual">
+          <img
+            src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/start%20page%20pic.jpeg"
+            alt="JS CODE OUTPUT start page"
+          >
+
+          <div class="hero-visual-caption">
+            <span>WRITE · RUN · SEE THE OUTPUT</span>
+            <span>Browser-first experience</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="container stats-grid">
+
+        <div class="stat">
+          <strong>01</strong>
+          <span>Focused Workspace</span>
+        </div>
+
+        <div class="stat">
+          <strong>∞</strong>
+          <span>Ideas to Explore</span>
+        </div>
+
+        <div class="stat">
+          <strong>LIVE</strong>
+          <span>Output Experience</span>
+        </div>
+
+        <div class="stat">
+          <strong>WEB</strong>
+          <span>Browser Based</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WORLD CLASS -->
+    <section class="world-class" id="how-it-works">
+      <div class="container world-grid">
+
+        <!-- Static logo, no orbit animation -->
+        <div class="logo-stage">
+          <img
+            src="logo.jpeg"
+            alt="JS CODE OUTPUT Logo"
+            class="large-logo"
+          >
+        </div>
+
+        <div class="world-content">
+
+          <div class="section-label">
+            The Standard
+          </div>
+
+          <h2 class="section-title">
+            <em>Why JS CODE OUTPUT</em>
+            Is World Class
+          </h2>
+
+          <p class="section-description">
+            JS CODE OUTPUT is built around a simple but powerful idea:
+            coding should feel clear, direct, and inspiring. Instead of
+            getting lost in unnecessary complexity, you can focus on
+            writing, testing, and improving your ideas in a smooth
+            browser-first environment.
+          </p>
+
+          <p class="section-description">
+            Its polished interface, practical tools, and live coding
+            experience bring together the essential parts of modern web
+            development. Whether you are experimenting with a small idea
+            or building something more ambitious, the platform keeps the
+            experience focused on what matters—your code and its output.
+          </p>
+
+          <div class="classic-rule"></div>
+
+          <div class="world-points">
+
+            <div class="world-point">
+              <div class="world-point-icon">✦</div>
+              <div>
+                <h3>Fast & Focused</h3>
+                <p>A clean environment that keeps your attention on building.</p>
+              </div>
+            </div>
+
+            <div class="world-point">
+              <div class="world-point-icon">✓</div>
+              <div>
+                <h3>Easy to Understand</h3>
+                <p>Simple tools and a familiar browser-first experience.</p>
+              </div>
+            </div>
+
+            <div class="world-point">
+              <div class="world-point-icon">⌘</div>
+              <div>
+                <h3>Built for the Web</h3>
+                <p>Practice and experiment with modern web technologies.</p>
+              </div>
+            </div>
+
+            <div class="world-point">
+              <div class="world-point-icon">∞</div>
+              <div>
+                <h3>Room to Create</h3>
+                <p>Turn small experiments into ideas worth sharing.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BEGINNER FRIENDLY -->
+    <section class="beginner">
+      <div class="container beginner-grid">
+
+        <div class="beginner-visual">
+          <img
+            src="av.jpeg"
+            alt="A beginner using JS CODE OUTPUT"
+          >
+        </div>
+
+        <div class="beginner-content">
+
+          <div class="section-label">
+            Start Without Fear
+          </div>
+
+          <h2 class="section-title">
+            <em>Why It's</em>
+            Beginner Friendly
+          </h2>
+
+          <p class="section-description">
+            Learning to code becomes more enjoyable when the tools feel
+            welcoming. JS CODE OUTPUT is designed to give beginners a
+            clear starting point, with a straightforward interface and
+            a practical way to see what their code does.
+          </p>
+
+          <p class="section-description">
+            You do not need to understand everything at once. Start with
+            a small idea, experiment with it, and learn through the output.
+            The experience is equally useful for practice, testing,
+            exploring, and building confidence step by step.
+          </p>
+
+          <ul class="beginner-list">
+            <li>No unnecessary complexity</li>
+            <li>Simple and clean interface</li>
+            <li>Learn by writing and seeing results</li>
+            <li>Useful for practice and experimentation</li>
+            <li>Suitable for different skill levels</li>
+          </ul>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container">
+
+        <div class="cta-box">
+
+          <div class="cta-left">
+            <div class="cta-symbol">⌘</div>
+
+            <div>
+              <h3>Ready to create something?</h3>
+              <p>Start your coding journey with JS CODE OUTPUT.</p>
+            </div>
+          </div>
+
+          <a href="index.html.html" class="btn btn-dark">
+            Test Your Code Here
+            <span>→</span>
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+
+      <div class="footer-top">
+
+        <div class="footer-brand">
+          <div class="brand-name">JS CODE OUTPUT</div>
+
+          <p>
+            Write code, run it, and see the output in a focused
+            browser-first environment built for learning, testing,
+            experimenting, and building. JS CODE OUTPUT brings useful
+            coding tools together so you can practice web development
+            and explore ideas directly in your browser.
+          </p>
+        </div>
+
+        <div>
+          <h4>Explore</h4>
+
+          <div class="footer-links">
+            <a href="https://jscodoutput.in/">Home</a>
+            <a href="https://jscodoutput.in/about.html">About</a>
+            <a href="https://jscodoutput.in/contact.html">Contact</a>
+            <a href="https://jscodoutput.in/privacy.html">Privacy</a>
+            <a href="https://jscodoutput.in/terms.html">Terms</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Editors</h4>
+
+          <div class="footer-links">
+            <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
+            <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
+            <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
+            <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
+            <a href="https://jscodoutput.in/javascript-playground.html">JavaScript Playground</a>
+            <a href="https://jscodoutput.in/html-css-js-editor.html">HTML/CSS/JS Editor</a>
+            <a href="https://jscodoutput.in/html-playground.html">HTML Playground</a>
+            <a href="https://jscodoutput.in/css-playground.html">CSS Playground</a>
+            <a href="https://jscodoutput.in/js-playground.html">JS Playground</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>More</h4>
+
+          <div class="footer-links">
+            <a href="https://jscodoutput.in/online-css-editor.html">Online CSS Editor</a>
+            <a href="https://jscodoutput.in/online-javascript-editor.html">Online JavaScript Editor</a>
+            <a href="https://jscodoutput.in/online-html-editor.html">Online HTML Editor</a>
+            <a href="https://jscodoutput.in/online-js-editor.html">Online JS Editor</a>
+            <a href="https://jscodoutput.in/live-code-editor.html">Live Code Editor</a>
+            <a href="https://jscodoutput.in/live-code-playground.html">Live Code Playground</a>
+            <a href="https://jscodoutput.in/online-web-editor.html">Online Web Editor</a>
+            <a href="https://jscodoutput.in/web-code-editor.html">Web Code Editor</a>
+            <a href="https://jscodoutput.in/code-editor-with-live-preview.html">Editor with Live Preview</a>
+            <a href="https://jscodoutput.in/code-output.html">Code Output</a>
+            <a href="https://jscodoutput.in/live-output-code.html">LIVE OUTPUT Code</a>
+            <a href="https://jscodoutput.in/mini-browser.html">Mini Browser</a>
+            <a href="https://jscodoutput.in/real-time-code-output.html">Real Time Code Output</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+
+        <div>
+          © 2026 JS CODE OUTPUT. All rights reserved.
+        </div>
+
+        <span class="footer-keywords">
+          Online Code Editor · HTML Editor · CSS Editor · JavaScript Editor ·
+          JavaScript Playground · HTML/CSS/JS Editor · Online CSS Editor ·
+          Online JavaScript Editor · HTML Playground · Online HTML Editor ·
+          CSS Playground · JS Playground · Online JS Editor · Live Code Editor ·
+          Live Code Playground · Online Web Editor · Web Code Editor ·
+          Editor with Live Preview · Code Output · LIVE OUTPUT Code · Mini Browser ·
+          Real Time Code Output
+        </span>
+
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
