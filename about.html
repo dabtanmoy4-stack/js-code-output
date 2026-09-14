@@ -9,8 +9,17 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://jscodoutput.in/about.html">
 
-    <link rel="icon" href="/logo.jpeg">
+    <!-- Website logo / favicon support -->
+    <link rel="icon" href="/logo.jpeg" type="image/jpeg">
+    <link rel="shortcut icon" href="/logo.jpeg" type="image/jpeg">
     <link rel="apple-touch-icon" href="/logo.jpeg">
+
+    <!-- Microsoft Edge / Windows tile support -->
+    <meta name="msapplication-TileImage" content="/logo.jpeg">
+    <meta name="msapplication-square70x70logo" content="/logo.jpeg">
+    <meta name="msapplication-square150x150logo" content="/logo.jpeg">
+    <meta name="msapplication-wide310x150logo" content="/logo.jpeg">
+    <meta name="msapplication-square310x310logo" content="/logo.jpeg">
 
     <meta property="og:title" content="About JS CODE OUTPUT">
     <meta property="og:description" content="A beginner-friendly online workspace for building, testing and publishing web projects.">
@@ -18,24 +27,7 @@
     <meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://jscodoutput.in/logo.jpeg">
-<link rel="icon" href="/logo.jpeg" type="image/jpeg">
-<link rel="shortcut icon" href="/logo.jpeg" type="image/jpeg">
-<link rel="apple-touch-icon" href="/logo.jpeg">
 
-<!-- Microsoft Edge / Windows tile support -->
-<meta name="msapplication-TileImage" content="/logo.jpeg">
-<meta name="msapplication-square70x70logo" content="/logo.jpeg">
-<meta name="msapplication-square150x150logo" content="/logo.jpeg">
-<meta name="msapplication-wide310x150logo" content="/logo.jpeg">
-<meta name="msapplication-square310x310logo" content="/logo.jpeg">
-
-<meta property="og:title" content="About JS CODE OUTPUT">
-<meta property="og:description" content="A beginner-friendly online workspace for building, testing and publishing web projects.">
-<meta property="og:url" content="https://jscodoutput.in/about.html">
-<meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://jscodoutput.in/logo.jpeg">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -134,7 +126,6 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
     </script>
-    
 </head>
 
 <body class="text-slate-900 selection:bg-amber-200/60">
@@ -142,8 +133,13 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 w-full border-b border-[#d8d0c2] bg-[#f8f5ee]/95 backdrop-blur-md">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="text-lg sm:text-xl font-bold tracking-wide whitespace-nowrap">
-                <span class="text-[#8a6a3f]">JS</span> CODE OUTPUT
+            <a href="/" class="flex items-center gap-3 text-lg sm:text-xl font-bold tracking-wide whitespace-nowrap">
+                <img
+                    src="/logo.jpeg"
+                    alt="JS CODE OUTPUT logo"
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover border border-[#8a6a3f]/40 shadow-sm"
+                    loading="eager">
+                <span><span class="text-[#8a6a3f]">JS</span> CODE OUTPUT</span>
             </a>
 
             <nav class="hidden md:flex items-center gap-6 text-sm text-[#6b6257]">
