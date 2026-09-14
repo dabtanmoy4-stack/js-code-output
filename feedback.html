@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Feedback | JS Code Output</title>
+
+    <meta name="description"
+        content="Share your feedback with JS Code Output and help us build a better coding experience.">
+
+    <meta name="theme-color" content="#000000">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --black: #000000;
+            --black-soft: #080706;
+            --gold: #d4af37;
+            --gold-light: #f5d76e;
+            --gold-bright: #ffd84d;
+            --gold-brown: #6f4e1f;
+            --gold-dark: #8b6a20;
+            --warm-white: #fffaf0;
+            --warm-white-2: #f8f1df;
+            --text-dark: #20180e;
+            --text-light: #e9dfc9;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text-dark);
+
+            background:
+                radial-gradient(
+                    circle at 10% 0%,
+                    rgba(212,175,55,.12),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 100%,
+                    rgba(111,78,31,.14),
+                    transparent 32%
+                ),
+                var(--black);
+
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================
+           ANIMATED GOLD / WARM WHITE LIGHT
+        ========================================= */
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255,216,77,.16),
+                    rgba(212,175,55,.08) 30%,
+                    rgba(255,250,240,.035) 55%,
+                    transparent 72%
+                );
+
+            top: -250px;
+            left: -180px;
+
+            filter: blur(25px);
+
+            animation:
+                warmLight 10s ease-in-out infinite alternate;
+
+            pointer-events: none;
+            z-index: 0;
+        }
+
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(212,175,55,.15),
+                    rgba(111,78,31,.09) 40%,
+                    transparent 72%
+                );
+
+            right: -200px;
+            bottom: -200px;
+
+            filter: blur(25px);
+
+            animation:
+                warmLight2 12s ease-in-out infinite alternate;
+
+            pointer-events: none;
+            z-index: 0;
+        }
+
+
+        @keyframes warmLight {
+
+            0% {
+                transform: translate(0,0) scale(.9);
+                opacity: .55;
+            }
+
+            50% {
+                transform: translate(180px,120px) scale(1.15);
+                opacity: .9;
+            }
+
+            100% {
+                transform: translate(330px,230px) scale(.85);
+                opacity: .5;
+            }
+
+        }
+
+
+        @keyframes warmLight2 {
+
+            0% {
+                transform: translate(0,0) scale(1);
+                opacity: .45;
+            }
+
+            50% {
+                transform: translate(-120px,-100px) scale(1.18);
+                opacity: .8;
+            }
+
+            100% {
+                transform: translate(-250px,-180px) scale(.85);
+                opacity: .4;
+            }
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+            position: relative;
+            z-index: 5;
+
+            background: #000000;
+
+            border-bottom: 1px solid var(--gold-brown);
+
+            box-shadow:
+                0 8px 35px rgba(111,78,31,.18);
+
+            padding: 18px 24px;
+        }
+
+
+        .nav {
+            max-width: 1100px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .logo {
+            text-decoration: none;
+
+            color: var(--gold);
+
+            font-size: 22px;
+            font-weight: 700;
+
+            letter-spacing: .4px;
+
+            text-shadow:
+                0 0 14px rgba(212,175,55,.25);
+
+            transition: .25s;
+        }
+
+
+        .logo:hover {
+            color: var(--gold-bright);
+
+            text-shadow:
+                0 0 22px rgba(255,216,77,.45);
+        }
+
+
+        .back-btn {
+            text-decoration: none;
+
+            color: var(--gold-light);
+
+            border: 1px solid var(--gold-brown);
+
+            background: rgba(0,0,0,.75);
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            transition: .25s;
+
+            box-shadow:
+                0 5px 20px rgba(111,78,31,.15);
+        }
+
+
+        .back-btn:hover {
+            background: var(--gold);
+
+            color: #000;
+
+            border-color: var(--gold);
+
+            box-shadow:
+                0 0 22px rgba(212,175,55,.35);
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        main {
+            position: relative;
+            z-index: 2;
+
+            flex: 1;
+
+            width: 100%;
+
+            padding: 55px 18px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+
+        /* =========================================
+           CARD
+        ========================================= */
+
+        .feedback-card {
+
+            width: 100%;
+            max-width: 640px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #fffdf6,
+                    var(--warm-white),
+                    #f8f0dc
+                );
+
+            border: 1px solid var(--gold);
+
+            border-radius: 25px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 25px 80px rgba(111,78,31,.28),
+                0 0 45px rgba(212,175,55,.08);
+
+            position: relative;
+
+            animation:
+                cardAppear .8s ease forwards;
+        }
+
+
+        @keyframes cardAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+
+        /* =========================================
+           CARD GOLD LIGHT ANIMATION
+        ========================================= */
+
+        .feedback-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 80%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--gold-bright),
+                    var(--warm-white),
+                    var(--gold),
+                    transparent
+                );
+
+            box-shadow:
+                0 0 18px rgba(255,216,77,.7);
+
+            animation:
+                goldSweep 5s linear infinite;
+
+            z-index: 5;
+        }
+
+
+        @keyframes goldSweep {
+
+            0% {
+                left: -120%;
+            }
+
+            100% {
+                left: 140%;
+            }
+
+        }
+
+
+        /* =========================================
+           TOP
+        ========================================= */
+
+        .card-top {
+
+            background: #000000;
+
+            padding: 40px 25px;
+
+            text-align: center;
+
+            border-bottom: 2px solid var(--gold);
+
+            position: relative;
+        }
+
+
+        .card-top::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 100px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%,-50%);
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(212,175,55,.13),
+                    transparent 70%
+                );
+
+            filter: blur(10px);
+
+            pointer-events: none;
+        }
+
+
+        .card-top h1 {
+
+            position: relative;
+            z-index: 2;
+
+            color: var(--warm-white);
+
+            font-size: 30px;
+
+            margin-bottom: 10px;
+
+            letter-spacing: .2px;
+
+            text-shadow:
+                0 0 22px rgba(255,250,240,.08);
+        }
+
+
+        .card-top p {
+
+            position: relative;
+            z-index: 2;
+
+            color: #cfc4af;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        .gold-line {
+
+            position: relative;
+            z-index: 2;
+
+            width: 65px;
+            height: 3px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--gold-dark),
+                    var(--gold-bright),
+                    var(--gold-dark)
+                );
+
+            margin: 18px auto 0;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 0 15px rgba(212,175,55,.45);
+        }
+
+
+        /* =========================================
+           CONTENT
+        ========================================= */
+
+        .content {
+            padding: 32px;
+        }
+
+
+        /* =========================================
+           USER BOX
+        ========================================= */
+
+        .user-box {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #fffaf0,
+                    #f7efd9
+                );
+
+            border: 1px solid #dfc56c;
+
+            border-radius: 15px;
+
+            padding: 17px;
+
+            margin-bottom: 28px;
+
+            box-shadow:
+                0 8px 25px rgba(111,78,31,.10);
+        }
+
+
+        .user-label {
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.2px;
+
+            color: var(--gold-dark);
+
+            margin-bottom: 7px;
+        }
+
+
+        .user-name {
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: #21170c;
+        }
+
+
+        .user-email {
+
+            color: #756653;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================================
+           RATING
+        ========================================= */
+
+        .rating-area {
+
+            text-align: center;
+
+            padding: 10px 0 25px;
+        }
+
+
+        .section-title {
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 13px;
+
+            color: #2b2014;
+        }
+
+
+        .stars {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 7px;
+        }
+
+
+        .star {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 45px;
+
+            cursor: pointer;
+
+            color: #d8d0c0;
+
+            transition:
+                transform .18s,
+                color .18s,
+                text-shadow .18s;
+
+            line-height: 1;
+        }
+
+
+        .star:hover {
+
+            transform: scale(1.14);
+
+            color: var(--gold-light);
+
+            text-shadow:
+                0 0 16px rgba(212,175,55,.45);
+        }
+
+
+        .star.active {
+
+            color: var(--gold);
+
+            text-shadow:
+                0 0 12px rgba(212,175,55,.30);
+        }
+
+
+        .rating-text {
+
+            min-height: 20px;
+
+            margin-top: 12px;
+
+            color: var(--gold-dark);
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           TEXTAREA
+        ========================================= */
+
+        textarea {
+
+            width: 100%;
+
+            min-height: 150px;
+
+            resize: vertical;
+
+            padding: 15px;
+
+            border-radius: 13px;
+
+            border: 1px solid #dbc789;
+
+            background: #fffdf8;
+
+            color: #241a0e;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            outline: none;
+
+            transition: .25s;
+
+            box-shadow:
+                inset 0 1px 3px rgba(111,78,31,.05);
+        }
+
+
+        textarea:focus {
+
+            border-color: var(--gold);
+
+            box-shadow:
+                0 0 0 3px rgba(212,175,55,.12),
+                0 8px 25px rgba(111,78,31,.08);
+        }
+
+
+        textarea::placeholder {
+            color: #a99b87;
+        }
+
+
+        .optional {
+
+            color: #9a8b76;
+
+            font-size: 11px;
+
+            font-weight: normal;
+        }
+
+
+        /* =========================================
+           SUBMIT BUTTON
+        ========================================= */
+
+        .submit-btn {
+
+            position: relative;
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            border: 1px solid var(--gold);
+
+            border-radius: 13px;
+
+            padding: 15px;
+
+            background: #000000;
+
+            color: var(--gold-light);
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+            transition: .25s;
+
+            box-shadow:
+                0 8px 28px rgba(111,78,31,.22);
+        }
+
+
+        .submit-btn::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 70%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255,250,240,.25),
+                    transparent
+                );
+
+            transform: skewX(-20deg);
+
+            transition: .6s;
+        }
+
+
+        .submit-btn:hover::before {
+            left: 140%;
+        }
+
+
+        .submit-btn:hover {
+
+            background: var(--gold);
+
+            color: #000;
+
+            border-color: var(--gold-bright);
+
+            box-shadow:
+                0 0 30px rgba(212,175,55,.35);
+        }
+
+
+        .submit-btn:disabled {
+
+            opacity: .6;
+
+            cursor: not-allowed;
+
+            box-shadow: none;
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================= */
+
+        .status {
+
+            display: none;
+
+            margin-top: 18px;
+
+            padding: 13px;
+
+            border-radius: 11px;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        .status.success {
+
+            display: block;
+
+            background: #fffbea;
+
+            border: 1px solid #d4af37;
+
+            color: #5b4514;
+
+            box-shadow:
+                0 6px 20px rgba(111,78,31,.10);
+        }
+
+
+        .status.error {
+
+            display: block;
+
+            background: #fff1ed;
+
+            border: 1px solid #d49a8e;
+
+            color: #87372d;
+        }
+
+
+        /* =========================================
+           LOGIN
+        ========================================= */
+
+        .login-box {
+
+            display: none;
+
+            text-align: center;
+
+            padding: 10px 0;
+        }
+
+
+        .login-box p {
+
+            color: #665a4d;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            margin-bottom: 20px;
+        }
+
+
+        .google-btn {
+
+            border: 1px solid var(--gold);
+
+            background: #000000;
+
+            color: var(--gold-light);
+
+            padding: 13px 24px;
+
+            border-radius: 11px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            transition: .25s;
+
+            box-shadow:
+                0 8px 25px rgba(111,78,31,.18);
+        }
+
+
+        .google-btn:hover {
+
+            background: var(--gold);
+
+            color: #000;
+
+            box-shadow:
+                0 0 25px rgba(212,175,55,.35);
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        footer {
+
+            position: relative;
+
+            z-index: 3;
+
+            background: #000000;
+
+            border-top: 1px solid var(--gold-brown);
+
+            padding: 21px;
+
+            text-align: center;
+
+            box-shadow:
+                0 -8px 35px rgba(111,78,31,.12);
+        }
+
+
+        footer .brand {
+
+            color: var(--gold);
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        footer .small {
+
+            color: #9f927e;
+
+            font-size: 11px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 15px;
+            }
+
+
+            .logo {
+                font-size: 19px;
+            }
+
+
+            .back-btn {
+                font-size: 12px;
+                padding: 8px 11px;
+            }
+
+
+            main {
+                padding: 28px 12px;
+            }
+
+
+            .feedback-card {
+                border-radius: 21px;
+            }
+
+
+            .card-top {
+                padding: 32px 18px;
+            }
+
+
+            .card-top h1 {
+                font-size: 25px;
+            }
+
+
+            .content {
+                padding: 23px 18px;
+            }
+
+
+            .star {
+                font-size: 38px;
+            }
+
+
+            .stars {
+                gap: 3px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="nav">
+
+        <a href="/" class="logo">
+            JS Code Output
+        </a>
+
+        <a href="/" class="back-btn">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+    <div class="feedback-card">
+
+
+        <div class="card-top">
+
+            <h1>
+                Share Your Feedback
+            </h1>
+
+            <p>
+                Your feedback helps us improve JS Code Output
+                and build a better coding experience.
+            </p>
+
+            <div class="gold-line"></div>
+
+        </div>
+
+
+
+        <div class="content">
+
+
+            <!-- LOGIN -->
+
+            <div id="loginBox" class="login-box">
+
+                <p>
+                    Please sign in with Google before submitting
+                    your feedback.
+                </p>
+
+                <button
+                    id="googleBtn"
+                    class="google-btn">
+
+                    Continue with Google
+
+                </button>
+
+            </div>
+
+
+
+            <!-- FORM -->
+
+            <div id="feedbackForm" style="display:none;">
+
+
+                <!-- USER -->
+
+                <div class="user-box">
+
+                    <div class="user-label">
+                        Signed in as
+                    </div>
+
+                    <div
+                        id="userName"
+                        class="user-name">
+
+                        Loading...
+
+                    </div>
+
+                    <div
+                        id="userEmail"
+                        class="user-email">
+
+                        Loading...
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RATING -->
+
+                <div class="rating-area">
+
+                    <div class="section-title">
+
+                        How would you rate
+                        JS Code Output?
+
+                    </div>
+
+
+                    <div class="stars">
+
+                        <button
+                            class="star"
+                            data-rating="1">
+
+                            ★
+
+                        </button>
+
+                        <button
+                            class="star"
+                            data-rating="2">
+
+                            ★
+
+                        </button>
+
+                        <button
+                            class="star"
+                            data-rating="3">
+
+                            ★
+
+                        </button>
+
+                        <button
+                            class="star"
+                            data-rating="4">
+
+                            ★
+
+                        </button>
+
+                        <button
+                            class="star"
+                            data-rating="5">
+
+                            ★
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="ratingText"
+                        class="rating-text">
+
+                        Select a rating
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MESSAGE -->
+
+                <div>
+
+                    <div class="section-title">
+
+                        Your Feedback
+
+                        <span class="optional">
+                            (Optional)
+                        </span>
+
+                    </div>
+
+
+                    <textarea
+                        id="message"
+                        maxlength="2000"
+                        placeholder="Tell us what you like, what we can improve, or what feature you would like to see..."
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    id="submitBtn"
+                    class="submit-btn">
+
+                    Submit Feedback
+
+                </button>
+
+
+                <div
+                    id="status"
+                    class="status">
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <div class="brand">
+        JS Code Output
+    </div>
+
+    <div class="small">
+        Feedback &amp; Improvement System
+    </div>
+
+</footer>
+
+
+
+<!-- =====================================================
+     FIREBASE + EMAILJS
+===================================================== -->
+
+<script type="module">
+
+
+    /* =====================================================
+       FIREBASE
+    ===================================================== */
+
+    import {
+        initializeApp
+    } from
+    "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+
+    import {
+        getAnalytics
+    } from
+    "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+
+    import {
+        getAuth,
+        onAuthStateChanged,
+        GoogleAuthProvider,
+        signInWithPopup
+    } from
+    "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+
+        authDomain:
+            "js-code-output.firebaseapp.com",
+
+        databaseURL:
+            "https://js-code-output-default-rtdb.firebaseio.com",
+
+        projectId:
+            "js-code-output",
+
+        storageBucket:
+            "js-code-output.firebasestorage.app",
+
+        messagingSenderId:
+            "600350018167",
+
+        appId:
+            "1:600350018167:web:3ceaa5a5e0d1050504d472",
+
+        measurementId:
+            "G-L47M0E9V96"
+
+    };
+
+
+    const app =
+        initializeApp(firebaseConfig);
+
+
+    /* Firebase Analytics */
+
+    try {
+
+        getAnalytics(app);
+
+    } catch (error) {
+
+        console.log(
+            "Analytics unavailable:",
+            error
+        );
+
+    }
+
+
+    /* Firebase Authentication */
+
+    const auth =
+        getAuth(app);
+
+
+    const provider =
+        new GoogleAuthProvider();
+
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const loginBox =
+        document.getElementById("loginBox");
+
+
+    const feedbackForm =
+        document.getElementById("feedbackForm");
+
+
+    const googleBtn =
+        document.getElementById("googleBtn");
+
+
+    const userName =
+        document.getElementById("userName");
+
+
+    const userEmail =
+        document.getElementById("userEmail");
+
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+
+    const message =
+        document.getElementById("message");
+
+
+    const status =
+        document.getElementById("status");
+
+
+    const ratingText =
+        document.getElementById("ratingText");
+
+
+    let currentUser = null;
+
+    let selectedRating = 0;
+
+
+
+    /* =====================================================
+       GOOGLE SIGN-IN
+    ===================================================== */
+
+    googleBtn.addEventListener(
+        "click",
+        async () => {
+
+            googleBtn.disabled = true;
+
+            googleBtn.textContent =
+                "Signing in...";
+
+
+            try {
+
+                await signInWithPopup(
+                    auth,
+                    provider
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                showStatus(
+                    "Google sign-in failed. Please try again.",
+                    "error"
+                );
+
+                googleBtn.disabled = false;
+
+                googleBtn.textContent =
+                    "Continue with Google";
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       AUTH STATE
+    ===================================================== */
+
+    onAuthStateChanged(
+        auth,
+        (user) => {
+
+            if (user) {
+
+                currentUser = user;
+
+                loginBox.style.display =
+                    "none";
+
+                feedbackForm.style.display =
+                    "block";
+
+
+                userName.textContent =
+                    user.displayName ||
+                    "JS Code Output User";
+
+
+                userEmail.textContent =
+                    user.email || "";
+
+            }
+
+            else {
+
+                currentUser = null;
+
+                feedbackForm.style.display =
+                    "none";
+
+                loginBox.style.display =
+                    "block";
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       STAR RATING
+    ===================================================== */
+
+    const stars =
+        document.querySelectorAll(".star");
+
+
+    const ratingLabels = {
+
+        1: "Very Poor",
+
+        2: "Needs Improvement",
+
+        3: "Good",
+
+        4: "Very Good",
+
+        5: "Excellent!"
+
+    };
+
+
+    stars.forEach(
+        (star) => {
+
+            star.addEventListener(
+                "click",
+                () => {
+
+                    selectedRating =
+                        Number(
+                            star.dataset.rating
+                        );
+
+
+                    stars.forEach(
+                        (s) => {
+
+                            const rating =
+                                Number(
+                                    s.dataset.rating
+                                );
+
+
+                            if (
+                                rating <=
+                                selectedRating
+                            ) {
+
+                                s.classList.add(
+                                    "active"
+                                );
+
+                            }
+
+                            else {
+
+                                s.classList.remove(
+                                    "active"
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    ratingText.textContent =
+                        ratingLabels[
+                            selectedRating
+                        ];
+
+                }
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       EMAILJS
+    ===================================================== */
+
+    const emailjsScript =
+        document.createElement("script");
+
+
+    emailjsScript.src =
+        "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+
+
+    emailjsScript.onload =
+        () => {
+
+            emailjs.init({
+
+                publicKey:
+                    "5wQhHWJB03KT4m2Ob"
+
+            });
+
+        };
+
+
+    document.head.appendChild(
+        emailjsScript
+    );
+
+
+
+    /* =====================================================
+       SUBMIT FEEDBACK
+    ===================================================== */
+
+    submitBtn.addEventListener(
+        "click",
+        async () => {
+
+
+            if (!currentUser) {
+
+                showStatus(
+                    "Please sign in with Google first.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (selectedRating === 0) {
+
+                showStatus(
+                    "Please select a star rating before submitting.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            submitBtn.disabled = true;
+
+            submitBtn.textContent =
+                "Sending Feedback...";
+
+
+            try {
+
+
+                if (
+                    typeof emailjs ===
+                    "undefined"
+                ) {
+
+                    throw new Error(
+                        "EmailJS is still loading."
+                    );
+
+                }
+
+
+                const now =
+                    new Date();
+
+
+                const formattedTime =
+                    now.toLocaleString(
+                        "en-IN",
+                        {
+                            dateStyle:
+                                "medium",
+
+                            timeStyle:
+                                "short"
+                        }
+                    );
+
+
+                const templateParams = {
+
+                    name:
+                        currentUser.displayName ||
+                        "JS Code Output User",
+
+
+                    email:
+                        currentUser.email ||
+                        "",
+
+
+                    rating:
+                        "★".repeat(
+                            selectedRating
+                        )
+                        +
+                        " (" +
+                        selectedRating +
+                        "/5)",
+
+
+                    message:
+                        message.value.trim()
+                        ||
+                        "No written feedback provided.",
+
+
+                    page:
+                        window.location.href,
+
+
+                    time:
+                        formattedTime
+
+                };
+
+
+                await emailjs.send(
+
+                    "service_4p540ku",
+
+                    "template_f27muoq",
+
+                    templateParams
+
+                );
+
+
+                /* SUCCESS */
+
+                showStatus(
+                    "✓ Thank you! Your feedback has been sent successfully.",
+                    "success"
+                );
+
+
+                message.value = "";
+
+                selectedRating = 0;
+
+
+                stars.forEach(
+                    (star) => {
+
+                        star.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                ratingText.textContent =
+                    "Select a rating";
+
+
+                submitBtn.textContent =
+                    "Feedback Sent ✓";
+
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "EmailJS Error:",
+                    error
+                );
+
+
+                showStatus(
+                    "Something went wrong while sending your feedback. Please try again.",
+                    "error"
+                );
+
+
+                submitBtn.disabled = false;
+
+                submitBtn.textContent =
+                    "Submit Feedback";
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    function showStatus(
+        text,
+        type
+    ) {
+
+        status.textContent =
+            text;
+
+        status.className =
+            "status " + type;
+
+    }
+
+
+</script>
+
+
+</body>
+</html>
