@@ -3784,16 +3784,21 @@ if(!projectCommittedFiles)return;isSwitchingProject=true;window.isSwitchingProje
 }
 
 function openEditorWorkspace(id, name, initialFiles=null, pushHistory = true){
-document.getElementById("landingPage").classList.add("hidden");
-document.getElementById("projectsPage").classList.add("hidden");
-document.getElementById("startLoginScreen").classList.add("hidden");
-document.getElementById("app").classList.remove("hidden");
+["landingPage","projectsPage","startLoginScreen"].forEach(function(pageId){
+  const pageEl = document.getElementById(pageId);
+  if(pageEl) pageEl.classList.add("hidden");
+});
+const appEl = document.getElementById("app");
+if(appEl) appEl.classList.remove("hidden");
 
 window.currentProjectId = id;
 currentProjectId = id;
 localStorage.setItem("js-code-output-active-project-id", id);
-document.getElementById("currentProjectName").textContent = name || "Untitled Project";
-document.getElementById("dropdownCurrentProject").textContent = name || "Untitled Project";
+const projectTitle = name || "Untitled Project";
+const currentProjectNameEl = document.getElementById("currentProjectName");
+if(currentProjectNameEl) currentProjectNameEl.textContent = projectTitle;
+const dropdownProjectNameEl = document.getElementById("dropdownCurrentProject");
+if(dropdownProjectNameEl) dropdownProjectNameEl.textContent = projectTitle;
 
 if (pushHistory) {
 const safeProjectName = encodeURIComponent((name || "project").toLowerCase().replace(/\s+/g, "-"));
