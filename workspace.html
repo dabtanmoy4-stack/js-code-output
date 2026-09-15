@@ -3672,7 +3672,24 @@ showToast("Local Project created.");
 function createProjectCardHTML(id,name,isCloud){
 const card=document.createElement("div");card.className="project-card";
 card.innerHTML=`<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
-card.onclick=()=>requestProjectSwitch(id,name);card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
+card.setAttribute("role","button");
+card.setAttribute("tabindex","0");
+let touchOpening=false;
+card.onclick=()=>{ if(touchOpening){ touchOpening=false; return; } requestProjectSwitch(id,name); };
+card.addEventListener("pointerup",e=>{
+  if(e.pointerType==="touch"){
+    touchOpening=true;
+    requestProjectSwitch(id,name);
+    setTimeout(()=>{touchOpening=false;},450);
+  }
+});
+card.addEventListener("keydown",e=>{
+  if(e.key==="Enter" || e.key===" "){
+    e.preventDefault();
+    requestProjectSwitch(id,name);
+  }
+});
+card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
 card.querySelector(".project-more").onclick=e=>{e.stopPropagation();showProjectContextMenu(e,id,name,isCloud)};bindProjectLongPress(card,id,name,isCloud);return card;
 }
 
