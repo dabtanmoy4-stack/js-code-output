@@ -3674,19 +3674,17 @@ const card=document.createElement("div");card.className="project-card";
 card.innerHTML=`<div><i class="fa-solid fa-${isCloud?'cloud':'folder'} text-blue-500 text-2xl mb-2"></i><h3 class="font-bold text-sm">${escapeHTML(name||"Untitled")}</h3><p class="text-[10px] text-gray-400">${isCloud?'Cloud Workspace':'Local Workspace'}</p></div><div class="flex items-center justify-between gap-2 mt-4"><div class="text-[10px] text-blue-400 font-semibold">Open Project →</div><button class="project-more" type="button" title="Project actions"><i class="fa-solid fa-ellipsis"></i></button></div>`;
 card.setAttribute("role","button");
 card.setAttribute("tabindex","0");
-let touchOpening=false;
-card.onclick=()=>{ if(touchOpening){ touchOpening=false; return; } requestProjectSwitch(id,name); };
-card.addEventListener("pointerup",e=>{
-  if(e.pointerType==="touch"){
-    touchOpening=true;
-    requestProjectSwitch(id,name);
-    setTimeout(()=>{touchOpening=false;},450);
-  }
+// A single click handler works for both desktop and mobile touch.
+card.addEventListener("click", e => {
+  if (e.target.closest(".project-more")) return;
+  e.preventDefault();
+  e.stopPropagation();
+  requestProjectSwitch(id, name);
 });
-card.addEventListener("keydown",e=>{
-  if(e.key==="Enter" || e.key===" "){
+card.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
-    requestProjectSwitch(id,name);
+    requestProjectSwitch(id, name);
   }
 });
 card.oncontextmenu=e=>showProjectContextMenu(e,id,name,isCloud);
@@ -3736,11 +3734,36 @@ loadHeaderProjects();
 async function performProjectSwitch(id,name){
 if(id===window.currentProjectId)return;
 isSwitchingProject=true;window.isSwitchingProject=true;
-if(window.currentProjectId){let temp=isSwitchingProject;isSwitchingProject=false;syncEditor();isSwitchingProject=temp;}
-if(id.startsWith("local_proj_")){openEditorWorkspace(id,name);return;}
-const u=window.firebaseCurrentUser;
-if(u){const pDoc=await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id));if(pDoc.exists()){const d=pDoc.data();openEditorWorkspace(id,d.name||name,d.files);return;}}
-openEditorWorkspace(id,name);
+try {
+  if(window.currentProjectId){
+    let temp=isSwitchingProject;
+    isSwitchingProject=false;
+    syncEditor();
+    isSwitchingProject=temp;
+  }
+  if(id.startsWith("local_proj_")){
+    openEditorWorkspace(id,name,null,true);
+    return;
+  }
+  const u=window.firebaseCurrentUser || window.currentUser;
+  if(u && window.firebaseGetDoc && window.firebaseDoc && window.firebaseDB){
+    const pDoc=await window.firebaseGetDoc(
+      window.firebaseDoc(window.firebaseDB,"users",u.uid,"projects",id)
+    );
+    if(pDoc.exists()){
+      const d=pDoc.data() || {};
+      openEditorWorkspace(id,d.name||name,d.files||null,true);
+      return;
+    }
+  }
+  openEditorWorkspace(id,name,null,true);
+} catch(err) {
+  console.error("Project open failed:", err);
+  showToast("Could not open this project.");
+} finally {
+  isSwitchingProject=false;
+  window.isSwitchingProject=false;
+}
 }
 function requestProjectSwitch(id,name){if(id===window.currentProjectId)return;pendingProjectAction=()=>performProjectSwitch(id,name);requestLeaveWithDraft();}
 async function switchProject(id,name){requestProjectSwitch(id,name);}
