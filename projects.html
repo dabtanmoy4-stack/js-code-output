@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1550,6 +1551,211 @@ html:not(.dark) .project-owner-email{color:#776f64}
   .project-owner-name{font-size:12px}
   .project-owner-email{font-size:10px}
 }
+
+
+/* Account dropdown */
+.projects-user-account{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  max-width:220px;
+  padding:9px 12px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--surface2);
+  color:var(--ink);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.projects-user-account:hover{
+  transform:translateY(-1px);
+  border-color:var(--brand2);
+  background:var(--surface);
+}
+.projects-user-account #projectsUserName{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.account-chevron{
+  font-size:10px;
+  transition:transform .2s ease;
+}
+.projects-user-account[aria-expanded="true"] .account-chevron{
+  transform:rotate(180deg);
+}
+.account-menu{
+  position:fixed;
+  top:76px;
+  right:5vw;
+  width:min(330px,calc(100vw - 28px));
+  max-height:calc(100vh - 95px);
+  overflow:auto;
+  z-index:10050;
+  display:none;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--surface);
+  box-shadow:0 22px 60px rgba(0,0,0,.24);
+}
+.account-menu.open{
+  display:block;
+  animation:accountMenuIn .18s ease-out;
+}
+@keyframes accountMenuIn{
+  from{opacity:0;transform:translateY(-7px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.account-menu-header{
+  padding:8px 10px 12px;
+}
+.account-menu-title{
+  color:var(--ink);
+  font-size:14px;
+  font-weight:850;
+}
+.account-menu-subtitle{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+}
+.account-list{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.account-list-empty{
+  padding:12px 10px;
+  color:var(--muted);
+  font-size:11px;
+}
+.account-menu-account{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+}
+.account-menu-account:hover{
+  background:var(--surface2);
+  border-color:var(--line);
+}
+.account-menu-account.active{
+  background:rgba(212,170,82,.10);
+  border-color:rgba(212,170,82,.42);
+}
+.account-menu-avatar{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid rgba(212,170,82,.62);
+  background:var(--surface2);
+}
+.account-menu-avatar-fallback{
+  display:grid;
+  place-items:center;
+  color:var(--brand);
+  font-size:14px;
+}
+.account-menu-account-info{
+  min-width:0;
+  flex:1;
+}
+.account-menu-account-name,
+.account-menu-account-email{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.account-menu-account-name{
+  color:var(--ink);
+  font-size:12px;
+  font-weight:800;
+}
+.account-menu-account-email{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
+}
+.account-menu-check{
+  color:var(--brand);
+  font-size:12px;
+}
+.account-menu-divider{
+  height:1px;
+  margin:9px 0;
+  background:var(--line);
+}
+.account-menu-item{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 10px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+}
+.account-menu-item:hover{
+  background:var(--surface2);
+}
+.account-menu-item-icon{
+  width:30px;
+  height:30px;
+  min-width:30px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(212,170,82,.12);
+  color:var(--brand);
+}
+.account-menu-item strong,
+.account-menu-item small{
+  display:block;
+}
+.account-menu-item strong{
+  font-size:12px;
+  font-weight:800;
+}
+.account-menu-item small{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
+}
+.account-menu-danger{
+  color:#ef4444;
+}
+.account-menu-danger .account-menu-item-icon{
+  color:#ef4444;
+  background:rgba(239,68,68,.10);
+}
+@media(max-width:700px){
+  .projects-user-account{
+    max-width:145px;
+    padding:8px 10px;
+    font-size:11px;
+  }
+  .account-menu{
+    top:72px;
+    right:14px;
+  }
+}
 </style>
 </head>
 
@@ -1592,12 +1798,75 @@ html:not(.dark) .project-owner-email{color:#776f64}
 
       <div class="flex items-center gap-3">
 
-        <span
-          id="projectsUserName"
-          class="text-xs text-gray-400 font-medium"
+        <button
+          id="projectsUserAccount"
+          class="projects-user-account"
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          onclick="toggleAccountMenu(event)"
         >
-          Guest Mode
-        </span>
+          <span id="projectsUserName">Guest Mode</span>
+          <i class="fa-solid fa-chevron-down account-chevron"></i>
+        </button>
+
+        <div id="accountMenu" class="account-menu" role="menu">
+          <div class="account-menu-header">
+            <div class="account-menu-title">Accounts</div>
+            <div id="accountMenuSubtitle" class="account-menu-subtitle">
+              Choose an account to continue
+            </div>
+          </div>
+
+          <div id="accountList" class="account-list"></div>
+
+          <div class="account-menu-divider"></div>
+
+          <button
+            id="addAccountBtn"
+            class="account-menu-item"
+            type="button"
+            onclick="addGoogleAccount()"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-solid fa-user-plus"></i>
+            </span>
+            <span>
+              <strong>Add account</strong>
+              <small>Sign in with another Google account</small>
+            </span>
+          </button>
+
+          <button
+            id="guestSignInBtn"
+            class="account-menu-item"
+            type="button"
+            onclick="signInFromAccountMenu()"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-brands fa-google"></i>
+            </span>
+            <span>
+              <strong>Sign in</strong>
+              <small>Continue with Google</small>
+            </span>
+          </button>
+
+          <button
+            id="accountSignOutBtn"
+            class="account-menu-item account-menu-danger hidden"
+            type="button"
+            onclick="signOutFromAccountMenu()"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>
+              <strong>Sign out</strong>
+              <small>Switch to Guest Mode</small>
+            </span>
+          </button>
+        </div>
 
         <button
           class="theme-toggle"
@@ -3375,39 +3644,143 @@ html:not(.dark) .project-owner-email{color:#776f64}
     function updateUserUI(user){
 
       const nameElement =
-        document.getElementById(
-          "projectsUserName"
-        );
+        document.getElementById("projectsUserName");
 
       const signOutButton =
-        document.getElementById(
-          "signOutBtn"
-        );
+        document.getElementById("signOutBtn");
 
+      const accountSignOutButton =
+        document.getElementById("accountSignOutBtn");
+
+      const accountMenuSubtitle =
+        document.getElementById("accountMenuSubtitle");
 
       if(user){
 
         nameElement.textContent =
           user.displayName ||
           user.email ||
-          "Developer";
+          "Google Account";
 
-        signOutButton.classList.remove(
-          "hidden"
-        );
+        signOutButton.classList.remove("hidden");
+        accountSignOutButton.classList.remove("hidden");
+
+        accountMenuSubtitle.textContent =
+          user.email || "Signed in with Google";
 
       }
       else{
 
-        nameElement.textContent =
-          "Guest Mode";
+        nameElement.textContent = "Guest Mode";
 
-        signOutButton.classList.add(
-          "hidden"
-        );
+        signOutButton.classList.add("hidden");
+        accountSignOutButton.classList.add("hidden");
+
+        accountMenuSubtitle.textContent =
+          "You are browsing as a guest";
 
       }
 
+      renderAccountList(user);
+    }
+
+    function escapeAccountHTML(value){
+      return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function renderAccountList(user){
+      const list = document.getElementById("accountList");
+      if(!list) return;
+
+      if(!user){
+        list.innerHTML =
+          '<div class="account-list-empty">No signed-in accounts yet.</div>';
+        return;
+      }
+
+      const name = escapeAccountHTML(
+        user.displayName || "Google Account"
+      );
+      const email = escapeAccountHTML(user.email || "");
+      const photo = user.photoURL || "";
+
+      const avatar = photo
+        ? `<img class="account-menu-avatar" src="${photo}" alt="${name}" referrerpolicy="no-referrer">`
+        : `<div class="account-menu-avatar account-menu-avatar-fallback"><i class="fa-solid fa-user"></i></div>`;
+
+      list.innerHTML = `
+        <button class="account-menu-account active" type="button" onclick="useCurrentAccount()">
+          ${avatar}
+          <span class="account-menu-account-info">
+            <span class="account-menu-account-name">${name}</span>
+            <span class="account-menu-account-email">${email}</span>
+          </span>
+          <i class="fa-solid fa-check account-menu-check"></i>
+        </button>
+      `;
+    }
+
+    function toggleAccountMenu(event){
+      if(event) event.stopPropagation();
+
+      const menu = document.getElementById("accountMenu");
+      const trigger = document.getElementById("projectsUserAccount");
+      if(!menu || !trigger) return;
+
+      const willOpen = !menu.classList.contains("open");
+      menu.classList.toggle("open", willOpen);
+      trigger.setAttribute("aria-expanded", String(willOpen));
+    }
+
+    function closeAccountMenu(){
+      const menu = document.getElementById("accountMenu");
+      const trigger = document.getElementById("projectsUserAccount");
+
+      if(menu) menu.classList.remove("open");
+      if(trigger) trigger.setAttribute("aria-expanded","false");
+    }
+
+    function useCurrentAccount(){
+      closeAccountMenu();
+      showToast("Current Google account selected.");
+    }
+
+    async function addGoogleAccount(){
+      closeAccountMenu();
+
+      try{
+        if(window.googleSignIn){
+          await window.googleSignIn();
+          showToast("Google account added successfully.");
+        }
+      }catch(error){
+        console.error("Add account failed:", error);
+        showToast("Could not add Google account.");
+      }
+    }
+
+    async function signInFromAccountMenu(){
+      closeAccountMenu();
+
+      try{
+        if(window.googleSignIn){
+          await window.googleSignIn();
+          showToast("Signed in successfully.");
+        }
+      }catch(error){
+        console.error("Sign in failed:", error);
+        showToast("Could not sign in.");
+      }
+    }
+
+    async function signOutFromAccountMenu(){
+      closeAccountMenu();
+      await firebaseLogout();
     }
 
 
