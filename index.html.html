@@ -2045,6 +2045,10 @@ html.dark .thumbnail-card {
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<!-- Firebase Analytics -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
@@ -2057,10 +2061,17 @@ html.dark .thumbnail-card {
     measurementId: "G-L47M0E9V96"
   };
 
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  // Firebase Analytics
+  const analytics = firebase.analytics();
+
+  // Firebase Authentication
   const auth = firebase.auth();
   const googleProvider = new firebase.auth.GoogleAuthProvider();
-
+</script>
   // Keep Google login active across page reloads and future visits.
   // Firebase's LOCAL persistence stores the signed-in session in the browser.
   let currentFirebaseUser = null;
