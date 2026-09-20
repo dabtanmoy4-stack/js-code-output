@@ -2103,88 +2103,102 @@ html:not(.dark) .project-owner-email{color:#776f64}
   </div>
 
 
-  <!-- =========================
-       FIREBASE
-       ========================= -->
+<!-- =========================
+     FIREBASE
+     ========================= -->
 
-  <script type="module">
+<script type="module">
 
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      deleteDoc,
-      arrayUnion,
-      arrayRemove,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc,
+    arrayUnion,
+    arrayRemove,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
-      authDomain: "js-code-output.firebaseapp.com",
-      projectId: "js-code-output",
-      storageBucket: "js-code-output.firebasestorage.app",
-      messagingSenderId: "600350018167",
-      appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
-      measurementId: "G-L47M0E9V96"
-    };
+  import {
+    getAnalytics
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
 
 
-    const app = initializeApp(firebaseConfig);
-
-    const auth = getAuth(app);
-
-    const provider = new GoogleAuthProvider();
-
-    provider.setCustomParameters({
-      prompt:"select_account"
-    });
-
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+    authDomain: "js-code-output.firebaseapp.com",
+    projectId: "js-code-output",
+    storageBucket: "js-code-output.firebasestorage.app",
+    messagingSenderId: "600350018167",
+    appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+    measurementId: "G-L47M0E9V96"
+  };
 
 
-    window.firebaseAuth = auth;
-    window.firebaseDB = db;
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 
-    window.firebaseDoc = doc;
-    window.firebaseSetDoc = setDoc;
-    window.firebaseGetDoc = getDoc;
-    window.firebaseArrayUnion = arrayUnion;
-    window.firebaseArrayRemove = arrayRemove;
-    window.firebaseDeleteDoc = deleteDoc;
-    window.firebaseServerTimestamp = serverTimestamp;
-    window.firebaseSignOut = signOut;
+  // Firebase Analytics
+  const analytics = getAnalytics(app);
 
-    window.googleSignIn = () =>
-      signInWithPopup(auth, provider);
+  // Firebase Authentication
+  const auth = getAuth(app);
+
+  const provider = new GoogleAuthProvider();
+
+  provider.setCustomParameters({
+    prompt: "select_account"
+  });
+
+  // Firestore
+  const db = getFirestore(app);
 
 
-    onAuthStateChanged(auth, async user => {
+  // Make Firebase functions available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
 
-      window.firebaseCurrentUser = user || null;
-      window.currentUser = user || null;
+  window.firebaseDoc = doc;
+  window.firebaseSetDoc = setDoc;
+  window.firebaseGetDoc = getDoc;
+  window.firebaseArrayUnion = arrayUnion;
+  window.firebaseArrayRemove = arrayRemove;
+  window.firebaseDeleteDoc = deleteDoc;
+  window.firebaseServerTimestamp = serverTimestamp;
+  window.firebaseSignOut = signOut;
 
-      updateUserUI(user);
 
-      await loadProjects();
+  // Google Sign-In
+  window.googleSignIn = () =>
+    signInWithPopup(auth, provider);
 
-    });
 
-  </script>
+  // Authentication state
+  onAuthStateChanged(auth, async user => {
+
+    window.firebaseCurrentUser = user || null;
+    window.currentUser = user || null;
+
+    updateUserUI(user);
+
+    await loadProjects();
+
+  });
+
+</script>
 
 
   <!-- =========================
