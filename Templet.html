@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JS Code Output — Template Gallery</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --warm-white:#f7f3e9;
+    --warm-white-2:#eee8da;
+    --cream:#fffdf7;
+
+    --gold:#c9a227;
+    --gold-light:#e5c75f;
+    --gold-dark:#8f6f19;
+    --gold-brown:#80631c;
+
+    --text:#2d291f;
+    --muted:#7b7465;
+
+    --border:rgba(145,112,27,.20);
+
+    --shadow:rgba(83,65,23,.10);
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body{
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at 8% 5%,
+            rgba(210,177,68,.18),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 25%,
+            rgba(218,192,102,.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(196,158,40,.10),
+            transparent 34%
+        ),
+        var(--warm-white);
+
+    color:var(--text);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   SOFT GOLD LIGHT
+========================================================= */
+
+body::before{
+    content:"";
+
+    position:fixed;
+    inset:-30%;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            115deg,
+            transparent 35%,
+            rgba(201,162,39,.045) 48%,
+            rgba(255,255,255,.30) 50%,
+            transparent 62%
+        );
+
+    animation:
+        softLight 11s ease-in-out infinite;
+
+    z-index:0;
+}
+
+@keyframes softLight{
+
+    0%{
+        transform:translateX(-35%) rotate(8deg);
+    }
+
+    50%{
+        transform:translateX(20%) rotate(8deg);
+    }
+
+    100%{
+        transform:translateX(55%) rotate(8deg);
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    position:relative;
+    z-index:10;
+
+    height:78px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 6%;
+
+    background:
+        rgba(255,253,247,.78);
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:
+        1px solid var(--border);
+
+    box-shadow:
+        0 5px 25px rgba(91,72,24,.05);
+}
+
+
+/* LOGO */
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.logo{
+    width:43px;
+    height:43px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:
+        1px solid rgba(169,132,27,.40);
+
+    box-shadow:
+        0 5px 18px rgba(140,105,22,.12);
+
+    background:white;
+}
+
+.brand{
+    font-size:18px;
+    font-weight:700;
+
+    color:#3a3326;
+
+    letter-spacing:.3px;
+}
+
+.brand span{
+    color:var(--gold-brown);
+}
+
+
+/* BACK BUTTON */
+
+.back-btn{
+    text-decoration:none;
+
+    color:var(--gold-brown);
+
+    padding:10px 18px;
+
+    border-radius:11px;
+
+    border:
+        1px solid rgba(145,112,27,.25);
+
+    background:
+        rgba(255,255,255,.42);
+
+    font-size:14px;
+
+    transition:
+        .3s ease;
+
+    box-shadow:
+        0 4px 14px rgba(90,70,20,.04);
+}
+
+.back-btn:hover{
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold-light),
+            var(--gold)
+        );
+
+    border-color:var(--gold);
+
+    box-shadow:
+        0 8px 25px rgba(166,126,24,.18);
+
+    transform:translateY(-2px);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+    z-index:2;
+
+    text-align:center;
+
+    padding:
+        76px
+        20px
+        45px;
+}
+
+
+/* BADGE */
+
+.badge{
+    display:inline-flex;
+
+    align-items:center;
+    gap:8px;
+
+    padding:8px 16px;
+
+    border:
+        1px solid rgba(145,112,27,.24);
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.50);
+
+    color:var(--gold-brown);
+
+    font-size:11px;
+
+    font-weight:600;
+
+    letter-spacing:1.3px;
+
+    text-transform:uppercase;
+
+    box-shadow:
+        0 5px 18px rgba(104,80,20,.05);
+
+    margin-bottom:22px;
+}
+
+.badge-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--gold);
+
+    box-shadow:
+        0 0 9px rgba(201,162,39,.65);
+
+    animation:
+        dotPulse 2s infinite;
+}
+
+@keyframes dotPulse{
+
+    0%,100%{
+        transform:scale(1);
+        opacity:.65;
+    }
+
+    50%{
+        transform:scale(1.35);
+        opacity:1;
+    }
+
+}
+
+
+/* TITLE */
+
+.hero h1{
+
+    font-size:
+        clamp(38px,6vw,72px);
+
+    line-height:1.05;
+
+    letter-spacing:-2.5px;
+
+    color:#29251d;
+
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+
+    color:var(--gold-brown);
+
+    background:
+        linear-gradient(
+            100deg,
+            #80631c,
+            #c9a227,
+            #8f6f19,
+            #d8b94c
+        );
+
+    background-size:250% auto;
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+    animation:
+        goldText 6s linear infinite;
+}
+
+@keyframes goldText{
+
+    to{
+        background-position:
+            250% center;
+    }
+
+}
+
+
+/* HERO DESCRIPTION */
+
+.hero p{
+
+    max-width:680px;
+
+    margin:auto;
+
+    color:var(--muted);
+
+    font-size:16px;
+
+    line-height:1.75;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.toolbar{
+
+    position:relative;
+    z-index:5;
+
+    width:min(1200px,92%);
+
+    margin:
+        20px auto
+        42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+}
+
+
+/* SEARCH */
+
+.search{
+
+    position:relative;
+
+    flex:1;
+
+    max-width:470px;
+}
+
+.search input{
+
+    width:100%;
+
+    height:50px;
+
+    padding:
+        0 18px
+        0 46px;
+
+    border-radius:13px;
+
+    outline:none;
+
+    border:
+        1px solid rgba(145,112,27,.20);
+
+    background:
+        rgba(255,255,255,.65);
+
+    color:var(--text);
+
+    font-size:14px;
+
+    box-shadow:
+        0 5px 20px rgba(88,68,20,.045);
+
+    transition:.3s ease;
+}
+
+.search input::placeholder{
+    color:#9b9383;
+}
+
+.search input:focus{
+
+    border-color:
+        rgba(160,125,28,.55);
+
+    background:#fffdf8;
+
+    box-shadow:
+        0 8px 28px rgba(122,91,20,.09);
+}
+
+.search-icon{
+
+    position:absolute;
+
+    left:17px;
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    color:var(--gold-brown);
+
+    font-size:18px;
+
+    z-index:2;
+}
+
+
+/* CATEGORIES */
+
+.categories{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+}
+
+.category{
+
+    cursor:pointer;
+
+    border:
+        1px solid rgba(145,112,27,.18);
+
+    background:
+        rgba(255,255,255,.48);
+
+    color:#7b725f;
+
+    padding:
+        9px 14px;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    transition:.3s ease;
+}
+
+.category:hover{
+
+    color:var(--gold-brown);
+
+    border-color:
+        rgba(145,112,27,.40);
+
+    background:
+        rgba(255,255,255,.80);
+
+    transform:
+        translateY(-1px);
+}
+
+.category.active{
+
+    color:#fff;
+
+    border-color:var(--gold);
+
+    background:
+        linear-gradient(
+            135deg,
+            #d9ba52,
+            #ad8520
+        );
+
+    box-shadow:
+        0 6px 18px rgba(144,106,18,.16);
+}
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
+
+.gallery{
+
+    position:relative;
+    z-index:2;
+
+    width:min(1200px,92%);
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:23px;
+
+    padding-bottom:85px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:19px;
+
+    border:
+        1px solid rgba(145,112,27,.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.88),
+            rgba(250,246,235,.72)
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(80,62,20,.065);
+
+    transition:
+        transform .4s ease,
+        box-shadow .4s ease,
+        border-color .4s ease;
+}
+
+
+/* CARD GOLD LIGHT */
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:210px;
+    height:210px;
+
+    top:-125px;
+    right:-110px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(201,162,39,.17),
+            transparent 68%
+        );
+
+    filter:blur(5px);
+
+    transition:.5s ease;
+
+    pointer-events:none;
+}
+
+.card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:100px;
+    height:2px;
+
+    left:-120px;
+    top:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.85),
+            transparent
+        );
+
+    transform:rotate(25deg);
+
+    transition:.8s ease;
+
+    pointer-events:none;
+}
+
+.card:hover{
+
+    transform:
+        translateY(-7px);
+
+    border-color:
+        rgba(145,112,27,.40);
+
+    box-shadow:
+        0 20px 45px
+        rgba(79,61,18,.11),
+        0 0 25px
+        rgba(191,151,38,.06);
+}
+
+.card:hover::before{
+    transform:scale(1.35);
+}
+
+.card:hover::after{
+    left:110%;
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+.preview{
+
+    position:relative;
+
+    height:210px;
+
+    margin:10px;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f3eee1,
+            #fffdf8
+        );
+
+    border:
+        1px solid rgba(145,112,27,.12);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+
+/* PREVIEW TOP */
+
+.preview-bar{
+
+    height:31px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding-left:12px;
+
+    background:
+        rgba(225,216,194,.55);
+
+    border-bottom:
+        1px solid rgba(145,112,27,.10);
+}
+
+.preview-bar i{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:
+        #b7ad98;
+}
+
+
+/* PREVIEW CONTENT */
+
+.preview-content{
+
+    height:
+        calc(100% - 31px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    gap:11px;
+}
+
+.preview-logo{
+
+    width:47px;
+    height:47px;
+
+    border-radius:13px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    color:
+        var(--gold-brown);
+
+    font-size:21px;
+
+    border:
+        1px solid rgba(145,112,27,.25);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.9),
+            rgba(231,220,191,.45)
+        );
+
+    box-shadow:
+        0 7px 18px
+        rgba(111,84,19,.08);
+}
+
+.preview-title{
+
+    color:#4a4232;
+
+    font-size:15px;
+
+    font-weight:650;
+}
+
+.preview-line{
+
+    width:125px;
+    height:4px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #c9a227,
+            transparent
+        );
+
+    animation:
+        previewShine 3s ease-in-out infinite;
+}
+
+@keyframes previewShine{
+
+    0%,100%{
+        opacity:.35;
+        transform:scaleX(.8);
+    }
+
+    50%{
+        opacity:1;
+        transform:scaleX(1);
+    }
+
+}
+
+
+/* =========================================================
+   CARD INFO
+========================================================= */
+
+.card-info{
+
+    padding:
+        9px
+        18px
+        19px;
+}
+
+.card-info h3{
+
+    font-size:17px;
+
+    color:#332e23;
+
+    margin-bottom:7px;
+}
+
+.card-info p{
+
+    color:#817968;
+
+    font-size:12px;
+
+    line-height:1.65;
+
+    min-height:39px;
+}
+
+
+/* CARD BOTTOM */
+
+.card-bottom{
+
+    margin-top:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+}
+
+.tag{
+
+    font-size:10px;
+
+    color:
+        var(--gold-brown);
+
+    border:
+        1px solid rgba(145,112,27,.20);
+
+    background:
+        rgba(201,162,39,.055);
+
+    padding:
+        5px 9px;
+
+    border-radius:7px;
+
+    font-weight:600;
+}
+
+
+/* USE BUTTON */
+
+.use-btn{
+
+    border:0;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:
+        9px 15px;
+
+    border-radius:9px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#fffdf5;
+
+    background:
+        linear-gradient(
+            135deg,
+            #c9a227,
+            #987619
+        );
+
+    box-shadow:
+        0 5px 14px
+        rgba(133,99,17,.14);
+
+    transition:.3s ease;
+}
+
+.use-btn:hover{
+
+    transform:
+        translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #dfc258,
+            #a27d1d
+        );
+
+    box-shadow:
+        0 8px 22px
+        rgba(133,99,17,.20);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+
+    position:relative;
+    z-index:3;
+
+    border-top:
+        1px solid rgba(145,112,27,.16);
+
+    background:
+        rgba(239,233,219,.55);
+
+    padding:
+        34px 6%;
+
+    text-align:center;
+
+    color:#837a68;
+
+    font-size:12px;
+}
+
+footer span{
+
+    color:
+        var(--gold-brown);
+
+    font-weight:700;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:950px){
+
+    .gallery{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .search{
+        max-width:none;
+    }
+
+    .categories{
+        justify-content:flex-start;
+    }
+
+}
+
+
+@media(max-width:620px){
+
+    header{
+        padding:
+            0 20px;
+    }
+
+    .brand{
+        font-size:15px;
+    }
+
+    .back-btn{
+        padding:
+            9px 12px;
+
+        font-size:12px;
+    }
+
+    .hero{
+
+        padding:
+            55px 18px
+            38px;
+    }
+
+    .hero h1{
+        letter-spacing:-1.5px;
+    }
+
+    .hero p{
+        font-size:14px;
+    }
+
+    .gallery{
+
+        grid-template-columns:1fr;
+
+        width:94%;
+    }
+
+    .preview{
+        height:220px;
+    }
+
+}
+
+
+/* =========================================================
+   NO RESULTS
+========================================================= */
+
+.no-results{
+
+    display:none;
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:70px 20px;
+
+    color:#887f6d;
+}
+
+.no-results strong{
+
+    display:block;
+
+    color:var(--gold-brown);
+
+    font-size:18px;
+
+    margin-bottom:7px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+
+<div class="logo-area">
+
+    <img
+        src="logo.jpeg"
+        class="logo"
+        alt="JS Code Output Logo"
+    >
+
+    <div class="brand">
+        JS Code <span>Output</span>
+    </div>
+
+</div>
+
+
+<a
+    href="project.html"
+    class="back-btn"
+>
+    ← Back to Project
+</a>
+
+
+</header>
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+
+<div class="badge">
+
+    <span class="badge-dot"></span>
+
+    Template Gallery
+
+</div>
+
+
+<h1>
+
+    Build Something
+    <span>Beautiful.</span>
+
+</h1>
+
+
+<p>
+
+    Explore premium ready-made templates for your
+    JavaScript projects. Pick a design, customize
+    the code and create your own beautiful output.
+
+</p>
+
+
+</section>
+
+<!-- =====================================================
+     TOOLBAR
+===================================================== -->
+
+<div class="toolbar">
+
+
+<div class="search">
+
+    <span class="search-icon">
+        ⌕
+    </span>
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search templates..."
+    >
+
+</div>
+
+
+
+<div class="categories">
+
+    <button
+        class="category active"
+        data-category="all"
+    >
+        All
+    </button>
+
+    <button
+        class="category"
+        data-category="ui"
+    >
+        UI
+    </button>
+
+    <button
+        class="category"
+        data-category="animation"
+    >
+        Animation
+    </button>
+
+    <button
+        class="category"
+        data-category="loader"
+    >
+        Loader
+    </button>
+
+    <button
+        class="category"
+        data-category="effects"
+    >
+        Effects
+    </button>
+
+</div>
+
+
+</div>
+
+<!-- =====================================================
+     TEMPLATE GALLERY
+===================================================== -->
+
+<main
+    class="gallery"
+    id="gallery"
+>
+
+
+  
+  
+  
+  
+  
+<!-- TEMPLATE 01 -->
+
+<article
+    class="card"
+    data-category="ui"
+    data-name="Luxury Dashboard"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ✦
+            </div>
+
+            <div class="preview-title">
+                Luxury Dashboard
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Luxury Dashboard
+        </h3>
+
+        <p>
+            Premium dashboard interface
+            with elegant golden details.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                UI
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- TEMPLATE 02 -->
+
+<article
+    class="card"
+    data-category="animation"
+    data-name="Gold Particle"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ✧
+            </div>
+
+            <div class="preview-title">
+                Gold Particle
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Gold Particle
+        </h3>
+
+        <p>
+            Smooth golden particle animation
+            for modern websites.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                Animation
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- TEMPLATE 03 -->
+
+<article
+    class="card"
+    data-category="loader"
+    data-name="Luxury Loader"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ◌
+            </div>
+
+            <div class="preview-title">
+                Luxury Loader
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Luxury Loader
+        </h3>
+
+        <p>
+            Professional animated loader
+            for JavaScript applications.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                Loader
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- TEMPLATE 04 -->
+
+<article
+    class="card"
+    data-category="effects"
+    data-name="Golden Glow"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ☼
+            </div>
+
+            <div class="preview-title">
+                Golden Glow
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Golden Glow
+        </h3>
+
+        <p>
+            Soft premium glow effect
+            for elegant interfaces.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                Effects
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- TEMPLATE 05 -->
+
+<article
+    class="card"
+    data-category="ui"
+    data-name="Modern Card UI"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ◆
+            </div>
+
+            <div class="preview-title">
+                Modern Card UI
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Modern Card UI
+        </h3>
+
+        <p>
+            Clean premium card components
+            for JavaScript projects.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                UI
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- TEMPLATE 06 -->
+
+<article
+    class="card"
+    data-category="animation"
+    data-name="Shiny Button"
+>
+
+    <div class="preview">
+
+        <div class="preview-bar">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+
+        <div class="preview-content">
+
+            <div class="preview-logo">
+                ★
+            </div>
+
+            <div class="preview-title">
+                Shiny Button
+            </div>
+
+            <div class="preview-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card-info">
+
+        <h3>
+            Shiny Button
+        </h3>
+
+        <p>
+            Premium animated button with
+            a smooth golden shine.
+        </p>
+
+
+        <div class="card-bottom">
+
+            <span class="tag">
+                Animation
+            </span>
+
+            <a
+                href="#"
+                class="use-btn"
+            >
+                Use Template
+            </a>
+
+        </div>
+
+    </div>
+
+</article>
+
+
+
+<!-- NO RESULTS -->
+
+<div
+    class="no-results"
+    id="noResults"
+>
+
+    <strong>
+        No Templates Found
+    </strong>
+
+    Try another template name
+    or category.
+
+</div>
+
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+
+<p>
+
+    © 2026
+    <span>JS Code Output</span>
+    · Template Gallery
+
+</p>
+
+
+</footer>
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const cards =
+    document.querySelectorAll(".card");
+
+const categories =
+    document.querySelectorAll(".category");
+
+const noResults =
+    document.getElementById("noResults");
+
+
+let selectedCategory = "all";
+
+
+/* =====================================================
+   FILTER TEMPLATES
+===================================================== */
+
+function filterTemplates(){
+
+    const searchText =
+        searchInput.value
+        .toLowerCase()
+        .trim();
+
+    let visibleCount = 0;
+
+
+    cards.forEach(card => {
+
+        const name =
+            card.dataset.name
+            .toLowerCase();
+
+        const category =
+            card.dataset.category;
+
+
+        const matchesSearch =
+            name.includes(searchText);
+
+
+        const matchesCategory =
+            selectedCategory === "all" ||
+            category === selectedCategory;
+
+
+        if(
+            matchesSearch &&
+            matchesCategory
+        ){
+
+            card.style.display = "";
+
+            visibleCount++;
+
+        }
+        else{
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    if(visibleCount === 0){
+
+        noResults.style.display = "block";
+
+    }
+    else{
+
+        noResults.style.display = "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   CATEGORY FILTER
+===================================================== */
+
+categories.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            categories.forEach(btn => {
+
+                btn.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            button.classList.add(
+                "active"
+            );
+
+
+            selectedCategory =
+                button.dataset.category;
+
+
+            filterTemplates();
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+searchInput.addEventListener(
+    "input",
+    filterTemplates
+);
+
+</script>
+
+</body>
+</html>
