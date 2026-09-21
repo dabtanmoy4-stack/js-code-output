@@ -798,6 +798,32 @@ header{
         rgba(111,84,19,.08);
 }
 
+
+.preview-animation{
+    width:76px;
+    height:76px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+}
+.preview-animation span{
+    width:9px;
+    height:34px;
+    border-radius:20px;
+    background:linear-gradient(180deg,#c4a7ff,#7c3aed,#4c1d95);
+    box-shadow:0 0 18px rgba(124,58,237,.38);
+    animation:violetWave 1.15s ease-in-out infinite;
+}
+.preview-animation span:nth-child(2){height:50px;animation-delay:.14s}
+.preview-animation span:nth-child(3){height:38px;animation-delay:.28s}
+
+@keyframes violetWave{
+    0%,100%{transform:scaleY(.55);opacity:.55}
+    50%{transform:scaleY(1);opacity:1}
+}
+
 .preview-title{
 
     color:#4a4232;
@@ -1082,6 +1108,62 @@ footer span{
    NO RESULTS
 ========================================================= */
 
+
+.empty-state{
+    grid-column:1/-1;
+    min-height:300px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:50px 20px;
+}
+
+.violet-loader{
+    width:92px;
+    height:92px;
+    position:relative;
+    margin-bottom:22px;
+    animation:violetSpin 2.8s linear infinite;
+}
+
+.violet-loader i{
+    position:absolute;
+    left:42px;
+    top:4px;
+    width:8px;
+    height:26px;
+    border-radius:10px;
+    background:linear-gradient(180deg,#ddd0ff,#8b5cf6,#5b21b6);
+    box-shadow:0 0 16px rgba(124,58,237,.55);
+    transform-origin:4px 42px;
+}
+
+.violet-loader i:nth-child(1){transform:rotate(0deg);opacity:1}
+.violet-loader i:nth-child(2){transform:rotate(60deg);opacity:.85}
+.violet-loader i:nth-child(3){transform:rotate(120deg);opacity:.7}
+.violet-loader i:nth-child(4){transform:rotate(180deg);opacity:.55}
+.violet-loader i:nth-child(5){transform:rotate(240deg);opacity:.7}
+.violet-loader i:nth-child(6){transform:rotate(300deg);opacity:.85}
+
+@keyframes violetSpin{
+    to{transform:rotate(360deg)}
+}
+
+.empty-state strong{
+    display:block;
+    color:var(--gold-brown);
+    font-size:22px;
+    margin-bottom:8px;
+}
+
+.empty-state p{
+    margin:0;
+    color:#887f6d;
+    font-size:13px;
+}
+
 .no-results{
 
     display:none;
@@ -1108,741 +1190,363 @@ footer span{
 
 </style>
 
+
+<style>
+.upload-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    margin-top:30px;
+    padding:13px 23px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#fffdf5;
+    font-size:14px;
+    font-weight:750;
+    letter-spacing:.2px;
+    background:linear-gradient(135deg,#d9ba52,#a27d1d);
+    border:1px solid rgba(143,111,25,.55);
+    box-shadow:0 9px 28px rgba(133,99,17,.18);
+    transition:.3s ease;
+}
+.upload-btn span{
+    font-size:19px;
+    line-height:1;
+}
+.upload-btn:hover{
+    transform:translateY(-3px);
+    background:linear-gradient(135deg,#e5c75f,#987619);
+    box-shadow:0 13px 32px rgba(133,99,17,.24);
+}
+
+.gallery{
+    min-height:250px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:23px;
+}
+
+.empty-state{
+    grid-column:1/-1;
+    width:min(620px,100%);
+    margin:5px auto 70px;
+    padding:58px 28px;
+    text-align:center;
+    border:1px dashed rgba(145,112,27,.28);
+    border-radius:20px;
+    background:rgba(255,255,255,.38);
+    box-shadow:0 10px 30px rgba(80,62,20,.04);
+}
+
+/* CLASSIC VIOLET FLOATING DIAMOND ANIMATION */
+.empty-icon{
+    width:86px;
+    height:86px;
+    margin:0 auto 22px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.55);
+    border:1px solid rgba(91,33,182,.16);
+    border-radius:20px;
+    box-shadow:
+        0 10px 28px rgba(75,42,125,.08),
+        inset 0 1px 0 rgba(255,255,255,.85);
+    animation:violetLift 3.8s ease-in-out infinite;
+}
+
+.empty-icon::before{
+    content:"";
+    width:30px;
+    height:30px;
+    position:absolute;
+    transform:rotate(45deg);
+    border:1px solid #8b5cf6;
+    border-radius:7px;
+    background:linear-gradient(145deg,#ede9fe,#c4b5fd,#8b5cf6);
+    box-shadow:
+        0 0 18px rgba(124,58,237,.25),
+        0 8px 20px rgba(91,33,182,.12);
+    animation:diamondTurn 4.5s ease-in-out infinite;
+}
+
+.empty-icon::after{
+    content:"";
+    width:10px;
+    height:10px;
+    position:absolute;
+    border-radius:50%;
+    background:#ffffff;
+    box-shadow:0 0 12px rgba(124,58,237,.55);
+    animation:diamondGlow 2.2s ease-in-out infinite;
+}
+
+.empty-icon span{
+    position:absolute;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:#8b5cf6;
+    box-shadow:0 0 8px rgba(124,58,237,.45);
+}
+
+.empty-icon span:nth-child(1){
+    top:12px;
+    left:20px;
+    animation:floatDotA 2.8s ease-in-out infinite;
+}
+
+.empty-icon span:nth-child(2){
+    right:15px;
+    top:24px;
+    background:#a78bfa;
+    animation:floatDotB 3.1s ease-in-out infinite;
+}
+
+.empty-icon span:nth-child(3){
+    left:17px;
+    bottom:15px;
+    background:#6d28d9;
+    animation:floatDotC 3.4s ease-in-out infinite;
+}
+
+@keyframes violetLift{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-5px)}
+}
+
+@keyframes diamondTurn{
+    0%,100%{transform:rotate(45deg) scale(.92)}
+    50%{transform:rotate(135deg) scale(1.04)}
+}
+
+@keyframes diamondGlow{
+    0%,100%{transform:scale(.75);opacity:.65}
+    50%{transform:scale(1.15);opacity:1}
+}
+
+@keyframes floatDotA{
+    0%,100%{transform:translate(0,0);opacity:.45}
+    50%{transform:translate(-3px,-5px);opacity:1}
+}
+
+@keyframes floatDotB{
+    0%,100%{transform:translate(0,0);opacity:.45}
+    50%{transform:translate(4px,-3px);opacity:1}
+}
+
+@keyframes floatDotC{
+    0%,100%{transform:translate(0,0);opacity:.45}
+    50%{transform:translate(-2px,4px);opacity:1}
+}
+
+.empty-state h2{
+    color:#332e23;
+    font-size:23px;
+    margin-bottom:9px;
+}
+
+.empty-state p{
+    color:#817968;
+    font-size:13px;
+    line-height:1.7;
+    max-width:430px;
+    margin:0 auto 22px;
+}
+
+.empty-upload-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 17px;
+    border-radius:9px;
+    text-decoration:none;
+    color:var(--gold-brown);
+    background:rgba(201,162,39,.07);
+    border:1px solid rgba(145,112,27,.24);
+    font-size:12px;
+    font-weight:700;
+    transition:.3s ease;
+}
+
+.empty-upload-btn:hover{
+    color:#fff;
+    background:linear-gradient(135deg,#d9ba52,#a27d1d);
+    border-color:var(--gold);
+    transform:translateY(-2px);
+}
+
+@media(max-width:950px){
+    .gallery{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:620px){
+    .gallery{
+        grid-template-columns:1fr;
+        width:94%;
+    }
+    .upload-btn{
+        width:100%;
+        max-width:290px;
+    }
+    .empty-state{
+        padding:45px 20px;
+    }
+}
+</style>
+
 </head>
 
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header>
-
-
-<div class="logo-area">
-
-    <img
-        src="logo.jpeg"
-        class="logo"
-        alt="JS Code Output Logo"
-    >
-
-    <div class="brand">
-        JS Code <span>Output</span>
+    <div class="logo-area">
+        <img src="logo.jpeg" class="logo" alt="JS Code Output Logo">
+        <div class="brand">JS Code <span>Output</span></div>
     </div>
 
-</div>
-
-
-<a
-    href="project.html"
-    class="back-btn"
->
-    ← Back to Project
-</a>
-
-
+    <a href="project.html" class="back-btn">← Back to Project</a>
 </header>
 
-<!-- =====================================================
-     HERO
-===================================================== -->
-
 <section class="hero">
+    <div class="badge">
+        <span class="badge-dot"></span>
+        Template Gallery
+    </div>
 
+    <h1>
+        Build Something
+        <span>Beautiful.</span>
+    </h1>
 
-<div class="badge">
-
-    <span class="badge-dot"></span>
-
-    Template Gallery
-
-</div>
-
-
-<h1>
-
-    Build Something
-    <span>Beautiful.</span>
-
-</h1>
-
-
-<p>
-
-    Explore premium ready-made templates for your
-    JavaScript projects. Pick a design, customize
-    the code and create your own beautiful output.
-
-</p>
-
-
+    <p>
+        Upload your own ready-made project templates and keep them here
+        for quick access whenever you need them.
+    </p>
 </section>
 
-<!-- =====================================================
-     TOOLBAR
-===================================================== -->
-
-<div class="toolbar">
-
-
-<div class="search">
-
-    <span class="search-icon">
-        ⌕
-    </span>
-
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Search templates..."
-    >
-
+<main class="gallery" id="gallery">
+    <div class="empty-state" id="emptyState">
+        <div class="empty-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h2>No Templates Yet</h2>
+        <p>
+            Your uploaded project templates will appear here.
+            Start by uploading your first template.
+        </p>
 </div>
-
-
-
-<div class="categories">
-
-    <button
-        class="category active"
-        data-category="all"
-    >
-        All
-    </button>
-
-    <button
-        class="category"
-        data-category="ui"
-    >
-        UI
-    </button>
-
-    <button
-        class="category"
-        data-category="animation"
-    >
-        Animation
-    </button>
-
-    <button
-        class="category"
-        data-category="loader"
-    >
-        Loader
-    </button>
-
-    <button
-        class="category"
-        data-category="effects"
-    >
-        Effects
-    </button>
-
-</div>
-
-
-</div>
-
-<!-- =====================================================
-     TEMPLATE GALLERY
-===================================================== -->
-
-<main
-    class="gallery"
-    id="gallery"
->
-
-
-  
-  
-  
-  
-  
-<!-- TEMPLATE 01 -->
-
-<article
-    class="card"
-    data-category="ui"
-    data-name="Luxury Dashboard"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ✦
-            </div>
-
-            <div class="preview-title">
-                Luxury Dashboard
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Luxury Dashboard
-        </h3>
-
-        <p>
-            Premium dashboard interface
-            with elegant golden details.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                UI
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- TEMPLATE 02 -->
-
-<article
-    class="card"
-    data-category="animation"
-    data-name="Gold Particle"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ✧
-            </div>
-
-            <div class="preview-title">
-                Gold Particle
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Gold Particle
-        </h3>
-
-        <p>
-            Smooth golden particle animation
-            for modern websites.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                Animation
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- TEMPLATE 03 -->
-
-<article
-    class="card"
-    data-category="loader"
-    data-name="Luxury Loader"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ◌
-            </div>
-
-            <div class="preview-title">
-                Luxury Loader
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Luxury Loader
-        </h3>
-
-        <p>
-            Professional animated loader
-            for JavaScript applications.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                Loader
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- TEMPLATE 04 -->
-
-<article
-    class="card"
-    data-category="effects"
-    data-name="Golden Glow"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ☼
-            </div>
-
-            <div class="preview-title">
-                Golden Glow
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Golden Glow
-        </h3>
-
-        <p>
-            Soft premium glow effect
-            for elegant interfaces.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                Effects
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- TEMPLATE 05 -->
-
-<article
-    class="card"
-    data-category="ui"
-    data-name="Modern Card UI"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ◆
-            </div>
-
-            <div class="preview-title">
-                Modern Card UI
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Modern Card UI
-        </h3>
-
-        <p>
-            Clean premium card components
-            for JavaScript projects.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                UI
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- TEMPLATE 06 -->
-
-<article
-    class="card"
-    data-category="animation"
-    data-name="Shiny Button"
->
-
-    <div class="preview">
-
-        <div class="preview-bar">
-
-            <i></i>
-            <i></i>
-            <i></i>
-
-        </div>
-
-
-        <div class="preview-content">
-
-            <div class="preview-logo">
-                ★
-            </div>
-
-            <div class="preview-title">
-                Shiny Button
-            </div>
-
-            <div class="preview-line"></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card-info">
-
-        <h3>
-            Shiny Button
-        </h3>
-
-        <p>
-            Premium animated button with
-            a smooth golden shine.
-        </p>
-
-
-        <div class="card-bottom">
-
-            <span class="tag">
-                Animation
-            </span>
-
-            <a
-                href="#"
-                class="use-btn"
-            >
-                Use Template
-            </a>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-
-<!-- NO RESULTS -->
-
-<div
-    class="no-results"
-    id="noResults"
->
-
-    <strong>
-        No Templates Found
-    </strong>
-
-    Try another template name
-    or category.
-
-</div>
-
-
 </main>
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
 <footer>
-
-
-<p>
-
-    © 2026
-    <span>JS Code Output</span>
-    · Template Gallery
-
-</p>
-
-
+    <p>
+        © 2026 <span>JS Code Output</span> · Template Gallery
+    </p>
 </footer>
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script>
+/*
+ * Uploaded templates are loaded from localStorage.
+ * The upload page can save template objects into:
+ * "jsCodeOutputTemplates"
+ */
+const gallery = document.getElementById("gallery");
+const emptyState = document.getElementById("emptyState");
 
-const searchInput =
-    document.getElementById("searchInput");
-
-const cards =
-    document.querySelectorAll(".card");
-
-const categories =
-    document.querySelectorAll(".category");
-
-const noResults =
-    document.getElementById("noResults");
-
-
-let selectedCategory = "all";
-
-
-/* =====================================================
-   FILTER TEMPLATES
-===================================================== */
-
-function filterTemplates(){
-
-    const searchText =
-        searchInput.value
-        .toLowerCase()
-        .trim();
-
-    let visibleCount = 0;
-
-
-    cards.forEach(card => {
-
-        const name =
-            card.dataset.name
-            .toLowerCase();
-
-        const category =
-            card.dataset.category;
-
-
-        const matchesSearch =
-            name.includes(searchText);
-
-
-        const matchesCategory =
-            selectedCategory === "all" ||
-            category === selectedCategory;
-
-
-        if(
-            matchesSearch &&
-            matchesCategory
-        ){
-
-            card.style.display = "";
-
-            visibleCount++;
-
-        }
-        else{
-
-            card.style.display = "none";
-
-        }
-
-    });
-
-
-    if(visibleCount === 0){
-
-        noResults.style.display = "block";
-
-    }
-    else{
-
-        noResults.style.display = "none";
-
-    }
-
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+    }[char]));
 }
 
+function getTemplates() {
+    try {
+        const saved = localStorage.getItem("jsCodeOutputTemplates");
+        const parsed = saved ? JSON.parse(saved) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
 
-/* =====================================================
-   CATEGORY FILTER
-===================================================== */
+function renderTemplates() {
+    const templates = getTemplates();
 
-categories.forEach(button => {
+    gallery.querySelectorAll(".card").forEach(card => card.remove());
 
-    button.addEventListener(
-        "click",
-        () => {
+    if (!templates.length) {
+        emptyState.style.display = "block";
+        return;
+    }
 
-            categories.forEach(btn => {
+    emptyState.style.display = "none";
 
-                btn.classList.remove(
-                    "active"
-                );
+    templates.forEach((template, index) => {
+        const name = escapeHTML(template.name || `Template ${index + 1}`);
+        const description = escapeHTML(
+            template.description || "Uploaded project template"
+        );
+        const category = escapeHTML(template.category || "Template");
+        const projectId = template.projectId || template.id || "";
 
-            });
+        const card = document.createElement("article");
+        card.className = "card";
 
+        card.innerHTML = `
+            <div class="preview">
+                <div class="preview-bar">
+                    <i></i><i></i><i></i>
+                </div>
+                <div class="preview-content">
+                    ${
+                        template.preview
+                            ? `<img src="${escapeHTML(template.preview)}" alt="${name}" style="width:100%;height:100%;object-fit:cover;">`
+                            : `
+                                <div class="preview-animation" aria-hidden="true"><span></span><span></span><span></span></div>
+                                <div class="preview-title">${name}</div>
+                                <div class="preview-line"></div>
+                              `
+                    }
+                </div>
+            </div>
 
-            button.classList.add(
-                "active"
-            );
+            <div class="card-info">
+                <h3>${name}</h3>
+                <p>${description}</p>
 
+                <div class="card-bottom">
+                    <span class="tag">${category}</span>
+                    <a
+                        href="${projectId ? `workspace.html?live=${encodeURIComponent(projectId)}` : "project.html"}"
+                        class="use-btn"
+                    >
+                        Use Template
+                    </a>
+                </div>
+            </div>
+        `;
 
-            selectedCategory =
-                button.dataset.category;
+        gallery.insertBefore(card, emptyState);
+    });
+}
 
+renderTemplates();
 
-            filterTemplates();
-
-        }
-    );
-
+window.addEventListener("storage", event => {
+    if (event.key === "jsCodeOutputTemplates") {
+        renderTemplates();
+    }
 });
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-searchInput.addEventListener(
-    "input",
-    filterTemplates
-);
-
 </script>
 
 </body>
