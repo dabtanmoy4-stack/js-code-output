@@ -4497,6 +4497,38 @@ const consoleProxy = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>
+  /* Keep the live preview from ever loading the editor workspace inside itself. */
+  (function(){
+    try{
+      var parentUrl = new URL(window.parent.location.href);
+      document.addEventListener("click", function(e){
+        var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+        if(!a) return;
+        var raw = a.getAttribute("href") || "";
+        if(!raw || raw.charAt(0)==="#" || /^(mailto:|tel:|javascript:)/i.test(raw)) return;
+        try{
+          var u = new URL(raw, document.baseURI);
+          if(u.origin === parentUrl.origin && u.pathname === parentUrl.pathname){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }catch(_e){}
+      }, true);
+      document.addEventListener("submit", function(e){
+        try{
+          var action = e.target && e.target.getAttribute ? e.target.getAttribute("action") : "";
+          if(!action) return;
+          var u = new URL(action, document.baseURI);
+          if(u.origin === parentUrl.origin && u.pathname === parentUrl.pathname){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }catch(_e){}
+      }, true);
+    }catch(_e){}
+  })();
+  <\/script>
   ${tw}${fa}${three}${chart}
   ${customImports}
   <style>${css}</style>
