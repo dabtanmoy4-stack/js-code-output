@@ -161,7 +161,25 @@
 
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:22px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.step-num{font-size:11px;color:var(--brand);font-weight:900}.step h3{margin:13px 0 7px}.step p{font-size:12px;color:var(--muted);line-height:1.65}
   .final-cta{background:var(--ink);color:var(--surface);border-radius:26px;padding:65px;text-align:center;position:relative;overflow:hidden}.final-cta h2{font-size:clamp(32px,5vw,62px);letter-spacing:-.05em;margin:0 0 13px}.final-cta p{color:#a8b5c7;max-width:600px;margin:0 auto 25px;line-height:1.7}.final-cta .primary-btn{background:#fffdf8;color:#101827}
-  .site-footer{padding:45px 5vw;border-top:1px solid var(--line);position:relative;z-index:2}.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}.footer-links{display:flex;gap:18px;color:var(--muted);font-size:12px}.footer-links a:hover{color:var(--brand)}
+  .site-footer{padding:68px 5vw 28px;border-top:1px solid var(--line);position:relative;z-index:2;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 88%,transparent),var(--bg));}
+  .footer-inner{max-width:1160px;margin:auto;display:block;}
+  .footer-top{display:grid;grid-template-columns:1.35fr 2fr;gap:55px;padding-bottom:42px;border-bottom:1px solid var(--line);}
+  .footer-brand{display:flex;align-items:flex-start;gap:14px;}
+  .footer-brand img{width:46px;height:46px;border-radius:13px;object-fit:cover;box-shadow:0 8px 22px rgba(75,57,34,.12);}
+  .footer-brand-title{font-size:15px;font-weight:950;letter-spacing:.02em;margin:2px 0 5px;}
+  .footer-brand-tagline{font-size:11px;color:var(--muted);line-height:1.6;}
+  .footer-description{font-size:12px;line-height:1.75;color:var(--muted);max-width:410px;margin:18px 0 0;}
+  .footer-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;}
+  .footer-column h3{margin:0 0 14px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);font-weight:900;}
+  .footer-column a{display:block;width:max-content;max-width:100%;padding:4px 0;color:var(--muted);font-size:11px;line-height:1.45;transition:.2s;}
+  .footer-column a:hover{color:var(--brand);transform:translateX(3px);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:23px;}
+  .footer-copy{font-size:10px;color:var(--muted);}
+  .footer-bottom-links{display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end;}
+  .footer-bottom-links a{font-size:10px;color:var(--muted);transition:.2s;}
+  .footer-bottom-links a:hover{color:var(--brand);}
+  @media(max-width:800px){.footer-top{grid-template-columns:1fr;gap:35px}.footer-columns{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:520px){.site-footer{padding:50px 18px 24px}.footer-columns{grid-template-columns:1fr 1fr;gap:25px 18px}.footer-bottom{flex-direction:column;align-items:flex-start}.footer-bottom-links{justify-content:flex-start}.footer-column a{font-size:10.5px;}}
   .floating-theme{position:fixed;right:22px;bottom:22px;z-index:100;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 12px 30px rgba(0,0,0,.16);display:grid;place-items:center}.floating-theme:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(138,106,63,.25);animation:sunPulse 2.5s infinite}.floating-theme i{position:relative}@keyframes sunPulse{50%{transform:scale(1.12);opacity:.35}}
 
   #app { height:100vh;min-height:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink); }
@@ -1998,40 +2016,67 @@ html.dark .thumbnail-card {
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <div style="display:flex;align-items:center;gap:10px"><img src="logo.jpeg" alt="JS CODE OUTPUT Logo" class="w-10 h-10 rounded-full shadow-sm object-cover">
-          <div><strong style="font-size:14px">JS CODE OUTPUT</strong><div style="font-size:11px;color:var(--muted)">Code. Build. See it live.</div>
+        <div class="footer-top">
+          <div>
+            <div class="footer-brand">
+              <img src="logo.jpeg" alt="JS CODE OUTPUT Logo">
+              <div>
+                <div class="footer-brand-title">JS CODE OUTPUT</div>
+                <div class="footer-brand-tagline">Code. Build. See it live.</div>
+              </div>
+            </div>
+            <p class="footer-description">
+              A browser-first environment for writing code, building web projects, and seeing your work come alive with live output.
+            </p>
+          </div>
+
+          <div class="footer-columns">
+            <div class="footer-column">
+              <h3>Company</h3>
+              <a href="https://jscodoutput.in/about.html">About</a>
+              <a href="https://jscodoutput.in/contact.html">Contact</a>
+              <a href="https://jscodoutput.in/privacy.html">Privacy</a>
+              <a href="https://jscodoutput.in/terms.html">Terms</a>
+            </div>
+
+            <div class="footer-column">
+              <h3>Editors</h3>
+              <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
+              <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
+              <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
+              <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
+              <a href="https://jscodoutput.in/html-css-javascript-editor.html">HTML/CSS/JS Editor</a>
+              <a href="https://jscodoutput.in/online-html-editor.html">Online HTML Editor</a>
+              <a href="https://jscodoutput.in/online-css-editor.html">Online CSS Editor</a>
+              <a href="https://jscodoutput.in/online-javascript-editor.html">Online JavaScript Editor</a>
+            </div>
+
+            <div class="footer-column">
+              <h3>Playgrounds</h3>
+              <a href="https://jscodoutput.in/javascript-playground.html">JavaScript Playground</a>
+              <a href="https://jscodoutput.in/html-playground.html">HTML Playground</a>
+              <a href="https://jscodoutput.in/css-playground.html">CSS Playground</a>
+              <a href="https://jscodoutput.in/js-playground.html">JS Playground</a>
+              <a href="https://jscodoutput.in/live-code-playground.html">Live Code Playground</a>
+              <a href="https://jscodoutput.in/mini-browser.html">Mini Browser</a>
+            </div>
           </div>
         </div>
-      <div class="footer-links" style="flex-wrap:wrap;justify-content:flex-end">
-        <a href="https://jscodoutput.in/about.html">About</a>
-        <a href="https://jscodoutput.in/contact.html">Contact</a>
-        <a href="https://jscodoutput.in/privacy.html">Privacy</a>
-        <a href="https://jscodoutput.in/terms.html">Terms</a>
-        <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
-        <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
-        <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
-        <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
-        <a href="https://jscodoutput.in/javascript-playground.html">JavaScript Playground</a>
-        <a href="https://jscodoutput.in/html-css-javascript-editor.html">HTML/CSS/JS Editor</a>
-        <a href="https://jscodoutput.in/online-css-editor.html">Online CSS Editor</a>
-        <a href="https://jscodoutput.in/online-javascript-editor.html">Online JavaScript Editor</a>
-        <a href="https://jscodoutput.in/html-playground.html">HTML Playground</a>
-        <a href="https://jscodoutput.in/online-html-editor.html">Online HTML Editor</a>
-        <a href="https://jscodoutput.in/css-playground.html">CSS Playground</a>
-        <a href="https://jscodoutput.in/js-playground.html">JS Playground</a>
-        <a href="https://jscodoutput.in/online-js-editor.html">Online JS Editor</a>
-        <a href="https://jscodoutput.in/live-code-editor.html">Live Code Editor</a>
-        <a href="https://jscodoutput.in/live-code-playground.html">Live Code Playground</a>
-        <a href="https://jscodoutput.in/online-web-editor.html">Online Web Editor</a>
-        <a href="https://jscodoutput.in/web-code-editor.html">Web Code Editor</a>
-        <a href="https://jscodoutput.in/code-editor-with-live-preview.html">Editor with Live Preview</a>
-        <a href="https://jscodoutput.in/code-output.html">Code Output</a>
-        <a href="https://jscodoutput.in/live-output-code.html">Live Output Code</a>
-        <a href="https://jscodoutput.in/mini-browser.html">Mini Browser</a>
-        <a href="https://jscodoutput.in/real-time-code-output.html">Real Time Code Output</a>
-        <a href="https://jscodoutput.in/code output generator.html">Code Output Generator</a>
-      </div>
-        <div style="font-size:11px;color:var(--muted)">© 2026 JS CODE OUTPUT · Code. Build. See it live.</div>
+
+        <div class="footer-bottom">
+          <div class="footer-copy">© 2026 JS CODE OUTPUT · Code. Build. See it live.</div>
+          <div class="footer-bottom-links">
+            <a href="https://jscodoutput.in/online-js-editor.html">Online JS Editor</a>
+            <a href="https://jscodoutput.in/live-code-editor.html">Live Code Editor</a>
+            <a href="https://jscodoutput.in/online-web-editor.html">Online Web Editor</a>
+            <a href="https://jscodoutput.in/web-code-editor.html">Web Code Editor</a>
+            <a href="https://jscodoutput.in/code-editor-with-live-preview.html">Editor with Live Preview</a>
+            <a href="https://jscodoutput.in/code-output.html">Code Output</a>
+            <a href="https://jscodoutput.in/live-output-code.html">Live Output Code</a>
+            <a href="https://jscodoutput.in/real-time-code-output.html">Real Time Code Output</a>
+            <a href="https://jscodoutput.in/code output generator.html">Code Output Generator</a>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
