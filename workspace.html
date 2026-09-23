@@ -5208,17 +5208,37 @@ const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-schem
 applyTheme(savedTheme ? savedTheme === "dark" : prefersDark, false);
 
 let initialId = localStorage.getItem("js-code-output-active-project-id");
+let startupPendingTemplate = null;
+try {
+  const pendingRaw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template");
+  if(pendingRaw) startupPendingTemplate = JSON.parse(pendingRaw);
+} catch(e) {
+  console.warn("Could not inspect pending template during workspace startup:", e);
+}
 
 // Wait for Firebase auth before deciding whether the active project is local
 // or cloud. Previously every active project was treated as local on refresh.
 try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
 const startupUser = window.firebaseCurrentUser || window.currentUser || null;
-if (initialId) {
+if (startupPendingTemplate && startupPendingTemplate.name && startupPendingTemplate.content) {
+  // Initialize the editor with the selected template immediately. The later
+  // template boot will create/persist the actual project and reopen this map.
+  initialId = "";
+  setFileMap({"index.html": String(startupPendingTemplate.content)});
+  activeFile = "index.html";
+  window.files = files;
+  window.activeFile = activeFile;
+  const templateTitle = String(startupPendingTemplate.name);
+  const titleEl = document.getElementById("currentProjectName");
+  const dropdownEl = document.getElementById("dropdownCurrentProject");
+  if(titleEl) titleEl.textContent = templateTitle;
+  if(dropdownEl) dropdownEl.textContent = templateTitle;
+} else if (initialId) {
   window.currentProjectId = initialId;
   currentProjectId = initialId;
 }
 
-if(initialId && initialId.startsWith("local_proj_")) {
+if(!startupPendingTemplate && initialId && initialId.startsWith("local_proj_")) {
   let localProjects = JSON.parse(localStorage.getItem("js_local_projects") || "[]");
   let p = localProjects.find(x => x.id === initialId);
   if(p && document.getElementById("currentProjectName")) {
@@ -5226,7 +5246,7 @@ if(initialId && initialId.startsWith("local_proj_")) {
     document.getElementById("dropdownCurrentProject").textContent = p.name;
   }
   loadLocalProjectFiles(initialId);
-} else if (initialId && startupUser) {
+} else if (!startupPendingTemplate && initialId && startupUser) {
   try {
     const snap = await window.firebaseGetDoc(
       window.firebaseDoc(window.firebaseDB, "users", startupUser.uid, "projects", initialId)
@@ -5256,7 +5276,7 @@ if(initialId && initialId.startsWith("local_proj_")) {
     setFileMap(defaultTemplate);
     activeFile = "index.html";
   }
-} else {
+} else if (!startupPendingTemplate) {
   setFileMap(defaultTemplate);
   activeFile = "index.html";
   window.files = files;
@@ -5378,7 +5398,7 @@ document.addEventListener('click',function(e){
     let pendingTemplate = null;
     try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
     try {
-      const raw = sessionStorage.getItem("jsco_pending_template");
+      const raw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template");
       if(raw) pendingTemplate = JSON.parse(raw);
     } catch(e) {
       console.warn("Could not read pending template:", e);
@@ -5421,6 +5441,7 @@ document.addEventListener('click',function(e){
         }
 
         localStorage.setItem("js-code-output-active-project-id", id);
+        localStorage.removeItem("jsco_pending_template_v2");
         sessionStorage.removeItem("jsco_pending_template");
 
         setTimeout(function(){
