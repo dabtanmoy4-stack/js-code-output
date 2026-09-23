@@ -5362,7 +5362,7 @@ document.addEventListener('click',function(e){
 });
 </script><script>
 (function(){
-  function bootWorkspace(){
+  async function bootWorkspace(){
     let savedTheme = null;
     try { savedTheme = localStorage.getItem("jco_theme"); } catch(e) {}
     const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -5372,6 +5372,70 @@ document.addEventListener('click',function(e){
 
     let projects = [];
     try { projects = JSON.parse(localStorage.getItem("js_local_projects") || "[]"); } catch(e) {}
+
+    // A template card can send its complete preview source here. When present,
+    // create a fresh project from that source instead of opening the previous project.
+    let pendingTemplate = null;
+    try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
+    try {
+      const raw = sessionStorage.getItem("jsco_pending_template");
+      if(raw) pendingTemplate = JSON.parse(raw);
+    } catch(e) {
+      console.warn("Could not read pending template:", e);
+    }
+
+    if(pendingTemplate && pendingTemplate.name && pendingTemplate.content){
+      const templateName = String(pendingTemplate.name);
+      const templateContent = String(pendingTemplate.content);
+      const templateFiles = {"index.html": templateContent};
+      const u = window.firebaseCurrentUser || window.currentUser || null;
+      let id = "";
+
+      try {
+        if(u && window.firebaseSetDoc && window.firebaseDoc && window.firebaseDB){
+          id = "proj_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+          await window.firebaseSetDoc(
+            window.firebaseDoc(window.firebaseDB, "users", u.uid, "projects", id),
+            {
+              id,
+              name: templateName,
+              ownerId: u.uid,
+              files: window.firestoreSafeProjectFiles
+                ? window.firestoreSafeProjectFiles(templateFiles)
+                : templateFiles,
+              createdAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : Date.now(),
+              updatedAt: window.firebaseServerTimestamp ? window.firebaseServerTimestamp() : Date.now()
+            }
+          );
+          await window.firebaseSetDoc(
+            window.firebaseDoc(window.firebaseDB, "users", u.uid),
+            {projectIds: window.firebaseArrayUnion(id)},
+            {merge:true}
+          );
+        } else {
+          id = "local_proj_" + Date.now();
+          projects.push({id:id, name:templateName, updatedAt:Date.now()});
+          localStorage.setItem("js_local_projects", JSON.stringify(projects));
+          localStorage.setItem("js_files_" + id, JSON.stringify(templateFiles));
+          localStorage.setItem("js_active_file_" + id, "index.html");
+        }
+
+        localStorage.setItem("js-code-output-active-project-id", id);
+        sessionStorage.removeItem("jsco_pending_template");
+
+        setTimeout(function(){
+          try{
+            if(typeof openEditorWorkspace === "function"){
+              openEditorWorkspace(id, templateName, templateFiles, false);
+            }
+          }catch(e){ console.warn("Template workspace boot:", e); }
+        }, 120);
+        return;
+      } catch(e) {
+        console.error("Could not create template project:", e);
+        // Keep the pending template so a later retry can still use it.
+      }
+    }
 
     let id = localStorage.getItem("js-code-output-active-project-id");
     if(!id){
