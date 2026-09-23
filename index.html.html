@@ -1903,6 +1903,138 @@ html.dark .thumbnail-card {
     #landingPage .template-info{padding:11px 3px 2px;}
   }
 
+
+/* =========================================================
+   MOBILE PERFORMANCE PATCH
+   Keeps the existing UI/features, but removes expensive
+   visual effects that cause frame drops on phones.
+   ========================================================= */
+@media (max-width:700px){
+  /* Avoid expensive compositing/backdrop blur on mobile. */
+  .site-nav,
+  .hero-card,
+  .floating-theme,
+  .mobile-tools-menu,
+  .account-menu,
+  .project-menu,
+  .context-menu,
+  .overlay,
+  .modal,
+  .login-card,
+  .video-card,
+  .feature-card,
+  .step,
+  .project-card,
+  .eyebrow,
+  .final-cta,
+  .site-footer{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  /* Stop decorative background animation on small devices. */
+  .wire-bg,
+  .ecosystem-section,
+  .floating-ecosystem,
+  .stage-glow,
+  .scan,
+  .orbit,
+  .video-beam,
+  .mini-spark,
+  .pulse-ring,
+  .hero-badge{
+    animation:none!important;
+  }
+
+  /* These are decorative only; hiding them saves GPU work. */
+  .wire-bg,
+  .stage-glow,
+  .video-beam,
+  .mini-spark{
+    display:none!important;
+  }
+
+  /* The large 3D hero transform is costly on mobile. */
+  .hero-card{
+    transform:none!important;
+  }
+
+  /* Reduce continuous shadow/paint cost. */
+  .hero-card,
+  .video-card,
+  .feature-card,
+  .project-card,
+  .final-cta,
+  .floating-theme{
+    box-shadow:0 6px 20px rgba(0,0,0,.10)!important;
+  }
+
+  /* Don't animate cards while scrolling/touching. */
+  .feature-card:hover,
+  .project-card:hover,
+  .float-item:hover,
+  .primary-btn:hover,
+  .secondary-btn:hover,
+  .app-btn:hover,
+  .tool-btn:hover{
+    transform:none!important;
+  }
+
+  /* Prevent the decorative moving ecosystem from creating a
+     large continuously repainted layer on phones. */
+  .floating-ecosystem{
+    transform:none!important;
+    mask-image:none!important;
+    -webkit-mask-image:none!important;
+  }
+  .float-row{
+    animation:none!important;
+  }
+
+  /* Let long landing sections be rendered only when needed. */
+  #landingPage > section,
+  #landingPage .premium-section,
+  #landingPage .section{
+    content-visibility:auto;
+    contain-intrinsic-size:700px;
+  }
+
+  /* Reduce paint complexity of the editor/preview itself. */
+  #workspace,
+  .main-area,
+  .editor-panel,
+  .preview-panel,
+  .CodeMirror,
+  #iframeContainer{
+    contain:layout paint;
+  }
+
+  /* CodeMirror can become expensive with many visual effects. */
+  .CodeMirror-activeline-background,
+  .cm-matchhighlight{
+    box-shadow:none!important;
+  }
+
+  /* Keep touch scrolling responsive. */
+  .CodeMirror-scroll,
+  .explorer-body,
+  .console-output,
+  #iframeContainer{
+    -webkit-overflow-scrolling:touch;
+  }
+}
+
+@media (max-width:420px){
+  /* Smaller phones get an even lighter visual workload. */
+  .hero-card,
+  .feature-card,
+  .project-card,
+  .video-card,
+  .step{
+    box-shadow:0 4px 14px rgba(0,0,0,.08)!important;
+  }
+}
+
 </style>
 <body>
 <a class="mini-browser-launcher"
