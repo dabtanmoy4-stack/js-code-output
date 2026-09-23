@@ -3698,10 +3698,14 @@ async function useTemplate(templateFile, templateName, templateContent){
     content: templateContent || ""
   };
   try {
-    sessionStorage.setItem("jsco_pending_template", JSON.stringify(payload));
+    const packed = JSON.stringify(payload);
+    // Use localStorage as the primary hand-off so the template survives
+    // the page navigation and is not lost with sessionStorage edge cases.
+    localStorage.setItem("jsco_pending_template_v2", packed);
+    sessionStorage.setItem("jsco_pending_template", packed);
   } catch(e) {
     console.error("Could not store selected template:", e);
-    alert("This template is too large to open right now. Please try again.");
+    alert("This template could not be prepared. Please try again.");
     return;
   }
 
