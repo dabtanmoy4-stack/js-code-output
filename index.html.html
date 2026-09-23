@@ -2037,16 +2037,6 @@ html.dark .thumbnail-card {
 
 </style>
 <body>
-<a class="mini-browser-launcher"
-   href="javascript:openMiniBrowserAuth();"
-   title="Open JS mini.Browser"
-   aria-label="Open JS mini.Browser">
-  <span class="mini-live-dot"></span>
-  <i class="fa-solid fa-globe"></i>
-  <span>JS mini.Browser</span>
-  <i class="fa-solid fa-arrow-up-right-from-square"></i>
-</a>
-
   <div id="landingPage" class="landing">
     <div class="wire-bg">
       <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
@@ -3764,5 +3754,118 @@ document.addEventListener("DOMContentLoaded", function(){
   document.documentElement.classList.add("dark");
 });
 </script>
+
+<style id="mobile-performance-v3">
+/* JS CODE OUTPUT — mobile performance layer
+   Keeps the visual design/animations, but reduces simultaneous work on phones. */
+@media (max-width:700px){
+  /* Keep expensive visual effects off the compositor when they are not needed. */
+  .wire,.wire-dot,.stage-glow,.video-beam,.mini-spark,.scan,.orbit,
+  .hero-card,.hero-card *,.floating-theme:before,.pulse-ring,
+  .run-beam-glow,.run-laser-line,.tour-spotlight::before{
+    will-change:auto!important;
+  }
+
+  /* Avoid costly filter + shadow combinations on small screens. */
+  .wire{filter:none!important;}
+  .wire-dot{filter:none!important;box-shadow:0 0 8px rgba(167,137,93,.45)!important;}
+  .hero-card{box-shadow:0 8px 28px rgba(0,0,0,.14)!important;}
+  .mini-browser-top-launcher{
+    box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(220,38,38,.10)!important;
+  }
+
+  /* Do not render off-screen landing content at full cost. */
+  #landingPage > section,
+  #landingPage .landing-section,
+  #landingPage .showcase-section,
+  #landingPage .stage-section{
+    content-visibility:auto;
+    contain-intrinsic-size:720px;
+  }
+
+  /* This class is toggled only for sections outside the viewport. */
+  .mobile-animation-paused *,
+  .mobile-animation-paused *::before,
+  .mobile-animation-paused *::after{
+    animation-play-state:paused!important;
+  }
+
+  /* Keep editor interaction responsive. */
+  #workspace,#workspace .editor-panel,#workspace .preview-panel,
+  #workspace .CodeMirror,#workspace iframe{
+    contain:layout paint;
+  }
+  #workspace .CodeMirror{
+    transform:translateZ(0);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Reduce touch/scroll visual overhead without changing layout. */
+  *{
+    -webkit-tap-highlight-color:transparent;
+  }
+}
+
+@media (max-width:420px){
+  .hero-card{box-shadow:0 5px 18px rgba(0,0,0,.12)!important;}
+  .mini-browser-top-launcher{box-shadow:0 5px 18px rgba(0,0,0,.22),0 0 0 1px rgba(220,38,38,.08)!important;}
+}
+</style>
+<script>
+(function(){
+  function mobilePerformance(){
+    if(!window.matchMedia || !window.matchMedia('(max-width:700px)').matches) return;
+
+    /* Off-screen sections keep their animation definitions, but stop spending CPU
+       while the user cannot see them. */
+    if('IntersectionObserver' in window){
+      const targets=document.querySelectorAll(
+        '#landingPage > section, #landingPage .landing-section, ' +
+        '#landingPage .showcase-section, #landingPage .stage-section'
+      );
+      const io=new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          entry.target.classList.toggle('mobile-animation-paused', !entry.isIntersecting);
+        });
+      },{root:null,rootMargin:'180px 0px 180px 0px',threshold:0.001});
+      targets.forEach(function(el){io.observe(el);});
+    }
+
+    /* Embedded animated previews are one of the biggest mobile costs.
+       Lazy loading preserves them visually when they enter the viewport. */
+    document.querySelectorAll('#landingPage iframe').forEach(function(frame){
+      if(!frame.hasAttribute('loading')) frame.setAttribute('loading','lazy');
+      if(!frame.hasAttribute('fetchpriority')) frame.setAttribute('fetchpriority','low');
+    });
+
+    /* Pause CSS animation while the tab/app is backgrounded. */
+    document.addEventListener('visibilitychange',function(){
+      document.documentElement.classList.toggle(
+        'mobile-tab-hidden', document.visibilityState !== 'visible'
+      );
+    },{passive:true});
+
+    /* Do not let the browser keep expensive animated previews alive after
+       a page becomes completely hidden by another full-screen app state. */
+    window.addEventListener('pagehide',function(){
+      document.documentElement.classList.add('mobile-tab-hidden');
+    },{passive:true});
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',mobilePerformance,{once:true});
+  }else{
+    mobilePerformance();
+  }
+})();
+</script>
+<style>
+@media(max-width:700px){
+  .mobile-tab-hidden *,.mobile-tab-hidden *::before,.mobile-tab-hidden *::after{
+    animation-play-state:paused!important;
+    transition:none!important;
+  }
+}
+</style>
 </body>
 </html>
