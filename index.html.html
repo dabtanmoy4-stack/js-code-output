@@ -1868,7 +1868,7 @@ html.dark .thumbnail-card {
 @media(prefers-reduced-motion:reduce){#landingPage *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 
   /* Premium template showcase — landing page only */
-  #landingPage .hero-template-section{margin-top:34px;position:relative;z-index:8;}
+  #landingPage .hero-template-section{margin-top:34px;position:relative;z-index:8;grid-column:1/-1;width:100%;}
   #landingPage .template-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:15px;}
   #landingPage .template-heading-copy .kicker{margin-bottom:5px;}
   #landingPage .template-heading-copy h2{margin:0;font-size:clamp(21px,2.3vw,30px);letter-spacing:-.045em;line-height:1.05;}
@@ -1914,11 +1914,13 @@ html.dark .thumbnail-card {
   @media(max-width:900px){#landingPage .template-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:700px){#landingPage .hero-template-section{margin-top:27px}#landingPage .template-heading{align-items:flex-start;flex-direction:column;gap:4px}#landingPage .template-grid{gap:9px}#landingPage .template-preview{height:150px}#landingPage .template-info p{min-height:0}}
   /* Large 1:1 template gallery: one beautiful template per row */
-  #landingPage .template-grid{grid-template-columns:1fr;gap:24px;}
+  #landingPage .template-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
   #landingPage .template-card{padding:14px;border-radius:22px;}
   #landingPage .template-preview{height:auto;aspect-ratio:1/1;border-radius:16px;}
   #landingPage .template-live-preview{height:auto;aspect-ratio:1/1;}
-  #landingPage .template-live-preview iframe{width:200%;height:200%;transform:scale(.5);}
+  #landingPage .template-live-preview iframe{width:200%;height:200%;transform:scale(.5);pointer-events:none;}
+  /* PC: keep the GALAXY template preview fully inside its 1:1 card */
+  @media(min-width:701px){#landingPage .template-card[data-template-file="template7.html"] .template-preview iframe{width:200%;height:200%;border:0;display:block;transform:scale(.5);transform-origin:top left;pointer-events:none;}}
   #landingPage .template-info{padding:14px 5px 3px;}
   #landingPage .template-info h3{font-size:clamp(18px,2vw,25px);}
   #landingPage .template-info p{font-size:13px;line-height:1.6;max-width:760px;}
@@ -1928,6 +1930,13 @@ html.dark .thumbnail-card {
     #landingPage .template-card{padding:10px;border-radius:18px;}
     #landingPage .template-preview,#landingPage .template-live-preview{aspect-ratio:1/1;}
     #landingPage .template-info{padding:11px 3px 2px;}
+  }
+
+  /* Desktop only: let the template gallery use the full hero width.
+     Mobile/tablet layout remains unchanged. */
+  @media(min-width:1001px){
+    #landingPage .hero-template-section{width:calc(200% + 64px);}
+    #landingPage .template-grid{gap:20px;}
   }
 
 
@@ -3387,6 +3396,133 @@ gsap.from(&#x27;.eyebrow,.team-head h2,.team-head p&#x27;,{opacity:0,y:30,durati
               </div>
               <div class="template-info"><span class="template-tag">Team · GSAP</span><h3>Small Team, Big Results</h3><p>Editorial team landing page with orange portrait cards, GSAP entrance motion, parallax, scroll fan-out and animated project stats.</p></div>
             </a>
+<a class="template-card" href="workspace.html" data-template-file="template7.html" data-template-name="GALAXY — Ultra Photorealistic Planetary System">
+  <div class="template-preview">
+    <iframe srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;GALAXY — Ultra Photorealistic Planetary System&lt;/title&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&amp;family=JetBrains+Mono:wght@600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+&lt;style&gt;
+:root{--blue:#1976d2;--blue-bright:#4db8ff;--orange:#ff8a24;--glass:rgba(6,11,20,.85);--border:rgba(77,184,255,.3)}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;background:#000003;color:#fff;font-family:&#x27;Plus Jakarta Sans&#x27;,sans-serif}
+html::before{content:&quot;&quot;;position:fixed;inset:0;border:2px solid #fff;box-sizing:border-box;pointer-events:none;z-index:9999}
+#space-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+.film-grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.035;background-image:url(&quot;data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;160&#x27; height=&#x27;160&#x27;&gt;&lt;filter id=&#x27;n&#x27;&gt;&lt;feTurbulence type=&#x27;fractalNoise&#x27; baseFrequency=&#x27;0.9&#x27; stitchTiles=&#x27;stitch&#x27;/&gt;&lt;/filter&gt;&lt;rect width=&#x27;100%&#x27; height=&#x27;100%&#x27; filter=&#x27;url(%23n)&#x27;/&gt;&lt;/svg&gt;&quot;)}
+.header-title{position:absolute;top:20px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:none;text-align:center}
+.header-title h1{font-family:&#x27;Cinzel&#x27;,serif;font-weight:900;font-size:clamp(30px,4.5vw,56px);letter-spacing:.35em;margin-left:.35em;color:#fff;background:linear-gradient(135deg,#fff 0%,#eaf6ff 25%,#4db8ff 48%,#fff 58%,#ffb35c 78%,#ff8a24 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 15px rgba(77,184,255,.3)) drop-shadow(0 0 25px rgba(255,138,36,.2))}
+.planet-nav{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:6px;max-width:96vw;overflow-x:auto;padding:8px 16px;background:linear-gradient(135deg,rgba(5,14,25,.92),rgba(10,12,16,.9));border:1px solid rgba(77,184,255,.25);border-radius:50px;backdrop-filter:blur(22px);box-shadow:0 18px 50px rgba(0,0,0,.85),0 0 25px rgba(25,118,210,.12)}
+.planet-nav::-webkit-scrollbar{display:none}
+.p-btn{border:1px solid transparent;background:transparent;color:#aeb6c0;padding:7px 14px;border-radius:30px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .3s ease}
+.p-btn:hover,.p-btn.active{color:#fff;background:linear-gradient(100deg,rgba(25,118,210,.25),rgba(255,138,36,.18));border-color:rgba(77,184,255,.5);box-shadow:0 0 16px rgba(25,118,210,.2);transform:translateY(-2px)}
+.p-dot{width:6px;height:6px;border-radius:50%;box-shadow:0 0 7px currentColor}
+.info-card{position:absolute;top:85px;left:28px;width:315px;max-width:calc(100vw - 40px);padding:18px;z-index:100;background:linear-gradient(145deg,rgba(7,15,26,.94),rgba(10,10,14,.92));border:1px solid rgba(77,184,255,.34);border-radius:18px;backdrop-filter:blur(28px);box-shadow:0 25px 65px rgba(0,0,0,.9),0 0 35px rgba(25,118,210,.15);transform:translateX(-380px);opacity:0;pointer-events:none;transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .35s ease}
+.info-card.active{transform:translateX(0);opacity:1;pointer-events:auto}
+.info-card::before{content:&quot;&quot;;position:absolute;top:0;left:20px;right:20px;height:2px;border-radius:10px;background:linear-gradient(90deg,transparent,var(--blue-bright),var(--orange),transparent);box-shadow:0 0 12px rgba(255,138,36,.45)}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.badge-type{font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--blue-bright);display:flex;align-items:center;gap:6px}
+.badge-type::before{content:&quot;&quot;;width:5px;height:5px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+.card-close-btn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,138,36,.65);background:rgba(255,138,36,.12);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;transition:.25s ease}
+.card-close-btn:hover{background:var(--orange);color:#000;box-shadow:0 0 18px rgba(255,138,36,.5);transform:scale(1.1)}
+.card-planet-title{font-size:22px;font-weight:800;letter-spacing:.04em;color:#fff;margin-bottom:6px;text-shadow:0 0 15px rgba(77,184,255,.25)}
+.card-desc{font-size:11px;line-height:1.55;font-weight:600;color:#d4dae2;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.09)}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.spec-box{position:relative;padding:8px 9px;background:linear-gradient(135deg,rgba(25,118,210,.1),rgba(255,138,36,.06));border:1px solid rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
+.spec-box::after{content:&quot;&quot;;position:absolute;bottom:0;left:0;width:30%;height:2px;background:linear-gradient(90deg,var(--blue),var(--orange))}
+.spec-label{font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:8px;font-weight:700;letter-spacing:.1em;color:#9ca6b0;display:flex;align-items:center;gap:4px;margin-bottom:3px}
+.spec-label i{color:var(--orange)} .spec-val{font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;font-weight:700;color:#fff}
+@media(max-width:768px){.header-title h1{font-size:clamp(26px,9vw,38px)}.info-card{top:75px;left:12px;width:285px}.planet-nav{bottom:12px}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id=&quot;space-canvas&quot;&gt;&lt;/canvas&gt;&lt;div class=&quot;film-grain&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;header-title&quot;&gt;&lt;h1&gt;GALAXY&lt;/h1&gt;&lt;/div&gt;
+&lt;div class=&quot;planet-nav&quot;&gt;
+&lt;button class=&quot;p-btn active&quot; onclick=&quot;focusTarget(&#x27;system&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#fff&quot;&gt;&lt;/span&gt;ALL&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;sun&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#ff9d00&quot;&gt;&lt;/span&gt;SUN&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;mercury&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#b3b3b3&quot;&gt;&lt;/span&gt;MERCURY&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;venus&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#e8b974&quot;&gt;&lt;/span&gt;VENUS&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;earth&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#4db8ff&quot;&gt;&lt;/span&gt;EARTH&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;moon&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#ddd&quot;&gt;&lt;/span&gt;MOON&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;mars&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#ff5733&quot;&gt;&lt;/span&gt;MARS&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;jupiter&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#d9a566&quot;&gt;&lt;/span&gt;JUPITER&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;saturn&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#e2c992&quot;&gt;&lt;/span&gt;SATURN&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;uranus&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#70d6d8&quot;&gt;&lt;/span&gt;URANUS&lt;/button&gt;
+&lt;button class=&quot;p-btn&quot; onclick=&quot;focusTarget(&#x27;neptune&#x27;)&quot;&gt;&lt;span class=&quot;p-dot&quot; style=&quot;background:#4f7cff&quot;&gt;&lt;/span&gt;NEPTUNE&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class=&quot;info-card&quot; id=&quot;infoCard&quot;&gt;
+&lt;div class=&quot;card-top&quot;&gt;&lt;div class=&quot;badge-type&quot; id=&quot;infoType&quot;&gt;TERRESTRIAL PLANET&lt;/div&gt;&lt;button class=&quot;card-close-btn&quot; id=&quot;closeBtn&quot; title=&quot;Close&quot;&gt;✕&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;card-planet-title&quot; id=&quot;infoTitle&quot;&gt;EARTH&lt;/div&gt;&lt;div class=&quot;card-desc&quot; id=&quot;infoDesc&quot;&gt;The only known astronomical sanctuary harboring oceans of liquid water and life.&lt;/div&gt;
+&lt;div class=&quot;specs-grid&quot;&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-arrows-left-right&quot;&gt;&lt;/i&gt; SIZE&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoDiam&quot;&gt;12,742 km&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-sun&quot;&gt;&lt;/i&gt; DISTANCE&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoDist&quot;&gt;149.6M km&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-clock&quot;&gt;&lt;/i&gt; YEAR&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoOrbit&quot;&gt;365.25 Days&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-temperature-half&quot;&gt;&lt;/i&gt; TEMP&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoTemp&quot;&gt;15°C&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-rotate&quot;&gt;&lt;/i&gt; DAY&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoDay&quot;&gt;24 Hours&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;spec-box&quot;&gt;&lt;div class=&quot;spec-label&quot;&gt;&lt;i class=&quot;fa-solid fa-moon&quot;&gt;&lt;/i&gt; MOONS&lt;/div&gt;&lt;div class=&quot;spec-val&quot; id=&quot;infoMoons&quot;&gt;1 Moon&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+const CELESTIAL_DATA={sun:{type:&quot;YELLOW DWARF STAR&quot;,title:&quot;THE SUN&quot;,desc:&quot;Luminous gravitational anchor containing 99.86% of the solar system&#x27;s mass.&quot;,diameter:&quot;1,392,700 km&quot;,dist:&quot;0.0 km (Center)&quot;,orbit:&quot;230M Yrs&quot;,temp:&quot;5,500°C&quot;,day:&quot;27 Earth Days&quot;,moons:&quot;8 Planets&quot;},mercury:{type:&quot;INNER ROCKY WORLD&quot;,title:&quot;MERCURY&quot;,desc:&quot;Smallest planet, airless, cratered with extreme temperature shifts.&quot;,diameter:&quot;4,879 km&quot;,dist:&quot;57.9M km&quot;,orbit:&quot;88 Days&quot;,temp:&quot;167°C&quot;,day:&quot;59 Earth Days&quot;,moons:&quot;0 Moons&quot;},venus:{type:&quot;TERRESTRIAL PLANET&quot;,title:&quot;VENUS&quot;,desc:&quot;Earth&#x27;s greenhouse twin wrapped in crushing atmosphere and sulfuric clouds.&quot;,diameter:&quot;12,104 km&quot;,dist:&quot;108.2M km&quot;,orbit:&quot;225 Days&quot;,temp:&quot;464°C&quot;,day:&quot;243 Days&quot;,moons:&quot;0 Moons&quot;},earth:{type:&quot;HABITABLE PLANET&quot;,title:&quot;EARTH&quot;,desc:&quot;Sanctuary of ocean water, dynamic atmosphere, and thriving organic life.&quot;,diameter:&quot;12,742 km&quot;,dist:&quot;149.6M km&quot;,orbit:&quot;365.25 Days&quot;,temp:&quot;15°C&quot;,day:&quot;24 Hours&quot;,moons:&quot;1 Moon&quot;},moon:{type:&quot;NATURAL SATELLITE&quot;,title:&quot;THE MOON&quot;,desc:&quot;Tidally locked celestial companion driving ocean tides on Earth.&quot;,diameter:&quot;3,474 km&quot;,dist:&quot;384,400 km&quot;,orbit:&quot;27.3 Days&quot;,temp:&quot;-130°C to 120°C&quot;,day:&quot;27.3 Days&quot;,moons:&quot;N/A&quot;},mars:{type:&quot;TERRESTRIAL WORLD&quot;,title:&quot;MARS&quot;,desc:&quot;The Red Planet with iron-oxide desert dunes, canyons, and polar ice.&quot;,diameter:&quot;6,779 km&quot;,dist:&quot;227.9M km&quot;,orbit:&quot;687 Days&quot;,temp:&quot;-62°C&quot;,day:&quot;24h 37m&quot;,moons:&quot;2 Moons&quot;},jupiter:{type:&quot;GAS GIANT&quot;,title:&quot;JUPITER&quot;,desc:&quot;Mammoth storm world with turbulent jet streams and the ancient Great Red Spot.&quot;,diameter:&quot;139,820 km&quot;,dist:&quot;778.5M km&quot;,orbit:&quot;11.86 Yrs&quot;,temp:&quot;-110°C&quot;,day:&quot;9h 56m&quot;,moons:&quot;95 Moons&quot;},saturn:{type:&quot;RINGED GAS GIANT&quot;,title:&quot;SATURN&quot;,desc:&quot;Crowned with thousands of intricate, dazzling rings of pristine water-ice.&quot;,diameter:&quot;116,460 km&quot;,dist:&quot;1.43B km&quot;,orbit:&quot;29.45 Yrs&quot;,temp:&quot;-140°C&quot;,day:&quot;10h 42m&quot;,moons:&quot;146 Moons&quot;},uranus:{type:&quot;ICE GIANT&quot;,title:&quot;URANUS&quot;,desc:&quot;Cyan icy atmosphere tilted almost 98 degrees, rolling on its side.&quot;,diameter:&quot;50,724 km&quot;,dist:&quot;2.87B km&quot;,orbit:&quot;84 Yrs&quot;,temp:&quot;-195°C&quot;,day:&quot;17h 14m&quot;,moons:&quot;28 Moons&quot;},neptune:{type:&quot;ICE GIANT&quot;,title:&quot;NEPTUNE&quot;,desc:&quot;Supersonic stormy ice world with deepest blue methane clouds.&quot;,diameter:&quot;49,244 km&quot;,dist:&quot;4.50B km&quot;,orbit:&quot;164.8 Yrs&quot;,temp:&quot;-201°C&quot;,day:&quot;16h 06m&quot;,moons:&quot;16 Moons&quot;}};
+const canvas=document.getElementById(&quot;space-canvas&quot;),scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,4000);camera.position.set(0,110,240);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:&quot;high-performance&quot;});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.3;
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.05;controls.maxDistance=750;controls.minDistance=2.5;
+function createFbmCanvas(w,h,octaves=6,persistence=.5,scale=.005,colorFn){const c=document.createElement(&quot;canvas&quot;);c.width=w;c.height=h;const ctx=c.getContext(&quot;2d&quot;),imgData=ctx.createImageData(w,h),data=imgData.data,p=new Uint8Array(512);for(let i=0;i&lt;256;i++)p[i]=i;for(let i=255;i&gt;0;i--){const n=Math.floor(Math.random()*(i+1)),t=p[i];p[i]=p[n];p[n]=t}for(let i=0;i&lt;256;i++)p[256+i]=p[i];function grad(hash,x,y){const h=hash&amp;3,u=h&lt;2?x:y,v=h&lt;2?y:x;return((h&amp;1)?-u:u)+((h&amp;2)?-v:v)}function noise2D(x,y){const X=Math.floor(x)&amp;255,Y=Math.floor(y)&amp;255,xf=x-Math.floor(x),yf=y-Math.floor(y),u=xf*xf*xf*(xf*(xf*6-15)+10),v=yf*yf*yf*(yf*(yf*6-15)+10),a=p[X]+Y,b=p[X+1]+Y,g00=grad(p[a],xf,yf),g10=grad(p[b],xf-1,yf),g01=grad(p[a+1],xf,yf-1),g11=grad(p[b+1],xf-1,yf-1),x1=g00+u*(g10-g00),x2=g01+u*(g11-g01);return x1+v*(x2-x1)}function fbm(x,y){let total=0,frequency=scale,amplitude=1,maxValue=0;for(let i=0;i&lt;octaves;i++){total+=noise2D(x*frequency,y*frequency)*amplitude;maxValue+=amplitude;amplitude*=persistence;frequency*=2}return(total/maxValue+1)*.5}for(let y=0;y&lt;h;y++)for(let x=0;x&lt;w;x++){const v=fbm(x,y),rgb=colorFn(v,x,y,w,h),idx=(y*w+x)*4;data[idx]=rgb[0];data[idx+1]=rgb[1];data[idx+2]=rgb[2];data[idx+3]=rgb.length&gt;3?rgb[3]:255}ctx.putImageData(imgData,0,0);return new THREE.CanvasTexture(c)}
+const earthTexture=createFbmCanvas(1024,512,6,.52,.007,(v,x,y,w,h)=&gt;{const lat=Math.abs(y/h-.5)*2;if(lat&gt;.88){const ice=Math.min(255,230+v*30);return[ice,ice,255]}if(v&lt;.48){const depth=v/.48;return[Math.floor(4+depth*12),Math.floor(22+depth*45),Math.floor(65+depth*75)]}else if(v&lt;.53)return[194,178,128];else if(v&lt;.72){const veg=(v-.53)/.19;return[Math.floor(34+veg*20),Math.floor(85+veg*40),Math.floor(32+veg*15)]}else{const m=(v-.72)/.28;return[Math.floor(130+m*50),Math.floor(115+m*45),Math.floor(95+m*40)]}});
+const earthCloudsTexture=createFbmCanvas(1024,512,5,.55,.009,(v)=&gt;{const density=Math.max(0,(v-.42)/.58),alpha=Math.floor(Math.pow(density,1.3)*255);return[255,255,255,alpha]});
+const jupiterTexture=createFbmCanvas(1024,512,5,.5,.008,(v,x,y)=&gt;{const band=Math.sin(y*.1+v*3.5);let r,g,b;if(band&gt;.3){r=210+v*30;g=175+v*25;b=135+v*20}else if(band&gt;-.2){r=160+v*40;g=105+v*25;b=65+v*20}else{r=195+v*30;g=145+v*25;b=105+v*20}const dx=x-660,dy=(y-330)*1.8;if(dx*dx+dy*dy&lt;1400){r=190;g=60;b=35}return[Math.min(255,r),Math.min(255,g),Math.min(255,b)]});
+const marsTexture=createFbmCanvas(512,256,6,.55,.012,(v,x,y,w,h)=&gt;{const lat=Math.abs(y/h-.5)*2;if(lat&gt;.90)return[240,240,245];return[165+v*60,60+v*40,25+v*25]});
+const venusTexture=createFbmCanvas(512,256,4,.45,.007,(v)=&gt;[225+v*25,185+v*30,120+v*25]);
+const mercuryTexture=createFbmCanvas(512,256,6,.58,.015,(v)=&gt;{const c=100+v*90;return[c,c*.96,c*.92]});
+const moonTexture=createFbmCanvas(512,256,6,.58,.018,(v)=&gt;{if(v&lt;.46){const maria=75+v*35;return[maria,maria,maria]}const highland=120+v*85;return[highland,highland,highland]});
+const uranusTexture=createFbmCanvas(256,128,3,.4,.008,(v)=&gt;[105+v*25,205+v*25,220+v*25]);
+const neptuneTexture=createFbmCanvas(256,128,4,.45,.01,(v)=&gt;[35+v*30,75+v*40,210+v*35]);
+const saturnTexture=createFbmCanvas(512,256,4,.45,.007,(v,x,y)=&gt;{const b=Math.sin(y*.15+v*.8);return[215+b*20,195+b*20,145+b*15]});
+function createSaturnRingTexture(){const c=document.createElement(&quot;canvas&quot;);c.width=512;c.height=1;const ctx=c.getContext(&quot;2d&quot;),imgData=ctx.createImageData(512,1);for(let x=0;x&lt;512;x++){const t=x/512;let alpha=Math.sin(t*Math.PI)*220;if(t&gt;.54&amp;&amp;t&lt;.62)alpha*=.08;if(t&lt;.05||t&gt;.96)alpha*=.1;const fineBands=(Math.sin(t*120)*.5+.5)*35,idx=x*4;imgData.data[idx]=210;imgData.data[idx+1]=190;imgData.data[idx+2]=150;imgData.data[idx+3]=Math.max(0,Math.min(255,alpha+fineBands))}ctx.putImageData(imgData,0,0);const tex=new THREE.CanvasTexture(c);tex.wrapS=THREE.ClampToEdgeWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;return tex}
+function createAtmosphereMesh(radius,colorHex,intensity=1.5,power=3.2){const vertexShader=`varying vec3 vNormal;void main(){vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader=`varying vec3 vNormal;uniform vec3 glowColor;uniform float intensity;uniform float power;void main(){float glow=pow(1.0-abs(dot(vNormal,vec3(0.0,0.0,1.0))),power)*intensity;gl_FragColor=vec4(glowColor,glow);}`;const mat=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms:{glowColor:{value:new THREE.Color(colorHex)},intensity:{value:intensity},power:{value:power}},blending:THREE.AdditiveBlending,side:THREE.BackSide,transparent:true,depthWrite:false});return new THREE.Mesh(new THREE.SphereGeometry(radius*1.15,48,48),mat)}
+const sunGroup=new THREE.Group();scene.add(sunGroup);
+const sunTex=createFbmCanvas(512,256,5,.55,.015,(v)=&gt;[255,Math.floor(190+v*65),Math.floor(60+v*90)]),sunMesh=new THREE.Mesh(new THREE.SphereGeometry(10,64,64),new THREE.MeshBasicMaterial({map:sunTex}));sunGroup.add(sunMesh);
+const corona=new THREE.Mesh(new THREE.SphereGeometry(12.5,32,32),new THREE.MeshBasicMaterial({color:0xff8a00,transparent:true,opacity:.35,side:THREE.BackSide,blending:THREE.AdditiveBlending}));sunGroup.add(corona);sunGroup.add(createAtmosphereMesh(10,0xffa500,2.5,2));
+sunGroup.add(new THREE.PointLight(0xfff7e8,3.8,1600));scene.add(new THREE.AmbientLight(0x0a101d,.35));
+const planets={};
+function orbitRing(radius){const pts=[];for(let i=0;i&lt;=160;i++){const a=i/160*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*radius,0,Math.sin(a)*radius))}const geo=new THREE.BufferGeometry().setFromPoints(pts),mat=new THREE.LineBasicMaterial({color:0x224970,transparent:true,opacity:.22});return new THREE.Line(geo,mat)}
+function addPlanet({key,radius,orbitRadius,speed,mat,clouds=null,atmosphereColor=null}){scene.add(orbitRing(orbitRadius));const pivot=new THREE.Group();scene.add(pivot);const group=new THREE.Group();group.position.x=orbitRadius;pivot.add(group);const mesh=new THREE.Mesh(new THREE.SphereGeometry(radius,64,64),mat);group.add(mesh);let cloudMesh=null;if(clouds){cloudMesh=new THREE.Mesh(new THREE.SphereGeometry(radius*1.02,64,64),new THREE.MeshStandardMaterial({map:clouds,transparent:true,opacity:.85,blending:THREE.NormalBlending}));group.add(cloudMesh)}if(atmosphereColor)group.add(createAtmosphereMesh(radius,atmosphereColor,1.8,3.5));planets[key]={pivot,group,mesh,clouds:cloudMesh,radius,speed};return group}
+addPlanet({key:&quot;mercury&quot;,radius:1.4,orbitRadius:24,speed:.8,mat:new THREE.MeshStandardMaterial({map:mercuryTexture,roughness:.9,metalness:.05})});
+addPlanet({key:&quot;venus&quot;,radius:2.2,orbitRadius:36,speed:.6,mat:new THREE.MeshStandardMaterial({map:venusTexture,roughness:.45,metalness:0}),atmosphereColor:0xe8ba68});
+const earthGroup=addPlanet({key:&quot;earth&quot;,radius:2.5,orbitRadius:52,speed:.45,mat:new THREE.MeshStandardMaterial({map:earthTexture,roughness:.55,metalness:.1}),clouds:earthCloudsTexture,atmosphereColor:0x4db8ff});planets.earth.mesh.rotation.z=THREE.MathUtils.degToRad(23.5);
+const moonPivot=new THREE.Group();earthGroup.add(moonPivot);const moonMesh=new THREE.Mesh(new THREE.SphereGeometry(.7,48,48),new THREE.MeshStandardMaterial({map:moonTexture,roughness:.95,metalness:0}));moonMesh.position.x=5.6;moonPivot.add(moonMesh);planets.moon={pivot:moonPivot,mesh:moonMesh,radius:.7};
+addPlanet({key:&quot;mars&quot;,radius:1.8,orbitRadius:68,speed:.35,mat:new THREE.MeshStandardMaterial({map:marsTexture,roughness:.85,metalness:.05}),atmosphereColor:0xff6633});
+addPlanet({key:&quot;jupiter&quot;,radius:5.8,orbitRadius:94,speed:.22,mat:new THREE.MeshStandardMaterial({map:jupiterTexture,roughness:.4,metalness:0})});
+const saturnGroup=addPlanet({key:&quot;saturn&quot;,radius:4.8,orbitRadius:126,speed:.16,mat:new THREE.MeshStandardMaterial({map:saturnTexture,roughness:.5,metalness:0})});
+const saturnRingGeo=new THREE.RingGeometry(6.2,12.2,96),pos=saturnRingGeo.attributes.position,uvs=saturnRingGeo.attributes.uv;for(let i=0;i&lt;pos.count;i++){const vx=pos.getX(i),vy=pos.getY(i),dist=Math.sqrt(vx*vx+vy*vy);uvs.setXY(i,(dist-6.2)/(12.2-6.2),.5)}
+const saturnRing=new THREE.Mesh(saturnRingGeo,new THREE.MeshStandardMaterial({map:createSaturnRingTexture(),side:THREE.DoubleSide,transparent:true,roughness:.6}));saturnRing.rotation.x=Math.PI/2.35;saturnGroup.add(saturnRing);
+const uranusGroup=addPlanet({key:&quot;uranus&quot;,radius:3.5,orbitRadius:156,speed:.11,mat:new THREE.MeshStandardMaterial({map:uranusTexture,roughness:.35,metalness:.05}),atmosphereColor:0x70d6d8});
+const uranusRing=new THREE.Mesh(new THREE.RingGeometry(4.4,5.6,64),new THREE.MeshBasicMaterial({color:0xaee1f5,side:THREE.DoubleSide,transparent:true,opacity:.4}));uranusRing.rotation.x=Math.PI/1.9;uranusGroup.add(uranusRing);
+addPlanet({key:&quot;neptune&quot;,radius:3.4,orbitRadius:186,speed:.08,mat:new THREE.MeshStandardMaterial({map:neptuneTexture,roughness:.35,metalness:.05}),atmosphereColor:0x4f7cff});
+const starCount=28000,starGeometry=new THREE.BufferGeometry(),starPositions=new Float32Array(starCount*3),starColors=new Float32Array(starCount*3);
+for(let i=0;i&lt;starCount;i++){const i3=i*3,r=Math.pow(Math.random(),.65)*550+40,theta=Math.random()*Math.PI*2,phi=(Math.random()-.5)*Math.PI*.45;starPositions[i3]=Math.cos(theta)*Math.cos(phi)*r;starPositions[i3+1]=Math.sin(phi)*r;starPositions[i3+2]=Math.sin(theta)*Math.cos(phi)*r;const starType=Math.random();if(starType&lt;.70){starColors[i3]=.5+Math.random()*.3;starColors[i3+1]=.7+Math.random()*.3;starColors[i3+2]=1}else{starColors[i3]=1;starColors[i3+1]=.55+Math.random()*.3;starColors[i3+2]=.2+Math.random()*.2}}
+starGeometry.setAttribute(&quot;position&quot;,new THREE.BufferAttribute(starPositions,3));starGeometry.setAttribute(&quot;color&quot;,new THREE.BufferAttribute(starColors,3));
+const stars=new THREE.Points(starGeometry,new THREE.PointsMaterial({size:.75,vertexColors:true,transparent:true,opacity:.85,sizeAttenuation:true,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(stars);
+let currentTarget=&quot;system&quot;,cameraOffset=new THREE.Vector3(),infoCard=document.getElementById(&quot;infoCard&quot;),closeBtn=document.getElementById(&quot;closeBtn&quot;),infoType=document.getElementById(&quot;infoType&quot;),infoTitle=document.getElementById(&quot;infoTitle&quot;),infoDesc=document.getElementById(&quot;infoDesc&quot;),infoDiam=document.getElementById(&quot;infoDiam&quot;),infoDist=document.getElementById(&quot;infoDist&quot;),infoOrbit=document.getElementById(&quot;infoOrbit&quot;),infoTemp=document.getElementById(&quot;infoTemp&quot;),infoDay=document.getElementById(&quot;infoDay&quot;),infoMoons=document.getElementById(&quot;infoMoons&quot;);
+function openInfoCard(key){const data=CELESTIAL_DATA[key];if(!data)return;infoType.textContent=data.type;infoTitle.textContent=data.title;infoDesc.textContent=data.desc;infoDiam.textContent=data.diameter;infoDist.textContent=data.dist;infoOrbit.textContent=data.orbit;infoTemp.textContent=data.temp;infoDay.textContent=data.day;infoMoons.textContent=data.moons;infoCard.classList.add(&quot;active&quot;)}
+function dismissPopup(){infoCard.classList.remove(&quot;active&quot;)}closeBtn.addEventListener(&quot;click&quot;,e=&gt;{e.stopPropagation();dismissPopup()});
+function focusTarget(target){currentTarget=target;document.querySelectorAll(&quot;.p-btn&quot;).forEach(b=&gt;b.classList.remove(&quot;active&quot;));const activeBtn=Array.from(document.querySelectorAll(&quot;.p-btn&quot;)).find(b=&gt;b.innerText.toLowerCase().includes(target));if(activeBtn)activeBtn.classList.add(&quot;active&quot;);if(target===&quot;system&quot;){dismissPopup();gsap.to(camera.position,{x:0,y:120,z:240,duration:2,ease:&quot;power2.inOut&quot;});gsap.to(controls.target,{x:0,y:0,z:0,duration:2,ease:&quot;power2.inOut&quot;});return}if(target===&quot;sun&quot;){openInfoCard(&quot;sun&quot;);gsap.to(camera.position,{x:0,y:3,z:25,duration:1.8,ease:&quot;power2.inOut&quot;});gsap.to(controls.target,{x:0,y:0,z:0,duration:1.8,ease:&quot;power2.inOut&quot;});return}if(target===&quot;moon&quot;){openInfoCard(&quot;moon&quot;);const p=new THREE.Vector3();planets.moon.mesh.getWorldPosition(p);cameraOffset.set(2.4,.8,2.6);gsap.to(camera.position,{x:p.x+cameraOffset.x,y:p.y+cameraOffset.y,z:p.z+cameraOffset.z,duration:1.8,ease:&quot;power2.inOut&quot;});gsap.to(controls.target,{x:p.x,y:p.y,z:p.z,duration:1.8,ease:&quot;power2.inOut&quot;});return}if(planets[target]){openInfoCard(target);const p=new THREE.Vector3();planets[target].mesh.getWorldPosition(p),d=planets[target].radius*2.5+3.2;cameraOffset.set(d*.7,d*.35,d);gsap.to(camera.position,{x:p.x+cameraOffset.x,y:p.y+cameraOffset.y,z:p.z+cameraOffset.z,duration:1.8,ease:&quot;power2.inOut&quot;});gsap.to(controls.target,{x:p.x,y:p.y,z:p.z,duration:1.8,ease:&quot;power2.inOut&quot;})}}
+window.addEventListener(&quot;resize&quot;,()=&gt;{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+const clock=new THREE.Clock();function renderLoop(){requestAnimationFrame(renderLoop);const delta=clock.getDelta(),time=clock.getElapsedTime();sunMesh.rotation.y+=.12*delta;corona.scale.setScalar(1+Math.sin(time*2.5)*.035);stars.rotation.y=time*.005;for(const[key,p]of Object.entries(planets)){if(p.pivot&amp;&amp;p.speed)p.pivot.rotation.y=time*(p.speed*.28);if(p.mesh)p.mesh.rotation.y+=.6*delta;if(p.clouds)p.clouds.rotation.y+=.85*delta}if(planets.moon){planets.moon.pivot.rotation.y=time*1.4;planets.moon.mesh.rotation.y+=.4*delta}if(currentTarget===&quot;moon&quot;){const p=new THREE.Vector3();planets.moon.mesh.getWorldPosition(p);controls.target.lerp(p,.15)}else if(currentTarget!==&quot;system&quot;&amp;&amp;currentTarget!==&quot;sun&quot;&amp;&amp;planets[currentTarget]){const p=new THREE.Vector3();planets[currentTarget].mesh.getWorldPosition(p);controls.target.lerp(p,.15)}controls.update();renderer.render(scene,camera)}renderLoop();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" loading="lazy"></iframe>
+    <div class="template-preview-overlay"><span>LIVE TEMPLATE</span><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+  </div>
+  <div class="template-info"><span class="template-tag">3D · Three.js</span><h3>GALAXY — Ultra Photorealistic Planetary System</h3><p>Ultra-photorealistic 3D planetary system with immersive space visuals, interactive planet views, camera controls and cinematic motion.</p></div>
+</a>
             
 </div>
 </section>
@@ -3686,18 +3822,23 @@ async function startBuilding(){
     window.location.href = "projects.html";
     return;
   }
-  openAuthModal();
+  // Guest access is available only from Get Started / Start Building.
+  openAuthModal(true);
 }
 function openMiniBrowserAuth(){
-  openAuthModal();
+  openAuthModal(false);
 }
 
 
-function openAuthModal(){
+function openAuthModal(allowGuest){
   const overlay = document.getElementById("authOverlay");
   if(!overlay) return;
   overlay.classList.add("show");
   overlay.setAttribute("aria-hidden","false");
+  const guestBtn = document.getElementById("guestContinueBtn");
+  if(guestBtn) guestBtn.style.display = allowGuest ? "" : "none";
+  const divider = overlay.querySelector(".auth-divider");
+  if(divider) divider.style.display = allowGuest ? "" : "none";
   const status = document.getElementById("authStatus");
   if(status){
     status.textContent = "";
@@ -3735,7 +3876,11 @@ function continueAsGuest(){
   }catch(e){
     console.warn("Could not save guest mode:", e);
   }
-  window.location.href = "projects.html";
+  const pendingTemplate = !!(
+    localStorage.getItem("jsco_pending_template_v2") ||
+    sessionStorage.getItem("jsco_pending_template")
+  );
+  window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
 }
 
 async function useTemplate(templateFile, templateName, templateContent){
@@ -3761,7 +3906,7 @@ async function useTemplate(templateFile, templateName, templateContent){
     window.location.href = "workspace.html";
     return;
   }
-  openAuthModal();
+  openAuthModal(false);
 }
 
 document.addEventListener("click", function(event){
@@ -3799,9 +3944,17 @@ async function signInWithGoogle(){
     googleProvider.setCustomParameters({ prompt: "select_account" });
     await auth.signInWithPopup(googleProvider);
 
-    // Get Started / Start Building always goes to the Projects page first.
-    setAuthBusy(true, "Signed in successfully. Opening projects…");
-    window.location.href = "projects.html";
+    // If a template was selected before sign-in, return directly to the
+    // workspace so the selected template can be loaded there. Otherwise,
+    // keep the normal Get Started / Start Building flow to Projects.
+    const pendingTemplate = !!(
+      localStorage.getItem("jsco_pending_template_v2") ||
+      sessionStorage.getItem("jsco_pending_template")
+    );
+    setAuthBusy(true, pendingTemplate
+      ? "Signed in successfully. Opening template…"
+      : "Signed in successfully. Opening projects…");
+    window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
   }catch(error){
     console.error("Google sign-in error:", error);
 
@@ -3844,8 +3997,14 @@ async function signInWithGoogle(){
 auth.getRedirectResult()
   .then(function(result){
     if(result && result.user){
-      setAuthBusy(true, "Signed in successfully. Opening projects…");
-      window.location.href = "projects.html";
+      const pendingTemplate = !!(
+        localStorage.getItem("jsco_pending_template_v2") ||
+        sessionStorage.getItem("jsco_pending_template")
+      );
+      setAuthBusy(true, pendingTemplate
+        ? "Signed in successfully. Opening template…"
+        : "Signed in successfully. Opening projects…");
+      window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
     }
   })
   .catch(function(error){
