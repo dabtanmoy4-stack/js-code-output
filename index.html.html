@@ -1351,38 +1351,65 @@ html.dark body{background:var(--ui-bg)!important}
   .auth-overlay{
     position:fixed;inset:0;z-index:100000;
     display:none;align-items:center;justify-content:center;
-    padding:18px;background:rgba(2,8,23,.68);
-    backdrop-filter:blur(10px);
+    padding:18px;background:rgba(2,8,23,.72);
+    backdrop-filter:blur(18px) saturate(120%);
   }
   .auth-overlay.show{display:flex}
-  .auth-login-card{position:relative}
-  .auth-close{
-    position:absolute;top:10px;right:12px;width:32px;height:32px;
-    border:0;background:transparent;color:var(--muted);
-    font-size:25px;line-height:1;border-radius:8px;cursor:pointer;
+  .auth-login-card{
+    position:relative;width:min(420px,94vw)!important;
+    padding:34px 30px 28px!important;border-radius:26px!important;
+    background:color-mix(in srgb,var(--surface) 96%,transparent)!important;
+    border:1px solid color-mix(in srgb,var(--line) 80%,transparent)!important;
+    box-shadow:0 35px 100px rgba(0,0,0,.28),0 8px 30px rgba(0,0,0,.10)!important;
+    animation:authCardIn .22s cubic-bezier(.16,1,.3,1);
   }
-  .auth-close:hover{background:var(--surface2);color:var(--ink)}
+  @keyframes authCardIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+  .auth-close{
+    position:absolute;top:13px;right:14px;width:34px;height:34px;
+    border:1px solid transparent;background:transparent;color:var(--muted);
+    font-size:23px;line-height:1;border-radius:10px;cursor:pointer;
+  }
+  .auth-close:hover{background:var(--surface2);color:var(--ink);border-color:var(--line)}
   .auth-logo{
-    width:58px;height:58px;margin:0 auto 14px;border-radius:16px;
+    width:62px;height:62px;margin:0 auto 17px;border-radius:18px;
     overflow:hidden;border:1px solid var(--line);background:var(--surface2);
+    box-shadow:0 10px 28px rgba(0,0,0,.10);
   }
   .auth-logo img{width:100%;height:100%;object-fit:cover}
-  .auth-login-card h2{margin:0;font-size:22px;letter-spacing:-.035em}
-  .auth-login-card p{margin:8px 0 20px}
+  .auth-login-card h2{margin:0;font-size:23px;letter-spacing:-.04em;font-weight:900}
+  .auth-login-card p{margin:9px auto 23px;max-width:310px;font-size:12px;line-height:1.6}
+  .google-btn{
+    cursor:pointer!important;height:48px!important;padding:0 16px!important;
+    border:1px solid #d0d5dd!important;background:#fff!important;color:#1f2937!important;
+    border-radius:12px!important;font-weight:750!important;
+    box-shadow:0 1px 2px rgba(0,0,0,.06),0 3px 10px rgba(0,0,0,.04)!important;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+  }
+  .google-btn:hover{transform:translateY(-1px);background:#fff!important;box-shadow:0 5px 16px rgba(0,0,0,.10)!important}
+  .google-btn:active{transform:translateY(0)}
+  .google-btn:disabled{opacity:.65;cursor:wait;transform:none}
+  .google-g{
+    width:22px;height:22px;display:grid;place-items:center;
+    font-weight:950;font-size:17px;font-family:Arial,sans-serif;
+    color:#4285f4;
+  }
   .auth-divider{
-    display:flex;align-items:center;gap:10px;margin:15px 0 2px;
+    display:flex;align-items:center;gap:12px;margin:18px 0 12px;
     color:var(--muted);font-size:10px;
   }
   .auth-divider::before,.auth-divider::after{
     content:"";height:1px;flex:1;background:var(--line);
   }
-  .google-btn{cursor:pointer}
-  .google-g{
-    width:22px;height:22px;display:grid;place-items:center;
-    font-weight:950;font-size:16px;font-family:Arial,sans-serif;
+  .guest-btn{
+    width:100%;height:46px;padding:0 16px;border:1px solid var(--line);
+    background:var(--surface2);color:var(--ink);border-radius:12px;
+    font-weight:750;font-size:12px;cursor:pointer;
+    transition:transform .18s ease,border-color .18s ease,background .18s ease;
   }
+  .guest-btn:hover{transform:translateY(-1px);border-color:var(--brand);background:var(--surface)}
+  .guest-btn:disabled{opacity:.65;cursor:wait;transform:none}
   .auth-status{
-    min-height:18px;margin-top:12px;font-size:10px;
+    min-height:18px;margin-top:13px;font-size:10px;
     color:var(--muted);line-height:1.5;
     display:flex;align-items:center;justify-content:center;gap:7px;
   }
@@ -3590,6 +3617,12 @@ gsap.from(&#x27;.eyebrow,.team-head h2,.team-head p&#x27;,{opacity:0,y:30,durati
       <span>Continue with Google</span>
     </button>
 
+    <div class="auth-divider"><span>OR</span></div>
+
+    <button class="guest-btn" id="guestContinueBtn" type="button" onclick="continueAsGuest()">
+      Continue as guest
+    </button>
+
     <div id="authStatus" class="auth-status" aria-live="polite"></div>
   </div>
 </div>
@@ -3681,7 +3714,9 @@ function closeAuthModal(){
 
 function setAuthBusy(busy, message){
   const googleBtn = document.getElementById("googleSignInBtn");
+  const guestBtn = document.getElementById("guestContinueBtn");
   if(googleBtn) googleBtn.disabled = busy;
+  if(guestBtn) guestBtn.disabled = busy;
   const status = document.getElementById("authStatus");
   if(status){
     status.innerHTML = busy && message
@@ -3689,6 +3724,18 @@ function setAuthBusy(busy, message){
       : (message || "");
     status.className = "auth-status";
   }
+}
+
+function continueAsGuest(){
+  // Guest mode only skips Google authentication; no Google account/session is created.
+  setAuthBusy(true, "Opening workspace…");
+  try{
+    sessionStorage.setItem("jsco_guest_mode", "true");
+    localStorage.setItem("jsco_guest_mode", "true");
+  }catch(e){
+    console.warn("Could not save guest mode:", e);
+  }
+  window.location.href = "projects.html";
 }
 
 async function useTemplate(templateFile, templateName, templateContent){
@@ -3810,7 +3857,9 @@ auth.getRedirectResult()
         status.className = "auth-status error";
       }
       const googleBtn = document.getElementById("googleSignInBtn");
+      const guestBtn = document.getElementById("guestContinueBtn");
       if(googleBtn) googleBtn.disabled = false;
+      if(guestBtn) guestBtn.disabled = false;
     }
   });
 
