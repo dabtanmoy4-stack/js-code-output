@@ -3744,23 +3744,75 @@ document.addEventListener("keydown", function(event){
 async function signInWithGoogle(){
   setAuthBusy(true, "Opening Google sign-in…");
   try{
-    // Explicit LOCAL persistence means the user stays signed in after
-    // closing/reopening the browser and returning to this site.
+    // Keep the Google session available for the next visit.
     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+    // Use the popup first. If the browser blocks popups or the popup
+    // flow is unavailable, fall back to Firebase's redirect flow.
+    googleProvider.setCustomParameters({ prompt: "select_account" });
     await auth.signInWithPopup(googleProvider);
-    setAuthBusy(true, "Signed in successfully. Opening workspace…");
-    window.location.href = "workspace.html";
+
+    // Get Started / Start Building always goes to the Projects page first.
+    setAuthBusy(true, "Signed in successfully. Opening projects…");
+    window.location.href = "projects.html";
   }catch(error){
     console.error("Google sign-in error:", error);
+
+    // Popup-blocked / popup-closed / unavailable popup flow:
+    // use Firebase redirect so Google sign-in can still complete.
+    if(
+      error &&
+      (
+        error.code === "auth/popup-blocked" ||
+        error.code === "auth/popup-closed-by-user" ||
+        error.code === "auth/cancelled-popup-request" ||
+        error.code === "auth/operation-not-supported-in-this-environment"
+      )
+    ){
+      try{
+        setAuthBusy(true, "Redirecting to Google sign-in…");
+        await auth.signInWithRedirect(googleProvider);
+        return;
+      }catch(redirectError){
+        console.error("Google redirect sign-in error:", redirectError);
+        error = redirectError;
+      }
+    }
+
     const status = document.getElementById("authStatus");
     if(status){
-      status.textContent = "Google sign-in was not completed. Please try again.";
+      status.textContent = error && error.code
+        ? "Google sign-in failed (" + error.code + "). Please try again."
+        : "Google sign-in was not completed. Please try again.";
       status.className = "auth-status error";
     }
     const googleBtn = document.getElementById("googleSignInBtn");
-      if(googleBtn) googleBtn.disabled = false;
+    if(googleBtn) googleBtn.disabled = false;
   }
 }
+
+// Complete a Google redirect login, if the previous sign-in attempt
+// was switched from popup to redirect. This is only for Get Started/
+// Start Building authentication and does not affect template links.
+auth.getRedirectResult()
+  .then(function(result){
+    if(result && result.user){
+      setAuthBusy(true, "Signed in successfully. Opening projects…");
+      window.location.href = "projects.html";
+    }
+  })
+  .catch(function(error){
+    if(error){
+      console.error("Google redirect result error:", error);
+      const status = document.getElementById("authStatus");
+      if(status){
+        status.textContent = "Google sign-in was not completed. Please try again.";
+        status.className = "auth-status error";
+      }
+      const googleBtn = document.getElementById("googleSignInBtn");
+      if(googleBtn) googleBtn.disabled = false;
+    }
+  });
 
 document.addEventListener("keydown", function(event){
   if(event.key === "Escape") closeAuthModal();
