@@ -1757,6 +1757,32 @@ html:not(.dark) .project-owner-email{color:#776f64}
   }
 }
 </style>
+
+<style id="upload-project-ui">
+.projects-heading-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.upload-project-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+@media(max-width:640px){
+  .projects-heading-actions{
+    width:100%;
+    justify-content:flex-start;
+  }
+  .projects-heading-actions .primary-btn{
+    flex:1 1 auto;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -1929,12 +1955,22 @@ html:not(.dark) .project-owner-email{color:#776f64}
 
         </div>
 
-        <button
-          class="primary-btn"
-          onclick="showCreateProject()"
-        >
-          + New Project
-        </button>
+        <div class="projects-heading-actions">
+          <button
+            class="primary-btn"
+            onclick="showCreateProject()"
+          >
+            + New Project
+          </button>
+
+          <button
+            class="primary-btn upload-project-btn"
+            onclick="showUploadProject()"
+          >
+            <i class="fa-solid fa-upload"></i>
+            Upload Project
+          </button>
+        </div>
 
       </div>
 
@@ -1978,12 +2014,70 @@ html:not(.dark) .project-owner-email{color:#776f64}
           + Create Project
         </button>
 
+        <button
+          class="primary-btn upload-project-btn"
+          onclick="showUploadProject()"
+          style="margin-top:10px;"
+        >
+          <i class="fa-solid fa-upload"></i>
+          Upload Project
+        </button>
+
       </div>
 
     </main>
 
   </div>
 
+
+
+  <!-- =========================
+       UPLOAD PROJECT MODAL
+       ========================= -->
+  <div id="uploadProjectModal" class="overlay hidden">
+    <div class="modal">
+      <div class="flex justify-between items-center">
+        <h3>Upload Project</h3>
+        <button
+          onclick="closeUploadProject()"
+          class="text-gray-400 text-lg font-bold"
+          aria-label="Close"
+        >×</button>
+      </div>
+
+      <p>
+        Add a project from files or an entire folder without changing your existing projects.
+      </p>
+
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="modal-btn" onclick="chooseProjectFiles()">
+          <i class="fa-solid fa-file"></i>
+          Upload Files
+        </button>
+
+        <button class="primary-btn" onclick="chooseProjectFolder()">
+          <i class="fa-solid fa-folder-open"></i>
+          Upload Folder
+        </button>
+      </div>
+
+      <input
+        id="projectFilesInput"
+        type="file"
+        multiple
+        hidden
+      >
+
+      <input
+        id="projectFolderInput"
+        type="file"
+        webkitdirectory
+        directory
+        multiple
+        hidden
+      >
+    </div>
+  </div>
 
   <!-- =========================
        CREATE PROJECT MODAL
@@ -3996,6 +4090,167 @@ html:not(.dark) .project-owner-email{color:#776f64}
     );
 
   </script>
+
+
+<script id="upload-project-logic">
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  window.showUploadProject = function(){
+    const modal = byId("uploadProjectModal");
+    if(modal) modal.classList.remove("hidden");
+  };
+
+  window.closeUploadProject = function(){
+    const modal = byId("uploadProjectModal");
+    if(modal) modal.classList.add("hidden");
+  };
+
+  window.chooseProjectFiles = function(){
+    const input = byId("projectFilesInput");
+    if(input) input.click();
+  };
+
+  window.chooseProjectFolder = function(){
+    const input = byId("projectFolderInput");
+    if(input) input.click();
+  };
+
+  async function uploadFileAsDataURL(file){
+    return await new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function readUploadedProjectFiles(fileList){
+    const files = {};
+    for(const file of Array.from(fileList || [])){
+      const relativePath = file.webkitRelativePath || file.name;
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      const binaryExts = [
+        "png","jpg","jpeg","gif","webp","svg","ico",
+        "mp3","wav","ogg","m4a","aac","mp4","webm","mov",
+        "woff","woff2","ttf","otf","eot","zip","pdf"
+      ];
+
+      if(binaryExts.includes(ext)){
+        files[relativePath] = {
+          type:"binary",
+          content:await uploadFileAsDataURL(file)
+        };
+      }else{
+        files[relativePath] = {
+          type:"text",
+          content:await file.text()
+        };
+      }
+    }
+    return files;
+  }
+
+  function getUploadedProjectName(fileList){
+    const arr = Array.from(fileList || []);
+    if(!arr.length) return "Uploaded Project";
+
+    const first = arr[0];
+    if(first.webkitRelativePath){
+      return first.webkitRelativePath.split("/")[0] || "Uploaded Project";
+    }
+
+    if(arr.length === 1){
+      return first.name.replace(/\.[^/.]+$/, "") || "Uploaded Project";
+    }
+
+    return "Uploaded Project";
+  }
+
+  window.importUploadedProject = async function(fileList){
+    const files = Array.from(fileList || []);
+    if(!files.length) return;
+
+    try{
+      const projectName = getUploadedProjectName(files);
+      const projectId =
+        "local_proj_" +
+        Date.now() +
+        "_" +
+        Math.random().toString(36).slice(2,8);
+
+      const projectFiles = await readUploadedProjectFiles(files);
+
+      let localProjects = JSON.parse(
+        localStorage.getItem("js_local_projects") || "[]"
+      );
+
+      localProjects.push({
+        id:projectId,
+        name:projectName,
+        updatedAt:Date.now()
+      });
+
+      localStorage.setItem(
+        "js_local_projects",
+        JSON.stringify(localProjects)
+      );
+
+      localStorage.setItem(
+        "js_files_" + projectId,
+        JSON.stringify(projectFiles)
+      );
+
+      const firstPath = Object.keys(projectFiles)[0];
+      if(firstPath){
+        localStorage.setItem(
+          "js_active_file_" + projectId,
+          firstPath
+        );
+      }
+
+      closeUploadProject();
+
+      if(typeof showToast === "function"){
+        showToast("Project uploaded successfully.");
+      }
+
+      if(typeof loadProjects === "function"){
+        await loadProjects();
+      }
+
+      setTimeout(()=>{
+        if(typeof openWorkspace === "function"){
+          openWorkspace(projectId, projectName);
+        }
+      },300);
+
+    }catch(error){
+      console.error("Upload Project error:", error);
+      alert("Could not upload this project.");
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const filesInput = byId("projectFilesInput");
+    const folderInput = byId("projectFolderInput");
+
+    if(filesInput){
+      filesInput.addEventListener("change",()=>{
+        importUploadedProject(filesInput.files);
+        filesInput.value = "";
+      });
+    }
+
+    if(folderInput){
+      folderInput.addEventListener("change",()=>{
+        importUploadedProject(folderInput.files);
+        folderInput.value = "";
+      });
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
