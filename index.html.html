@@ -4153,6 +4153,21 @@ document.addEventListener("DOMContentLoaded", function(){
     transition:none!important;
   }
 }
+
+
+  /* MOBILE ONLY — fix the GALAXY template preview viewport.
+     Desktop/PC remains exactly as it is. */
+  @media (max-width:700px){
+    #landingPage .template-card[data-template-file="template7.html"] .template-preview iframe{
+      width:100% !important;
+      height:100% !important;
+      transform:none !important;
+      transform-origin:center center !important;
+      display:block !important;
+      border:0 !important;
+      pointer-events:none;
+    }
+  }
 </style>
 </body>
 </html>
