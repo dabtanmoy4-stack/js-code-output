@@ -1922,6 +1922,22 @@ html:not(.dark) .project-owner-email{color:#776f64}
             </span>
           </button>
 
+          <button
+            id="logoutAccountBtn"
+            class="account-menu-item account-menu-danger"
+            type="button"
+            onclick="signOutFromAccountMenu()"
+            style="display:none;"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>
+              <strong>Log out</strong>
+              <small>Sign out of this Google account</small>
+            </span>
+          </button>
+
         </div>
 
         <button
@@ -3876,6 +3892,11 @@ html:not(.dark) .project-owner-email{color:#776f64}
     function updateUserUI(user){
       const nameElement = document.getElementById("projectsUserName");
       const accountMenuSubtitle = document.getElementById("accountMenuSubtitle");
+      const logoutButton = document.getElementById("logoutAccountBtn");
+
+      if(logoutButton){
+        logoutButton.style.display = user ? "flex" : "none";
+      }
 
       if(user){
         if(nameElement){
@@ -3977,8 +3998,6 @@ html:not(.dark) .project-owner-email{color:#776f64}
     }
 
     async function signOutFromAccountMenu(){
-      // Kept internally for compatibility with older code.
-      // The visible account-menu sign-out option has been removed.
       closeAccountMenu();
       await firebaseLogout();
     }
