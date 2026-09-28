@@ -1,5 +1,5 @@
 module.exports = async function handler(req, res) {
-  // Only POST is allowed
+  // Allow only POST
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -7,38 +7,31 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Read API key from Vercel Environment Variables
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
-        error: "GEMINI_API_KEY is not configured in Vercel."
+        error: "GEMINI_API_KEY is missing in Vercel Environment Variables"
       });
     }
 
-    const {
-      prompt,
-      currentCode = "",
-      previousInteractionId = null,
-      mode = "build"
-    } = req.body || {};
+    const body = req.body || {};
 
-    if (!prompt || !String(prompt).trim()) {
+    const prompt = String(body.prompt || "").trim();
+    const currentCode = String(body.currentCode || "");
+    const mode = body.mode || "build";
+
+    if (!prompt) {
       return res.status(400).json({
-        error: "Prompt is required."
+        error: "Prompt is required"
       });
     }
 
-    let instruction = "";
+    let instruction;
 
-    // =========================
-    // EDIT MODE
-    // =========================
     if (mode === "edit" && currentCode) {
       instruction = `
-You are Miod, an AI website builder and coding assistant.
-
-The user wants to modify their existing website.
+You are Miod, a professional AI website builder.
 
 USER REQUEST:
 ${prompt}
@@ -46,51 +39,44 @@ ${prompt}
 CURRENT WEBSITE CODE:
 ${currentCode}
 
-Your task:
+TASK:
 Modify the existing website according to the user's request.
 
-IMPORTANT RULES:
-- Return ONLY the complete updated HTML document.
-- Include HTML, CSS and JavaScript in the same HTML file.
-- Preserve existing functionality unless the user explicitly asks to change it.
-- Do not remove unrelated features.
-- Do not explain the changes.
+IMPORTANT:
+- Preserve all existing working features.
+- Do not remove unrelated functionality.
+- Return the COMPLETE HTML file.
+- HTML, CSS and JavaScript must all be inside the same HTML file.
+- Make the requested changes only.
+- Do not explain anything.
 - Do not use Markdown.
 - Do not use code fences.
-- The response must start with <!DOCTYPE html> or <html>.
-- Return the complete website, not only the changed section.
+- Start directly with <!DOCTYPE html>.
 `;
-    }
-
-    // =========================
-    // BUILD MODE
-    // =========================
-    else {
+    } else {
       instruction = `
-You are Miod, an AI website builder.
-
-Build a complete professional website based on the user's request.
+You are Miod, a professional AI website builder.
 
 USER REQUEST:
 ${prompt}
 
-IMPORTANT RULES:
-- Return ONLY the complete HTML document.
-- Include HTML, CSS and JavaScript in the same HTML file.
-- Make the website responsive for desktop, tablet and mobile.
-- Use professional modern UI.
-- Make the website functional, not just a visual mockup.
+TASK:
+Build a complete professional website based on the user's request.
+
+IMPORTANT:
+- Return ONLY the complete HTML file.
+- HTML, CSS and JavaScript must all be inside the same HTML file.
+- Make it responsive for desktop, tablet and mobile.
+- Make it functional, not just a visual mockup.
+- Use a professional premium UI.
 - Do not explain anything.
 - Do not use Markdown.
 - Do not use code fences.
-- The response must start with <!DOCTYPE html> or <html>.
+- Start directly with <!DOCTYPE html>.
 `;
     }
 
-    // =========================
-    // GEMINI API REQUEST
-    // =========================
-    const response = await fetch(
+    const geminiResponse = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
       {
         method: "POST",
@@ -120,53 +106,39 @@ IMPORTANT RULES:
       }
     );
 
-    // Read Gemini response
-    const data = await response.json();
+    const data = await geminiResponse.json();
 
-    // =========================
-    // GEMINI API ERROR
-    // =========================
-    if (!response.ok) {
-      console.error("Gemini API error:", data);
+    if (!geminiResponse.ok) {
+      console.error("Gemini API ERROR:", data);
 
-      return res.status(response.status).json({
+      return res.status(500).json({
         error:
           data?.error?.message ||
-          `Gemini API request failed (${response.status})`,
-        details: data?.error || null
+          "Gemini API request failed",
+
+        googleStatus: geminiResponse.status
       });
     }
 
-    // =========================
-    // EXTRACT TEXT
-    // =========================
-    const text =
+    const generatedText =
       data?.candidates?.[0]?.content?.parts
         ?.map(part => part?.text || "")
         .join("") || "";
 
-    if (!text.trim()) {
-      console.error("Empty Gemini response:", data);
+    if (!generatedText.trim()) {
+      console.error("EMPTY GEMINI RESPONSE:", data);
 
       return res.status(500).json({
-        error: "Gemini returned an empty response.",
-        details: data
+        error: "Gemini returned an empty response"
       });
     }
 
-    // =========================
-    // SUCCESS
-    // =========================
     return res.status(200).json({
-      text: text.trim(),
-
-      // Kept for compatibility with the current Miod frontend.
-      // generateContent itself does not create an interaction ID.
-      interactionId: previousInteractionId || null
+      text: generatedText.trim()
     });
 
   } catch (error) {
-    console.error("Gemini server error:", error);
+    console.error("MIOD SERVER ERROR:", error);
 
     return res.status(500).json({
       error: error?.message || "Internal server error"
