@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       });
     }
 
-    let instruction = "";
+    let instruction;
 
     if (mode === "edit" && currentCode) {
       instruction = `
@@ -45,10 +45,10 @@ Return ONLY the complete updated HTML document.
 Rules:
 - Return complete HTML.
 - Include HTML, CSS and JavaScript in the same file.
-- Do not use markdown.
-- Do not use ```html fences.
-- Do not explain anything.
 - Preserve existing functionality unless the user explicitly asks to change it.
+- Do not use markdown.
+- Do not use code fences.
+- Do not explain anything.
 `;
     } else {
       instruction = `
@@ -66,7 +66,7 @@ Rules:
 - Make it responsive for PC, tablet and mobile.
 - Use professional modern UI.
 - Do not use markdown.
-- Do not use ```html fences.
+- Do not use code fences.
 - Do not explain anything.
 `;
     }
@@ -124,8 +124,10 @@ Rules:
     });
 
   } catch (error) {
+    console.error("Gemini function error:", error);
+
     return res.status(500).json({
       error: error?.message || "Server error"
     });
   }
-}
+};
