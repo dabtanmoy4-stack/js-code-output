@@ -7,12 +7,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Get Gemini API key from Vercel
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Get OpenRouter API key from Vercel
+    const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
-        error: "GEMINI_API_KEY is missing in Vercel Environment Variables"
+        error: "OPENROUTER_API_KEY is missing in Vercel Environment Variables"
       });
     }
 
@@ -93,43 +93,42 @@ IMPORTANT:
     }
 
     // =========================
-    // GEMINI 3.8 FLASH
-    // GENERATE CONTENT API
+    // OPENROUTER
+    // FREE MODEL ROUTER
     // =========================
-    const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+    const openRouterResponse = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
 
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
+          "Authorization": `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://jscodoutput.in",
+          "X-Title": "Miod - Build with Miod"
         },
 
         body: JSON.stringify({
-          contents: [
+          model: "openrouter/free",
+
+          messages: [
             {
               role: "user",
-              parts: [
-                {
-                  text: instruction
-                }
-              ]
+              content: instruction
             }
           ],
 
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 30000
-          }
+          temperature: 0.7,
+
+          max_tokens: 30000
         })
       }
     );
 
     // =========================
-    // READ GEMINI RESPONSE
+    // READ OPENROUTER RESPONSE
     // =========================
-    const responseText = await geminiResponse.text();
+    const responseText = await openRouterResponse.text();
 
     let data = {};
 
@@ -139,35 +138,35 @@ IMPORTANT:
         : {};
     } catch (error) {
       console.error(
-        "GEMINI INVALID JSON:",
+        "OPENROUTER INVALID JSON:",
         responseText
       );
 
       return res.status(502).json({
-        error: "Gemini returned an invalid response",
-        googleStatus: geminiResponse.status
+        error: "OpenRouter returned an invalid response",
+        openRouterStatus: openRouterResponse.status
       });
     }
 
     // =========================
-    // GEMINI ERROR
+    // OPENROUTER ERROR
     // =========================
-    if (!geminiResponse.ok) {
+    if (!openRouterResponse.ok) {
       console.error(
-        "GEMINI API ERROR:",
+        "OPENROUTER API ERROR:",
         JSON.stringify(data, null, 2)
       );
 
-      return res.status(geminiResponse.status).json({
+      return res.status(openRouterResponse.status).json({
         error:
           data?.error?.message ||
-          "Gemini API request failed",
+          "OpenRouter API request failed",
 
-        googleStatus: geminiResponse.status,
+        openRouterStatus: openRouterResponse.status,
 
-        googleStatusText:
-          data?.error?.status ||
-          geminiResponse.statusText ||
+        openRouterStatusText:
+          data?.error?.code ||
+          openRouterResponse.statusText ||
           ""
       });
     }
@@ -178,19 +177,16 @@ IMPORTANT:
     let generatedText = "";
 
     if (
-      data?.candidates &&
-      Array.isArray(data.candidates)
+      data?.choices &&
+      Array.isArray(data.choices)
     ) {
-      for (const candidate of data.candidates) {
-        const parts =
-          candidate?.content?.parts;
+      for (const choice of data.choices) {
 
-        if (Array.isArray(parts)) {
-          for (const part of parts) {
-            if (typeof part?.text === "string") {
-              generatedText += part.text;
-            }
-          }
+        const content =
+          choice?.message?.content;
+
+        if (typeof content === "string") {
+          generatedText += content;
         }
       }
     }
@@ -200,12 +196,12 @@ IMPORTANT:
     // =========================
     if (!generatedText.trim()) {
       console.error(
-        "GEMINI EMPTY RESPONSE:",
+        "OPENROUTER EMPTY RESPONSE:",
         JSON.stringify(data, null, 2)
       );
 
       return res.status(502).json({
-        error: "Gemini returned an empty response"
+        error: "OpenRouter returned an empty response"
       });
     }
 
@@ -215,11 +211,14 @@ IMPORTANT:
     generatedText = generatedText.trim();
 
     if (generatedText.startsWith("```html")) {
+
       generatedText = generatedText
         .replace(/^```html\s*/i, "")
         .replace(/\s*```$/i, "")
         .trim();
+
     } else if (generatedText.startsWith("```")) {
+
       generatedText = generatedText
         .replace(/^```\s*/i, "")
         .replace(/\s*```$/i, "")
