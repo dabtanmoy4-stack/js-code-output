@@ -1,5 +1,5 @@
 module.exports = async function handler(req, res) {
-  // Only POST is allowed
+  // Only POST requests
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Get API key from Vercel Environment Variables
+    // Get Gemini API key from Vercel
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -21,10 +21,6 @@ module.exports = async function handler(req, res) {
     const prompt = String(body.prompt || "").trim();
     const currentCode = String(body.currentCode || "");
     const mode = String(body.mode || "build");
-    const previousInteractionId =
-      body.previousInteractionId
-        ? String(body.previousInteractionId)
-        : null;
 
     if (!prompt) {
       return res.status(400).json({
@@ -34,7 +30,9 @@ module.exports = async function handler(req, res) {
 
     let instruction = "";
 
-    // EDIT MODE
+    // =========================
+    // EDIT EXISTING WEBSITE
+    // =========================
     if (mode === "edit" && currentCode) {
       instruction = `
 You are Miod, a professional AI website builder.
@@ -48,23 +46,29 @@ ${currentCode}
 TASK:
 Modify the existing website according to the user's request.
 
-IMPORTANT RULES:
+VERY IMPORTANT:
 - Preserve ALL existing working features.
 - Do NOT remove unrelated features.
-- Do NOT break existing buttons, animations, layouts or JavaScript.
+- Do NOT break existing buttons.
+- Do NOT break existing JavaScript.
+- Do NOT break existing animations.
+- Do NOT break existing responsive layouts.
 - Change ONLY what the user requested.
+- Keep all existing useful functionality.
 - Return the COMPLETE HTML file.
 - HTML, CSS and JavaScript must remain inside ONE HTML file.
-- Make the requested changes fully functional.
+- The result must be fully functional.
 - Do not explain anything.
 - Do not use Markdown.
 - Do not use code fences.
 - Start directly with <!DOCTYPE html>.
 `;
-    }
 
-    // BUILD MODE
-    else {
+    } else {
+
+      // =========================
+      // BUILD NEW WEBSITE
+      // =========================
       instruction = `
 You are Miod, a professional AI website builder.
 
@@ -74,13 +78,13 @@ ${prompt}
 TASK:
 Build a complete professional website based on the user's request.
 
-IMPORTANT RULES:
+IMPORTANT:
 - Return ONLY the complete HTML file.
 - HTML, CSS and JavaScript must all be inside ONE HTML file.
 - Make the website fully functional.
-- Make it responsive for desktop, tablet and mobile.
+- Make it responsive on desktop, tablet and mobile.
 - Use a professional premium UI.
-- Include working interactions and JavaScript where needed.
+- Add working interactions and JavaScript when needed.
 - Do not explain anything.
 - Do not use Markdown.
 - Do not use code fences.
@@ -88,20 +92,12 @@ IMPORTANT RULES:
 `;
     }
 
-    // Gemini Interactions API request
-    const requestBody = {
-      model: "gemini-3.8-flash",
-      input: instruction
-    };
-
-    // Continue previous Miod conversation when available
-    if (previousInteractionId) {
-      requestBody.previous_interaction_id =
-        previousInteractionId;
-    }
-
+    // =========================
+    // GEMINI 3.8 FLASH
+    // GENERATE CONTENT API
+    // =========================
     const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/interactions",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
       {
         method: "POST",
 
@@ -110,11 +106,29 @@ IMPORTANT RULES:
           "x-goog-api-key": apiKey
         },
 
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: instruction
+                }
+              ]
+            }
+          ],
+
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 30000
+          }
+        })
       }
     );
 
-    // Read Gemini response safely
+    // =========================
+    // READ GEMINI RESPONSE
+    // =========================
     const responseText = await geminiResponse.text();
 
     let data = {};
@@ -123,9 +137,9 @@ IMPORTANT RULES:
       data = responseText
         ? JSON.parse(responseText)
         : {};
-    } catch (parseError) {
+    } catch (error) {
       console.error(
-        "GEMINI INVALID JSON RESPONSE:",
+        "GEMINI INVALID JSON:",
         responseText
       );
 
@@ -135,12 +149,14 @@ IMPORTANT RULES:
       });
     }
 
-    // Gemini returned an error
+    // =========================
+    // GEMINI ERROR
+    // =========================
     if (!geminiResponse.ok) {
-      console.error("GEMINI API ERROR:", {
-        status: geminiResponse.status,
-        data
-      });
+      console.error(
+        "GEMINI API ERROR:",
+        JSON.stringify(data, null, 2)
+      );
 
       return res.status(geminiResponse.status).json({
         error:
@@ -156,51 +172,32 @@ IMPORTANT RULES:
       });
     }
 
-    // Get generated text
+    // =========================
+    // GET GENERATED TEXT
+    // =========================
     let generatedText = "";
 
-    if (typeof data?.output_text === "string") {
-      generatedText = data.output_text;
+    if (
+      data?.candidates &&
+      Array.isArray(data.candidates)
+    ) {
+      for (const candidate of data.candidates) {
+        const parts =
+          candidate?.content?.parts;
+
+        if (Array.isArray(parts)) {
+          for (const part of parts) {
+            if (typeof part?.text === "string") {
+              generatedText += part.text;
+            }
+          }
+        }
+      }
     }
 
-    // Fallback for responses containing outputs
-    if (!generatedText && Array.isArray(data?.outputs)) {
-      generatedText = data.outputs
-        .map(item => {
-          if (typeof item?.text === "string") {
-            return item.text;
-          }
-
-          if (Array.isArray(item?.content)) {
-            return item.content
-              .map(content => content?.text || "")
-              .join("");
-          }
-
-          return "";
-        })
-        .join("");
-    }
-
-    // Fallback for step-based response
-    if (!generatedText && Array.isArray(data?.steps)) {
-      generatedText = data.steps
-        .map(step => {
-          if (typeof step?.text === "string") {
-            return step.text;
-          }
-
-          if (Array.isArray(step?.content)) {
-            return step.content
-              .map(content => content?.text || "")
-              .join("");
-          }
-
-          return "";
-        })
-        .join("");
-    }
-
+    // =========================
+    // EMPTY RESPONSE
+    // =========================
     if (!generatedText.trim()) {
       console.error(
         "GEMINI EMPTY RESPONSE:",
@@ -212,16 +209,36 @@ IMPORTANT RULES:
       });
     }
 
-    // Send result back to miod.html
-    return res.status(200).json({
-      text: generatedText.trim(),
+    // =========================
+    // CLEAN MARKDOWN CODE FENCE
+    // =========================
+    generatedText = generatedText.trim();
 
-      interactionId:
-        data?.id || null
+    if (generatedText.startsWith("```html")) {
+      generatedText = generatedText
+        .replace(/^```html\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
+    } else if (generatedText.startsWith("```")) {
+      generatedText = generatedText
+        .replace(/^```\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
+    }
+
+    // =========================
+    // SEND TO MIOD.HTML
+    // =========================
+    return res.status(200).json({
+      text: generatedText
     });
 
   } catch (error) {
-    console.error("MIOD SERVER ERROR:", error);
+
+    console.error(
+      "MIOD SERVER ERROR:",
+      error
+    );
 
     return res.status(500).json({
       error:
