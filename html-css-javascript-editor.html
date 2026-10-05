@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT</title>
+  
+  <meta name="description" content="Use JS CODE OUTPUT's free HTML CSS JavaScript editor online to write HTML, CSS and JavaScript together, preview your website and build web projects in your browser.">
+  <meta name="keywords" content="html css javascript editor, html css js editor, online html css javascript editor, html css javascript editor online, free web editor, online web development editor">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="canonical" href="https://js-code-output.vercel.app/html-css-javascript-editor.html">
+  <link rel="icon" type="image/jpeg" href="logo.jpeg">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT">
+  <meta property="og:description" content="Write HTML, CSS and JavaScript together and preview your web project online with JS CODE OUTPUT.">
+  <meta property="og:url" content="https://js-code-output.vercel.app/html-css-javascript-editor.html">
+  <meta property="og:site_name" content="JS CODE OUTPUT">
+  <meta property="og:image" content="https://js-code-output.vercel.app/logo.jpeg">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free HTML CSS JavaScript Editor Online | JS CODE OUTPUT">
+  <meta name="twitter:description" content="Build and preview HTML, CSS and JavaScript projects online.">
+  <meta name="twitter:image" content="https://js-code-output.vercel.app/logo.jpeg">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg-dark: #050505;
+      --bg-surface: #111111;
+      --card-bg: rgba(17, 17, 17, 0.6);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #8b949e;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --gradient-primary: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      --max-width: 1200px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.15), transparent 40%),
+        radial-gradient(circle at 85% 100%, rgba(139, 92, 246, 0.15), transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header & Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5, 5, 5, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 24px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .navlinks a:hover {
+      color: var(--text-main);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: transparent;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-hover);
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      transform: translateY(-1px);
+      border-color: transparent;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+    }
+
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Editor Window UI */
+    .editor-wrapper {
+      max-width: 1000px;
+      margin: 60px auto 0;
+      border-radius: 16px;
+      background: var(--gradient-primary);
+      padding: 1px;
+      box-shadow: 0 30px 60px rgba(0,0,0, 0.5), 0 0 40px rgba(59, 130, 246, 0.2);
+    }
+
+    .editor-window {
+      background: #0d1117;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .window-header {
+      background: #161b22;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .mac-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mac-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .mac-dots span:nth-child(1) { background: #ff5f56; }
+    .mac-dots span:nth-child(2) { background: #ffbd2e; }
+    .mac-dots span:nth-child(3) { background: #27c93f; }
+
+    .window-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #8b949e;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .code-panels {
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr;
+      border-right: 1px solid #30363d;
+    }
+
+    .code-panel {
+      padding: 16px;
+      border-bottom: 1px solid #30363d;
+    }
+    
+    .code-panel:last-child {
+      border-bottom: none;
+    }
+
+    .panel-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #8b949e;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .code-html { color: #e34c26; }
+    .code-css { color: #264de4; }
+    .code-js { color: #f7df1e; }
+
+    .preview-panel {
+      background: #ffffff;
+      color: #000;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-panel .panel-label {
+      color: #a0aec0;
+    }
+
+    .live-preview-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #e2e8f0;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .demo-output {
+      text-align: center;
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    .demo-output h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .demo-output p {
+      color: #64748b;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+
+    .demo-btn {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* Sections */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 50px;
+    }
+
+    .section-header h2 {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+    }
+
+    /* Grid Layouts */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-purple);
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.1);
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Steps Section */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    /* FAQ */
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    details {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    summary::after {
+      content: '+';
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+    
+    details[open] summary::after {
+      content: '-';
+    }
+
+    details p {
+      padding: 0 20px 20px;
+      color: var(--text-muted);
+    }
+
+    /* Related Links */
+    .related-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .tag-link {
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 0.9rem;
+    }
+
+    .tag-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .editor-grid {
+        grid-template-columns: 1fr;
+      }
+      .code-panels {
+        grid-template-rows: auto;
+        grid-template-columns: 1fr 1fr 1fr;
+        border-right: none;
+        border-bottom: 1px solid #30363d;
+      }
+      .code-panel {
+        border-bottom: none;
+        border-right: 1px solid #30363d;
+      }
+      .code-panel:last-child {
+        border-right: none;
+      }
+      .preview-panel {
+        min-height: 400px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navlinks { display: none; }
+      h1 { font-size: 2.2rem; }
+      .code-panels {
+        grid-template-columns: 1fr;
+      }
+      .code-panel {
+        border-right: none;
+        border-bottom: 1px solid #30363d;
+      }
+      .header-actions .btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+  <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="https://js-code-output.vercel.app/" class="brand" aria-label="JS CODE OUTPUT Home">
+        <img src="logo.jpeg" alt="JS CODE OUTPUT Logo">
+        <span>JS CODE OUTPUT</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/online-code-editor.html">Online Code Editor</a>
+        <a href="/html-editor.html">HTML</a>
+        <a href="/css-editor.html">CSS</a>
+        <a href="/javascript-editor.html">JavaScript</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn" href="https://js-code-output.vercel.app/">Go to Main Website</a>
+        <a class="btn btn-primary" href="/">Open Editor</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow">✦ Free HTML, CSS & JavaScript Editor</div>
+        <h1>
+          Build Web Projects <br>
+          <span class="text-gradient">Right in Your Browser</span>
+        </h1>
+        <p class="hero-desc">
+          Write HTML, style with CSS, and add logic with JavaScript seamlessly. Preview your code instantly without any setup or installations.
+        </p>
+        
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <a class="btn btn-primary" href="/">Start Coding Free →</a>
+          <a class="btn" href="#how-it-works">How It Works</a>
+        </div>
+
+        <!-- Awesome Editor UI Demo -->
+        <div class="editor-wrapper">
+          <div class="editor-window">
+            <div class="window-header">
+              <div class="mac-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="window-title">index.html — JS CODE OUTPUT</div>
+            </div>
+            
+            <div class="editor-grid">
+              <!-- Code Panels -->
+              <div class="code-panels">
+                <div class="code-panel">
+                  <div class="panel-label">HTML</div>
+                  <pre><span class="code-html">&lt;div class="card"&gt;</span>
+  &lt;h1&gt;Hello World&lt;/h1&gt;
+  &lt;button onclick="greet()"&gt;
+    Click Me
+  &lt;/button&gt;
+<span class="code-html">&lt;/div&gt;</span></pre>
+                </div>
+                
+                <div class="code-panel">
+                  <div class="panel-label">CSS</div>
+                  <pre><span class="code-css">.card {</span>
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+<span class="code-css">}</span></pre>
+                </div>
+
+                <div class="code-panel">
+                  <div class="panel-label">JAVASCRIPT</div>
+                  <pre><span class="code-js">function greet() {</span>
+  alert("Welcome to JS CODE OUTPUT!");
+<span class="code-js">}</span></pre>
+                </div>
+              </div>
+
+              <!-- Live Preview Panel -->
+              <div class="preview-panel">
+                <div class="panel-label">LIVE PREVIEW</div>
+                <div class="live-preview-box">
+                  <div class="demo-output">
+                    <h3>Hello World</h3>
+                    <p>Your HTML, CSS & JS run here.</p>
+                    <span class="demo-btn">Click Me</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <h2>One Workspace for Frontend</h2>
+          <p>Everything you need to write, test, and preview web technologies instantly.</p>
+        </div>
+        
+        <div class="features-grid">
+          <article class="card">
+            <div class="card-icon">&lt;/&gt;</div>
+            <h3>Write HTML</h3>
+            <p>Create the structure and layout of your webpages effortlessly in real-time.</p>
+          </article>
+          
+          <article class="card">
+            <div class="card-icon">#</div>
+            <h3>Style with CSS</h3>
+            <p>Design layouts, adjust spacing, colors, and make your site fully responsive.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">{ }</div>
+            <h3>Add JavaScript</h3>
+            <p>Implement logic and interactivity directly to make your static page alive.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">▶</div>
+            <h3>Live Preview</h3>
+            <p>See exactly how your HTML, CSS, and JS work together side-by-side.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section id="how-it-works" style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+      <div class="container">
+        <div class="section-header">
+          <h2>How It Works</h2>
+          <p>Four simple steps to bring your web development ideas to life.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <h3>Open Project</h3>
+            <p>Launch the editor instantly in your browser without any configuration.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <h3>Structure HTML</h3>
+            <p>Build the core elements of your UI in the dedicated HTML panel.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <h3>Style & Logic</h3>
+            <p>Use CSS for stunning designs and JavaScript for functionality.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">04</div>
+            <h3>Preview & Export</h3>
+            <p>Watch your code run live, debug instantly, and perfect your project.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section>
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+          <p>Common questions about using our online web editor.</p>
+        </div>
+
+        <div class="faq-container">
+          <details>
+            <summary>What is an HTML CSS JavaScript editor?</summary>
+            <p>It is a browser-based integrated development environment (IDE) that lets you write, test, and preview HTML, CSS, and JavaScript simultaneously without installing any local software.</p>
+          </details>
+          <details>
+            <summary>Is this editor completely free?</summary>
+            <p>Yes, JS CODE OUTPUT provides a totally free online coding experience for all web developers and learners.</p>
+          </details>
+          <details>
+            <summary>Can I use this on my mobile phone?</summary>
+            <p>Absolutely. Our editor is cloud-based and responsive, meaning you can code and test from your desktop, tablet, or smartphone browser.</p>
+          </details>
+          <details>
+            <summary>Is this suitable for beginners?</summary>
+            <p>Yes! It is highly recommended for beginners as it removes the complexity of setting up a local server and lets you focus strictly on learning the syntax and logic.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Links -->
+    <section style="padding-top: 0;">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+          <h2>Explore More Tools</h2>
+        </div>
+        <div class="related-links">
+          <a href="https://js-code-output.vercel.app/" class="tag-link">Main Website</a>
+          <a href="/online-code-editor.html" class="tag-link">Online Code Editor</a>
+          <a href="/html-editor.html" class="tag-link">HTML Editor</a>
+          <a href="/css-editor.html" class="tag-link">CSS Editor</a>
+          <a href="/javascript-editor.html" class="tag-link">JavaScript Editor</a>
+          <a href="/javascript-playground.html" class="tag-link">JS Playground</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section style="padding-top: 0;">
+      <div class="container">
+        <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 60px 20px; text-align: center;">
+          <h2 style="font-size: 2.5rem; margin-bottom: 16px;">Ready to code?</h2>
+          <p style="color: var(--text-muted); margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Experience the fastest way to write and preview web projects online. Jump in and start typing.
+          </p>
+          <a class="btn btn-primary" href="/" style="padding: 12px 32px; font-size: 1.1rem;">Launch Editor Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        © 2026 JS CODE OUTPUT. All rights reserved.
+      </div>
+      <div class="footer-links">
+        <a href="https://js-code-output.vercel.app/">Home</a>
+        <a href="/online-code-editor.html">Online Code Editor</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

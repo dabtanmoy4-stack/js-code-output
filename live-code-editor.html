@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Browser Tab-er jonno logo (Favicon) -->
+    <title>JS Code Output - Live Editor</title>
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+
+    <style>
+        /* Modern Dark Theme Variables */
+        :root {
+            --bg-main: #0d1117;
+            --bg-panel: #161b22;
+            --bg-header: #010409;
+            --text-primary: #c9d1d9;
+            --accent: #58a6ff;
+            --border-color: #30363d;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            margin: 0; 
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        /* Navbar Design */
+        .navbar { 
+            background: var(--bg-header); 
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-section img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+        .brand-section h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+        .visit-site-btn {
+            background: var(--accent);
+            color: #000000;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .visit-site-btn:hover {
+            opacity: 0.85;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+        }
+
+        /* Editor Layout */
+        .editor-container { 
+            display: flex; 
+            flex: 1; 
+            overflow: hidden;
+        }
+
+        /* Code Input Section */
+        .code-panels { 
+            display: flex; 
+            flex-direction: column; 
+            width: 45%; 
+            background: var(--bg-main); 
+            border-right: 1px solid var(--border-color);
+        }
+        .panel { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .panel:last-child {
+            border-bottom: none;
+        }
+        .panel-header { 
+            background: var(--bg-panel); 
+            color: #8b949e; 
+            padding: 6px 15px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        textarea { 
+            flex: 1; 
+            background: #0d1117; 
+            color: #e6edf3; 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            padding: 15px; 
+            border: none; 
+            resize: none; 
+            outline: none; 
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        /* Custom Scrollbar for Textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #484f58;
+            border-radius: 4px;
+        }
+
+        /* Live Preview Section */
+        .preview-container {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+        }
+        .preview-header {
+            background: var(--bg-panel); 
+            color: #8b949e; 
+            padding: 6px 15px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        iframe { 
+            flex: 1;
+            width: 100%;
+            border: none; 
+            background: #ffffff; 
+        }
+    </style>
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+<body>
+    
+    <!-- Top Navigation Bar -->
+    <div class="navbar">
+        <div class="brand-section">
+            <img src="logo.jpeg" alt="JS Code Output Logo">
+            <h1>JS Code Output - Live Editor</h1>
+        </div>
+        <a href="https://js-code-output.vercel.app" class="visit-site-btn" target="_blank">
+            Visit Main Website
+        </a>
+    </div>
+
+    <!-- Main Editor Area -->
+    <div class="editor-container">
+        
+        <!-- Left Side: Code Inputs -->
+        <div class="code-panels">
+            <div class="panel">
+                <div class="panel-header">HTML</div>
+                <textarea id="html-code" placeholder="Write your HTML here..." oninput="runCode()"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header">CSS</div>
+                <textarea id="css-code" placeholder="Write your CSS here..." oninput="runCode()"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header">JavaScript</div>
+                <textarea id="js-code" placeholder="Write your JS here..." oninput="runCode()"></textarea>
+            </div>
+        </div>
+
+        <!-- Right Side: Live Output -->
+        <div class="preview-container">
+            <div class="preview-header">Live Preview</div>
+            <iframe id="output"></iframe>
+        </div>
+        
+    </div>
+
+    <script>
+        function runCode() {
+            let htmlCode = document.getElementById("html-code").value;
+            let cssCode = "<style>" + document.getElementById("css-code").value + "</style>";
+            let jsCode = document.getElementById("js-code").value;
+            let iframe = document.getElementById("output");
+            
+            // Writing to Iframe
+            let doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(htmlCode + cssCode);
+            doc.close();
+
+            // Running JS safely
+            try {
+                if(jsCode.trim() !== ""){
+                    iframe.contentWindow.eval(jsCode);
+                }
+            } catch (e) {
+                // Error ignore korbe typing er somoy
+            }
+        }
+    </script>
+</body>
+</html>

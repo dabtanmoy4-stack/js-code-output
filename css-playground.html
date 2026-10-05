@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Editor | JS CODE OUTPUT</title>
+<meta name="description" content="JS CODE OUTPUT CSS Editor — write, test and preview CSS in a focused browser-first environment.">
+
+<style>
+:root{
+  --warm:#f5efe3;
+  --warm2:#eee5d4;
+  --paper:#fffaf0;
+  --ink:#090806;
+  --black:#050504;
+  --gold:#c79527;
+  --gold2:#e5bd5a;
+  --brown:#80602a;
+  --muted:#6e6556;
+  --line:rgba(35,27,13,.14);
+  --shadow:0 24px 70px rgba(54,39,11,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 12%,rgba(229,189,90,.25),transparent 24%),
+    radial-gradient(circle at 92% 18%,rgba(199,149,39,.18),transparent 25%),
+    linear-gradient(180deg,var(--warm),var(--warm2));
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow-x:hidden;
+}
+body:before,body:after{
+  content:"";
+  position:fixed;
+  width:380px;height:380px;border-radius:50%;
+  pointer-events:none;filter:blur(60px);opacity:.17;z-index:-1;
+  background:var(--gold2);
+  animation:float 12s ease-in-out infinite alternate;
+}
+body:before{left:-180px;top:25vh}
+body:after{right:-180px;top:65vh;animation-delay:-5s}
+@keyframes float{from{transform:translate3d(0,0,0)}to{transform:translate3d(80px,-45px,0)}}
+a{text-decoration:none;color:inherit}
+.container{width:min(1180px,calc(100% - 34px));margin:auto}
+.navbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(245,239,227,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:-.035em}
+.brand img{width:42px;height:42px;object-fit:contain;border-radius:11px;box-shadow:0 7px 25px rgba(199,149,39,.25)}
+.nav-links{display:flex;gap:20px;font-size:13px;font-weight:700;color:var(--muted)}
+.nav-links a:hover{color:var(--black)}
+.button{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 17px;border-radius:11px;
+  border:1px solid var(--line);font-size:13px;font-weight:800;
+  transition:.25s ease;background:rgba(255,250,240,.55)
+}
+.button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(69,49,11,.12)}
+.button.primary{color:#fff;background:var(--black);border-color:var(--black)}
+
+.main-website-btn{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  background:#050504 !important;
+  color:#fff8e8 !important;
+  border-color:rgba(255,248,232,.24) !important;
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+.main-website-btn span{
+  position:relative;
+  z-index:2;
+}
+.main-website-btn::before{
+  content:"";
+  position:absolute;
+  inset:-130% -45%;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255,248,232,.03) 42%,
+    rgba(255,248,232,.30) 50%,
+    rgba(255,248,232,.06) 57%,
+    transparent 65%
+  );
+  transform:translateX(-42%);
+  animation:warmWhiteSweep 4.8s ease-in-out infinite;
+}
+.main-website-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 110%,rgba(255,248,232,.10),transparent 55%);
+  opacity:.7;
+}
+.main-website-btn:hover{
+  border-color:rgba(255,248,232,.52) !important;
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.36),
+    0 0 28px rgba(255,248,232,.13);
+  transform:translateY(-2px);
+}
+@keyframes warmWhiteSweep{
+  0%{transform:translateX(-42%) rotate(0deg)}
+  55%,100%{transform:translateX(42%) rotate(0deg)}
+}
+
+.hero{padding:78px 0 54px;text-align:center}
+.eyebrow{
+  display:inline-flex;padding:7px 13px;border:1px solid rgba(199,149,39,.38);
+  border-radius:999px;color:#72531d;background:rgba(229,189,90,.12);
+  font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase
+}
+h1{
+  margin:20px auto 16px;max-width:900px;font-size:clamp(45px,7vw,78px);
+  line-height:1;letter-spacing:-.065em
+}
+.gold-text{
+  background:linear-gradient(100deg,#7e5b1d,#d9a938 28%,#fff0a5 50%,#b47d18 72%,#7a571b);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 5s linear infinite
+}
+@keyframes shine{to{background-position:220% center}}
+.hero p{max-width:720px;margin:0 auto;color:var(--muted);font-size:17px;line-height:1.75}
+.hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:25px}
+
+.image-feature{
+  margin:20px auto 0;max-width:1000px;position:relative;overflow:hidden;
+  border:1px solid rgba(199,149,39,.28);border-radius:25px;background:var(--black);
+  box-shadow:var(--shadow)
+}
+.image-feature:after{
+  content:"";position:absolute;inset:-80% -20%;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,231,151,.23) 50%,transparent 58%);
+  transform:translateX(-60%);animation:sweep 6s ease-in-out infinite;pointer-events:none
+}
+@keyframes sweep{50%,100%{transform:translateX(60%)}}
+.image-feature img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;opacity:.96}
+
+.section{padding:78px 0}
+.section-head{max-width:760px;margin:0 auto 36px;text-align:center}
+.section-head h2{margin:0 0 12px;font-size:clamp(31px,5vw,49px);letter-spacing:-.055em}
+.section-head p{margin:0;color:var(--muted);line-height:1.75}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+  padding:26px;border:1px solid var(--line);border-radius:19px;background:rgba(255,250,240,.62);
+  box-shadow:0 14px 42px rgba(60,44,14,.07);transition:.25s
+}
+.card:hover{transform:translateY(-5px);border-color:rgba(199,149,39,.5)}
+.card h3{margin:0 0 8px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+.icon{
+  width:43px;height:43px;display:grid;place-items:center;margin-bottom:16px;border-radius:12px;
+  background:var(--black);color:var(--gold2);font-weight:900
+}
+
+/* EDITOR */
+.editor-wrap{
+  margin-top:38px;border-radius:24px;padding:1px;
+  background:linear-gradient(120deg,#6e4d14,#f3d77f,#0a0906,#c28e24);
+  background-size:250% 250%;animation:borderGlow 7s ease infinite;box-shadow:0 30px 90px rgba(48,34,8,.2)
+}
+@keyframes borderGlow{50%{background-position:100% 50%}}
+.editor{
+  overflow:hidden;border-radius:23px;background:#080705;color:#f6efe1
+}
+.editor-bar{
+  min-height:56px;display:flex;align-items:center;gap:7px;padding:0 15px;
+  border-bottom:1px solid rgba(255,255,255,.1);background:#0d0b08
+}
+.dot{width:9px;height:9px;border-radius:50%;background:#b99343}
+.file-name{margin-left:9px;color:#bcae93;font:11px Consolas,monospace}
+.editor-actions{margin-left:auto;display:flex;gap:7px}
+.editor-btn{
+  border:1px solid rgba(255,255,255,.12);background:#15120d;color:#d9ccb4;
+  border-radius:8px;padding:8px 11px;cursor:pointer;font-size:11px;font-weight:800
+}
+.editor-btn.primary{background:linear-gradient(135deg,#b77e17,#e2bd57);color:#090705;border:0}
+.workspace{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+.editors{display:flex;flex-direction:column;min-width:0;border-right:1px solid rgba(255,255,255,.1)}
+.tabs{height:43px;display:flex;background:#100d09;border-bottom:1px solid rgba(255,255,255,.1)}
+.tab{height:43px;padding:0 16px;border:0;background:transparent;color:#9c907c;font-size:11px;font-weight:800}
+.tab.active{color:#f2cf75;border-bottom:2px solid #d3a238}
+.panel{flex:1;display:flex;flex-direction:column;border-bottom:1px solid rgba(255,255,255,.08)}
+.panel:last-child{border-bottom:0}
+.panel-head{height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;background:#120f0b;color:#b7aa94;font-size:10px;font-weight:800}
+.language{display:flex;gap:7px;align-items:center}.lang-dot{width:7px;height:7px;border-radius:50%;background:#d1a442}
+.clear{border:0;background:transparent;color:#817662;cursor:pointer;font-size:10px}
+textarea{
+  flex:1;width:100%;min-height:0;resize:none;outline:0;border:0;padding:14px;
+  background:#090806;color:#eadfcf;font:13px/1.65 Consolas,"Fira Code",monospace;tab-size:2
+}
+textarea::selection{background:rgba(216,174,69,.3)}
+.preview{min-width:0;display:flex;flex-direction:column;background:#0c0a07}
+.preview-head{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(255,255,255,.1);color:#b8ac96;font-size:10px;font-weight:800}
+.live{display:flex;gap:6px;align-items:center;color:#988c78}.live i{width:6px;height:6px;border-radius:50%;background:#d8ae45;box-shadow:0 0 10px #d8ae45}
+.preview-area{flex:1;padding:16px;background:#e9dfcc}
+iframe{display:block;width:100%;height:100%;min-height:440px;border:0;border-radius:12px;background:#fff;box-shadow:0 15px 40px rgba(0,0,0,.2)}
+.console{height:0;overflow:hidden;background:#070605;border-top:1px solid rgba(255,255,255,.1);transition:.25s}.console.open{height:145px}
+.console-head{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#b4a78f;font-size:10px;font-weight:800}
+.console-body{height:calc(100% - 34px);overflow:auto;padding:7px 12px;font:11px Consolas,monospace}.console-ok{color:#d5b65c}
+
+.explain{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center
+}
+.explain-box{
+  padding:31px;border-radius:22px;background:rgba(255,250,240,.65);border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.explain-box h3{margin:0 0 10px;font-size:24px;letter-spacing:-.035em}.explain-box p{margin:0;color:var(--muted);line-height:1.8}
+.visual{
+  position:relative;overflow:hidden;border-radius:22px;background:var(--black);box-shadow:var(--shadow)
+}
+.visual img{display:block;width:100%;height:100%;min-height:340px;object-fit:cover}
+.visual:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,rgba(239,205,114,.22) 50%,transparent 75%);transform:translateX(-100%);animation:sweep 6s infinite}
+
+.reason-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.reason{padding:25px;border-radius:18px;background:var(--black);color:#f5ecdc;border:1px solid rgba(229,189,90,.18)}
+.reason b{display:block;color:#e5bd5a;margin-bottom:8px;font-size:16px}.reason p{margin:0;color:#bdb19d;font-size:13px;line-height:1.7}
+
+footer{
+  padding:55px 0 25px;background:#070604;color:#c8bca6;border-top:1px solid rgba(229,189,90,.2)
+}
+.footer-top{display:grid;grid-template-columns:1.4fr .8fr .9fr 1fr;gap:34px}
+.footer-brand .brand-name{font-size:21px;font-weight:950;color:#fff0bc;letter-spacing:.04em}
+.footer-brand p{max-width:340px;color:#968b78;font-size:13px;line-height:1.75}
+footer h4{margin:0 0 13px;color:#e6bd5a;font-size:13px}
+.footer-links{display:flex;flex-direction:column;gap:9px}
+.footer-links a{font-size:12px;color:#a99d89;transition:.2s}.footer-links a:hover{color:#f3d77f}
+.footer-bottom{margin-top:38px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:11px}
+.footer-keywords{display:block;margin-top:9px;color:#716957;line-height:1.8}
+
+@media(max-width:900px){
+  .nav-links{display:none}.cards,.reason-grid{grid-template-columns:1fr 1fr}
+  .explain,.footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .workspace{grid-template-columns:1fr}.editors{min-height:520px;border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .preview{min-height:500px}.cards,.reason-grid,.explain,.footer-top{grid-template-columns:1fr}
+  .editor-actions .editor-btn:not(.primary){display:none}.hero{padding-top:55px}
+  .container{width:min(1180px,calc(100% - 22px))}
+}
+</style>
+  <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+
+<body>
+<header class="navbar">
+  <div class="container nav">
+    <a class="brand" href="index.html.html" aria-label="JS CODE OUTPUT Home">
+      <img src="logo.jpeg" alt="JS CODE OUTPUT logo">
+      <span>JS CODE OUTPUT</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html.html">Home</a>
+      <a href="online-code-editor.html">Online Code Editor</a>
+      <a href="html-editor.html">HTML Editor</a>
+      <a href="javascript-editor.html">JavaScript Editor</a>
+      <a href="css-editor.html">CSS Editor</a>
+    </nav>
+    <a class="button primary main-website-btn" href="index.html.html"><span>↗ Open Main Website</span></a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="eyebrow">CSS Editor · JS CODE OUTPUT</span>
+    <h1>Write CSS.<br><span class="gold-text">See It Come Alive.</span></h1>
+    <p>JS CODE OUTPUT provides a focused browser-first CSS editing experience designed to make learning, testing, and experimenting with styles simple and practical. Write your CSS, change layouts, adjust colors, test responsive ideas, and see the result immediately in the live preview without leaving the page.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="#editor">Start Coding →</a>
+      <a class="button main-website-btn" href="index.html.html"><span>Open Main Website ↗</span></a>
+    </div>
+    <div class="image-feature">
+      <img src="css.png" alt="CSS Editor">
+    </div>
+  </div>
+</section>
+
+<section class="section" id="editor">
+  <div class="container">
+    <div class="section-head">
+      <h2>CSS Editor</h2>
+      <p>The CSS Editor brings HTML, CSS, execution, and live output together in one workspace. You can write or modify your code, run it instantly, and inspect the rendered result beside the editor. This makes it easier to understand how individual CSS properties affect a real webpage while you experiment and improve your code.</p>
+    </div>
+
+    <div class="editor-wrap">
+      <div class="editor">
+        <div class="editor-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="file-name">css-editor.html — JS CODE OUTPUT</span>
+          <div class="editor-actions">
+            <button class="editor-btn" onclick="resetCode()">Reset</button>
+            <button class="editor-btn" onclick="toggleConsole()">Console</button>
+            <button class="editor-btn primary" onclick="runCode()">▶ Run</button>
+          </div>
+        </div>
+
+        <div class="workspace">
+          <div class="editors">
+            <div class="tabs"><button class="tab active">HTML + CSS</button></div>
+            <div class="panel">
+              <div class="panel-head"><div class="language"><span class="lang-dot"></span>HTML</div><button class="clear" onclick="clearEditor('html-code')">Clear</button></div>
+              <textarea id="html-code" spellcheck="false" oninput="scheduleRun()" onkeydown="handleTab(event)"></textarea>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="language"><span class="lang-dot"></span>CSS</div><button class="clear" onclick="clearEditor('css-code')">Clear</button></div>
+              <textarea id="css-code" spellcheck="false" oninput="scheduleRun()" onkeydown="handleTab(event)"></textarea>
+            </div>
+          </div>
+          <div class="preview">
+            <div class="preview-head"><span>LIVE PREVIEW</span><span class="live"><i></i> Live</span></div>
+            <div class="preview-area"><iframe id="output" title="CSS Editor Live Preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
+          </div>
+        </div>
+
+        <div class="console" id="console">
+          <div class="console-head"><span>Developer Console</span><button class="editor-btn" onclick="clearConsole()">Clear</button></div>
+          <div class="console-body" id="console-body"><div class="console-ok">› Ready.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>What is JS CODE OUTPUT?</h2>
+      <p>JS CODE OUTPUT is a browser-first environment built around writing code, running it and seeing the output without unnecessary complexity.</p>
+    </div>
+    <div class="cards">
+      <article class="card"><div class="icon">01</div><h3>Write Code</h3><p>Use focused browser-based editors to write HTML, CSS, and JavaScript in a clean workspace. You can experiment with page structure, styling, spacing, typography, buttons, cards, and other interface elements while keeping your attention on the code and the result.</p></article>
+      <article class="card"><div class="icon">02</div><h3>Run It</h3><p>Run your code quickly whenever you make a change or want to test a new idea. The workflow is designed to reduce unnecessary steps so you can spend more time practicing, debugging, experimenting, and understanding how your code behaves.</p></article>
+      <article class="card"><div class="icon">03</div><h3>See the Output</h3><p>Live previews show the result of your work directly in the browser. Seeing the rendered page while editing helps you connect CSS rules with their visual effects and makes it easier to identify layout, spacing, color, and styling changes.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="explain">
+      <div class="explain-box">
+        <h3>Why use JS CODE OUTPUT as your CSS Editor?</h3>
+        <p>Learning CSS becomes much more practical when you can make a change and immediately see what that change does on a real page. JS CODE OUTPUT is built around that simple idea. Instead of switching between several tools, you can write your HTML and CSS, run the code, and inspect the result in the same browser-based workspace. This makes it useful for beginners who are learning the fundamentals as well as developers who want a quick environment for testing layouts, colors, spacing, typography, buttons, cards, responsive designs, and other styling ideas.</p>
+      </div>
+      <div class="visual">
+        <img src="av.jpeg" alt="JS CODE OUTPUT beginner friendly learning">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Why is JS CODE OUTPUT useful for beginners?</h2>
+      <p>Learning CSS becomes easier when the distance between writing code and seeing the result is small. A beginner can make a small change, run the code, observe the result, and then try another change without a complicated setup. This repeated practice helps turn CSS concepts into practical understanding.</p>
+    </div>
+    <div class="reason-grid">
+      <article class="reason"><b>Simple workflow</b><p>The workflow stays straightforward from beginning to end. Write your HTML and CSS, run the code, and see the rendered result. Keeping these steps together makes it easier to concentrate on learning and experimentation instead of dealing with unnecessary setup.</p></article>
+      <article class="reason"><b>Instant feedback</b><p>The live preview provides immediate visual feedback as you work. When you change a CSS property, you can quickly observe how the page responds, making it easier to understand selectors, spacing, colors, sizing, positioning, and other styling concepts.</p></article>
+      <article class="reason"><b>Practice without friction</b><p>You can experiment with styles and layouts directly in the browser without building a complicated local setup for every small experiment. Try an idea, change it, compare the result, and continue practicing at your own pace.</p></article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand-name">JS CODE OUTPUT</div>
+        <p>Write code, run it, and see the output in a focused browser-first environment built for learning, testing, experimenting, and building. JS CODE OUTPUT brings useful coding tools together so you can practice web development and explore ideas directly in your browser.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/">Home</a>
+          <a href="https://jscodoutput.in/about.html">About</a>
+          <a href="https://jscodoutput.in/contact.html">Contact</a>
+          <a href="https://jscodoutput.in/privacy.html">Privacy</a>
+          <a href="https://jscodoutput.in/terms.html">Terms</a>
+        </div>
+      </div>
+      <div>
+        <h4>Editors</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/online-code-editor.html">Online Code Editor</a>
+          <a href="https://jscodoutput.in/html-editor.html">HTML Editor</a>
+          <a href="https://jscodoutput.in/css-editor.html">CSS Editor</a>
+          <a href="https://jscodoutput.in/javascript-editor.html">JavaScript Editor</a>
+          <a href="https://jscodoutput.in/javascript-playground.html">JavaScript Playground</a>
+          <a href="https://jscodoutput.in/html-css-js-editor.html">HTML/CSS/JS Editor</a>
+          <a href="https://jscodoutput.in/html-playground.html">HTML Playground</a>
+          <a href="https://jscodoutput.in/css-playground.html">CSS Playground</a>
+          <a href="https://jscodoutput.in/js-playground.html">JS Playground</a>
+        </div>
+      </div>
+      <div>
+        <h4>More</h4>
+        <div class="footer-links">
+          <a href="https://jscodoutput.in/online-css-editor.html">Online CSS Editor</a>
+          <a href="https://jscodoutput.in/online-javascript-editor.html">Online JavaScript Editor</a>
+          <a href="https://jscodoutput.in/online-html-editor.html">Online HTML Editor</a>
+          <a href="https://jscodoutput.in/online-js-editor.html">Online JS Editor</a>
+          <a href="https://jscodoutput.in/live-code-editor.html">Live Code Editor</a>
+          <a href="https://jscodoutput.in/live-code-playground.html">Live Code Playground</a>
+          <a href="https://jscodoutput.in/online-web-editor.html">Online Web Editor</a>
+          <a href="https://jscodoutput.in/web-code-editor.html">Web Code Editor</a>
+          <a href="https://jscodoutput.in/code-editor-with-live-preview.html">Editor with Live Preview</a>
+          <a href="https://jscodoutput.in/code-output.html">Code Output</a>
+          <a href="https://jscodoutput.in/live-output-code.html">LIVE OUTPUT Code</a>
+          <a href="https://jscodoutput.in/mini-browser.html">Mini Browser</a>
+          <a href="https://jscodoutput.in/real-time-code-output.html">Real Time Code Output</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 JS CODE OUTPUT. All rights reserved.</div>
+      <span class="footer-keywords">Online Code Editor · HTML Editor · CSS Editor · JavaScript Editor · JavaScript Playground · HTML/CSS/JS Editor · Online CSS Editor · Online JavaScript Editor · HTML Playground · Online HTML Editor · CSS Playground · JS Playground · Online JS Editor · Live Code Editor · Live Code Playground · Online Web Editor · Web Code Editor · Editor with Live Preview · Code Output · LIVE OUTPUT Code · Mini Browser · Real Time Code Output</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const defaultHTML = `<div class="demo">
+  <h1>CSS Editor</h1>
+  <p>Change the CSS and see the result instantly.</p>
+  <button onclick="this.textContent='It works! ✓'">Test Button</button>
+</div>`;
+
+const defaultCSS = `body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  background: #f5efe3;
+}
+
+.demo {
+  width: min(90%, 520px);
+  padding: 35px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 55px rgba(0,0,0,.12);
+}
+
+h1 {
+  color: #b47d18;
+}
+
+p {
+  color: #6e6556;
+}
+
+button {
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: white;
+  background: #090806;
+  cursor: pointer;
+}`;
+
+const htmlEditor=document.getElementById("html-code");
+const cssEditor=document.getElementById("css-code");
+const output=document.getElementById("output");
+htmlEditor.value=defaultHTML;
+cssEditor.value=defaultCSS;
+let timer;
+
+function runCode(){
+  const html=htmlEditor.value;
+  const css=cssEditor.value.replace(/<\/style/gi,"<\\/style");
+  output.srcdoc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>${css}</style></head><body>${html}</body></html>`;
+  addConsole("Preview updated successfully.","console-ok");
+}
+function scheduleRun(){clearTimeout(timer);timer=setTimeout(runCode,180)}
+function clearEditor(id){document.getElementById(id).value="";runCode()}
+function resetCode(){htmlEditor.value=defaultHTML;cssEditor.value=defaultCSS;runCode();addConsole("Editor reset.","console-ok")}
+function handleTab(e){
+  if(e.key==="Tab"){
+    e.preventDefault();const ed=e.target,s=ed.selectionStart,en=ed.selectionEnd;
+    ed.value=ed.value.substring(0,s)+"  "+ed.value.substring(en);
+    ed.selectionStart=ed.selectionEnd=s+2;scheduleRun();
+  }
+}
+function toggleConsole(){document.getElementById("console").classList.toggle("open")}
+function clearConsole(){document.getElementById("console-body").innerHTML=""}
+function addConsole(message,type){
+  const body=document.getElementById("console-body"),line=document.createElement("div");
+  line.className=type||"console-ok";line.textContent="› "+message;body.appendChild(line);body.scrollTop=body.scrollHeight;
+}
+runCode();
+</script>
+</body>
+</html>

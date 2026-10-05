@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "js-ai-assistant-66b1d",
+    "jscodoutput": "js-code-output"
+  },
+  "targets": {},
+  "etags": {}
+}

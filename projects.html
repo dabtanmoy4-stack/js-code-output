@@ -1,0 +1,4378 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9870552994374147"
+       crossorigin="anonymous"></script>
+  <title>JS CODE OUTPUT — Projects</title>
+
+  <link rel="icon" href="logo.jpeg" type="image/jpeg">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --surface:#fff;
+      --surface2:#f1f4f8;
+      --ink:#111827;
+      --muted:#667085;
+      --line:#dfe4ea;
+      --brand:#1456b8;
+      --brand2:#2f7be5;
+      --shadow:0 20px 60px rgba(15,35,65,.10);
+    }
+
+    html.dark{
+      --bg:#07101d;
+      --surface:#0c1624;
+      --surface2:#111d2d;
+      --ink:#f8fafc;
+      --muted:#94a3b8;
+      --line:#223149;
+      --brand:#4f8fe8;
+      --brand2:#6ea8ff;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+
+    body{
+      overflow-x:hidden;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    button{
+      cursor:pointer;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    ::-webkit-scrollbar{
+      width:6px;
+      height:6px;
+    }
+
+    ::-webkit-scrollbar-thumb{
+      background:rgba(100,116,139,.3);
+      border-radius:3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover{
+      background:rgba(100,116,139,.5);
+    }
+
+
+    /* =========================
+       PROFESSIONAL AMBIENT BACKGROUND
+       ========================= */
+
+    body{
+      position:relative;
+      isolation:isolate;
+    }
+
+    .ambient-background{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      overflow:hidden;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(66,133,244,.10), transparent 30%),
+        radial-gradient(circle at 88% 82%, rgba(52,168,83,.08), transparent 28%);
+    }
+
+    .ambient-grid{
+      position:absolute;
+      inset:-20%;
+      opacity:.24;
+      background-image:
+        linear-gradient(rgba(20,86,184,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20,86,184,.055) 1px, transparent 1px);
+      background-size:44px 44px;
+      transform:perspective(800px) rotateX(58deg) scale(1.45);
+      transform-origin:center bottom;
+      animation:gridDrift 18s linear infinite;
+      mask-image:linear-gradient(to bottom, transparent 0%, black 25%, black 70%, transparent 100%);
+    }
+
+    .ambient-orb{
+      position:absolute;
+      width:34vw;
+      height:34vw;
+      min-width:240px;
+      min-height:240px;
+      border-radius:50%;
+      filter:blur(50px);
+      opacity:.18;
+      will-change:transform;
+      mix-blend-mode:multiply;
+    }
+
+    .ambient-orb-a{
+      top:-12vw;
+      left:-8vw;
+      background:#4285f4;
+      animation:orbFloatA 17s ease-in-out infinite alternate;
+    }
+
+    .ambient-orb-b{
+      right:-10vw;
+      top:18%;
+      background:#34a853;
+      animation:orbFloatB 21s ease-in-out infinite alternate;
+    }
+
+    .ambient-orb-c{
+      left:32%;
+      bottom:-18vw;
+      background:#a142f4;
+      animation:orbFloatC 19s ease-in-out infinite alternate;
+    }
+
+    html.dark .ambient-background{
+      background:
+        radial-gradient(circle at 12% 18%, rgba(79,143,232,.15), transparent 30%),
+        radial-gradient(circle at 88% 82%, rgba(52,168,83,.10), transparent 28%);
+    }
+
+    html.dark .ambient-grid{
+      opacity:.18;
+      background-image:
+        linear-gradient(rgba(110,168,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,168,255,.08) 1px, transparent 1px);
+    }
+
+    html.dark .ambient-orb{
+      opacity:.13;
+      mix-blend-mode:screen;
+    }
+
+    @keyframes gridDrift{
+      from{transform:perspective(800px) rotateX(58deg) scale(1.45) translate3d(0,0,0)}
+      to{transform:perspective(800px) rotateX(58deg) scale(1.45) translate3d(0,44px,0)}
+    }
+
+    @keyframes orbFloatA{
+      0%{transform:translate3d(0,0,0) scale(1)}
+      100%{transform:translate3d(13vw,9vh,0) scale(1.16)}
+    }
+
+    @keyframes orbFloatB{
+      0%{transform:translate3d(0,0,0) scale(1)}
+      100%{transform:translate3d(-10vw,13vh,0) scale(1.12)}
+    }
+
+    @keyframes orbFloatC{
+      0%{transform:translate3d(0,0,0) scale(1)}
+      100%{transform:translate3d(7vw,-11vh,0) scale(1.18)}
+    }
+
+    /* =========================
+       COMPACT APPEARANCE BUTTON
+       ========================= */
+
+    .theme-toggle{
+      position:relative;
+      width:40px;
+      height:40px;
+      min-width:40px;
+      padding:0;
+      margin:0;
+      border:0;
+      border-radius:50%;
+      background:#303030;
+      color:#f1f3f4;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 40px;
+      cursor:pointer;
+      outline:none;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.06);
+      transition:background .22s ease,box-shadow .22s ease,transform .16s ease;
+      z-index:10;
+    }
+
+    .theme-toggle:hover{
+      background:#3a3a3a;
+      box-shadow:0 4px 12px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .theme-toggle:active{transform:scale(.94)}
+
+    .theme-toggle:focus-visible{
+      box-shadow:0 0 0 3px rgba(66,133,244,.25),0 3px 10px rgba(0,0,0,.18);
+    }
+
+    .theme-icon{
+      position:absolute;
+      inset:0;
+      width:18px;
+      height:18px;
+      margin:auto;
+      fill:none;
+      stroke:#f1f3f4;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      pointer-events:none;
+      transition:opacity .25s ease,transform .3s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .theme-sun{
+      opacity:1;
+      transform:rotate(0deg) scale(1);
+    }
+
+    .theme-moon{
+      opacity:0;
+      transform:rotate(-35deg) scale(.55);
+    }
+
+    html.dark .theme-sun{
+      opacity:0;
+      transform:rotate(35deg) scale(.55);
+    }
+
+    html.dark .theme-moon{
+      opacity:1;
+      transform:rotate(0deg) scale(1);
+    }
+
+    /* Let the existing Tailwind utility text colors follow the selected theme. */
+    html.dark .text-gray-400{color:#94a3b8!important}
+    html.dark .text-gray-500{color:#94a3b8!important}
+
+    .projects-page{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(247,249,252,.92));
+      backdrop-filter:blur(2px);
+    }
+
+    html.dark .projects-page{
+      background:
+        linear-gradient(180deg, rgba(7,16,29,.86), rgba(7,16,29,.94));
+    }
+
+    .projects-header{
+      background:color-mix(in srgb, var(--surface) 88%, transparent);
+      backdrop-filter:blur(18px) saturate(150%);
+      -webkit-backdrop-filter:blur(18px) saturate(150%);
+    }
+
+    .project-card{
+      background:color-mix(in srgb, var(--surface) 91%, transparent);
+      backdrop-filter:blur(12px);
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .ambient-orb,.ambient-grid{animation:none!important}
+      .theme-toggle-knob,.theme-icon{transition:none!important}
+    }
+
+    /* =========================
+       PROJECT PAGE
+       ========================= */
+
+    .projects-page{
+      position:fixed;
+      inset:0;
+      z-index:900;
+      background:var(--bg);
+      color:var(--ink);
+      overflow:auto;
+    }
+
+    .projects-header{
+      height:68px;
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 5vw;
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+
+    .projects-main{
+      width:100%;
+      max-width:1150px;
+      margin:auto;
+      padding:45px 5vw 70px;
+    }
+
+    .projects-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .project-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:22px;
+      cursor:pointer;
+      transition:.2s;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:140px;
+      user-select:none;
+    }
+
+    .project-card:hover{
+      transform:translateY(-3px);
+      border-color:var(--brand);
+      box-shadow:var(--shadow);
+    }
+
+    .project-card:active{
+      transform:scale(.985);
+    }
+
+    .project-card-title{
+      font-size:14px;
+      font-weight:800;
+      color:var(--ink);
+      margin-top:5px;
+      word-break:break-word;
+    }
+
+    .project-card-type{
+      font-size:10px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .project-card-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:18px;
+    }
+
+    .open-project-text{
+      font-size:10px;
+      color:#60a5fa;
+      font-weight:700;
+    }
+
+    .project-more{
+      width:28px;
+      height:28px;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      border-radius:7px;
+      display:grid;
+      place-items:center;
+      flex:0 0 28px;
+    }
+
+    .project-more:hover{
+      background:var(--surface2);
+      color:var(--brand);
+    }
+
+    /* New project button */
+
+    .primary-btn{
+      border-radius:12px;
+      padding:14px 20px;
+      border:1px solid var(--line);
+      font-weight:850;
+      font-size:13px;
+      cursor:pointer;
+      background:var(--ink);
+      color:var(--surface);
+      box-shadow:0 14px 35px rgba(15,35,65,.16);
+      transition:.2s;
+      white-space:nowrap;
+    }
+
+    .primary-btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .app-btn{
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      border-radius:8px;
+      padding:7px 12px;
+      font-size:11px;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+
+    .app-btn:hover{
+      border-color:var(--brand);
+      color:var(--brand);
+    }
+
+    /* Context menu */
+
+    .context-menu{
+      position:fixed;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:8px;
+      box-shadow:var(--shadow);
+      padding:4px;
+      z-index:10000;
+      display:none;
+      flex-direction:column;
+      min-width:180px;
+    }
+
+    .context-menu button{
+      text-align:left;
+      padding:9px 12px;
+      font-size:11px;
+      border-radius:4px;
+      border:none;
+      background:transparent;
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .context-menu button:hover{
+      background:var(--surface2);
+      color:var(--brand);
+    }
+
+    .context-menu button.danger{
+      color:#ef4444;
+    }
+
+    .context-menu button.danger:hover{
+      background:rgba(239,68,68,.1);
+      color:#ef4444;
+    }
+
+    /* Modal */
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      background:rgba(2,8,23,.6);
+      backdrop-filter:blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .modal{
+      width:min(440px,94vw);
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .modal h3{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .modal p{
+      color:var(--muted);
+      font-size:12px;
+      margin:8px 0 16px;
+    }
+
+    .modal input{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      border-radius:10px;
+      padding:11px;
+      outline:0;
+    }
+
+    .modal input:focus{
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(20,86,184,.12);
+    }
+
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:20px;
+    }
+
+    .modal-btn{
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--ink);
+      padding:9px 15px;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .modal-btn:hover{
+      border-color:var(--brand);
+    }
+
+    .modal-btn.primary{
+      background:var(--ink);
+      color:var(--surface);
+    }
+
+    /* Toast */
+
+    .toast{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:2000;
+      background:var(--ink);
+      color:var(--surface);
+      padding:12px 18px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:700;
+      box-shadow:var(--shadow);
+      opacity:0;
+      transform:translateY(15px);
+      pointer-events:none;
+      transition:.25s;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:none;
+    }
+
+    /* Empty */
+
+    .empty-projects{
+      text-align:center;
+      padding:80px 20px;
+    }
+
+    .empty-projects-icon{
+      font-size:50px;
+      margin-bottom:16px;
+    }
+
+    /* Loading */
+
+    .loading-projects{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:60px 20px;
+      color:var(--muted);
+      font-size:12px;
+      gap:8px;
+    }
+
+    /* Mobile */
+
+    @media(max-width:1000px){
+      .projects-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:700px){
+      .projects-header{
+        height:64px;
+        padding:0 16px;
+      }
+
+      .projects-header .brand-text{
+        display:none;
+      }
+
+      .projects-main{
+        padding:30px 16px 60px;
+      }
+
+      .projects-grid{
+        grid-template-columns:1fr;
+        gap:13px;
+      }
+
+      .project-card{
+        min-height:145px;
+        padding:19px;
+      }
+
+      .projects-heading{
+        flex-direction:column;
+        align-items:stretch!important;
+        gap:18px!important;
+      }
+
+      .projects-heading .primary-btn{
+        width:100%;
+      }
+
+      .projects-heading h2{
+        font-size:28px;
+      }
+
+      .toast{
+        left:15px;
+        right:15px;
+        bottom:15px;
+        text-align:center;
+      }
+    }
+  </style>
+    <!-- logo.jpeg is also used as the website/browser logo -->
+    <link rel="icon" type="image/jpeg" href="logo.jpeg">
+    <link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
+    <link rel="apple-touch-icon" href="logo.jpeg">
+
+<style id="reference-visual-theme">
+/* Visual-only theme layer — functionality untouched */
+:root{
+ --bg:#f8f6ee!important; --surface:#fffdf8!important; --surface2:#eee7dc!important;
+ --ink:#17130d!important; --muted:#776f64!important; --line:#d9cfbf!important;
+ --brand:#8a6a3f!important; --brand2:#a7895d!important;
+ --shadow:0 20px 60px rgba(79,57,31,.12)!important;
+}
+html.dark{--bg:#000!important;--surface:#000!important;--surface2:#0b0b09!important;--ink:#f8f6ee!important;--muted:#b8afa3!important;--line:#4a4034!important;--brand:#b8892e!important;--brand2:#d9b66f!important;--shadow:0 20px 60px rgba(0,0,0,.55)!important}
+html,body{background:var(--bg)!important;color:var(--ink)!important}
+body{position:relative;isolation:isolate}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(circle at 10% 10%,rgba(167,137,93,.12),transparent 30%),radial-gradient(circle at 90% 85%,rgba(138,106,63,.10),transparent 30%);animation:ambientDrift 14s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.32;background-image:linear-gradient(rgba(138,106,63,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(138,106,63,.055) 1px,transparent 1px);background-size:44px 44px;animation:gridFloat 20s linear infinite}
+@keyframes ambientDrift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.06) translate3d(12px,-8px,0)}}
+@keyframes gridFloat{from{background-position:0 0,0 0}to{background-position:44px 44px,44px 44px}}
+
+#app{background:transparent!important;color:var(--ink)!important}
+#topHeader{background:rgba(255,253,248,.88)!important;border-bottom:1px solid var(--line)!important;box-shadow:0 8px 30px rgba(79,57,31,.08)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+html.dark #topHeader{background:rgba(0,0,0,.84)!important}
+.app-brand h1{color:var(--ink)!important}.app-brand p{color:var(--muted)!important}
+.current-project,.project-search-actions .tool-btn,#topHeader .app-btn{background:rgba(255,253,248,.72)!important;border-color:var(--line)!important;color:var(--ink)!important;transition:transform .22s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease}
+html.dark .current-project,html.dark .project-search-actions .tool-btn,html.dark #topHeader .app-btn{background:#0b0b09!important}
+.current-project:hover,.project-search-actions .tool-btn:hover,#topHeader .app-btn:hover{transform:translateY(-2px);border-color:var(--brand2)!important;box-shadow:0 10px 26px rgba(138,106,63,.14)!important}
+#topHeader .app-btn.run{background:linear-gradient(135deg,#8a6a3f,#d9b66f)!important;color:#17130d!important;border-color:#d9b66f!important;box-shadow:0 8px 24px rgba(138,106,63,.22)!important}
+#topHeader .app-btn.run:hover{box-shadow:0 12px 32px rgba(138,106,63,.34)!important}
+
+.card,.panel,.project-card,.project-item,.modal,.dropdown,.menu,.section-card,.glass{background:rgba(255,253,248,.82)!important;border-color:var(--line)!important;box-shadow:var(--shadow)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease,background .28s ease}
+html.dark .card,html.dark .panel,html.dark .project-card,html.dark .project-item,html.dark .modal,html.dark .dropdown,html.dark .menu,html.dark .section-card,html.dark .glass{background:rgba(8,8,7,.9)!important}
+.card:hover,.project-card:hover,.project-item:hover{transform:translateY(-4px);border-color:rgba(167,137,93,.72)!important;box-shadow:0 18px 48px rgba(79,57,31,.16)!important}
+html.dark .card:hover,html.dark .project-card:hover,html.dark .project-item:hover{box-shadow:0 18px 48px rgba(0,0,0,.55)!important}
+
+button,.btn,.primary,.action-btn,.run-btn,.publish-btn,.editor-btn{background:linear-gradient(135deg,#8a6a3f,#b8892e)!important;color:#fffdf8!important;border-color:#a7895d!important;box-shadow:0 8px 22px rgba(138,106,63,.20)!important;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease!important}
+button:hover,.btn:hover,.primary:hover,.action-btn:hover,.run-btn:hover,.publish-btn:hover,.editor-btn:hover{transform:translateY(-2px);filter:saturate(1.08);box-shadow:0 12px 30px rgba(138,106,63,.30)!important}
+button:active,.btn:active,.primary:active,.action-btn:active{transform:translateY(0)!important}
+
+h1,h2,h3,h4,.title,.heading{color:var(--ink)!important;text-shadow:0 0 10px rgba(138,106,63,.10)}
+a{color:var(--brand)!important;transition:color .2s ease}
+a:hover{color:var(--brand2)!important}
+input,textarea,select{background:rgba(255,253,248,.78)!important;color:var(--ink)!important;border-color:var(--line)!important;transition:border-color .2s,box-shadow .2s,background .2s}
+html.dark input,html.dark textarea,html.dark select{background:#090908!important}
+input:focus,textarea:focus,select:focus{border-color:var(--brand2)!important;box-shadow:0 0 0 3px rgba(167,137,93,.14)!important;outline:none}
+::-webkit-scrollbar-thumb{background:rgba(138,106,63,.35)!important}.::-webkit-scrollbar-thumb:hover{background:rgba(138,106,63,.58)!important}
+
+/* subtle floating accent on major visual blocks */
+.project-card,.section-card{animation:cardFloat 7s ease-in-out infinite}
+.project-card:nth-child(2n),.section-card:nth-child(2n){animation-delay:-2.5s}
+@keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){body::before,body::after,.project-card,.section-card{animation:none!important}}
+</style>
+
+
+<style id="gold-projects-visual-polish">
+/* =========================================================
+   GOLD PROJECTS VISUAL POLISH
+   Visual-only layer: no HTML structure or JavaScript changed.
+   ========================================================= */
+
+/* Main background: deep black, replacing the blue ambient tone */
+html.dark .projects-page,
+html.dark .projects-page::before,
+html.dark .projects-page::after{
+  background:#050505 !important;
+}
+html.dark .projects-page{
+  background:
+    radial-gradient(circle at 50% -10%, rgba(212,170,82,.055), transparent 34%),
+    #050505 !important;
+}
+
+/* Keep the page background black while adding a very subtle moving gold atmosphere */
+html.dark .ambient-background{
+  background:
+    radial-gradient(circle at 15% 20%, rgba(212,170,82,.045), transparent 28%),
+    radial-gradient(circle at 85% 78%, rgba(184,137,46,.035), transparent 30%) !important;
+}
+html.dark .ambient-grid{
+  opacity:.18 !important;
+  background-image:
+    linear-gradient(rgba(212,170,82,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,170,82,.055) 1px,transparent 1px) !important;
+  animation:goldGridDrift 18s linear infinite !important;
+}
+@keyframes goldGridDrift{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(18px,-12px,0) scale(1.02)}
+  100%{transform:translate3d(0,0,0) scale(1)}
+}
+
+/* Header */
+html.dark .projects-header{
+  background:rgba(5,5,5,.88) !important;
+  border-bottom:1px solid rgba(212,170,82,.28) !important;
+  box-shadow:0 8px 30px rgba(0,0,0,.55),0 1px 0 rgba(212,170,82,.08) !important;
+}
+
+/* Make normally white/light text warm and subtly luminous gold */
+html.dark .projects-page h1,
+html.dark .projects-page h2,
+html.dark .projects-page h3,
+html.dark .projects-page .font-extrabold,
+html.dark .projects-page .font-bold,
+html.dark .projects-page .app-brand h1,
+html.dark .projects-page .brand-text,
+html.dark .projects-page label{
+  color:#f5dfaa !important;
+  text-shadow:0 0 10px rgba(212,170,82,.24);
+}
+html.dark .projects-page p,
+html.dark .projects-page .text-gray-500,
+html.dark .projects-page .text-gray-400,
+html.dark .projects-page .text-gray-300{
+  color:#c8b88f !important;
+}
+html.dark .projects-page a{
+  color:#e2bd68 !important;
+}
+
+/* Workspace kicker */
+html.dark .projects-heading .text-blue-500{
+  color:#d4aa52 !important;
+  text-shadow:0 0 12px rgba(212,170,82,.42);
+}
+
+/* NEW PROJECT — blue card/button with warm-white lettering */
+html.dark .projects-heading .primary-btn{
+  background:
+    linear-gradient(135deg,#174f91 0%,#2167b8 48%,#2f7be5 100%) !important;
+  color:#fff8e8 !important;
+  border:1px solid #5b91d5 !important;
+  box-shadow:
+    0 8px 28px rgba(31,111,210,.28),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
+  position:relative;
+  overflow:hidden;
+}
+html.dark .projects-heading .primary-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.24) 48%,transparent 68%);
+  transform:translateX(-120%);
+  animation:newProjectShine 3.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes newProjectShine{
+  0%,55%{transform:translateX(-120%)}
+  100%{transform:translateX(120%)}
+}
+html.dark .projects-heading .primary-btn:hover{
+  transform:translateY(-3px) !important;
+  box-shadow:
+    0 14px 36px rgba(31,111,210,.38),
+    0 0 24px rgba(47,123,229,.18) !important;
+}
+
+/* Project cards — gold plated finish */
+html.dark .project-card{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg,
+      #17130b 0%,
+      #2b2111 24%,
+      #17130b 52%,
+      #3a2a12 76%,
+      #17130b 100%) !important;
+  border:1px solid rgba(212,170,82,.62) !important;
+  border-top-color:#e6c46f !important;
+  border-bottom-color:#8f6828 !important;
+  border-radius:16px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,236,177,.20),
+    inset 0 -1px 0 rgba(95,61,12,.55),
+    0 10px 30px rgba(0,0,0,.40),
+    0 0 0 1px rgba(212,170,82,.08) !important;
+  animation:goldCardFloat 5.5s ease-in-out infinite;
+}
+html.dark .project-card:nth-child(2n){animation-delay:-1.4s}
+html.dark .project-card:nth-child(3n){animation-delay:-2.7s}
+html.dark .project-card:nth-child(4n){animation-delay:-3.8s}
+
+/* Gold plated animated reflection */
+html.dark .project-card::before{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-70%;
+  width:45%;
+  height:180%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,239,181,.22),
+    rgba(255,255,255,.10),
+    transparent
+  );
+  transform:rotate(18deg);
+  animation:goldPlateSweep 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+html.dark .project-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  box-shadow:inset 0 0 24px rgba(212,170,82,.055);
+  pointer-events:none;
+}
+@keyframes goldPlateSweep{
+  0%,38%{left:-70%;opacity:0}
+  48%{opacity:1}
+  68%,100%{left:135%;opacity:0}
+}
+@keyframes goldCardFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+html.dark .project-card:hover{
+  transform:translateY(-7px) scale(1.012) !important;
+  border-color:#f0c96b !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,190,.28),
+    0 16px 42px rgba(0,0,0,.52),
+    0 0 26px rgba(212,170,82,.20) !important;
+}
+html.dark .project-card:active{
+  transform:scale(.985) !important;
+}
+
+/* Project card typography */
+html.dark .project-card-title{
+  color:#ffe9ae !important;
+  text-shadow:
+    0 0 8px rgba(212,170,82,.24),
+    0 1px 0 rgba(0,0,0,.7);
+}
+html.dark .project-card-type{
+  color:#c9b477 !important;
+}
+html.dark .open-project-text{
+  color:#e2bd68 !important;
+  text-shadow:0 0 8px rgba(212,170,82,.35);
+}
+html.dark .project-more{
+  color:#d8b866 !important;
+}
+html.dark .project-more:hover{
+  background:rgba(212,170,82,.12) !important;
+  color:#ffe6a0 !important;
+}
+
+/* Other project controls */
+html.dark .app-btn,
+html.dark .current-project{
+  background:#101010 !important;
+  color:#e7cf93 !important;
+  border-color:rgba(212,170,82,.30) !important;
+}
+html.dark .app-btn:hover{
+  background:#19140c !important;
+  border-color:#d4aa52 !important;
+  color:#ffe9ae !important;
+  box-shadow:0 0 16px rgba(212,170,82,.14);
+}
+
+/* Loading / empty state */
+html.dark .loading-projects{
+  color:#d4aa52 !important;
+}
+html.dark .loading-projects i{
+  color:#e0b95e !important;
+  filter:drop-shadow(0 0 8px rgba(212,170,82,.5));
+}
+html.dark .empty-projects-icon{
+  filter:drop-shadow(0 0 14px rgba(212,170,82,.32));
+}
+
+/* Create-project modal also follows the black + gold visual language */
+html.dark #createProjectModal .modal{
+  background:
+    linear-gradient(145deg,#0a0a0a,#17120b) !important;
+  border-color:rgba(212,170,82,.42) !important;
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.65),
+    0 0 30px rgba(212,170,82,.10) !important;
+}
+html.dark #createProjectModal input{
+  background:#090909 !important;
+  color:#f5dfaa !important;
+  border-color:rgba(212,170,82,.32) !important;
+}
+html.dark #createProjectModal input::placeholder{
+  color:#76694f !important;
+}
+html.dark #createProjectModal .modal-btn.primary{
+  background:linear-gradient(135deg,#b8892e,#e0b95e) !important;
+  color:#171109 !important;
+}
+
+/* Respect reduced-motion preferences */
+@media(prefers-reduced-motion:reduce){
+  html.dark .ambient-grid,
+  html.dark .project-card,
+  html.dark .project-card::before,
+  html.dark .projects-heading .primary-btn::after{
+    animation:none !important;
+  }
+}
+</style>
+
+
+<style id="new-project-gold-frame">
+/* Gold frame around the blue New Project button */
+.projects-heading .primary-btn {
+  position: relative !important;
+  border: 2px solid #d8ad4a !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 226, 132, .45) inset,
+    0 0 12px rgba(212, 166, 58, .55),
+    0 6px 22px rgba(0, 0, 0, .35) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+/* Bright gold edge */
+.projects-heading .primary-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    #fff1a8 0%,
+    #c8922e 18%,
+    #ffe58a 38%,
+    #b67b20 58%,
+    #f9d66a 78%,
+    #fff2ad 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  animation: goldFrameShimmer 2.8s linear infinite;
+}
+
+/* Soft gold glow around all four sides */
+.projects-heading .primary-btn::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 220, 112, .7);
+  box-shadow:
+    0 0 7px rgba(255, 214, 86, .75),
+    0 0 18px rgba(194, 143, 39, .55);
+  pointer-events: none;
+  z-index: 2;
+  opacity: .9;
+}
+
+.projects-heading .primary-btn:hover {
+  border-color: #ffe58a !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 170, .7) inset,
+    0 0 16px rgba(255, 210, 77, .8),
+    0 0 30px rgba(181, 126, 27, .5),
+    0 9px 28px rgba(0, 0, 0, .4) !important;
+}
+
+@keyframes goldFrameShimmer {
+  0%   { filter: brightness(.95); opacity: .78; }
+  50%  { filter: brightness(1.35); opacity: 1; }
+  100% { filter: brightness(.95); opacity: .78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-heading .primary-btn::after {
+    animation: none;
+  }
+}
+</style>
+
+
+<style id="theme-switch-warm-white-black">
+/*
+  Theme behavior:
+  - Dark mode: existing black surfaces stay black.
+  - Light mode: ONLY black surfaces become warm white.
+  - Gold framing, gold cards, blue New Project button, borders, shadows,
+    animations and all other styling remain unchanged.
+*/
+
+/* Light mode: convert only the main black page/header surfaces to warm white.
+   Gold cards/elements are explicitly excluded below. */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .app-shell,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .modal-content,
+html:not(.dark) .projects-page .dropdown-menu,
+html:not(.dark) .projects-page .context-menu,
+html:not(.dark) .projects-page .project-actions-menu {
+  background-color: #fffdf8 !important;
+}
+
+/* NEVER recolor gold elements in light mode */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page [class*="gold"],
+html:not(.dark) .projects-page .gold,
+html:not(.dark) .projects-page .gold-text,
+html:not(.dark) .projects-page .gold-border {
+  background-color: revert-layer !important;
+  color: revert-layer !important;
+}
+
+/* Light mode: black-looking panels/backgrounds only */
+html:not(.dark) .projects-page [style*="background:#000"],
+html:not(.dark) .projects-page [style*="background: #000"],
+html:not(.dark) .projects-page [style*="background:black"],
+html:not(.dark) .projects-page [style*="background: black"],
+html:not(.dark) .projects-page [style*="background-color:#000"],
+html:not(.dark) .projects-page [style*="background-color: #000"],
+html:not(.dark) .projects-page [style*="background-color:black"],
+html:not(.dark) .projects-page [style*="background-color: black"] {
+  background-color: #fffdf8 !important;
+}
+
+/* Keep the gold frame around New Project in BOTH modes */
+.projects-heading .primary-btn {
+  border-color: #d8ad4a !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 226, 132, .45) inset,
+    0 0 12px rgba(212, 166, 58, .55),
+    0 6px 22px rgba(0, 0, 0, .35) !important;
+}
+
+.projects-heading .primary-btn::before {
+  border-color: rgba(255, 220, 112, .7) !important;
+  box-shadow:
+    0 0 7px rgba(255, 214, 86, .75),
+    0 0 18px rgba(194, 143, 39, .55) !important;
+}
+
+/* Light mode should not alter the gold-plated project cards */
+/* Gold project-card background is preserved from its existing styles. */
+
+/* Explicitly preserve the blue New Project surface and warm-white text */
+html:not(.dark) .projects-heading .primary-btn {
+  color: #fff8e8 !important;
+}
+</style>
+
+
+<style id="refined-light-theme">
+/* Refined light mode: softer warm-white, while gold styling stays untouched */
+html:not(.dark) .projects-page {
+  background-color: #eee6d3 !important;
+}
+
+/* Only the BLACK UI surfaces become a softer warm white */
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .app-shell,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .modal-content,
+html:not(.dark) .projects-page .dropdown-menu,
+html:not(.dark) .projects-page .context-menu,
+html:not(.dark) .projects-page .project-actions-menu {
+  background-color: #f6f0df !important;
+}
+
+/* Preserve every gold element exactly in light mode */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page .gold-card,
+html:not(.dark) .projects-page .gold-plated,
+html:not(.dark) .projects-page [class*="gold"] {
+  /* Do not override existing gold backgrounds, gradients or effects */
+  color-scheme: light;
+}
+
+/* Keep New Project blue + warm-white text + gold frame unchanged */
+html:not(.dark) .projects-heading .primary-btn {
+  background: linear-gradient(135deg, #174f91, #2167b8, #2f7be5) !important;
+  color: #fff8e8 !important;
+  border: 2px solid #d8ad4a !important;
+}
+
+/* Gold borders/text/icons keep their existing colors */
+html:not(.dark) .projects-page .gold,
+html:not(.dark) .projects-page .gold-text,
+html:not(.dark) .projects-page .gold-border,
+html:not(.dark) .projects-page [class*="gold"] {
+  /* intentionally no color/background override */
+}
+
+/* Prevent broad theme rules from turning gold into white */
+html:not(.dark) .projects-page .project-card h1,
+html:not(.dark) .projects-page .project-card h2,
+html:not(.dark) .projects-page .project-card h3,
+html:not(.dark) .projects-page .project-card h4,
+html:not(.dark) .projects-page .project-card p,
+html:not(.dark) .projects-page .project-card span,
+html:not(.dark) .projects-page .project-card i,
+html:not(.dark) .projects-page .project-card svg {
+  /* preserve the existing gold-plated card styling */
+}
+</style>
+
+
+<style id="light-mode-black-to-warm-white">
+/* ONLY light-mode inversion requested:
+   black backgrounds -> warm white
+   warm-white text -> black
+   everything else remains unchanged.
+*/
+html:not(.dark) .projects-page{
+  background:#f6f0df !important;
+  color:#17130d !important;
+}
+
+html:not(.dark) .projects-header{
+  background:#f6f0df !important;
+  color:#17130d !important;
+  border-bottom-color:var(--line) !important;
+}
+
+/* Text that was warm-white in dark mode */
+html:not(.dark) .projects-page h1,
+html:not(.dark) .projects-page h2,
+html:not(.dark) .projects-page h3,
+html:not(.dark) .projects-page h4,
+html:not(.dark) .projects-page .app-brand h1,
+html:not(.dark) .projects-page .brand-text,
+html:not(.dark) .projects-page label,
+html:not(.dark) .projects-page .font-extrabold,
+html:not(.dark) .projects-page .font-bold{
+  color:#17130d !important;
+  text-shadow:none !important;
+}
+
+html:not(.dark) .projects-page p,
+html:not(.dark) .projects-page .text-gray-300,
+html:not(.dark) .projects-page .text-gray-400,
+html:not(.dark) .projects-page .text-gray-500{
+  color:#17130d !important;
+}
+
+/* Black UI surfaces -> warm white */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-page .projects-header,
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .context-menu{
+  background-color:#f6f0df !important;
+}
+
+/* Explicit black surfaces used by the dark theme */
+html:not(.dark) .projects-page [style*="background:#000"],
+html:not(.dark) .projects-page [style*="background: #000"],
+html:not(.dark) .projects-page [style*="background:#050505"],
+html:not(.dark) .projects-page [style*="background: #050505"],
+html:not(.dark) .projects-page [style*="background:#090909"],
+html:not(.dark) .projects-page [style*="background: #090909"],
+html:not(.dark) .projects-page [style*="background:#101010"],
+html:not(.dark) .projects-page [style*="background: #101010"],
+html:not(.dark) .projects-page [style*="background:black"],
+html:not(.dark) .projects-page [style*="background: black"],
+html:not(.dark) .projects-page [style*="background-color:#000"],
+html:not(.dark) .projects-page [style*="background-color: #000"],
+html:not(.dark) .projects-page [style*="background-color:#050505"],
+html:not(.dark) .projects-page [style*="background-color: #050505"],
+html:not(.dark) .projects-page [style*="background-color:#090909"],
+html:not(.dark) .projects-page [style*="background-color: #090909"],
+html:not(.dark) .projects-page [style*="background-color:#101010"],
+html:not(.dark) .projects-page [style*="background-color: #101010"],
+html:not(.dark) .projects-page [style*="background-color:black"],
+html:not(.dark) .projects-page [style*="background-color: black"]{
+  background-color:#f6f0df !important;
+}
+
+/* The dark-mode warm-white text colors -> black in light mode */
+html:not(.dark) .projects-page [style*="color:#f8f6ee"],
+html:not(.dark) .projects-page [style*="color: #f8f6ee"],
+html:not(.dark) .projects-page [style*="color:#f5dfaa"],
+html:not(.dark) .projects-page [style*="color: #f5dfaa"],
+html:not(.dark) .projects-page [style*="color:#fff8e8"],
+html:not(.dark) .projects-page [style*="color: #fff8e8"]{
+  color:#17130d !important;
+}
+
+/* Keep the blue New Project button exactly as it is. */
+html:not(.dark) .projects-heading .primary-btn{
+  color:#fff8e8 !important;
+}
+</style>
+
+<style id="final-light-gold-ambient">
+html:not(.dark) {
+  --bg:#eee3c5 !important;
+  --surface:#f7efd8 !important;
+  --surface2:#eadbb5 !important;
+  --ink:#17130b !important;
+}
+
+html:not(.dark) body {
+  background:#eee3c5 !important;
+}
+
+html:not(.dark) .ambient-background {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(218,176,72,.20), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(167,119,45,.16), transparent 32%),
+    linear-gradient(135deg,#f2e7c9,#e9d9ad 55%,#f4ead0) !important;
+}
+
+html:not(.dark) .ambient-grid {
+  opacity:.18 !important;
+  background-image:
+    linear-gradient(rgba(154,108,35,.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(154,108,35,.075) 1px, transparent 1px) !important;
+}
+
+html:not(.dark) .ambient-orb {
+  opacity:.22 !important;
+  mix-blend-mode:multiply !important;
+}
+
+html:not(.dark) .ambient-orb-a { background:#d7b35b !important; }
+html:not(.dark) .ambient-orb-b { background:#a97832 !important; }
+html:not(.dark) .ambient-orb-c { background:#c99b45 !important; }
+</style>
+
+<style id="final-light-mode-only">
+/* FINAL LIGHT MODE ONLY — no functionality or dark-mode styling changed */
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-header {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(218,176,72,.20), transparent 32%),
+    radial-gradient(circle at 86% 82%, rgba(167,119,45,.14), transparent 30%),
+    linear-gradient(135deg, #f4e8c8 0%, #ead8a8 52%, #f5ebd2 100%) !important;
+  color: #17130d !important;
+}
+
+/* Warm-white surfaces become warm/golden-white in light mode */
+html:not(.dark) .projects-page .modal,
+html:not(.dark) .projects-page .context-menu {
+  background: #f7efd9 !important;
+  color: #17130d !important;
+}
+
+/* Light-mode warm-white text -> black */
+html:not(.dark) .projects-page h1,
+html:not(.dark) .projects-page h2,
+html:not(.dark) .projects-page h3,
+html:not(.dark) .projects-page h4,
+html:not(.dark) .projects-page p,
+html:not(.dark) .projects-page span,
+html:not(.dark) .projects-page label,
+html:not(.dark) .projects-page .brand-text,
+html:not(.dark) .projects-page .font-bold,
+html:not(.dark) .projects-page .font-extrabold,
+html:not(.dark) .projects-page .text-gray-300,
+html:not(.dark) .projects-page .text-gray-400,
+html:not(.dark) .projects-page .text-gray-500 {
+  color: #17130d !important;
+  text-shadow: none !important;
+}
+
+/* Keep the existing gold/blue controls and card styling unchanged */
+html:not(.dark) .projects-page .project-card,
+html:not(.dark) .projects-page .projects-heading .primary-btn {
+  /* intentionally untouched */
+}
+
+/* Keep the ambient background visibly golden in light mode */
+html:not(.dark) .ambient-background {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(218,176,72,.22), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(167,119,45,.17), transparent 32%),
+    linear-gradient(135deg, #f3e6c4, #e8d6a5 55%, #f5ead0) !important;
+}
+</style>
+
+
+<style id="dark-new-project-gold-animation">
+/* DARK MODE ONLY — keep the blue New Project card and add its gold animation */
+html.dark .projects-heading .primary-btn {
+  border: 2px solid #d8ad4a !important;
+  animation: darkNewProjectGoldGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes darkNewProjectGoldGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 226, 132, .45) inset,
+      0 0 8px rgba(212, 166, 58, .38),
+      0 8px 28px rgba(31,111,210,.28) !important;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 238, 170, .75) inset,
+      0 0 18px rgba(255, 210, 77, .82),
+      0 0 30px rgba(181, 126, 27, .42),
+      0 8px 28px rgba(31,111,210,.28) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dark .projects-heading .primary-btn {
+    animation: none !important;
+  }
+}
+</style>
+
+
+<style id="dark-new-project-gold-inside">
+/* DARK MODE ONLY — subtle moving gold tint inside the blue New Project card */
+html.dark .projects-heading .primary-btn::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 18% 50%, rgba(255,210,77,.20), transparent 30%),
+    linear-gradient(115deg, transparent 25%, rgba(255,220,112,.18) 48%, transparent 70%);
+  background-size: 100% 100%, 220% 100%;
+  background-position: 0 0, -120% 0;
+  pointer-events: none;
+  z-index: 2;
+  animation: newProjectGoldInside 3.2s ease-in-out infinite;
+}
+
+@keyframes newProjectGoldInside {
+  0%, 55% {
+    background-position: 0 0, -120% 0;
+    opacity: .45;
+  }
+  75% {
+    background-position: 0 0, 120% 0;
+    opacity: .9;
+  }
+  100% {
+    background-position: 0 0, 120% 0;
+    opacity: .45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dark .projects-heading .primary-btn::before {
+    animation: none !important;
+  }
+}
+</style>
+
+
+<style id="luxury-blue-new-project">
+/* DARK MODE ONLY — luxury glossy finish for New Project */
+html.dark .projects-heading .primary-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #123f78 0%,
+      #1b5da8 28%,
+      #2f7be5 50%,
+      #1d5ca8 72%,
+      #17477f 100%
+    ) !important;
+  box-shadow:
+    0 8px 28px rgba(31,111,210,.30),
+    0 0 18px rgba(212,170,82,.22),
+    inset 0 1px 0 rgba(255,255,255,.30),
+    inset 0 -2px 8px rgba(5,20,45,.28) !important;
+}
+
+/* Soft luxury highlight across the blue surface */
+html.dark .projects-heading .primary-btn::before {
+  background:
+    linear-gradient(
+      115deg,
+      transparent 15%,
+      rgba(255,255,255,.10) 32%,
+      rgba(255,224,132,.14) 46%,
+      rgba(255,255,255,.16) 52%,
+      transparent 68%
+    ) !important;
+  background-size:220% 100% !important;
+  animation:newProjectLuxurySheen 3.6s ease-in-out infinite !important;
+}
+
+@keyframes newProjectLuxurySheen {
+  0%, 48% {
+    background-position:-130% 0;
+    opacity:.45;
+  }
+  72% {
+    background-position:130% 0;
+    opacity:1;
+  }
+  100% {
+    background-position:130% 0;
+    opacity:.45;
+  }
+}
+
+html.dark .projects-heading .primary-btn:hover {
+  box-shadow:
+    0 14px 38px rgba(31,111,210,.40),
+    0 0 24px rgba(255,210,77,.32),
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -2px 10px rgba(5,20,45,.25) !important;
+}
+</style>
+
+
+
+<style id="google-account-project-owner">
+.project-owner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  margin-top:16px;
+  padding-top:13px;
+  border-top:1px solid rgba(212,170,82,.22);
+}
+.project-owner-avatar{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+  border:1px solid rgba(212,170,82,.75);
+  background:#171717;
+  box-shadow:0 0 0 2px rgba(212,170,82,.08),0 0 14px rgba(212,170,82,.15);
+}
+.project-owner-fallback{
+  display:grid;
+  place-items:center;
+  color:#d4af37;
+  font-size:15px;
+}
+.project-owner-info{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  line-height:1.35;
+}
+.project-owner-label{
+  color:#d4af37;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:2px;
+}
+.project-owner-name{
+  color:#f5f1e8;
+  font-size:13px;
+  font-weight:700;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.project-owner-email{
+  color:rgba(245,241,232,.58);
+  font-size:11px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  margin-top:2px;
+}
+html:not(.dark) .project-owner-name{color:#17130d}
+html:not(.dark) .project-owner-email{color:#776f64}
+@media(max-width:600px){
+  .project-owner{gap:9px;margin-top:13px;padding-top:11px}
+  .project-owner-avatar{width:34px;height:34px;min-width:34px}
+  .project-owner-name{font-size:12px}
+  .project-owner-email{font-size:10px}
+}
+
+
+/* Account dropdown */
+.projects-user-account{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  max-width:220px;
+  padding:9px 12px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--surface2);
+  color:var(--ink);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.projects-user-account:hover{
+  transform:translateY(-1px);
+  border-color:var(--brand2);
+  background:var(--surface);
+}
+.projects-user-account #projectsUserName{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.account-chevron{
+  font-size:10px;
+  transition:transform .2s ease;
+}
+.projects-user-account[aria-expanded="true"] .account-chevron{
+  transform:rotate(180deg);
+}
+.account-menu{
+  position:fixed;
+  top:76px;
+  right:5vw;
+  width:min(330px,calc(100vw - 28px));
+  max-height:calc(100vh - 95px);
+  overflow:auto;
+  z-index:10050;
+  display:none;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--surface);
+  box-shadow:0 22px 60px rgba(0,0,0,.24);
+}
+.account-menu.open{
+  display:block;
+  animation:accountMenuIn .18s ease-out;
+}
+@keyframes accountMenuIn{
+  from{opacity:0;transform:translateY(-7px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.account-menu-header{
+  padding:8px 10px 12px;
+}
+.account-menu-title{
+  color:var(--ink);
+  font-size:14px;
+  font-weight:850;
+}
+.account-menu-subtitle{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+}
+.account-list{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.account-list-empty{
+  padding:12px 10px;
+  color:var(--muted);
+  font-size:11px;
+}
+.account-menu-account{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+}
+.account-menu-account:hover{
+  background:var(--surface2);
+  border-color:var(--line);
+}
+.account-menu-account.active{
+  background:rgba(212,170,82,.10);
+  border-color:rgba(212,170,82,.42);
+}
+.account-menu-avatar{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid rgba(212,170,82,.62);
+  background:var(--surface2);
+}
+.account-menu-avatar-fallback{
+  display:grid;
+  place-items:center;
+  color:var(--brand);
+  font-size:14px;
+}
+.account-menu-account-info{
+  min-width:0;
+  flex:1;
+}
+.account-menu-account-name,
+.account-menu-account-email{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.account-menu-account-name{
+  color:var(--ink);
+  font-size:12px;
+  font-weight:800;
+}
+.account-menu-account-email{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
+}
+.account-menu-check{
+  color:var(--brand);
+  font-size:12px;
+}
+.account-menu-divider{
+  height:1px;
+  margin:9px 0;
+  background:var(--line);
+}
+.account-menu-item{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 10px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+}
+.account-menu-item:hover{
+  background:var(--surface2);
+}
+.account-menu-item-icon{
+  width:30px;
+  height:30px;
+  min-width:30px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(212,170,82,.12);
+  color:var(--brand);
+}
+.account-menu-item strong,
+.account-menu-item small{
+  display:block;
+}
+.account-menu-item strong{
+  font-size:12px;
+  font-weight:800;
+}
+.account-menu-item small{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
+}
+.account-menu-danger{
+  color:#ef4444;
+}
+.account-menu-danger .account-menu-item-icon{
+  color:#ef4444;
+  background:rgba(239,68,68,.10);
+}
+@media(max-width:700px){
+  .projects-user-account{
+    max-width:145px;
+    padding:8px 10px;
+    font-size:11px;
+  }
+  .account-menu{
+    top:72px;
+    right:14px;
+  }
+}
+</style>
+
+<style id="account-menu-premium-polish">
+  /* Classic Royal account popup — scoped only to this popup */
+  .account-menu{
+    width:min(380px,calc(100vw - 24px));padding:12px;
+    border:1px solid rgba(214,174,82,.65);border-radius:20px;
+    background:linear-gradient(145deg,#101b3b 0%,#182957 48%,#3a1838 100%);
+    color:#fff;box-shadow:0 28px 70px rgba(8,10,25,.65),0 0 0 2px rgba(212,170,82,.08) inset,0 0 30px rgba(45,65,135,.22);
+    overflow:hidden;transform-origin:top right;
+  }
+  .account-menu::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.045),transparent 28%,rgba(212,170,82,.035) 70%,transparent);}
+  .account-menu::after{content:"";position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,#e5c66b,#fff0a8,#e5c66b,transparent);pointer-events:none;box-shadow:0 0 12px rgba(229,198,107,.3)}
+  .account-menu>*{position:relative;z-index:1}
+  .account-menu.open{animation:accountMenuRoyalIn .3s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes accountMenuRoyalIn{0%{opacity:0;transform:translateY(-10px) scale(.96)}60%{opacity:1;transform:translateY(2px) scale(1.008)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  .account-menu-header{padding:9px 10px 13px}
+  .account-menu-title{color:#fff4c9;font-size:15px;font-weight:850;letter-spacing:.3px}
+  .account-menu-subtitle{margin-top:4px;color:#b8bfd1;font-size:10px}
+  .account-list{max-height:min(48vh,330px);overflow-y:auto;padding:2px;scrollbar-width:thin;scrollbar-color:#b9913f transparent}
+  .account-list::-webkit-scrollbar{width:4px}.account-list::-webkit-scrollbar-track{background:transparent}.account-list::-webkit-scrollbar-thumb{background:#b9913f;border-radius:99px}
+  .account-list-empty{padding:14px 10px;color:#adb5ca;font-size:11px}
+  .account-menu-account{min-height:58px;width:100%;display:flex;align-items:center;gap:11px;padding:9px 10px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:linear-gradient(100deg,rgba(7,14,36,.72),rgba(55,22,54,.52));color:#fff;text-align:left;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease}
+  .account-menu-account+.account-menu-account{margin-top:6px}
+  .account-menu-account:hover{transform:translateX(2px);background:linear-gradient(100deg,#1b315f,#54214e);border-color:rgba(229,198,107,.5);box-shadow:0 8px 22px rgba(5,8,25,.35)}
+  .account-menu-account:active{transform:scale(.985)}
+  .account-menu-account.active{background:linear-gradient(100deg,#243d70,#5a244f);border-color:#d6ae52;box-shadow:0 0 0 1px rgba(229,198,107,.13) inset,0 8px 24px rgba(5,8,25,.32)}
+  .account-menu-avatar{width:39px;height:39px;min-width:39px;border-radius:50%;object-fit:cover;border:2px solid #d6ae52;background:#172347;box-shadow:0 0 0 3px rgba(229,198,107,.09),0 4px 12px rgba(0,0,0,.3)}
+  .account-menu-avatar-fallback{display:grid;place-items:center;color:#f0ca68;font-size:14px}
+  .account-menu-account-info{min-width:0;flex:1}.account-menu-account-name,.account-menu-account-email{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .account-menu-account-name{color:#fff;font-size:12px;font-weight:800}.account-menu-account-email{margin-top:3px;color:#c0c6d7;font-size:10px}
+  .account-menu-check{color:#f0ca68;font-size:12px;filter:drop-shadow(0 0 5px rgba(240,202,104,.4))}
+  .account-menu-divider{height:1px;margin:10px 2px;background:linear-gradient(90deg,transparent,rgba(229,198,107,.4),rgba(255,255,255,.16),transparent)}
+  .account-menu-item{width:100%;display:flex;align-items:center;gap:10px;padding:11px 10px;border:1px solid transparent;border-radius:12px;background:rgba(8,15,37,.34);color:#eee;text-align:left;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+  .account-menu-item:hover{transform:translateX(2px);background:linear-gradient(100deg,#1b315f,#4c204b);border-color:rgba(229,198,107,.28)}
+  .account-menu-item:active{transform:scale(.985)}
+  .account-menu-item-icon{width:31px;height:31px;min-width:31px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(145deg,#d7b45b,#896524);color:#15182a;border:1px solid #f0d889;transition:transform .2s ease,box-shadow .2s ease}
+  .account-menu-item:hover .account-menu-item-icon{transform:rotate(-4deg) scale(1.06);box-shadow:0 0 14px rgba(229,198,107,.25)}
+  .account-menu-item strong,.account-menu-item small{display:block}.account-menu-item strong{font-size:12px;font-weight:800;color:#fff}.account-menu-item small{margin-top:3px;color:#c0c6d7;font-size:10px}
+  @media(max-width:640px){.account-menu{top:68px;right:10px;width:min(370px,calc(100vw - 20px));border-radius:19px}}
+  @media(prefers-reduced-motion:reduce){.account-menu.open{animation:none}.account-menu-account,.account-menu-item{transition:none}}
+</style>
+
+<style id="upload-project-ui">
+.projects-heading-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.upload-project-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+@media(max-width:640px){
+  .projects-heading-actions{
+    width:100%;
+    justify-content:flex-start;
+  }
+  .projects-heading-actions .primary-btn{
+    flex:1 1 auto;
+  }
+}
+</style>
+
+</head>
+
+<body>
+  <!-- Animated decorative background; it does not interfere with any existing feature. -->
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-orb ambient-orb-a"></div>
+    <div class="ambient-orb ambient-orb-b"></div>
+    <div class="ambient-orb ambient-orb-c"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <div id="projectsPage" class="projects-page">
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+
+    <header class="projects-header">
+
+      <div class="flex items-center gap-3">
+
+        <img
+          src="logo.jpeg"
+          alt="JS CODE OUTPUT Logo"
+          class="w-9 h-9 rounded-xl shadow-sm object-cover ring-1 ring-black/5 dark:ring-white/10"
+        >
+
+        <div class="brand-text">
+          <strong class="text-sm block">
+            JS CODE OUTPUT
+          </strong>
+
+          <span class="text-[10px] text-gray-500">
+            Dashboard & Projects
+          </span>
+        </div>
+
+      </div>
+
+      <div class="flex items-center gap-3">
+
+        <button
+          id="projectsUserAccount"
+          class="projects-user-account"
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          onclick="toggleAccountMenu(event)"
+        >
+          <span id="projectsUserName">Guest Mode</span>
+          <i class="fa-solid fa-chevron-down account-chevron"></i>
+        </button>
+
+        <div id="accountMenu" class="account-menu" role="menu">
+          <div class="account-menu-header">
+            <div class="account-menu-title">Accounts</div>
+            <div id="accountMenuSubtitle" class="account-menu-subtitle">
+              Choose an account to continue
+            </div>
+          </div>
+
+          <div id="accountList" class="account-list"></div>
+
+          <div class="account-menu-divider"></div>
+
+          <button
+            id="addAccountBtn"
+            class="account-menu-item"
+            type="button"
+            onclick="addGoogleAccount()"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-solid fa-user-plus"></i>
+            </span>
+            <span>
+              <strong>Add account</strong>
+              <small>Sign in with another Google account</small>
+            </span>
+          </button>
+
+          <button
+            id="guestSignInBtn"
+            class="account-menu-item"
+            type="button"
+            onclick="signInFromAccountMenu()"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-brands fa-google"></i>
+            </span>
+            <span>
+              <strong>Sign in</strong>
+              <small>Continue with Google</small>
+            </span>
+          </button>
+
+          <button
+            id="logoutAccountBtn"
+            class="account-menu-item account-menu-danger"
+            type="button"
+            onclick="signOutFromAccountMenu()"
+            style="display:none;"
+          >
+            <span class="account-menu-item-icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>
+              <strong>Log out</strong>
+              <small>Sign out of this Google account</small>
+            </span>
+          </button>
+
+        </div>
+
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          type="button"
+          aria-label="Toggle dark and light mode"
+          title="Appearance"
+        >
+          <svg class="theme-icon theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2"></circle>
+            <path d="M12 2.2v2.1M12 19.7v2.1M2.2 12h2.1M19.7 12h2.1M5.07 5.07l1.49 1.49M17.44 17.44l1.49 1.49M18.93 5.07l-1.49 1.49M6.56 17.44l-1.49 1.49"></path>
+          </svg>
+          <svg class="theme-icon theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"></path>
+          </svg>
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         PROJECT CONTENT
+         ========================= -->
+
+    <main class="projects-main">
+
+      <div
+        class="projects-heading flex justify-between items-end gap-4 mb-8"
+      >
+
+        <div>
+
+          <div
+            class="text-xs font-bold uppercase tracking-wider text-blue-500"
+          >
+            Workspace
+          </div>
+
+          <h2
+            class="text-3xl font-extrabold tracking-tight mt-1"
+          >
+            Select a Project
+          </h2>
+
+          <p class="text-xs text-gray-500 mt-1">
+            Every project contains its own separate HTML, CSS,
+            JavaScript, and asset files.
+          </p>
+
+        </div>
+
+        <div class="projects-heading-actions">
+          <button
+            class="primary-btn"
+            onclick="showCreateProject()"
+          >
+            + New Project
+          </button>
+
+          <button
+            class="primary-btn upload-project-btn"
+            onclick="showUploadProject()"
+          >
+            <i class="fa-solid fa-upload"></i>
+            Upload Project
+          </button>
+        </div>
+
+      </div>
+
+
+      <div
+        id="projectsList"
+        class="projects-grid"
+      ></div>
+
+
+      <div
+        id="projectsLoading"
+        class="loading-projects"
+      >
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Loading projects...
+      </div>
+
+
+      <div
+        id="noProjects"
+        class="hidden empty-projects"
+      >
+
+        <div class="empty-projects-icon">
+          📂
+        </div>
+
+        <h3 class="text-lg font-bold">
+          No Projects Found
+        </h3>
+
+        <p class="text-xs text-gray-500 mb-4">
+          Create your first isolated project workspace.
+        </p>
+
+        <button
+          class="primary-btn"
+          onclick="showCreateProject()"
+        >
+          + Create Project
+        </button>
+
+        <button
+          class="primary-btn upload-project-btn"
+          onclick="showUploadProject()"
+          style="margin-top:10px;"
+        >
+          <i class="fa-solid fa-upload"></i>
+          Upload Project
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+
+  <!-- =========================
+       UPLOAD PROJECT MODAL
+       ========================= -->
+  <div id="uploadProjectModal" class="overlay hidden">
+    <div class="modal">
+      <div class="flex justify-between items-center">
+        <h3>Upload Project</h3>
+        <button
+          onclick="closeUploadProject()"
+          class="text-gray-400 text-lg font-bold"
+          aria-label="Close"
+        >×</button>
+      </div>
+
+      <p>
+        Add a project from files or an entire folder without changing your existing projects.
+      </p>
+
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="modal-btn" onclick="chooseProjectFiles()">
+          <i class="fa-solid fa-file"></i>
+          Upload Files
+        </button>
+
+        <button class="primary-btn" onclick="chooseProjectFolder()">
+          <i class="fa-solid fa-folder-open"></i>
+          Upload Folder
+        </button>
+      </div>
+
+      <input
+        id="projectFilesInput"
+        type="file"
+        multiple
+        hidden
+      >
+
+      <input
+        id="projectFolderInput"
+        type="file"
+        webkitdirectory
+        directory
+        multiple
+        hidden
+      >
+    </div>
+  </div>
+
+  <!-- =========================
+       CREATE PROJECT MODAL
+       ========================= -->
+
+  <div
+    id="createProjectModal"
+    class="overlay hidden"
+  >
+
+    <div class="modal">
+
+      <div class="flex justify-between items-center">
+
+        <h3>
+          Create New Project
+        </h3>
+
+        <button
+          onclick="closeCreateProject()"
+          class="text-gray-400 text-lg font-bold"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <p>
+        Give your new project a distinctive name.
+      </p>
+
+      <input
+        id="newProjectName"
+        placeholder="e.g. Portfolio Website, Canvas Game"
+        autocomplete="off"
+      >
+
+      <div class="modal-actions">
+
+        <button
+          class="modal-btn"
+          onclick="closeCreateProject()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="modal-btn primary"
+          onclick="createProject()"
+        >
+          Create Project
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       PROJECT CONTEXT MENU
+       ========================= -->
+
+  <div
+    id="projectContextMenu"
+    class="context-menu"
+  >
+
+    <button
+      id="projectCtxRename"
+      onclick="renameProjectByTarget()"
+    >
+      <i class="fa-solid fa-pen"></i>
+      Rename Project
+    </button>
+
+    <button
+      id="projectCtxDelete"
+      class="danger"
+      onclick="deleteProjectByTarget()"
+    >
+      <i class="fa-solid fa-trash"></i>
+      Delete Project
+    </button>
+
+    <button
+      id="projectCtxCopy"
+      onclick="copyProjectFileByTarget()"
+    >
+      <i class="fa-solid fa-copy"></i>
+      Copy File
+    </button>
+
+    <button
+      id="projectCtxDownload"
+      onclick="downloadProjectFileByTarget()"
+    >
+      <i class="fa-solid fa-download"></i>
+      Download File
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       TOAST
+       ========================= -->
+
+  <div
+    id="toast"
+    class="toast"
+  >
+    <i class="fa-solid fa-circle-check mr-2"></i>
+    <span id="toastMsg">Saved</span>
+  </div>
+
+
+<!-- =========================
+     FIREBASE
+     ========================= -->
+
+<script type="module">
+
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    deleteDoc,
+    arrayUnion,
+    arrayRemove,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  import {
+    getAnalytics
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+    authDomain: "js-code-output.firebaseapp.com",
+    projectId: "js-code-output",
+    storageBucket: "js-code-output.firebasestorage.app",
+    messagingSenderId: "600350018167",
+    appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+    measurementId: "G-L47M0E9V96"
+  };
+
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // Firebase Analytics
+  const analytics = getAnalytics(app);
+
+  // Firebase Authentication
+  const auth = getAuth(app);
+
+  const provider = new GoogleAuthProvider();
+
+  provider.setCustomParameters({
+    prompt: "select_account"
+  });
+
+  // Remembered-account switching: Firebase still keeps one active session,
+  // while Google lets the user choose the requested account.
+  window.googleSignInAsAccount = (email) => {
+    const accountProvider = new GoogleAuthProvider();
+    accountProvider.setCustomParameters({
+      prompt: "select_account",
+      login_hint: email
+    });
+    return signInWithPopup(auth, accountProvider);
+  };
+
+  // Firestore
+  const db = getFirestore(app);
+
+
+  // Make Firebase functions available globally
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+
+  window.firebaseDoc = doc;
+  window.firebaseSetDoc = setDoc;
+  window.firebaseGetDoc = getDoc;
+  window.firebaseArrayUnion = arrayUnion;
+  window.firebaseArrayRemove = arrayRemove;
+  window.firebaseDeleteDoc = deleteDoc;
+  window.firebaseServerTimestamp = serverTimestamp;
+  window.firebaseSignOut = signOut;
+
+
+  // Google Sign-In
+  window.googleSignIn = () =>
+    signInWithPopup(auth, provider);
+
+
+  // Authentication state
+  onAuthStateChanged(auth, async user => {
+
+    window.firebaseCurrentUser = user || null;
+    window.currentUser = user || null;
+
+    updateUserUI(user);
+
+    await loadProjects();
+
+  });
+
+</script>
+
+
+  <!-- =========================
+       PROJECT PAGE JAVASCRIPT
+       ========================= -->
+
+  <script>
+
+    let projectActionTarget = null;
+    let projectActionName = "";
+    let projectActionIsCloud = false;
+
+
+    /* --------------------------------
+       Utilities
+       -------------------------------- */
+
+    function escapeHTML(value){
+
+      return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+    }
+
+
+    function showToast(message){
+
+      const toast =
+        document.getElementById("toast");
+
+      const msg =
+        document.getElementById("toastMsg");
+
+      if(!toast || !msg) return;
+
+      msg.textContent = message;
+
+      toast.classList.add("show");
+
+      clearTimeout(toast._timer);
+
+      toast._timer =
+        setTimeout(() => {
+
+          toast.classList.remove("show");
+
+        },2500);
+
+    }
+
+
+    function getExt(filename){
+
+      const parts =
+        String(filename || "").split(".");
+
+      return parts.length > 1
+        ? parts.pop().toLowerCase()
+        : "";
+
+    }
+
+
+    function isBinary(ext){
+
+      return [
+        "png","jpg","jpeg","gif","webp",
+        "svg","ico","bmp",
+        "mp3","wav","ogg",
+        "mp4","webm",
+        "zip","pdf",
+        "woff","woff2","ttf",
+        "otf"
+      ].includes(String(ext || "").toLowerCase());
+
+    }
+
+
+    /* --------------------------------
+       Workspace navigation
+       -------------------------------- */
+
+    function openWorkspace(id,name){
+
+      if(!id) return;
+
+      /*
+       * IMPORTANT:
+       * Project page now ONLY opens workspace.html.
+       * Editor code is NOT kept in this page.
+       */
+
+      localStorage.setItem(
+        "js-code-output-active-project-id",
+        id
+      );
+
+      localStorage.setItem(
+        "js-code-output-active-project-name",
+        name || "Untitled Project"
+      );
+
+
+      const projectParam =
+        encodeURIComponent(id);
+
+      const nameParam =
+        encodeURIComponent(name || "Untitled Project");
+
+
+      window.location.href =
+        "workspace.html?project=" +
+        projectParam +
+        "&name=" +
+        nameParam;
+
+    }
+
+
+    /* --------------------------------
+       Create project
+       -------------------------------- */
+
+    function showCreateProject(){
+
+      const modal =
+        document.getElementById("createProjectModal");
+
+      const input =
+        document.getElementById("newProjectName");
+
+      modal.classList.remove("hidden");
+
+      input.value = "";
+
+      setTimeout(() => {
+        input.focus();
+      },100);
+
+    }
+
+
+    function closeCreateProject(){
+
+      document
+        .getElementById("createProjectModal")
+        .classList.add("hidden");
+
+    }
+
+
+    async function createProject(){
+
+      const input =
+        document.getElementById("newProjectName");
+
+      const name =
+        input.value.trim();
+
+      if(!name){
+
+        alert("Please enter a project name.");
+
+        input.focus();
+
+        return;
+
+      }
+
+
+      const user =
+        window.firebaseCurrentUser;
+
+
+      /*
+       * Cloud project
+       */
+
+      if(user){
+
+        const id =
+          "proj_" +
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .substring(2,8);
+
+
+        try{
+
+          /*
+           * Project page no longer creates editor files.
+           * Workspace.html will initialize/load the project.
+           */
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            ),
+            {
+              id:id,
+              name:name,
+              ownerId:user.uid,
+              ownerName:user.displayName || "Google Account",
+              ownerEmail:user.email || "",
+              ownerPhotoURL:user.photoURL || "",
+              files:{},
+              createdAt:
+                window.firebaseServerTimestamp(),
+              updatedAt:
+                window.firebaseServerTimestamp()
+            }
+          );
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid
+            ),
+            {
+              projectIds:
+                window.firebaseArrayUnion(id)
+            },
+            {
+              merge:true
+            }
+          );
+
+
+          closeCreateProject();
+
+          showToast(
+            "Cloud Project created."
+          );
+
+
+          setTimeout(() => {
+            openWorkspace(id,name);
+          },300);
+
+        }
+        catch(error){
+
+          console.error(error);
+
+          alert(
+            "Could not create cloud project."
+          );
+
+        }
+
+        return;
+
+      }
+
+
+      /*
+       * Local project
+       */
+
+      const id =
+        "local_proj_" +
+        Date.now();
+
+
+      let localProjects =
+        JSON.parse(
+          localStorage.getItem(
+            "js_local_projects"
+          ) || "[]"
+        );
+
+
+      localProjects.push({
+        id:id,
+        name:name,
+        updatedAt:Date.now()
+      });
+
+
+      localStorage.setItem(
+        "js_local_projects",
+        JSON.stringify(localProjects)
+      );
+
+
+      /*
+       * No editor/defaultTemplate is stored here.
+       * workspace.html handles project files.
+       */
+
+      closeCreateProject();
+
+      showToast(
+        "Local Project created."
+      );
+
+
+      setTimeout(() => {
+        openWorkspace(id,name);
+      },300);
+
+    }
+
+
+    /* --------------------------------
+       Project cards
+       -------------------------------- */
+
+    function createProjectCardHTML(
+      id,
+      name,
+      isCloud,
+      account = null
+    ){
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "project-card";
+
+      const currentUser = window.firebaseCurrentUser;
+
+      const accountName =
+        account?.displayName ||
+        currentUser?.displayName ||
+        "Google Account";
+
+      const accountEmail =
+        account?.email ||
+        currentUser?.email ||
+        "";
+
+      const accountPhoto =
+        account?.photoURL ||
+        currentUser?.photoURL ||
+        "";
+
+      const safeAccountName = escapeHTML(accountName);
+      const safeAccountEmail = escapeHTML(accountEmail);
+
+      const ownerAvatar = accountPhoto
+        ? `
+          <img
+            class="project-owner-avatar"
+            src="${accountPhoto}"
+            alt="${safeAccountName}"
+            referrerpolicy="no-referrer"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+          >
+          <div class="project-owner-avatar project-owner-fallback" style="display:none;">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        `
+        : `
+          <div class="project-owner-avatar project-owner-fallback">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        `;
+
+      card.innerHTML = `
+
+        <div>
+
+          <i
+            class="fa-solid fa-${isCloud ? "cloud" : "folder"} text-blue-500 text-2xl"
+          ></i>
+
+          <h3 class="project-card-title">
+            ${escapeHTML(name || "Untitled")}
+          </h3>
+
+          <p class="project-card-type">
+            ${isCloud ? "Cloud Workspace" : "Local Workspace"}
+          </p>
+
+          ${isCloud ? `
+            <div class="project-owner">
+              ${ownerAvatar}
+              <div class="project-owner-info">
+                <span class="project-owner-label">Google Account</span>
+                <span class="project-owner-name">${safeAccountName}</span>
+                ${safeAccountEmail ? `<span class="project-owner-email">${safeAccountEmail}</span>` : ""}
+              </div>
+            </div>
+          ` : ""}
+
+        </div>
+
+        <div class="project-card-bottom">
+
+          <div class="open-project-text">
+            Open Project →
+          </div>
+
+          <button
+            class="project-more"
+            type="button"
+            title="Project actions"
+            aria-label="Project actions"
+          >
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+
+        </div>
+
+      `;
+
+      card.onclick = () => {
+        openWorkspace(id,name);
+      };
+
+      card.oncontextmenu = event => {
+        showProjectContextMenu(
+          event,
+          id,
+          name,
+          isCloud
+        );
+      };
+
+      const moreButton =
+        card.querySelector(".project-more");
+
+      moreButton.onclick = event => {
+        event.stopPropagation();
+
+        showProjectContextMenu(
+          event,
+          id,
+          name,
+          isCloud
+        );
+      };
+
+      bindProjectLongPress(
+        card,
+        id,
+        name,
+        isCloud
+      );
+
+      return card;
+
+    }
+
+    /* --------------------------------
+       Load projects
+       -------------------------------- */
+
+    async function loadProjects(){
+
+      const list =
+        document.getElementById("projectsList");
+
+      const empty =
+        document.getElementById("noProjects");
+
+      const loading =
+        document.getElementById("projectsLoading");
+
+
+      if(!list) return;
+
+
+      list.innerHTML = "";
+
+      loading.classList.remove("hidden");
+
+      empty.classList.add("hidden");
+
+
+      let hasProjects = false;
+
+
+      /*
+       * Local projects
+       */
+
+      let localProjects = [];
+
+      try{
+
+        localProjects =
+          JSON.parse(
+            localStorage.getItem(
+              "js_local_projects"
+            ) || "[]"
+          );
+
+        if(!Array.isArray(localProjects)){
+          localProjects = [];
+        }
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        localProjects = [];
+
+      }
+
+
+      localProjects.forEach(project => {
+
+        hasProjects = true;
+
+        list.appendChild(
+          createProjectCardHTML(
+            project.id,
+            project.name,
+            false
+          )
+        );
+
+      });
+
+
+      /*
+       * Cloud projects
+       */
+
+      const user =
+        window.firebaseCurrentUser;
+
+
+      if(user){
+
+        try{
+
+          const userDoc =
+            await window.firebaseGetDoc(
+              window.firebaseDoc(
+                window.firebaseDB,
+                "users",
+                user.uid
+              )
+            );
+
+
+          const ids =
+            userDoc.exists()
+              ? userDoc.data().projectIds || []
+              : [];
+
+
+          if(ids.length){
+
+            hasProjects = true;
+
+          }
+
+
+          for(const id of ids){
+
+            try{
+
+              const projectDoc =
+                await window.firebaseGetDoc(
+                  window.firebaseDoc(
+                    window.firebaseDB,
+                    "users",
+                    user.uid,
+                    "projects",
+                    id
+                  )
+                );
+
+
+              if(!projectDoc.exists()){
+                continue;
+              }
+
+
+              const data =
+                projectDoc.data();
+
+
+              const account = {
+                displayName:
+                  data.ownerName ||
+                  user.displayName ||
+                  "Google Account",
+                email:
+                  data.ownerEmail ||
+                  user.email ||
+                  "",
+                photoURL:
+                  data.ownerPhotoURL ||
+                  user.photoURL ||
+                  ""
+              };
+
+              list.appendChild(
+                createProjectCardHTML(
+                  id,
+                  data.name || "Untitled",
+                  true,
+                  account
+                )
+              );
+
+            }
+            catch(error){
+
+              console.warn(
+                "Could not load project:",
+                id,
+                error
+              );
+
+            }
+
+          }
+
+        }
+        catch(error){
+
+          console.error(
+            "Cloud project loading failed:",
+            error
+          );
+
+        }
+
+      }
+
+
+      loading.classList.add("hidden");
+
+
+      if(!hasProjects){
+
+        empty.classList.remove("hidden");
+
+      }
+      else{
+
+        empty.classList.add("hidden");
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Project context menu
+       -------------------------------- */
+
+    function showProjectContextMenu(
+      event,
+      id,
+      name,
+      isCloud
+    ){
+
+      event.preventDefault?.();
+      event.stopPropagation?.();
+
+
+      projectActionTarget = id;
+      projectActionName =
+        name || "Project";
+      projectActionIsCloud =
+        !!isCloud;
+
+
+      const menu =
+        document.getElementById(
+          "projectContextMenu"
+        );
+
+
+      if(!menu) return;
+
+
+      menu.style.display = "flex";
+
+
+      let x =
+        event.clientX || 20;
+
+      let y =
+        event.clientY || 20;
+
+
+      const width = 190;
+      const height = 180;
+
+
+      if(x + width > window.innerWidth){
+        x = window.innerWidth - width - 10;
+      }
+
+
+      if(y + height > window.innerHeight){
+        y = window.innerHeight - height - 10;
+      }
+
+
+      menu.style.left =
+        Math.max(10,x) + "px";
+
+      menu.style.top =
+        Math.max(10,y) + "px";
+
+    }
+
+
+    function hideProjectContextMenu(){
+
+      const menu =
+        document.getElementById(
+          "projectContextMenu"
+        );
+
+      if(menu){
+
+        menu.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Rename
+       -------------------------------- */
+
+    async function renameProjectByTarget(){
+
+      const id =
+        projectActionTarget;
+
+      const oldName =
+        projectActionName;
+
+      const isCloud =
+        projectActionIsCloud;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      const newName =
+        prompt(
+          "Rename project:",
+          oldName
+        );
+
+
+      if(
+        !newName ||
+        newName.trim() === oldName
+      ){
+
+        return;
+
+      }
+
+
+      const name =
+        newName.trim();
+
+
+      try{
+
+        if(isCloud){
+
+          const user =
+            window.firebaseCurrentUser;
+
+
+          if(!user){
+
+            showToast(
+              "Sign in to rename cloud projects."
+            );
+
+            return;
+
+          }
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            ),
+            {
+              name:name,
+              updatedAt:
+                window.firebaseServerTimestamp()
+            },
+            {
+              merge:true
+            }
+          );
+
+        }
+        else{
+
+          let projects =
+            JSON.parse(
+              localStorage.getItem(
+                "js_local_projects"
+              ) || "[]"
+            );
+
+
+          projects =
+            projects.map(project => {
+
+              if(project.id === id){
+
+                return {
+                  ...project,
+                  name:name,
+                  updatedAt:Date.now()
+                };
+
+              }
+
+              return project;
+
+            });
+
+
+          localStorage.setItem(
+            "js_local_projects",
+            JSON.stringify(projects)
+          );
+
+        }
+
+
+        await loadProjects();
+
+        showToast(
+          "Project renamed."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not rename project."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Delete
+       -------------------------------- */
+
+    async function deleteProjectByTarget(){
+
+      const id =
+        projectActionTarget;
+
+      const name =
+        projectActionName;
+
+      const isCloud =
+        projectActionIsCloud;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      const confirmed =
+        confirm(
+          `Are you sure you want to delete "${name}" permanently? This project and its saved files will be deleted permanently.`
+        );
+
+
+      if(!confirmed) return;
+
+
+      try{
+
+        if(isCloud){
+
+          const user =
+            window.firebaseCurrentUser;
+
+
+          if(!user){
+
+            showToast(
+              "Sign in to delete cloud projects."
+            );
+
+            return;
+
+          }
+
+
+          await window.firebaseDeleteDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            )
+          );
+
+
+          await window.firebaseSetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid
+            ),
+            {
+              projectIds:
+                window.firebaseArrayRemove(id)
+            },
+            {
+              merge:true
+            }
+          );
+
+
+          /*
+           * Delete public copy if it exists.
+           */
+
+          try{
+
+            await window.firebaseDeleteDoc(
+              window.firebaseDoc(
+                window.firebaseDB,
+                "public_projects",
+                id
+              )
+            );
+
+          }
+          catch(_){}
+
+        }
+        else{
+
+          let projects =
+            JSON.parse(
+              localStorage.getItem(
+                "js_local_projects"
+              ) || "[]"
+            );
+
+
+          projects =
+            projects.filter(
+              project =>
+                project.id !== id
+            );
+
+
+          localStorage.setItem(
+            "js_local_projects",
+            JSON.stringify(projects)
+          );
+
+
+          /*
+           * Clean old project storage if it exists.
+           * The project page itself does not use it.
+           */
+
+          localStorage.removeItem(
+            "js_files_" + id
+          );
+
+          localStorage.removeItem(
+            "js_active_file_" + id
+          );
+
+        }
+
+
+        const activeId =
+          localStorage.getItem(
+            "js-code-output-active-project-id"
+          );
+
+
+        if(activeId === id){
+
+          localStorage.removeItem(
+            "js-code-output-active-project-id"
+          );
+
+          localStorage.removeItem(
+            "js-code-output-active-project-name"
+          );
+
+        }
+
+
+        await loadProjects();
+
+
+        showToast(
+          "Project deleted permanently."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not delete project."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Project file actions
+       -------------------------------- */
+
+    function getProjectFileForAction(
+      projectFiles
+    ){
+
+      const map =
+        projectFiles || {};
+
+
+      const keys =
+        Object.keys(map)
+          .filter(
+            key => !key.endsWith("/")
+          );
+
+
+      if(!keys.length){
+        return null;
+      }
+
+
+      for(
+        const key of [
+          "index.html",
+          "index.htm"
+        ]
+      ){
+
+        if(
+          Object.prototype
+            .hasOwnProperty
+            .call(map,key)
+        ){
+
+          return {
+            path:key,
+            content:map[key]
+          };
+
+        }
+
+      }
+
+
+      const textKeys =
+        keys.filter(
+          key =>
+            !isBinary(getExt(key))
+        );
+
+
+      const path =
+        textKeys[0] || keys[0];
+
+
+      return {
+        path:path,
+        content:map[path]
+      };
+
+    }
+
+
+    async function getProjectFilesForAction(){
+
+      const id =
+        projectActionTarget;
+
+
+      if(!id){
+        return null;
+      }
+
+
+      /*
+       * Cloud
+       */
+
+      if(projectActionIsCloud){
+
+        const user =
+          window.firebaseCurrentUser;
+
+
+        if(!user){
+
+          showToast(
+            "Sign in to access cloud project files."
+          );
+
+          return null;
+
+        }
+
+
+        const snapshot =
+          await window.firebaseGetDoc(
+            window.firebaseDoc(
+              window.firebaseDB,
+              "users",
+              user.uid,
+              "projects",
+              id
+            )
+          );
+
+
+        if(!snapshot.exists()){
+          return null;
+        }
+
+
+        return snapshot.data().files || {};
+
+      }
+
+
+      /*
+       * Local
+       */
+
+      try{
+
+        return JSON.parse(
+          localStorage.getItem(
+            "js_files_" + id
+          ) || "{}"
+        );
+
+      }
+      catch(error){
+
+        return {};
+
+      }
+
+    }
+
+
+    async function copyProjectFileByTarget(){
+
+      const id =
+        projectActionTarget;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      try{
+
+        const projectFiles =
+          await getProjectFilesForAction();
+
+
+        const selected =
+          getProjectFileForAction(
+            projectFiles
+          );
+
+
+        if(!selected){
+
+          showToast(
+            "No file found in this project."
+          );
+
+          return;
+
+        }
+
+
+        if(
+          isBinary(
+            getExt(selected.path)
+          )
+        ){
+
+          showToast(
+            "Copy File is available for text/code files."
+          );
+
+          return;
+
+        }
+
+
+        await navigator.clipboard.writeText(
+          String(
+            selected.content ?? ""
+          )
+        );
+
+
+        showToast(
+          "Copied " +
+          selected.path +
+          " to clipboard."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not copy the project file."
+        );
+
+      }
+
+    }
+
+
+    async function downloadProjectFileByTarget(){
+
+      const id =
+        projectActionTarget;
+
+
+      hideProjectContextMenu();
+
+
+      if(!id) return;
+
+
+      try{
+
+        const projectFiles =
+          await getProjectFilesForAction();
+
+
+        const selected =
+          getProjectFileForAction(
+            projectFiles
+          );
+
+
+        if(!selected){
+
+          showToast(
+            "No file found in this project."
+          );
+
+          return;
+
+        }
+
+
+        if(
+          isBinary(
+            getExt(selected.path)
+          )
+        ){
+
+          showToast(
+            "This project file cannot be downloaded from the project menu."
+          );
+
+          return;
+
+        }
+
+
+        const blob =
+          new Blob(
+            [
+              String(
+                selected.content ?? ""
+              )
+            ],
+            {
+              type:
+                "text/plain;charset=utf-8"
+            }
+          );
+
+
+        const url =
+          URL.createObjectURL(blob);
+
+
+        const a =
+          document.createElement("a");
+
+
+        a.href = url;
+
+        a.download =
+          selected.path
+            .split("/")
+            .pop() ||
+          "project-file.txt";
+
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+
+        setTimeout(
+          () => URL.revokeObjectURL(url),
+          1000
+        );
+
+
+        showToast(
+          "Downloaded " +
+          selected.path +
+          "."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not download the project file."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Mobile long press
+       -------------------------------- */
+
+    function bindProjectLongPress(
+      element,
+      id,
+      name,
+      isCloud
+    ){
+
+      let timer = null;
+
+
+      element.addEventListener(
+        "touchstart",
+        () => {
+
+          timer =
+            setTimeout(() => {
+
+              showProjectContextMenu(
+                {
+                  preventDefault(){},
+                  stopPropagation(){},
+                  clientX:20,
+                  clientY:
+                    Math.max(
+                      20,
+                      window.innerHeight * .45
+                    )
+                },
+                id,
+                name,
+                isCloud
+              );
+
+            },650);
+
+        },
+        {
+          passive:true
+        }
+      );
+
+
+      [
+        "touchend",
+        "touchmove",
+        "touchcancel"
+      ].forEach(eventName => {
+
+        element.addEventListener(
+          eventName,
+          () => {
+
+            clearTimeout(timer);
+
+          },
+          {
+            passive:true
+          }
+        );
+
+      });
+
+    }
+
+
+    /* --------------------------------
+       User UI
+       -------------------------------- */
+
+    const ACCOUNT_STORAGE_KEY = "js-code-output-google-accounts";
+
+    function getRememberedAccounts(){
+      try{
+        const raw = JSON.parse(localStorage.getItem(ACCOUNT_STORAGE_KEY) || "[]");
+        return Array.isArray(raw) ? raw.filter(a => a && a.email) : [];
+      }catch{
+        return [];
+      }
+    }
+
+    function rememberGoogleAccount(user){
+      if(!user || !user.email) return;
+
+      const accounts = getRememberedAccounts();
+      const item = {
+        uid: user.uid || "",
+        displayName: user.displayName || "Google Account",
+        email: user.email,
+        photoURL: user.photoURL || ""
+      };
+
+      const filtered = accounts.filter(a => a.email !== item.email);
+      filtered.unshift(item);
+
+      localStorage.setItem(
+        ACCOUNT_STORAGE_KEY,
+        JSON.stringify(filtered.slice(0,12))
+      );
+    }
+
+    function escapeAccountHTML(value){
+      return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function renderAccountList(user){
+      const list = document.getElementById("accountList");
+      const addBtn = document.getElementById("addAccountBtn");
+      const signInBtn = document.getElementById("guestSignInBtn");
+      if(!list) return;
+
+      const accounts = getRememberedAccounts();
+
+      if(user && user.email){
+        rememberGoogleAccount(user);
+      }
+
+      const allAccounts = getRememberedAccounts();
+
+      if(!allAccounts.length){
+        list.innerHTML =
+          '<div class="account-list-empty"><i class="fa-regular fa-circle-user"></i><br>No Google accounts signed in yet.</div>';
+      }else{
+        list.innerHTML = allAccounts.map(account => {
+          const name = escapeAccountHTML(account.displayName || "Google Account");
+          const email = escapeAccountHTML(account.email || "");
+          const photo = String(account.photoURL || "").replace(/"/g,"&quot;");
+          const active = !!(user && user.email && account.email === user.email);
+
+          const avatar = photo
+            ? `<img class="account-menu-avatar" src="${photo}" alt="${name}" referrerpolicy="no-referrer">`
+            : `<div class="account-menu-avatar account-menu-avatar-fallback"><i class="fa-solid fa-user"></i></div>`;
+
+          return `
+            <button
+              class="account-menu-account${active ? " active" : ""}"
+              type="button"
+              onclick="selectGoogleAccount('${encodeURIComponent(account.email)}')"
+            >
+              ${avatar}
+              <span class="account-menu-account-info">
+                <span class="account-menu-account-name">${name}</span>
+                <span class="account-menu-account-email">${email}</span>
+              </span>
+              ${active ? '<i class="fa-solid fa-check account-menu-check"></i>' : '<i class="fa-solid fa-chevron-right account-menu-check" style="opacity:.45"></i>'}
+            </button>
+          `;
+        }).join("");
+      }
+
+      // Add account stays available so another Google account can always be added.
+      if(addBtn) addBtn.classList.remove("hidden");
+
+      // Only show normal Sign in when the user is not signed in.
+      if(signInBtn) signInBtn.classList.toggle("hidden", !!user);
+    }
+
+    function updateUserUI(user){
+      const nameElement = document.getElementById("projectsUserName");
+      const accountMenuSubtitle = document.getElementById("accountMenuSubtitle");
+      const logoutButton = document.getElementById("logoutAccountBtn");
+
+      if(logoutButton){
+        logoutButton.style.display = user ? "flex" : "none";
+      }
+
+      if(user){
+        if(nameElement){
+          nameElement.textContent =
+            user.displayName || user.email || "Google Account";
+        }
+
+        if(accountMenuSubtitle){
+          accountMenuSubtitle.textContent =
+            user.email || "Signed in with Google";
+        }
+
+        rememberGoogleAccount(user);
+      }else{
+        if(nameElement) nameElement.textContent = "Guest Mode";
+
+        if(accountMenuSubtitle){
+          accountMenuSubtitle.textContent =
+            getRememberedAccounts().length
+              ? "Choose a Google account to continue"
+              : "Continue with Google to sign in";
+        }
+      }
+
+      renderAccountList(user);
+    }
+
+    function toggleAccountMenu(event){
+      if(event) event.stopPropagation();
+
+      const menu = document.getElementById("accountMenu");
+      const trigger = document.getElementById("projectsUserAccount");
+      if(!menu || !trigger) return;
+
+      const willOpen = !menu.classList.contains("open");
+      menu.classList.toggle("open", willOpen);
+      trigger.setAttribute("aria-expanded", String(willOpen));
+    }
+
+    function closeAccountMenu(){
+      const menu = document.getElementById("accountMenu");
+      const trigger = document.getElementById("projectsUserAccount");
+
+      if(menu) menu.classList.remove("open");
+      if(trigger) trigger.setAttribute("aria-expanded","false");
+    }
+
+    function useCurrentAccount(){
+      closeAccountMenu();
+    }
+
+    async function selectGoogleAccount(encodedEmail){
+      const email = decodeURIComponent(encodedEmail || "");
+      closeAccountMenu();
+
+      const current = window.firebaseCurrentUser;
+      if(current && current.email === email){
+        return;
+      }
+
+      try{
+        if(window.googleSignInAsAccount){
+          await window.googleSignInAsAccount(email);
+        }else if(window.googleSignIn){
+          await window.googleSignIn();
+        }
+      }catch(error){
+        console.error("Account switch failed:", error);
+        showToast("Could not switch Google account.");
+      }
+    }
+
+    async function addGoogleAccount(){
+      closeAccountMenu();
+
+      try{
+        if(window.googleSignIn){
+          await window.googleSignIn();
+          showToast("Google account added successfully.");
+        }
+      }catch(error){
+        console.error("Add account failed:", error);
+        showToast("Could not add Google account.");
+      }
+    }
+
+    async function signInFromAccountMenu(){
+      closeAccountMenu();
+
+      try{
+        if(window.googleSignIn){
+          await window.googleSignIn();
+          showToast("Signed in successfully.");
+        }
+      }catch(error){
+        console.error("Sign in failed:", error);
+        showToast("Could not sign in.");
+      }
+    }
+
+    async function signOutFromAccountMenu(){
+      closeAccountMenu();
+      await firebaseLogout();
+    }
+
+
+    /* --------------------------------
+       Logout
+       -------------------------------- */
+
+    async function firebaseLogout(){
+
+      try{
+
+        if(
+          window.firebaseSignOut &&
+          window.firebaseAuth
+        ){
+
+          await window.firebaseSignOut(
+            window.firebaseAuth
+          );
+
+        }
+
+        window.firebaseCurrentUser =
+          null;
+
+        window.currentUser =
+          null;
+
+        updateUserUI(null);
+
+        await loadProjects();
+
+        showToast(
+          "Logged out successfully."
+        );
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Could not sign out."
+        );
+
+      }
+
+    }
+
+
+    /* --------------------------------
+       Outside click
+       -------------------------------- */
+
+    document.addEventListener(
+      "click",
+      event => {
+
+        const menu =
+          document.getElementById("projectContextMenu");
+
+        if(
+          menu &&
+          menu.style.display === "flex" &&
+          !menu.contains(event.target)
+        ){
+          hideProjectContextMenu();
+        }
+
+        const accountMenu =
+          document.getElementById("accountMenu");
+
+        const accountTrigger =
+          document.getElementById("projectsUserAccount");
+
+        if(
+          accountMenu &&
+          accountMenu.classList.contains("open") &&
+          !accountMenu.contains(event.target) &&
+          !accountTrigger?.contains(event.target)
+        ){
+          closeAccountMenu();
+        }
+      }
+    );
+
+
+    /* --------------------------------
+       Escape key
+       -------------------------------- */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if(event.key === "Escape"){
+
+          hideProjectContextMenu();
+
+          closeCreateProject();
+
+          closeAccountMenu();
+
+        }
+
+      }
+    );
+
+
+    /* --------------------------------
+       Modal Enter key
+       -------------------------------- */
+
+    document
+      .getElementById("newProjectName")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if(event.key === "Enter"){
+
+            createProject();
+
+          }
+
+        }
+      );
+
+
+
+    /* --------------------------------
+       Appearance / Theme
+       -------------------------------- */
+
+    function applyTheme(theme, animate = false){
+      const root = document.documentElement;
+      const toggle = document.getElementById("themeToggle");
+
+      if(animate && document.startViewTransition){
+        document.startViewTransition(() => {
+          root.classList.toggle("dark", theme === "dark");
+        });
+      }else{
+        root.classList.toggle("dark", theme === "dark");
+      }
+
+      localStorage.setItem("js-code-output-theme", theme);
+
+      if(toggle){
+        toggle.setAttribute(
+          "aria-label",
+          theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+        );
+        toggle.setAttribute(
+          "title",
+          theme === "dark" ? "Light mode" : "Dark mode"
+        );
+      }
+    }
+
+    function initTheme(){
+      const saved = localStorage.getItem("js-code-output-theme");
+      // Dark mode is the default appearance.
+      const theme = saved || "dark";
+
+      applyTheme(theme, false);
+
+      const toggle = document.getElementById("themeToggle");
+      if(toggle){
+        toggle.addEventListener("click", () => {
+          const next =
+            document.documentElement.classList.contains("dark")
+              ? "light"
+              : "dark";
+          applyTheme(next, true);
+        });
+      }
+    }
+
+    initTheme();
+
+    /* --------------------------------
+       Initial local load
+       -------------------------------- */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        /*
+         * Firebase onAuthStateChanged will
+         * load again when Firebase is ready.
+         */
+
+        const localProjects =
+          JSON.parse(
+            localStorage.getItem(
+              "js_local_projects"
+            ) || "[]"
+          );
+
+
+        if(localProjects.length){
+
+          loadProjects();
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+<script id="upload-project-logic">
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  window.showUploadProject = function(){
+    const modal = byId("uploadProjectModal");
+    if(modal) modal.classList.remove("hidden");
+  };
+
+  window.closeUploadProject = function(){
+    const modal = byId("uploadProjectModal");
+    if(modal) modal.classList.add("hidden");
+  };
+
+  window.chooseProjectFiles = function(){
+    const input = byId("projectFilesInput");
+    if(input) input.click();
+  };
+
+  window.chooseProjectFolder = function(){
+    const input = byId("projectFolderInput");
+    if(input) input.click();
+  };
+
+  async function uploadFileAsDataURL(file){
+    return await new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function readUploadedProjectFiles(fileList){
+    const files = {};
+    for(const file of Array.from(fileList || [])){
+      const relativePath = file.webkitRelativePath || file.name;
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      const binaryExts = [
+        "png","jpg","jpeg","gif","webp","svg","ico",
+        "mp3","wav","ogg","m4a","aac","mp4","webm","mov",
+        "woff","woff2","ttf","otf","eot","zip","pdf"
+      ];
+
+      if(binaryExts.includes(ext)){
+        files[relativePath] = {
+          type:"binary",
+          content:await uploadFileAsDataURL(file)
+        };
+      }else{
+        files[relativePath] = {
+          type:"text",
+          content:await file.text()
+        };
+      }
+    }
+    return files;
+  }
+
+  function getUploadedProjectName(fileList){
+    const arr = Array.from(fileList || []);
+    if(!arr.length) return "Uploaded Project";
+
+    const first = arr[0];
+    if(first.webkitRelativePath){
+      return first.webkitRelativePath.split("/")[0] || "Uploaded Project";
+    }
+
+    if(arr.length === 1){
+      return first.name.replace(/\.[^/.]+$/, "") || "Uploaded Project";
+    }
+
+    return "Uploaded Project";
+  }
+
+  window.importUploadedProject = async function(fileList){
+    const files = Array.from(fileList || []);
+    if(!files.length) return;
+
+    try{
+      const projectName = getUploadedProjectName(files);
+      const projectId =
+        "local_proj_" +
+        Date.now() +
+        "_" +
+        Math.random().toString(36).slice(2,8);
+
+      const projectFiles = await readUploadedProjectFiles(files);
+
+      let localProjects = JSON.parse(
+        localStorage.getItem("js_local_projects") || "[]"
+      );
+
+      localProjects.push({
+        id:projectId,
+        name:projectName,
+        updatedAt:Date.now()
+      });
+
+      localStorage.setItem(
+        "js_local_projects",
+        JSON.stringify(localProjects)
+      );
+
+      localStorage.setItem(
+        "js_files_" + projectId,
+        JSON.stringify(projectFiles)
+      );
+
+      const firstPath = Object.keys(projectFiles)[0];
+      if(firstPath){
+        localStorage.setItem(
+          "js_active_file_" + projectId,
+          firstPath
+        );
+      }
+
+      closeUploadProject();
+
+      if(typeof showToast === "function"){
+        showToast("Project uploaded successfully.");
+      }
+
+      if(typeof loadProjects === "function"){
+        await loadProjects();
+      }
+
+      setTimeout(()=>{
+        if(typeof openWorkspace === "function"){
+          openWorkspace(projectId, projectName);
+        }
+      },300);
+
+    }catch(error){
+      console.error("Upload Project error:", error);
+      alert("Could not upload this project.");
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const filesInput = byId("projectFilesInput");
+    const folderInput = byId("projectFolderInput");
+
+    if(filesInput){
+      filesInput.addEventListener("change",()=>{
+        importUploadedProject(filesInput.files);
+        filesInput.value = "";
+      });
+    }
+
+    if(folderInput){
+      folderInput.addEventListener("change",()=>{
+        importUploadedProject(folderInput.files);
+        folderInput.value = "";
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

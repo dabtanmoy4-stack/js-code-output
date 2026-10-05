@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- JS mini.Browser logo -->
+    <link rel="icon" type="image/jpeg" href="yt.jpeg">
+    <link rel="apple-touch-icon" href="yt.jpeg">
+
+    <title>JS mini.Browser</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        marvelRed: '#D4AF37',
+                        marvelDark: '#0B0B0B',
+                        marvelBlue: '#1D1D1D',
+                        marvelGold: '#F5D76E'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0B0B0B; }
+        ::-webkit-scrollbar-thumb { background: #1D1D1D; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+        .marvel-bg {
+            background: radial-gradient(circle at center, #1D1D1D 0%, #0B0B0B 100%);
+        }
+
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                width: 100%;
+                height: 100%;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            body { font-size: 14px; }
+
+            header {
+                min-height: 55px;
+                height: auto;
+                padding: 7px 6px !important;
+                gap: 5px;
+                flex-wrap: nowrap;
+            }
+
+            header > div:first-child > div:first-child {
+                margin-right: 1px !important;
+                padding-left: 2px !important;
+                padding-right: 2px !important;
+                gap: 3px !important;
+            }
+
+            header > div:first-child > div:first-child div {
+                width: 7px !important;
+                height: 7px !important;
+            }
+
+            header > div:first-child {
+                gap: 1px !important;
+                flex-shrink: 0;
+            }
+
+            header > div:first-child button { padding: 6px !important; }
+
+            header > div:first-child button:nth-of-type(2),
+            header > div:first-child button:nth-of-type(3) {
+                display: none;
+            }
+
+            header > div.flex-1 {
+                min-width: 0;
+                max-width: none !important;
+                margin-left: 3px !important;
+                margin-right: 3px !important;
+            }
+
+            #address-bar {
+                width: 100%;
+                min-width: 0;
+                height: 38px;
+                padding-top: 7px !important;
+                padding-bottom: 7px !important;
+                padding-left: 37px !important;
+                padding-right: 9px !important;
+                font-size: 12px !important;
+                border-radius: 12px !important;
+            }
+
+            header > div:last-child {
+                gap: 1px !important;
+                flex-shrink: 0;
+            }
+
+            header > div:last-child .h-6 { display: none; }
+
+            header > div:last-child button:first-of-type { display: none; }
+
+            header > div:last-child button { padding: 6px !important; }
+
+            header > div:last-child img {
+                width: 25px !important;
+                height: 25px !important;
+            }
+
+            #viewport {
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            #view-home {
+                width: 100%;
+                min-width: 0;
+                padding: 25px 13px 30px !important;
+                justify-content: flex-start !important;
+                overflow-y: auto;
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #view-home > div:first-child {
+                width: 100%;
+                margin-top: 8vh;
+                margin-bottom: 25px !important;
+            }
+
+            #view-home > div:first-child > div {
+                font-size: 34px !important;
+                line-height: 1.1;
+                padding: 8px 12px !important;
+            }
+
+            #view-home > div:first-child > span {
+                display: block;
+                margin-left: 0 !important;
+                margin-top: 8px !important;
+                font-size: 23px !important;
+            }
+
+            #view-home > div:nth-child(2) {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            #main-search {
+                width: 100%;
+                height: 53px;
+                padding-left: 48px !important;
+                padding-right: 14px !important;
+                font-size: 14px !important;
+                border-radius: 14px !important;
+            }
+
+            #view-home > div:nth-child(3) {
+                width: 100%;
+                margin-top: 22px !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px !important;
+                flex-wrap: wrap;
+            }
+
+            #view-home > div:nth-child(3) > div { min-width: 76px; }
+
+            #view-home > div:nth-child(3) > div > div {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            #view-home > div:nth-child(3) > div > span { font-size: 11px; }
+
+            #view-search-results {
+                width: 100%;
+                max-width: 100vw;
+                padding: 17px 12px 28px !important;
+                overflow-y: auto;
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #view-search-results > div:first-child {
+                gap: 9px !important;
+                margin-bottom: 16px !important;
+            }
+
+            #results-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 11px !important;
+            }
+
+            #results-container > div {
+                width: 100%;
+                padding: 14px !important;
+                border-radius: 12px !important;
+                overflow-wrap: anywhere;
+            }
+
+            #results-container h3 {
+                font-size: 16px !important;
+                line-height: 1.35;
+            }
+
+            #results-container p {
+                font-size: 12px !important;
+                line-height: 1.55;
+            }
+
+            #view-website {
+                width: 100%;
+                min-width: 0;
+                min-height: 100% !important;
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #website-content {
+                width: 100%;
+                min-height: 100%;
+                overflow-x: hidden;
+            }
+
+            #settings-sidebar {
+                width: 100% !important;
+                max-width: 100vw;
+                height: min(78vh, 620px) !important;
+                top: auto !important;
+                bottom: 0 !important;
+                right: 0 !important;
+                border-left: 0 !important;
+                border-top: 1px solid #3A3422 !important;
+                border-radius: 17px 17px 0 0;
+                transform: translateY(100%);
+            }
+
+            #settings-sidebar:not(.translate-x-full) {
+                transform: translateY(0);
+            }
+
+            #settings-sidebar .p-4 { padding: 14px !important; }
+            #settings-sidebar h2 { font-size: 16px; }
+            #settings-sidebar .space-y-6 { gap: 15px; }
+
+            button, a, input { -webkit-tap-highlight-color: transparent; }
+            button { touch-action: manipulation; }
+            input { touch-action: manipulation; }
+        }
+
+        @media (max-width: 420px) {
+            header {
+                min-height: 51px;
+                padding: 6px !important;
+            }
+
+            header > div:first-child button { padding: 5px !important; }
+
+            #address-bar {
+                height: 36px;
+                font-size: 11px !important;
+                padding-left: 34px !important;
+            }
+
+            header > div:last-child button { padding: 5px !important; }
+
+            header > div:last-child img {
+                width: 23px !important;
+                height: 23px !important;
+            }
+
+            #view-home {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+
+            #view-home > div:first-child {
+                margin-top: 5vh;
+                margin-bottom: 22px !important;
+            }
+
+            #view-home > div:first-child > div { font-size: 29px !important; }
+            #view-home > div:first-child > span { font-size: 20px !important; }
+
+            #main-search {
+                height: 49px;
+                font-size: 13px !important;
+                padding-left: 44px !important;
+            }
+
+            #view-home > div:nth-child(3) {
+                margin-top: 18px !important;
+                gap: 7px !important;
+            }
+
+            #view-home > div:nth-child(3) > div { min-width: 70px; }
+
+            #view-home > div:nth-child(3) > div > div {
+                width: 46px !important;
+                height: 46px !important;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: landscape) {
+            #view-home { padding-top: 10px !important; }
+
+            #view-home > div:first-child {
+                margin-top: 2vh;
+                margin-bottom: 13px !important;
+            }
+
+            #view-home > div:first-child > div { font-size: 26px !important; }
+            #view-home > div:first-child > span { font-size: 18px !important; }
+            #main-search { height: 45px; }
+        }
+    
+        /* Public website directory: one website per row, Chrome-like spacing */
+        .jsmini-sites-grid{
+            display:flex !important;
+            flex-direction:column !important;
+            align-items:stretch !important;
+            gap:14px !important;
+        }
+        .jsmini-sites-grid .jsmini-site-card{
+            width:100% !important;
+            box-sizing:border-box !important;
+        }
+
+</style>
+
+    <style id="jsmini-live-deployment">
+        .jsmini-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px}
+        .jsmini-modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#0B0B0B;border:1px solid #3A3422;border-top:3px solid #D4AF37;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.65);padding:22px}
+        .jsmini-modal h2{font-size:22px;font-weight:900;margin:0 0 5px}.jsmini-muted{color:#B8AD8A;font-size:12px}.jsmini-label{display:block;font-size:11px;color:#D8CDAA;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin:16px 0 7px}
+        .jsmini-input,.jsmini-textarea,.jsmini-select{width:100%;background:#0D0D0D;border:1px solid #4A4128;color:#fff;border-radius:10px;padding:11px 12px;outline:none;font-size:13px}.jsmini-input:focus,.jsmini-textarea:focus,.jsmini-select:focus{border-color:#D4AF37;box-shadow:0 0 0 2px rgba(226,54,54,.15)}.jsmini-textarea{min-height:90px;resize:vertical}
+        .jsmini-domain-wrap{display:flex;align-items:center}.jsmini-domain-wrap .jsmini-input{border-radius:10px 0 0 10px}.jsmini-domain-suffix{background:#1D1D1D;border:1px solid #4A4128;border-left:0;padding:11px 12px;border-radius:0 10px 10px 0;color:#F5D76E;font-weight:800;font-size:12px;white-space:nowrap}
+        .jsmini-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.jsmini-btn{border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-btn.cancel{background:#22201A;color:#D8CDAA}.jsmini-btn.deploy{background:#D4AF37;color:#fff;box-shadow:0 5px 18px rgba(226,54,54,.25)}.jsmini-btn.deploy:hover{background:#A8841F}.jsmini-status{margin-top:12px;font-size:12px;min-height:18px}.jsmini-success{color:#86efac}.jsmini-error{color:#fca5a5}.jsmini-loading{color:#F5D76E}
+        .jsmini-sitebar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#101010;border-bottom:1px solid #3A3422}.jsmini-sitebar strong{font-size:12px}.jsmini-sitebar span{font-size:10px;color:#B8AD8A}.jsmini-open-frame{width:100%;height:calc(100vh - 100px);border:0;background:#fff;display:block}
+        .jsmini-sites-section{width:min(900px,100%);margin:30px auto 0;padding:0 8px}.jsmini-sites-title{font-size:13px;color:#B8AD8A;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;font-weight:900}.jsmini-sites-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.jsmini-site-card{background:#0B0B0B;border:1px solid #3A3422;border-radius:12px;padding:15px;text-align:left;cursor:pointer;transition:.2s}.jsmini-site-card:hover{border-color:#D4AF37;transform:translateY(-2px)}.jsmini-site-card h3{font-size:15px;font-weight:900;margin:0 0 5px}.jsmini-site-card p{font-size:11px;color:#B8AD8A;line-height:1.5;margin:0 0 9px}.jsmini-site-card .domain{font-size:10px;color:#F5D76E;font-weight:800}
+        @media(max-width:600px){.jsmini-modal{padding:17px;border-radius:13px}.jsmini-actions{flex-direction:column-reverse}.jsmini-btn{width:100%}.jsmini-sitebar{padding:8px 10px}.jsmini-open-frame{height:calc(100vh - 96px)}}
+
+
+        /* Chrome-style published results: strict single-column layout */
+        #results-container.jsmini-chrome-results,
+        .jsmini-chrome-results{
+            display:flex !important;
+            flex-direction:column !important;
+            flex-wrap:nowrap !important;
+            align-items:stretch !important;
+            width:100% !important;
+            max-width:900px !important;
+            gap:26px !important;
+            margin:0 auto !important;
+        }
+        #results-container.jsmini-chrome-results .jsmini-chrome-result,
+        .jsmini-chrome-results .jsmini-chrome-result{
+            width:100% !important;
+            max-width:760px !important;
+            min-width:0 !important;
+            margin:0 !important;
+            padding:8px 6px !important;
+            box-sizing:border-box !important;
+            display:flex !important;
+            flex-direction:row !important;
+            align-items:flex-start !important;
+        }
+        /* Never allow the public result cards to turn into a horizontal grid. */
+        .jsmini-chrome-results > *{
+            grid-column:auto !important;
+            float:none !important;
+        }
+
+        /* Published website results — Chrome-style link appearance */
+        .jsmini-chrome-results{display:flex;flex-direction:column;gap:18px}
+        .jsmini-chrome-result{
+            display:flex;gap:13px;align-items:flex-start;
+            background:transparent;border:0;border-radius:10px;
+            padding:10px 8px;cursor:pointer;transition:background .16s ease;
+        }
+        .jsmini-chrome-result:hover{background:rgba(255,255,255,.045)}
+        .jsmini-result-avatar{
+            width:42px;height:42px;min-width:42px;border-radius:50%;
+            object-fit:cover;background:#202124;border:1px solid #4A4128;
+            display:flex;align-items:center;justify-content:center;overflow:hidden;
+            margin-top:2px
+        }
+        .jsmini-result-avatar img{width:100%;height:100%;object-fit:cover}
+        .jsmini-result-body{min-width:0;flex:1}
+        .jsmini-result-url{
+            color:#B8AD8A;font-size:12px;line-height:1.35;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+            margin-bottom:3px
+        }
+        .jsmini-result-title{
+            color:#8ab4f8!important;font-size:20px!important;
+            line-height:1.3!important;font-weight:500!important;
+            margin:0 0 5px!important;text-decoration:none
+        }
+        .jsmini-chrome-result:hover .jsmini-result-title{text-decoration:underline}
+        .jsmini-result-snippet{
+            color:#D2C7A5;font-size:13px;line-height:1.55;margin:0;
+            max-width:760px
+        }
+        .jsmini-result-badge{
+            display:inline-block;margin-left:7px;padding:2px 6px;border-radius:8px;
+            background:#2D2A20;color:#B8AD8A;font-size:9px;font-weight:700;
+            vertical-align:middle
+        }
+        .jsmini-home-site-card{
+            display:flex;align-items:center;gap:11px;
+        }
+        .jsmini-home-site-photo{
+            width:34px;height:34px;border-radius:50%;object-fit:cover;
+            background:#202124;border:1px solid #4A4128;flex:none
+        }
+        @media(max-width:600px){
+            .jsmini-chrome-result{gap:10px;padding:8px 4px}
+            .jsmini-result-avatar{width:36px;height:36px;min-width:36px}
+            .jsmini-result-title{font-size:17px!important}
+            .jsmini-result-snippet{font-size:12px}
+        }
+
+        /* Settings feature panels */
+        .jsmini-feature-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(7px);z-index:100001;display:flex;align-items:center;justify-content:center;padding:18px}
+        .jsmini-feature-modal{width:min(680px,100%);max-height:88vh;overflow:auto;background:#101010;border:1px solid #3A3422;border-top:3px solid #D4AF37;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.7);padding:22px;color:#fff}
+        .jsmini-feature-modal h2{font-size:21px;font-weight:900;margin:0}
+        .jsmini-feature-muted{color:#B8AD8A;font-size:12px;line-height:1.55}
+        .jsmini-feature-close{background:#22201A;border:0;color:#D8CDAA;border-radius:9px;width:34px;height:34px;font-size:20px;cursor:pointer}
+        .jsmini-feature-close:hover{background:#3A3422;color:#fff}
+        .jsmini-option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:16px}
+        .jsmini-theme-option{border:1px solid #3A3422;background:#151515;border-radius:12px;padding:14px;text-align:left;cursor:pointer;transition:.18s;color:#fff}
+        .jsmini-theme-option:hover{border-color:#D4AF37;transform:translateY(-1px)}
+        .jsmini-theme-option.active{border-color:#F5D76E;box-shadow:0 0 0 1px rgba(247,143,63,.25)}
+        .jsmini-theme-swatch{height:48px;border-radius:9px;margin-bottom:9px;border:1px solid rgba(255,255,255,.1)}
+        .jsmini-theme-name{font-size:12px;font-weight:900}.jsmini-theme-desc{font-size:10px;color:#B8AD8A;margin-top:3px;line-height:1.4}
+
+        /* JS mini.Browser appearance themes */
+        body.jsmini-theme-light{background:#f4f6f8!important;color:#101010827!important}
+        body.jsmini-theme-light header,
+        body.jsmini-theme-light #settings-sidebar{background:#fff!important;color:#101010827!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-300{color:#334155!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-400{color:#64748b!important}
+        body.jsmini-theme-light #settings-sidebar .text-gray-500{color:#64748b!important}
+        body.jsmini-theme-light #settings-sidebar .border-gray-800{border-color:#e2e8f0!important}
+        body.jsmini-theme-light #settings-sidebar .hover\\:bg-gray-800:hover{background:#f1f5f9!important;color:#101010827!important}
+        body.jsmini-theme-light #view-home,
+        body.jsmini-theme-light #view-search-results,
+        body.jsmini-theme-light #view-website{color:#101010827}
+
+        body.jsmini-theme-dark{background:#080808!important;color:#f8fafc!important}
+        body.jsmini-theme-ocean{background:#061827!important;color:#e6fbff!important}
+        body.jsmini-theme-purple{background:#140a22!important;color:#f6efff!important}
+        body.jsmini-theme-sunset{background:#24130c!important;color:#fff4ed!important}
+
+        body.jsmini-theme-dark #settings-sidebar{background:#090909!important}
+        body.jsmini-theme-ocean #settings-sidebar{background:#082433!important}
+        body.jsmini-theme-purple #settings-sidebar{background:#1b0d2b!important}
+        body.jsmini-theme-sunset #settings-sidebar{background:#32170d!important}
+        .jsmini-info-block{background:#151515;border:1px solid #3A3422;border-radius:12px;padding:14px;margin-top:12px}
+        .jsmini-info-block h3{font-size:13px;font-weight:900;margin:0 0 6px}.jsmini-info-block p{font-size:12px;color:#C5B98F;line-height:1.65;margin:0}
+        .jsmini-history-toolbar{display:flex;gap:8px;margin:15px 0}.jsmini-history-search{flex:1;background:#0b0b0b;border:1px solid #3A3422;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:12px}
+        @media (max-width:640px){
+            #js-code-output-switch{height:46px;padding:0 13px;font-size:11px}
+            #js-code-output-switch span{display:none}
+            #js-code-output-switch i{width:20px;height:20px}
+        }
+        .jsmini-history-list{display:flex;flex-direction:column;gap:8px}.jsmini-history-item{display:flex;align-items:center;gap:11px;background:#151515;border:1px solid #3A3422;border-radius:11px;padding:11px;cursor:pointer}
+        .jsmini-history-item:hover{border-color:#D4AF37;background:#1b1b1b}.jsmini-history-icon{width:32px;height:32px;border-radius:9px;background:#1D1D1D;display:flex;align-items:center;justify-content:center;flex:none}
+        .jsmini-history-main{min-width:0;flex:1}.jsmini-history-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jsmini-history-url{font-size:10px;color:#B8AD8A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.jsmini-history-time{font-size:9px;color:#958967;white-space:nowrap}
+        .jsmini-history-empty{text-align:center;padding:35px 15px;color:#958967;font-size:12px;border:1px dashed #3A3422;border-radius:12px}
+        .jsmini-deployed-list{display:flex;flex-direction:column;gap:10px;margin-top:15px}.jsmini-deployed-card{background:#151515;border:1px solid #3A3422;border-radius:12px;padding:14px;cursor:pointer;transition:.18s}.jsmini-deployed-card:hover{border-color:#D4AF37;transform:translateY(-1px)}
+        .jsmini-deployed-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.jsmini-deployed-card h3{font-size:14px;font-weight:900;margin:0}.jsmini-deployed-card p{font-size:11px;color:#B8AD8A;margin:5px 0;line-height:1.45}.jsmini-deployed-domain{font-size:10px;color:#F5D76E;font-weight:800}
+        .jsmini-empty-deployed{text-align:center;padding:30px 15px;background:#151515;border:1px dashed #3A3422;border-radius:12px;margin-top:15px}.jsmini-empty-deployed h3{font-size:15px;font-weight:900;margin:0 0 7px}.jsmini-empty-deployed p{font-size:11px;color:#A99D78;margin:0 0 15px;line-height:1.5}
+        .jsmini-primary{background:#D4AF37;color:#fff;border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:900;cursor:pointer}.jsmini-primary:hover{background:#A8841F}
+        @media(max-width:600px){.jsmini-feature-modal{padding:17px;border-radius:13px}.jsmini-deployed-top{flex-direction:column}.jsmini-history-time{display:none}}
+
+
+        /* ================= POST-SIGN-IN MINI BROWSER INFORMATION NOTICE ================= */
+        #jsmini-info-notice{
+            position:fixed;
+            inset:0;
+            z-index:999998;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+            background:rgba(3,5,10,.84);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            animation:jsminiNoticeFade .28s ease-out;
+        }
+        #jsmini-info-notice.hidden{display:none!important}
+        @keyframes jsminiNoticeFade{
+            from{opacity:0}
+            to{opacity:1}
+        }
+        .jsmini-notice-card{
+            width:min(680px,100%);
+            max-height:min(88vh,760px);
+            overflow:auto;
+            position:relative;
+            background:linear-gradient(145deg,#171717,#0d0d0d);
+            border:1px solid #343434;
+            border-top:3px solid #D4AF37;
+            border-radius:22px;
+            padding:28px;
+            color:#fff;
+            box-shadow:0 30px 100px rgba(0,0,0,.78);
+            animation:jsminiNoticeCard .35s cubic-bezier(.2,.8,.2,1);
+        }
+        @keyframes jsminiNoticeCard{
+            from{opacity:0;transform:translateY(18px) scale(.97)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+        .jsmini-notice-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:7px;
+            padding:7px 11px;
+            border-radius:999px;
+            background:rgba(226,54,54,.12);
+            border:1px solid rgba(226,54,54,.3);
+            color:#ff9b9b;
+            font-size:10px;
+            font-weight:900;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            margin-bottom:15px;
+        }
+        .jsmini-notice-title{
+            font-size:clamp(24px,4vw,34px);
+            line-height:1.12;
+            font-weight:950;
+            letter-spacing:-.03em;
+            margin:0 0 10px;
+        }
+        .jsmini-notice-subtitle{
+            color:#C5B98F;
+            font-size:13px;
+            line-height:1.7;
+            margin:0 0 20px;
+        }
+        .jsmini-notice-section{
+            display:flex;
+            gap:13px;
+            align-items:flex-start;
+            padding:15px;
+            margin:10px 0;
+            background:#121212;
+            border:1px solid #302A1B;
+            border-radius:14px;
+        }
+        .jsmini-notice-icon{
+            width:38px;
+            height:38px;
+            min-width:38px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:11px;
+            background:#1D1D1D;
+            color:#F5D76E;
+        }
+        .jsmini-notice-section h3{
+            font-size:13px;
+            font-weight:900;
+            margin:0 0 5px;
+        }
+        .jsmini-notice-section p{
+            color:#B8AD8A;
+            font-size:11.5px;
+            line-height:1.65;
+            margin:0;
+        }
+        .jsmini-notice-highlight{
+            color:#fff;
+            font-weight:800;
+        }
+        .jsmini-notice-actions{
+            display:flex;
+            gap:10px;
+            margin-top:21px;
+        }
+        .jsmini-notice-btn{
+            flex:1;
+            min-height:46px;
+            border-radius:11px;
+            padding:11px 15px;
+            font-size:12px;
+            font-weight:900;
+            cursor:pointer;
+            transition:.18s ease;
+        }
+        .jsmini-notice-btn.primary{
+            border:0;
+            color:#fff;
+            background:linear-gradient(135deg,#D4AF37,#A8841F);
+            box-shadow:0 8px 24px rgba(226,54,54,.2);
+        }
+        .jsmini-notice-btn.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+        .jsmini-notice-btn.secondary{
+            border:1px solid #4A4128;
+            color:#D8CDAA;
+            background:#211F18;
+        }
+        .jsmini-notice-btn.secondary:hover{background:#302A1B;color:#fff}
+        .jsmini-notice-footer{
+            text-align:center;
+            color:#817653;
+            font-size:9.5px;
+            line-height:1.5;
+            margin:14px 0 0;
+        }
+        @media(max-width:600px){
+            #jsmini-info-notice{padding:12px}
+            .jsmini-notice-card{padding:20px 16px;border-radius:17px;max-height:92vh}
+            .jsmini-notice-actions{flex-direction:column}
+            .jsmini-notice-btn{width:100%}
+        }
+
+        /* ================= REQUIRED GOOGLE SIGN-IN GATE ================= */
+        body.jsmini-auth-locked > *:not(#jsmini-auth-gate){
+            filter: blur(8px);
+            pointer-events:none !important;
+            user-select:none !important;
+        }
+        #jsmini-auth-gate{
+            position:fixed;
+            inset:0;
+            z-index:999999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(226,54,54,.18), transparent 38%),
+                rgba(5,5,5,.96);
+            backdrop-filter:blur(12px);
+        }
+        #jsmini-auth-gate.hidden{display:none!important}
+        .jsmini-auth-card{
+            width:min(430px,100%);
+            background:rgba(18,18,18,.98);
+            border:1px solid #3A3422;
+            border-top:3px solid #D4AF37;
+            border-radius:22px;
+            padding:30px 24px;
+            text-align:center;
+            box-shadow:0 30px 100px rgba(0,0,0,.75);
+            animation:jsminiAuthIn .35s ease-out;
+        }
+        @keyframes jsminiAuthIn{
+            from{opacity:0;transform:translateY(14px) scale(.98)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+        .jsmini-auth-logo{
+            width:72px;height:72px;margin:0 auto 16px;border-radius:20px;
+            display:flex;align-items:center;justify-content:center;
+            background:#D4AF37;color:#fff;font-weight:1000;font-size:20px;
+            box-shadow:0 10px 30px rgba(226,54,54,.25);
+        }
+        .jsmini-auth-card h1{font-size:25px;font-weight:900;margin:0 0 8px;color:#fff}
+        .jsmini-auth-card p{font-size:13px;line-height:1.6;color:#B8AD8A;margin:0 auto 22px;max-width:340px}
+        #jsmini-google-signin{
+            width:100%;height:48px;border:1px solid #dadce0;border-radius:10px;
+            background:#fff;color:#202124;display:flex;align-items:center;
+            justify-content:center;gap:11px;font-size:14px;font-weight:700;
+            cursor:pointer;transition:.18s;box-shadow:0 2px 6px rgba(0,0,0,.2);
+        }
+        #jsmini-google-signin:hover{background:#f8f9fa;transform:translateY(-1px)}
+        #jsmini-google-signin:disabled{opacity:.65;cursor:wait;transform:none}
+        .jsmini-google-icon{width:20px;height:20px;display:block}
+        #jsmini-auth-status{min-height:18px;margin-top:12px;font-size:12px;color:#B8AD8A}
+        #jsmini-auth-status.error{color:#fca5a5}
+        #jsmini-auth-status.success{color:#86efac}
+        .jsmini-auth-note{font-size:10px!important;color:#817653!important;margin-top:16px!important;margin-bottom:0!important}
+        @media(max-width:480px){
+            #jsmini-auth-gate{padding:14px}
+            .jsmini-auth-card{padding:26px 18px;border-radius:18px}
+            .jsmini-auth-card h1{font-size:22px}
+        }
+
+    </style>
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+
+<body class="h-screen w-full bg-marvelDark text-white overflow-hidden flex flex-col font-sans">
+
+
+
+    <!-- Post-login information notice -->
+    <div id="jsmini-info-notice" class="hidden" aria-modal="true" role="dialog" aria-labelledby="jsminiInfoTitle">
+        <div class="jsmini-notice-card">
+            <div class="jsmini-notice-badge">
+                <i data-lucide="info" style="width:13px;height:13px"></i>
+                Important platform information
+            </div>
+
+            <h2 id="jsminiInfoTitle" class="jsmini-notice-title">
+                Welcome to JS mini.Browser
+            </h2>
+
+            <p class="jsmini-notice-subtitle">
+                Before you continue, here is something important you should know about this platform.
+                JS mini.Browser is built for developers who want a simple place to explore, preview,
+                and test projects published through Team JS Builder.
+            </p>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="monitor-check" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>This is not a real web browser</h3>
+                    <p>
+                        JS mini.Browser is <span class="jsmini-notice-highlight">not an actual internet browser</span>
+                        like Chrome, Edge, Firefox, or Safari. It is a dedicated platform environment created by
+                        <span class="jsmini-notice-highlight">Team JS Builder</span> for testing and previewing developer projects.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="flask-conical" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>Built for testing & project preview</h3>
+                    <p>
+                        Developers can publish a project here and use JS mini.Browser to
+                        <span class="jsmini-notice-highlight">open, inspect, preview, and test</span> how that project
+                        behaves inside the Team JS Builder platform.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-section">
+                <div class="jsmini-notice-icon">
+                    <i data-lucide="rocket" style="width:19px;height:19px"></i>
+                </div>
+                <div>
+                    <h3>Want to create and publish your own project?</h3>
+                    <p>
+                        If you want to build your own website or web project and publish it here for testing,
+                        go to <span class="jsmini-notice-highlight">JS CODE OUTPUT</span>. Create your project,
+                        prepare it for deployment, and then publish it to the JS Builder ecosystem.
+                    </p>
+                </div>
+            </div>
+
+            <div class="jsmini-notice-actions">
+                <button type="button" id="jsmini-notice-continue" class="jsmini-notice-btn secondary">
+                    No thanks, continue to Mini Browser
+                </button>
+                <button type="button" id="jsmini-notice-code-output" class="jsmini-notice-btn primary">
+                    <i data-lucide="external-link" style="width:15px;height:15px;vertical-align:-3px;margin-right:5px"></i>
+                    Go to JS CODE OUTPUT
+                </button>
+            </div>
+
+            <p class="jsmini-notice-footer">
+                Team JS Builder • JS mini.Browser is a developer testing and preview platform.
+            </p>
+        </div>
+    </div>
+
+    <!-- Google Sign-In is mandatory before using JS mini.Browser -->
+    <div id="jsmini-auth-gate" aria-modal="true" role="dialog">
+        <div class="jsmini-auth-card">
+            <div class="jsmini-auth-logo">JS</div>
+            <h1>Sign in to continue</h1>
+            <p>Google Sign-In is required to enter JS mini.Browser. Sign in with your Google account to access the browser and your synced data.</p>
+            <button id="jsmini-google-signin" type="button" onclick="window.jsMiniRequiredGoogleSignIn && window.jsMiniRequiredGoogleSignIn()">
+                <svg class="jsmini-google-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#D4AF37" d="M21.35 12.27c0-.79-.07-1.55-.22-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
+                    <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.75 9.75 0 0 0 12 21.67z"/>
+                    <path fill="#FBBC05" d="M6.54 13.77A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.22.31-1.77V7.7H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1.05 4.3l3.24-2.53z"/>
+                    <path fill="#EA4335" d="M12 6.2c1.43 0 2.71.49 3.72 1.46l2.79-2.79C16.84 3.22 14.63 2.33 12 2.33A9.75 9.75 0 0 0 3.3 7.7l3.24 2.53C7.31 7.92 9.46 6.2 12 6.2z"/>
+                </svg>
+                Continue with Google
+            </button>
+            <div id="jsmini-auth-status">Checking Google sign-in…</div>
+            <p class="jsmini-auth-note">Your Google account is used only for Firebase authentication and syncing JS mini.Browser data.</p>
+        </div>
+    </div>
+
+    <header class="bg-[#090909] border-b-2 border-marvelRed p-2 flex items-center justify-between shadow-md z-20">
+        <div class="flex items-center gap-2">
+            <div class="flex gap-1.5 mr-4 px-2">
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+
+            <button onclick="goHome()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Home">
+                <i data-lucide="home" class="w-5 h-5"></i>
+            </button>
+
+            <button onclick="goJSMiniBack()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Back">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+
+            <button onclick="goJSMiniForward()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Forward">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+
+            <button onclick="refreshPage()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Refresh">
+                <i data-lucide="rotate-cw" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 max-w-3xl mx-4 flex items-center gap-2 min-w-0">
+            <div class="relative flex-1 min-w-0 group">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="search" class="w-4 h-4 text-marvelGold"></i>
+                </div>
+
+                <input type="text" id="address-bar"
+                    class="w-full bg-[#171717] border border-gray-700 text-white rounded-full py-1.5 pl-10 pr-4 focus:outline-none focus:border-marvelRed focus:ring-1 focus:ring-marvelRed transition shadow-inner"
+                    placeholder="Search or enter a .JS URL..."
+                    onkeydown="handleAddressBarEnter(event)">
+            </div>
+
+            <button type="button" id="top-js-code-output-switch"
+                onclick="window.location.href='index.html.html'"
+                class="shrink-0 h-9 px-3 sm:px-4 rounded-full bg-white text-black font-bold text-xs flex items-center gap-1.5 border border-gray-300 shadow-lg hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+                title="Go to JS CODE OUTPUT">
+                <i data-lucide="code-2" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">JS CODE OUTPUT</span>
+                <span class="sm:hidden">CODE</span>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <div class="h-6 w-px bg-gray-700 mx-1"></div>
+
+            <button class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-marvelGold transition" title="Extensions">
+                <i data-lucide="puzzle" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Fixed JS mini.Browser logo -->
+            <button class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="JS mini.Browser">
+                <img src="yt.jpeg" alt="JS mini.Browser" class="w-6 h-6 rounded-full bg-gray-600 object-cover">
+            </button>
+
+            <button onclick="toggleSettings()" class="p-1.5 rounded hover:bg-gray-800 text-gray-400 hover:text-white transition" title="Settings">
+                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex relative overflow-hidden">
+        <div id="viewport" class="flex-1 overflow-y-auto marvel-bg flex flex-col relative w-full">
+
+            <div id="view-home" class="flex-1 flex flex-col items-center justify-center p-8 fade-in">
+                <div class="text-center mb-8">
+                    <div class="bg-marvelRed text-white font-black text-5xl tracking-tighter px-4 py-2 inline-block shadow-lg uppercase">
+                        JS mini
+                    </div>
+                    <span class="text-gray-300 text-3xl font-light ml-2 tracking-wide block mt-2">.Browser</span>
+                </div>
+
+                <div class="w-full max-w-2xl flex items-center gap-3">
+                    <div class="relative flex-1 min-w-0">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6"></i>
+                        <input type="text" id="main-search"
+                            class="w-full bg-[#0B0B0B] bg-opacity-80 border-2 border-gray-700 text-white rounded-full py-4 pl-14 pr-6 text-lg focus:outline-none focus:border-marvelRed focus:ring-4 focus:ring-red-900/50 shadow-2xl transition-all"
+                            placeholder="Search for alien tech or .JS websites from around the world..."
+                            onkeydown="if(event.key === 'Enter') executeSearch(this.value)">
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('stark.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-marvelRed transition shadow-md border border-gray-700">
+                            <i data-lucide="cpu" class="text-marvelGold w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">stark.JS</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('shield.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-marvelBlue transition shadow-md border border-gray-700">
+                            <i data-lucide="shield" class="text-gray-300 w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">shield.JS</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group" onclick="loadSite('wakanda.JS')">
+                        <div class="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-purple-800 transition shadow-md border border-gray-700">
+                            <i data-lucide="globe" class="text-gray-300 w-7 h-7"></i>
+                        </div>
+                        <span class="text-sm text-gray-400 group-hover:text-white">wakanda.JS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-search-results" class="hidden w-full max-w-4xl mx-auto p-8 fade-in flex-1">
+                <div class="flex items-center gap-4 mb-6 border-b border-gray-800 pb-4">
+                    <div class="bg-marvelRed text-white font-bold text-xl px-2 py-1">JS</div>
+                    <span class="text-gray-400">
+                        Search results for:
+                        <span id="search-query-text" class="text-white font-medium"></span>
+                    </span>
+                </div>
+                <div id="results-container" class="space-y-6"></div>
+            </div>
+
+            <div id="view-website" class="hidden bg-white text-black w-full min-h-full fade-in relative">
+                <div id="website-content" class="w-full h-full"></div>
+            </div>
+        </div>
+
+        <div id="settings-sidebar"
+            class="w-80 bg-[#101010] border-l border-gray-800 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out absolute right-0 top-0 h-full z-10 shadow-2xl">
+
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-[#171717]">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="settings" class="text-marvelGold"></i>
+                    Settings
+                </h2>
+
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto space-y-6">
+                <div class="bg-marvelBlue/20 p-4 rounded-lg border border-marvelBlue/50 text-center">
+                    <div id="jsmini-account-avatar"
+                        class="w-16 h-16 mx-auto rounded-full bg-gray-800 mb-2 flex items-center justify-center overflow-hidden border border-gray-700">
+                        <i data-lucide="user-round" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+
+                    <h3 class="font-bold">No User</h3>
+
+                    <p class="text-xs text-gray-400 mb-3">
+                        Sign in to sync your data across devices.
+                    </p>
+
+                    <button
+                        class="bg-marvelRed hover:bg-red-700 text-white text-sm py-1.5 px-4 rounded-full w-full transition"
+                        onclick="window.jsMiniSignIn && window.jsMiniSignIn()">
+                        Sign In / Create Account
+                    </button>
+                </div>
+
+                <div class="space-y-1">
+                    <button type="button" onclick="openJSMiniAppearance()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
+                        <i data-lucide="palette" class="w-4 h-4 text-gray-400"></i>
+                        <span>Appearance</span>
+                        <span id="jsmini-current-theme" class="text-[10px] text-gray-500 ml-auto">Marvel</span>
+                    </button>
+
+                    <button type="button" onclick="openJSMiniPrivacy()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-gray-400"></i>
+                        <span>Privacy & Security</span>
+                    </button>
+
+                    <button type="button" onclick="openJSMiniYourWebsite()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
+                        <i data-lucide="upload-cloud" class="w-4 h-4 text-gray-400"></i>
+                        <span>Your Website</span>
+                    </button>
+
+                    <button type="button" onclick="openJSMiniHistory()"
+                        class="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded text-gray-300 hover:text-white transition text-left">
+                        <i data-lucide="history" class="w-4 h-4 text-gray-400"></i>
+                        <span>Browsing History</span>
+                    </button>
+                </div>
+
+                <div class="mt-8 border-t border-gray-800 pt-4">
+                    <p class="text-xs text-gray-500 text-center">
+                        JS mini.Browser v1.0<br>
+                        Made for futuristic web.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const mockDatabase = [
+            {
+                url: 'stark.JS',
+                title: 'Stark Industries | Changing the World',
+                snippet: 'We create the best tech, arc reactors, and defense systems. Iron Man suits available for Avengers only.',
+                theme: 'dark',
+                content: `
+                    <div style="background-color:#101010;color:#fff;min-height:100vh;font-family:sans-serif;">
+                        <header style="padding:20px 40px;border-bottom:1px solid #3A3422;display:flex;justify-content:space-between;align-items:center;">
+                            <h1 style="color:#FFD700;margin:0;font-weight:900;letter-spacing:2px;">
+                                STARK <span style="color:white">INDUSTRIES</span>
+                            </h1>
+                            <nav>
+                                <a href="#" style="color:#ccc;text-decoration:none;margin-left:20px;">Products</a>
+                                <a href="#" style="color:#ccc;text-decoration:none;margin-left:20px;">Arc Reactor</a>
+                                <a href="#" style="color:#ccc;text-decoration:none;margin-left:20px;">Contact Tony</a>
+                            </nav>
+                        </header>
+                        <main style="padding:60px 40px;max-width:900px;margin:0 auto;text-align:center;">
+                            <h2 style="font-size:3rem;margin-bottom:20px;">Building a safer tomorrow.</h2>
+                            <p style="color:#A99D78;font-size:1.2rem;line-height:1.6;">
+                                Our latest nanotech integration is now live.
+                                Please login to your Stark Pad to sync your armor.
+                            </p>
+                            <div style="margin-top:40px;background:#222;padding:40px;border-radius:10px;border-left:5px solid #FFD700;">
+                                <h3 style="color:#FFD700;">System Alert:</h3>
+                                <p>Friday AI is currently running system diagnostics. Everything is online.</p>
+                            </div>
+                        </main>
+                    </div>`
+            },
+            {
+                url: 'shield.JS',
+                title: 'S.H.I.E.L.D. Secure Database',
+                snippet: 'Strategic Homeland Intervention, Enforcement and Logistics Division. Authorized personnel only.',
+                theme: 'light',
+                content: `
+                    <div style="background-color:#e2e8f0;color:#1e293b;min-height:100vh;font-family:monospace;">
+                        <div style="background-color:#0f172a;padding:15px;text-align:center;color:white;">
+                            <h1 style="margin:0;">S.H.I.E.L.D. INTRANET</h1>
+                        </div>
+                        <div style="max-width:800px;margin:40px auto;background:white;padding:30px;border:1px solid #cbd5e1;box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                            <h2 style="color:#A8841F;border-bottom:2px solid #A8841F;padding-bottom:10px;">CLASSIFIED FILE: #8934</h2>
+                            <p><strong>Subject:</strong> Tesseract Energy Signatures</p>
+                            <p><strong>Status:</strong> Under monitoring by Director Fury.</p>
+                            <br/>
+                            <p style="background:#fef2f2;padding:10px;border-left:4px solid #ef4444;">
+                                WARNING: Level 7 Clearance required to view full documents.
+                            </p>
+                        </div>
+                    </div>`
+            },
+            {
+                url: 'wakanda.JS',
+                title: 'Wakanda Outreach Program',
+                snippet: 'Discover the technological marvels of Wakanda. Vibranium research and international aid.',
+                theme: 'dark',
+                content: `
+                    <div style="background-color:#2e0f4c;color:#fff;min-height:100vh;font-family:sans-serif;">
+                        <header style="padding:30px;text-align:center;">
+                            <h1 style="color:#d8b4fe;font-size:2.5rem;letter-spacing:5px;text-transform:uppercase;">Wakanda Forever</h1>
+                        </header>
+                        <div style="padding:20px;text-align:center;">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Tech City"
+                                style="width:100%;max-width:600px;border-radius:20px;border:2px solid #d8b4fe;">
+                            <h2 style="margin-top:30px;color:#e9d5ff;">Vibranium Technology Hub</h2>
+                            <p style="max-width:600px;margin:20px auto;color:#c084fc;">
+                                We are sharing our knowledge with the world. Join our science exchange programs.
+                            </p>
+                        </div>
+                    </div>`
+            },
+            {
+                url: 'avengers.JS',
+                title: 'Avengers HQ - Public Portal',
+                snippet: 'Report alien sightings, superhuman activities, or apply for internship.',
+                theme: 'light',
+                content: `
+                    <div style="background-color:white;color:#3A3422;min-height:100vh;font-family:sans-serif;">
+                        <div style="background-color:#D4AF37;height:10px;"></div>
+                        <div style="max-width:1000px;margin:0 auto;padding:40px;">
+                            <h1 style="font-size:3rem;color:#1D1D1D;display:flex;align-items:center;gap:10px;">
+                                <span style="background:#1D1D1D;color:white;border-radius:50%;width:50px;height:50px;display:inline-flex;justify-content:center;align-items:center;">A</span>
+                                Avengers Headquarters
+                            </h1>
+                            <hr style="margin:20px 0;border:none;border-top:1px solid #ddd;"/>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px;">
+                                <div style="background:#f8f9fa;padding:20px;border-radius:8px;">
+                                    <h3>Report an Incident</h3>
+                                    <p>See a portal opening in the sky? Let us know immediately.</p>
+                                    <button style="background:#D4AF37;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin-top:10px;">Report Now</button>
+                                </div>
+                                <div style="background:#f8f9fa;padding:20px;border-radius:8px;">
+                                    <h3>Damage Control</h3>
+                                    <p>Need help rebuilding after a superhero fight? Contact DODC.</p>
+                                    <button style="background:#1D1D1D;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin-top:10px;">Contact DODC</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+            }
+        ];
+
+        function switchView(viewId) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-search-results').classList.add('hidden');
+            document.getElementById('view-website').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function goHome() {
+            document.getElementById('address-bar').value = '';
+            switchView('view-home');
+        }
+
+        function refreshPage() {
+            const currentVal = document.getElementById('address-bar').value;
+            if (currentVal.endsWith('.JS') || currentVal.endsWith('.js') || currentVal.endsWith('.jsmini')) {
+                loadSite(currentVal);
+            } else if (currentVal !== '') {
+                executeSearch(currentVal);
+            } else {
+                goHome();
+            }
+        }
+
+        let settingsOpen = false;
+
+        function toggleSettings() {
+            const sidebar = document.getElementById('settings-sidebar');
+
+            if (settingsOpen) {
+                sidebar.classList.add('translate-x-full');
+                if (window.innerWidth <= 768) sidebar.style.transform = '';
+            } else {
+                sidebar.classList.remove('translate-x-full');
+                if (window.innerWidth <= 768) sidebar.style.transform = 'translateY(0)';
+            }
+
+            settingsOpen = !settingsOpen;
+        }
+
+        function handleAddressBarEnter(event) {
+            if (event.key === 'Enter') {
+                const query = event.target.value.trim().toLowerCase();
+                if (query === '') return;
+
+                if (query.endsWith('.jsmini') || query.endsWith('.js') || query.endsWith('.JS')) {
+                    loadSite(query);
+                } else {
+                    executeSearch(query);
+                }
+            }
+        }
+
+        function executeSearch(query) {
+            if (!query) return;
+
+            document.getElementById('address-bar').value = query;
+            document.getElementById('search-query-text').innerText = query;
+
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
+
+            query = query.toLowerCase();
+
+            const matches = mockDatabase.filter(site =>
+                site.title.toLowerCase().includes(query) ||
+                site.url.toLowerCase().includes(query) ||
+                site.snippet.toLowerCase().includes(query)
+            );
+
+            if (matches.length > 0) {
+                matches.forEach(site => {
+                    const resultCard = document.createElement('div');
+
+                    resultCard.className =
+                        'group cursor-pointer bg-[#0B0B0B] p-5 rounded-xl border border-gray-800 hover:border-marvelRed transition-colors shadow-lg';
+
+                    resultCard.onclick = () => loadSite(site.url);
+
+                    resultCard.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 bg-gray-800 p-2 rounded text-marvelGold group-hover:bg-marvelRed group-hover:text-white transition">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-400 mb-1 flex items-center gap-2">
+                                    js://${site.url}
+                                    <span class="bg-gray-800 text-[10px] px-1.5 py-0.5 rounded text-gray-400">Verified .JS</span>
+                                </div>
+                                <h3 class="text-xl text-blue-400 group-hover:underline font-medium mb-2">${site.title}</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">${site.snippet}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    resultsContainer.appendChild(resultCard);
+                });
+
+                lucide.createIcons();
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-20">
+                        <i data-lucide="search-x" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <h3 class="text-xl text-gray-300 font-medium">No .JS websites found</h3>
+                        <p class="text-gray-500 mt-2">
+                            Your search "${query}" might exist on other websites,
+                            but this is JS mini.Browser, only .JS domains are allowed here.
+                        </p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+
+            switchView('view-search-results');
+        }
+
+        function loadSite(url) {
+            url = url.toLowerCase();
+
+            if (!url.endsWith('.js')) url += '.js';
+
+            document.getElementById('address-bar').value = url;
+            if(typeof jsMiniRecordHistory==='function'){
+                const demoHistory=mockDatabase.find(s => s.url.toLowerCase() === url);
+                jsMiniRecordHistory(demoHistory?demoHistory.title:url,url,'page');
+            }
+
+            const siteData = mockDatabase.find(s => s.url.toLowerCase() === url);
+            const contentArea = document.getElementById('website-content');
+
+            if (siteData) {
+                contentArea.innerHTML = siteData.content;
+            } else {
+                contentArea.innerHTML = `
+                    <div style="background-color:#101010;color:white;height:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:30px;">
+                        <h1 style="font-size:5rem;margin:0;color:#D4AF37;">404</h1>
+                        <h2 style="font-size:1.5rem;margin-top:10px;">Website Not Found</h2>
+                        <p style="color:#A99D78;margin-top:20px;max-width:400px;">
+                            The website "${url}" you are looking for has not been published on this platform or uses a different domain.
+                        </p>
+                        <button onclick="goHome()" style="margin-top:30px;background:#1D1D1D;color:white;padding:10px 20px;border-radius:5px;border:none;cursor:pointer;">
+                            Return to Home
+                        </button>
+                    </div>
+                `;
+            }
+
+            switchView('view-website');
+        }
+
+        function fixMobileSettings() {
+            const sidebar = document.getElementById('settings-sidebar');
+            if (!sidebar) return;
+
+            if (window.innerWidth <= 768) {
+                sidebar.style.transform = settingsOpen ? 'translateY(0)' : 'translateY(100%)';
+            } else {
+                sidebar.style.transform = '';
+            }
+        }
+
+        window.addEventListener('resize', fixMobileSettings);
+
+        window.onload = () => {
+            goHome();
+            fixMobileSettings();
+            lucide.createIcons();
+        };
+    </script>
+
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+        const jsMiniFirebaseConfig = {
+            apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+            authDomain: "js-code-output.firebaseapp.com",
+            projectId: "js-code-output",
+            storageBucket: "js-code-output.firebasestorage.app",
+            messagingSenderId: "600350018167",
+            appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+            measurementId: "G-L47M0E9V96"
+        };
+
+        const jsMiniApp = getApps().length ? getApps()[0] : initializeApp(jsMiniFirebaseConfig);
+        const jsMiniAuth = getAuth(jsMiniApp);
+        const jsMiniDb = getFirestore(jsMiniApp);
+        const jsMiniProvider = new GoogleAuthProvider();
+        jsMiniProvider.setCustomParameters({prompt:"select_account"});
+
+        let jsMiniUser = null;
+        let jsMiniAuthReadyResolve;
+        const jsMiniAuthReady = new Promise(resolve => { jsMiniAuthReadyResolve = resolve; });
+        let jsMiniCloudSites = [];
+        let jsMiniHistory = [];
+        let jsMiniHistoryIndex = -1;
+
+        function setJSMiniAuthGate(locked, message=""){
+            const gate = document.getElementById("jsmini-auth-gate");
+            const status = document.getElementById("jsmini-auth-status");
+            const btn = document.getElementById("jsmini-google-signin");
+
+            if(locked){
+                document.body.classList.add("jsmini-auth-locked");
+                if(gate) gate.classList.remove("hidden");
+                if(status && message) status.textContent = message;
+                if(status) status.className = message && /failed|cancelled|error/i.test(message) ? "error" : "";
+            }else{
+                document.body.classList.remove("jsmini-auth-locked");
+                if(gate) gate.classList.add("hidden");
+                if(status){
+                    status.textContent = "Signed in with Google.";
+                    status.className = "success";
+                }
+            }
+
+            if(btn) btn.disabled = false;
+        }
+
+        window.jsMiniRequiredGoogleSignIn = async function(){
+            const btn = document.getElementById("jsmini-google-signin");
+            const status = document.getElementById("jsmini-auth-status");
+
+            if(jsMiniUser){
+                setJSMiniAuthGate(false);
+                return;
+            }
+
+            if(btn) btn.disabled = true;
+            if(status){
+                status.textContent = "Opening Google Sign-In…";
+                status.className = "";
+            }
+
+            try{
+                await signInWithPopup(jsMiniAuth, jsMiniProvider);
+                // onAuthStateChanged will unlock the page.
+            }catch(e){
+                console.error("Required Google Sign-In failed:", e);
+                if(status){
+                    status.textContent = e && e.code === "auth/popup-closed-by-user"
+                        ? "Google Sign-In was cancelled. Please try again."
+                        : "Google Sign-In failed. Please try again.";
+                    status.className = "error";
+                }
+                if(btn) btn.disabled = false;
+            }
+        };
+
+
+        function showJSMiniInfoNotice(){
+            const notice = document.getElementById("jsmini-info-notice");
+            if(!notice) return;
+            notice.classList.remove("hidden");
+            try{ sessionStorage.setItem("jsmini-info-notice-shown","1"); }catch(e){}
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function closeJSMiniInfoNotice(){
+            const notice = document.getElementById("jsmini-info-notice");
+            if(notice) notice.classList.add("hidden");
+        }
+
+        function goToJSCodeOutput(){
+            // Use an absolute root path so it works even when Mini Browser is opened from a sub-folder.
+            window.location.assign("/index.html.html");
+        }
+
+        // This file uses a JavaScript module, so normal function declarations are not
+        // automatically available to inline onclick handlers. Expose them explicitly.
+        window.closeJSMiniInfoNotice = closeJSMiniInfoNotice;
+        window.goToJSCodeOutput = goToJSCodeOutput;
+
+        document.getElementById("jsmini-notice-continue")?.addEventListener("click", closeJSMiniInfoNotice);
+        document.getElementById("jsmini-notice-code-output")?.addEventListener("click", goToJSCodeOutput);
+
+        onAuthStateChanged(jsMiniAuth, user => {
+            jsMiniUser = user || null;
+            window.jsMiniUser = jsMiniUser;
+            jsMiniAuthReadyResolve(jsMiniUser);
+
+            if(jsMiniUser){
+                setJSMiniAuthGate(false);
+                try{
+                    if(sessionStorage.getItem("jsmini-info-notice-shown") !== "1"){
+                        setTimeout(showJSMiniInfoNotice, 180);
+                    }
+                }catch(e){
+                    setTimeout(showJSMiniInfoNotice, 180);
+                }
+            }else{
+                setJSMiniAuthGate(true, "Google Sign-In is required to enter JS mini.Browser.");
+            }
+
+            if (typeof updateJSMiniAccountUI === "function") updateJSMiniAccountUI();
+        });
+
+        function escapeHTML(v=""){
+            return String(v).replace(/[&<>'"]/g, c => ({
+                "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
+            }[c]));
+        }
+
+        function normalizeDomain(v=""){
+            return String(v).trim().toLowerCase()
+                .replace(/^https?:\/\//,'')
+                .replace(/^js:\/\//,'')
+                .replace(/\.jsmini$/i,'')
+                .replace(/\.js$/i,'');
+        }
+
+        function domainValid(v){
+            return /^[a-z0-9](?:[a-z0-9-]{0,48}[a-z0-9])?$/.test(v);
+        }
+
+        function ensureJSMiniUI(){
+            if(document.getElementById('jsmini-deploy-modal')) return;
+
+            const wrap=document.createElement('div');
+            wrap.id='jsmini-deploy-modal';
+            wrap.className='jsmini-modal-backdrop hidden';
+
+            wrap.innerHTML=`
+                <div class="jsmini-modal" role="dialog" aria-modal="true" aria-labelledby="jsminiDeployTitle">
+                    <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start">
+                        <div>
+                            <h2 id="jsminiDeployTitle">🚀 Deploy to JS mini.Browser</h2>
+                            <div class="jsmini-muted">Publish this project inside the JS mini.Browser ecosystem.</div>
+                        </div>
+                        <button id="jsminiDeployClose" class="jsmini-btn cancel" type="button">×</button>
+                    </div>
+
+                    <label class="jsmini-label" for="jsminiProjectName">Project name</label>
+                    <input id="jsminiProjectName" class="jsmini-input" maxlength="80" placeholder="My Awesome Website">
+
+                    <label class="jsmini-label" for="jsminiDescription">Description</label>
+                    <textarea id="jsminiDescription" class="jsmini-textarea" maxlength="300" placeholder="Tell people what this website is about..."></textarea>
+
+                    <label class="jsmini-label" for="jsminiDomain">Virtual domain</label>
+                    <div class="jsmini-domain-wrap">
+                        <input id="jsminiDomain" class="jsmini-input" maxlength="50" placeholder="my-awesome-site">
+                        <span class="jsmini-domain-suffix">.jsmini</span>
+                    </div>
+
+                    <label class="jsmini-label" for="jsminiCategory">Category</label>
+                    <select id="jsminiCategory" class="jsmini-select">
+                        <option>Portfolio</option>
+                        <option>Business</option>
+                        <option>Game</option>
+                        <option>Tool</option>
+                        <option>Blog</option>
+                        <option>Education</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label class="jsmini-label" for="jsminiVisibility">Visibility</label>
+                    <select id="jsminiVisibility" class="jsmini-select">
+                        <option value="public">Public</option>
+                        <option value="unlisted">Unlisted</option>
+                    </select>
+
+                    <div id="jsminiDeployStatus" class="jsmini-status"></div>
+
+                    <div class="jsmini-actions">
+                        <button id="jsminiDeployCancel" class="jsmini-btn cancel" type="button">Cancel</button>
+                        <button id="jsminiDeployBtn" class="jsmini-btn deploy" type="button">🚀 Deploy</button>
+                    </div>
+                </div>`;
+
+            document.body.appendChild(wrap);
+
+            document.getElementById('jsminiDeployClose').onclick=closeJSMiniDeploy;
+            document.getElementById('jsminiDeployCancel').onclick=closeJSMiniDeploy;
+            document.getElementById('jsminiDeployBtn').onclick=submitJSMiniDeploy;
+
+            document.getElementById('jsminiDomain').addEventListener('input',e=>{
+                e.target.value=e.target.value.toLowerCase()
+                    .replace(/[^a-z0-9-]/g,'-')
+                    .replace(/-+/g,'-')
+                    .replace(/^-|-$/g,'');
+            });
+        }
+
+        window.jsMiniSignIn=async function(){
+            try{
+                if(!jsMiniUser) await signInWithPopup(jsMiniAuth,jsMiniProvider);
+                updateJSMiniAccountUI();
+            }catch(e){
+                console.error(e);
+                alert("Google Sign-In was cancelled or failed.");
+            }
+        };
+
+        window.updateJSMiniAccountUI=function(){
+            const card=document.querySelector('#settings-sidebar .bg-marvelBlue\\/20');
+            const avatar=document.getElementById('jsmini-account-avatar');
+
+            if(avatar){
+                if(jsMiniUser && jsMiniUser.photoURL){
+                    avatar.innerHTML=`<img src="${escapeHTML(jsMiniUser.photoURL)}" alt="Profile picture" class="w-full h-full object-cover" referrerpolicy="no-referrer">`;
+                }else{
+                    avatar.innerHTML='<i data-lucide="user-round" class="w-8 h-8 text-gray-400"></i>';
+                }
+            }
+
+            if(card){
+                const title=card.querySelector('h3');
+                const text=card.querySelector('p');
+                const btn=card.querySelector('button');
+
+                if(jsMiniUser){
+                    if(title) title.textContent=jsMiniUser.displayName||'Google Account';
+                    if(text) text.textContent=jsMiniUser.email||'Signed in with Google';
+
+                    if(btn){
+                        btn.textContent='Signed in';
+                        btn.disabled=true;
+                        btn.style.opacity='.65';
+                    }
+                }else{
+                    if(title) title.textContent='No User';
+                    if(text) text.textContent='Sign in to sync your data across devices.';
+                    if(btn){
+                        btn.textContent='Sign In / Create Account';
+                        btn.disabled=false;
+                        btn.style.opacity='1';
+                    }
+                }
+            }
+
+            if(typeof lucide!=='undefined') lucide.createIcons();
+        };
+
+        /* ================= JS mini.Browser SETTINGS FEATURES ================= */
+
+        const JSMINI_THEME_KEY='jsmini-theme';
+        const JSMINI_HISTORY_KEY='jsmini-browsing-history';
+
+        function jsMiniReadHistory(){
+            try{
+                const raw=JSON.parse(localStorage.getItem(JSMINI_HISTORY_KEY)||'[]');
+                return Array.isArray(raw)?raw:[];
+            }catch(e){ return []; }
+        }
+
+        function jsMiniWriteHistory(items){
+            try{
+                localStorage.setItem(JSMINI_HISTORY_KEY,JSON.stringify(items.slice(0,500)));
+            }catch(e){}
+        }
+
+        function jsMiniRecordHistory(title,url,type='page'){
+            const cleanUrl=String(url||'').trim();
+            if(!cleanUrl)return;
+
+            const items=jsMiniReadHistory();
+            const now=new Date().toISOString();
+            const filtered=items.filter(x=>String(x.url||'')!==cleanUrl);
+            filtered.unshift({
+                title:String(title||cleanUrl),
+                url:cleanUrl,
+                type,
+                visitedAt:now
+            });
+            jsMiniWriteHistory(filtered);
+        }
+
+        function jsMiniFormatTime(iso){
+            const d=new Date(iso);
+            if(Number.isNaN(d.getTime()))return '';
+            const diff=Math.max(0,Date.now()-d.getTime());
+            const mins=Math.floor(diff/60000);
+            if(mins<1)return 'Just now';
+            if(mins<60)return `${mins} min ago`;
+            const hrs=Math.floor(mins/60);
+            if(hrs<24)return `${hrs} hr ago`;
+            const days=Math.floor(hrs/24);
+            if(days<7)return `${days} day${days===1?'':'s'} ago`;
+            return d.toLocaleString();
+        }
+
+        function ensureJSMiniFeatureUI(){
+            if(document.getElementById('jsmini-feature-backdrop'))return;
+
+            const wrap=document.createElement('div');
+            wrap.id='jsmini-feature-backdrop';
+            wrap.className='jsmini-feature-backdrop hidden';
+            wrap.innerHTML=`
+                <div id="jsmini-feature-modal" class="jsmini-feature-modal" role="dialog" aria-modal="true">
+                    <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start">
+                        <div>
+                            <h2 id="jsmini-feature-title">Settings</h2>
+                            <div id="jsmini-feature-subtitle" class="jsmini-feature-muted"></div>
+                        </div>
+                        <button type="button" class="jsmini-feature-close" onclick="closeJSMiniFeature()">×</button>
+                    </div>
+                    <div id="jsmini-feature-content"></div>
+                </div>`;
+            document.body.appendChild(wrap);
+            wrap.addEventListener('click',e=>{
+                if(e.target===wrap)closeJSMiniFeature();
+            });
+        }
+
+        function showJSMiniFeature(title,subtitle,html){
+            ensureJSMiniFeatureUI();
+            document.getElementById('jsmini-feature-title').textContent=title;
+            document.getElementById('jsmini-feature-subtitle').textContent=subtitle||'';
+            document.getElementById('jsmini-feature-content').innerHTML=html;
+            document.getElementById('jsmini-feature-backdrop').classList.remove('hidden');
+            if(typeof lucide!=='undefined')lucide.createIcons();
+        }
+
+        window.closeJSMiniFeature=function(){
+            const el=document.getElementById('jsmini-feature-backdrop');
+            if(el)el.classList.add('hidden');
+        };
+
+        window.jsMiniApplyTheme=function(theme){
+            const allowed=['marvel','light','dark','ocean','purple','sunset'];
+            if(!allowed.includes(theme)) theme='marvel';
+
+            const body=document.body;
+            allowed.filter(x=>x!=='marvel').forEach(x=>body.classList.remove('jsmini-theme-'+x));
+            if(theme!=='marvel') body.classList.add('jsmini-theme-'+theme);
+
+            localStorage.setItem(JSMINI_THEME_KEY,theme);
+
+            const labels={
+                marvel:'Marvel',
+                light:'Light',
+                dark:'Dark',
+                ocean:'Ocean',
+                purple:'Purple',
+                sunset:'Sunset'
+            };
+            const current=document.getElementById('jsmini-current-theme');
+            if(current) current.textContent=labels[theme];
+
+            /* Reset only the temporary inline background from older versions. */
+            body.style.background='';
+            body.style.color='';
+
+            document.querySelectorAll('.jsmini-theme-option').forEach(x=>{
+                x.classList.toggle('active',x.dataset.theme===theme);
+            });
+        }
+
+        window.openJSMiniAppearance=function(){
+            const current=localStorage.getItem(JSMINI_THEME_KEY)||'marvel';
+
+            showJSMiniFeature(
+                'Appearance',
+                'Choose how JS mini.Browser looks. Your selection is saved on this device.',
+                `
+                <div class="jsmini-option-grid">
+                    <button type="button" class="jsmini-theme-option ${current==='marvel'?'active':''}" data-theme="marvel" onclick="jsMiniApplyTheme('marvel')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#0B0B0B 45%,#D4AF37 46%,#D4AF37 70%,#FFD700 71%)"></div>
+                        <div class="jsmini-theme-name">Marvel</div>
+                        <div class="jsmini-theme-desc">The original red, blue and gold theme.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='light'?'active':''}" data-theme="light" onclick="jsMiniApplyTheme('light')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#ffffff,#e2e8f0)"></div>
+                        <div class="jsmini-theme-name">Light</div>
+                        <div class="jsmini-theme-desc">Clean and bright interface.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='dark'?'active':''}" data-theme="dark" onclick="jsMiniApplyTheme('dark')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#080808,#222)"></div>
+                        <div class="jsmini-theme-name">Dark</div>
+                        <div class="jsmini-theme-desc">Deep black, low-distraction look.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='ocean'?'active':''}" data-theme="ocean" onclick="jsMiniApplyTheme('ocean')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#061827,#0e7490)"></div>
+                        <div class="jsmini-theme-name">Ocean</div>
+                        <div class="jsmini-theme-desc">Cool blue browser atmosphere.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='purple'?'active':''}" data-theme="purple" onclick="jsMiniApplyTheme('purple')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#140a22,#6b21a8)"></div>
+                        <div class="jsmini-theme-name">Purple</div>
+                        <div class="jsmini-theme-desc">Futuristic violet appearance.</div>
+                    </button>
+
+                    <button type="button" class="jsmini-theme-option ${current==='sunset'?'active':''}" data-theme="sunset" onclick="jsMiniApplyTheme('sunset')">
+                        <div class="jsmini-theme-swatch" style="background:linear-gradient(135deg,#24130c,#d97706,#f97316)"></div>
+                        <div class="jsmini-theme-name">Sunset</div>
+                        <div class="jsmini-theme-desc">Warm orange sunset appearance.</div>
+                    </button>
+                </div>
+                `
+            );
+        };
+
+        window.openJSMiniPrivacy=function(){
+            showJSMiniFeature('Privacy & Security','Information about how this JS mini.Browser page handles account, browsing and website data.',`
+                <div class="jsmini-info-block">
+                    <h3>Google account</h3>
+                    <p>When you sign in, JS mini.Browser uses the Google account session connected to JS CODE OUTPUT. Your display name, email address and Google profile photo may be shown in the account area so you can recognize the signed-in account.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Browsing history</h3>
+                    <p>Pages you open in JS mini.Browser are recorded locally in this browser's storage so the Browsing History page can show them later. This history is separate from the public website directory.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Deployed websites</h3>
+                    <p>Your deployed JS mini websites are stored with your JS CODE OUTPUT project data and can appear in Your Website when you are signed in. Publicly published websites may also be visible to other JS mini.Browser users according to their publication settings.</p>
+                </div>
+                <div class="jsmini-info-block">
+                    <h3>Security</h3>
+                    <p>Keep your Google account secure and only deploy code that you trust. JS mini.Browser opens deployed website content inside a restricted frame. No password or Google credential is displayed by this settings page.</p>
+                </div>
+            `);
+        };
+
+        window.openJSMiniYourWebsite=async function(){
+            try{
+                await jsMiniAuthReady;
+                if(!jsMiniUser){
+                    showJSMiniFeature('Your Website','Sign in to see websites deployed from your JS CODE OUTPUT account.',`
+                        <div class="jsmini-empty-deployed">
+                            <h3>No User</h3>
+                            <p>Sign in first, then this section will show your deployed websites.</p>
+                            <button type="button" class="jsmini-primary" onclick="closeJSMiniFeature();window.jsMiniSignIn&&window.jsMiniSignIn()">Sign In</button>
+                        </div>
+                    `);
+                    return;
+                }
+
+                const snap=await getDocs(collection(jsMiniDb,'users',jsMiniUser.uid,'projects'));
+                const projects=[];
+                snap.forEach(d=>{
+                    const x=d.data()||{};
+                    if(x.jsMiniDeployed===true || x.jsMiniPublished===true || x.jsMiniDomain){
+                        projects.push({id:d.id,...x});
+                    }
+                });
+
+                projects.sort((a,b)=>{
+                    const aa=(a.updatedAt&&a.updatedAt.seconds)||0;
+                    const bb=(b.updatedAt&&b.updatedAt.seconds)||0;
+                    return bb-aa;
+                });
+
+                if(!projects.length){
+                    showJSMiniFeature('Your Website','Websites you have deployed from JS CODE OUTPUT.',`
+                        <div class="jsmini-empty-deployed">
+                            <h3>No project deployed yet</h3>
+                            <p>Build your website in JS CODE OUTPUT and deploy it to JS mini.Browser.</p>
+                            <button type="button" class="jsmini-primary" onclick="window.location.href='index.html.html'">Make now and deploy</button>
+                        </div>
+                    `);
+                    return;
+                }
+
+                const cards=projects.map(p=>{
+                    const domain=normalizeDomain(p.jsMiniDomain||p.jsMiniVirtualDomain||p.virtualDomain||p.name||'');
+                    const full=domain?domain+'.jsmini':'Not published';
+                    const published=!!(p.jsMiniDeployed||p.jsMiniPublished||p.jsMiniDomain);
+                    return `<div class="jsmini-deployed-card" onclick="${domain?`loadJSMiniSite('${escapeHTML(domain)}')`:''}">
+                        <div class="jsmini-deployed-top">
+                            <div>
+                                <h3>${escapeHTML(p.name||'Untitled Project')}</h3>
+                                <p>${escapeHTML(p.jsMiniDescription||'Published from JS CODE OUTPUT.')}</p>
+                            </div>
+                            <span class="bg-green-900/60 text-green-300 text-[9px] px-2 py-1 rounded-full font-bold">${published?'DEPLOYED':'PROJECT'}</span>
+                        </div>
+                        <div class="jsmini-deployed-domain">${escapeHTML(full)}</div>
+                    </div>`;
+                }).join('');
+
+                showJSMiniFeature('Your Website',`${projects.length} deployed website${projects.length===1?'':'s'} found in your account.`,`
+                    <div class="jsmini-deployed-list">${cards}</div>
+                    <div style="display:flex;justify-content:flex-end;margin-top:14px">
+                        <button type="button" class="jsmini-primary" onclick="window.location.href='index.html.html'">Make now and deploy</button>
+                    </div>
+                `);
+            }catch(e){
+                console.error('Your Website load failed:',e);
+                showJSMiniFeature('Your Website','Could not load your deployed websites right now.',`
+                    <div class="jsmini-empty-deployed">
+                        <h3>Unable to load projects</h3>
+                        <p>Please check your sign-in and Firestore connection, then try again.</p>
+                        <button type="button" class="jsmini-primary" onclick="openJSMiniYourWebsite()">Try again</button>
+                    </div>
+                `);
+            }
+        };
+
+        window.openJSMiniHistory=function(){
+            const items=jsMiniReadHistory();
+
+            showJSMiniFeature('Browsing History','Your JS mini.Browser browsing history is stored locally on this device.',`
+                <div class="jsmini-history-toolbar">
+                    <input id="jsmini-history-search" class="jsmini-history-search" placeholder="Search history..." oninput="renderJSMiniHistory(this.value)">
+                    <button type="button" class="jsmini-btn cancel" onclick="clearJSMiniHistory()">Clear</button>
+                </div>
+                <div id="jsmini-history-list"></div>
+            `);
+            renderJSMiniHistory('');
+        };
+
+        window.renderJSMiniHistory=function(filter=''){
+            const el=document.getElementById('jsmini-history-list');
+            if(!el)return;
+            const q=String(filter||'').toLowerCase().trim();
+            const items=jsMiniReadHistory().filter(x=>`${x.title||''} ${x.url||''}`.toLowerCase().includes(q));
+
+            if(!items.length){
+                el.innerHTML='<div class="jsmini-history-empty">No browsing history found.</div>';
+                return;
+            }
+
+            el.innerHTML=items.map((x,i)=>`
+                <div class="jsmini-history-item" onclick="loadJSMiniHistoryItem(${i})">
+                    <div class="jsmini-history-icon"><i data-lucide="${x.type==='search'?'search':'globe'}" class="w-4 h-4 text-marvelGold"></i></div>
+                    <div class="jsmini-history-main">
+                        <div class="jsmini-history-title">${escapeHTML(x.title||x.url||'Untitled')}</div>
+                        <div class="jsmini-history-url">${escapeHTML(x.url||'')}</div>
+                    </div>
+                    <div class="jsmini-history-time">${escapeHTML(jsMiniFormatTime(x.visitedAt))}</div>
+                </div>
+            `).join('');
+            if(typeof lucide!=='undefined')lucide.createIcons();
+        };
+
+        window.loadJSMiniHistoryItem=function(filteredIndex){
+            const search=document.getElementById('jsmini-history-search');
+            const q=search?String(search.value||'').toLowerCase().trim():'';
+            const items=jsMiniReadHistory().filter(x=>`${x.title||''} ${x.url||''}`.toLowerCase().includes(q));
+            const item=items[filteredIndex];
+            if(!item)return;
+            closeJSMiniFeature();
+
+            if(item.type==='search'){
+                executeJSMiniSearch(item.url);
+            }else{
+                loadJSMiniSite(item.url);
+            }
+        };
+
+        window.clearJSMiniHistory=function(){
+            if(!confirm('Clear all JS mini.Browser browsing history?'))return;
+            jsMiniWriteHistory([]);
+            renderJSMiniHistory('');
+        };
+
+        // Restore the selected appearance when this page opens.
+        (function(){
+            const saved=localStorage.getItem(JSMINI_THEME_KEY);
+            if(saved)jsMiniApplyTheme(saved);
+        })();
+
+        window.openJSMiniDeploy=async function(projectId){
+            ensureJSMiniUI();
+
+            try { await jsMiniAuthReady; } catch(e) {}
+
+            if(!jsMiniUser){
+                alert('Please sign in to JS CODE OUTPUT first. JS mini.Browser uses the same Google account session.');
+                return;
+            }
+
+            const id=projectId || new URLSearchParams(location.search).get('deploy');
+
+            if(!id){
+                alert('No project was selected for deployment.');
+                return;
+            }
+
+            const ref=doc(jsMiniDb,'users',jsMiniUser.uid,'projects',id);
+            const snap=await getDoc(ref);
+
+            if(!snap.exists()){
+                alert('This project could not be found in your cloud projects. Return to JS CODE OUTPUT and save the project first.');
+                return;
+            }
+
+            const data=snap.data();
+            const files=data.files||{};
+
+            if(!Object.keys(files).some(k=>/\.html?$/i.test(k))){
+                alert('Your project needs an HTML file before it can be deployed.');
+                return;
+            }
+
+            document.getElementById('jsminiProjectName').value=data.name||'Untitled Project';
+            document.getElementById('jsminiDescription').value=data.jsMiniDescription||'';
+            document.getElementById('jsminiDomain').value=data.jsMiniDomain||normalizeDomain(data.name||'my-site');
+            document.getElementById('jsminiCategory').value=data.jsMiniCategory||'Other';
+            document.getElementById('jsminiVisibility').value=data.jsMiniVisibility||'public';
+
+            wrapDeployModal(true);
+            window.__jsMiniDeployProject={id,data};
+        };
+
+        function wrapDeployModal(show){
+            const m=document.getElementById('jsmini-deploy-modal');
+            if(m)m.classList.toggle('hidden',!show);
+        }
+
+        function closeJSMiniDeploy(){
+            wrapDeployModal(false);
+        }
+
+        async function submitJSMiniDeploy(){
+            const state=window.__jsMiniDeployProject;
+
+            if(!state||!jsMiniUser)return;
+
+            const name=document.getElementById('jsminiProjectName').value.trim()||'Untitled Project';
+            const description=document.getElementById('jsminiDescription').value.trim();
+            const domain=normalizeDomain(document.getElementById('jsminiDomain').value);
+            const category=document.getElementById('jsminiCategory').value;
+            const visibility=document.getElementById('jsminiVisibility').value;
+            const status=document.getElementById('jsminiDeployStatus');
+            const btn=document.getElementById('jsminiDeployBtn');
+
+            if(!domainValid(domain)){
+                status.className='jsmini-status jsmini-error';
+                status.textContent='Use 1–50 lowercase letters, numbers and hyphens.';
+                return;
+            }
+
+            btn.disabled=true;
+            status.className='jsmini-status jsmini-loading';
+            status.textContent='Checking virtual domain...';
+
+            try{
+                const q=query(
+                    collection(jsMiniDb,'public_projects'),
+                    where('jsMiniPublished','==',true)
+                );
+
+                const taken=await getDocs(q);
+                let conflict=false;
+
+                taken.forEach(d=>{
+                    const x=d.data();
+                    if(
+                        x.id!==state.id &&
+                        x.jsMiniPublished===true &&
+                        normalizeDomain(x.virtualDomain||'')===domain
+                    ) conflict=true;
+                });
+
+                if(conflict){
+                    status.className='jsmini-status jsmini-error';
+                    status.textContent='That virtual domain is already taken.';
+                    btn.disabled=false;
+                    return;
+                }
+
+                status.textContent='Preparing your website...';
+
+                const projectFiles=state.data.files||{};
+                const htmlBundle=buildJSMiniStandalone(projectFiles);
+                const siteIcon=getJSMiniProjectIcon(projectFiles,htmlBundle);
+
+                const site={
+                    id:state.id,
+                    ownerUid:jsMiniUser.uid,
+                    ownerName:jsMiniUser.displayName||'',
+                    ownerPhoto:jsMiniUser.photoURL||'',
+                    siteIcon,
+                    name,
+                    description,
+                    virtualDomain:domain,
+                    category,
+                    visibility,
+                    status:'published',
+                    jsMiniPublished:true,
+                    htmlBundle,
+                    publishedAt:serverTimestamp(),
+                    updatedAt:serverTimestamp()
+                };
+
+                await setDoc(
+                    doc(jsMiniDb,'public_projects',state.id),
+                    site,
+                    {merge:true}
+                );
+
+                await setDoc(
+                    doc(jsMiniDb,'users',jsMiniUser.uid,'projects',state.id),
+                    {
+                        name,
+                        jsMiniDescription:description,
+                        jsMiniDomain:domain,
+                        jsMiniCategory:category,
+                        jsMiniVisibility:visibility,
+                        jsMiniDeployed:true
+                    },
+                    {merge:true}
+                );
+
+                status.className='jsmini-status jsmini-success';
+                status.textContent='✓ Deployed successfully.';
+
+                setTimeout(()=>{
+                    closeJSMiniDeploy();
+                    loadJSMiniSite(domain,true);
+                },550);
+
+            }catch(e){
+                console.error(e);
+                status.className='jsmini-status jsmini-error';
+                status.textContent='Deployment failed. Please try again.';
+                btn.disabled=false;
+            }
+        }
+
+        function jsMiniNormalizeProjectPath(path){
+            return String(path||'').trim().replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
+        }
+
+        function jsMiniChromeFallbackIcon(){
+            return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+                '<circle cx="32" cy="32" r="30" fill="#eef6ff" stroke="#64748b" stroke-width="2"/>' +
+                '<path d="M2 32h60M32 2c8 8 12 18 12 30S40 54 32 62M32 2C24 10 20 20 20 32s4 22 12 30M7 18h50M7 46h50" fill="none" stroke="#64748b" stroke-width="2"/>' +
+                '<path d="M4 32C4 16 16 4 32 4c8 0 15 3 21 9-8-2-16 0-22 5-7 5-10 13-9 21 1 8 6 15 14 20C18 58 4 47 4 32z" fill="#3b82f6" opacity=".9"/>' +
+                '<path d="M32 2c-8 8-12 18-12 30s4 22 12 30c8-8 12-18 12-30S40 10 32 2z" fill="none" stroke="#2563eb" stroke-width="1.5"/>' +
+                '</svg>'
+            );
+        }
+
+        function jsMiniIconValue(value,path){
+            const v=String(value||'').trim();
+            if(!v)return '';
+            if(/^data:image\//i.test(v) || /^(https?:|blob:|\/\/)/i.test(v)) return v;
+            const ext=(String(path||'').split('?')[0].split('#')[0].split('.').pop()||'').toLowerCase();
+            if(ext==='svg' || /^<svg[\s>]/i.test(v)){
+                return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(v);
+            }
+            // Some project asset editors keep binary images as base64 text.
+            if(/^(?:[A-Za-z0-9+/]{40,}={0,2})$/.test(v.replace(/\s+/g,''))){
+                const mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',ico:'image/x-icon'}[ext];
+                if(mime)return 'data:'+mime+';base64,'+v.replace(/\s+/g,'');
+            }
+            return '';
+        }
+
+        function getJSMiniProjectIcon(files,htmlBundle=''){
+            const map=files&&typeof files==='object'?files:{};
+            const keys=Object.keys(map).filter(k=>!k.endsWith('/'));
+            let html='';
+            const htmlKey=keys.find(k=>k.toLowerCase()==='index.html')||keys.find(k=>/\.html?$/i.test(k));
+            if(htmlKey)html=String(map[htmlKey]||'');
+            if(!html && htmlBundle)html=String(htmlBundle);
+
+            const iconRefs=[];
+            const patterns=[
+                /<link[^>]+rel=["'][^"']*(?:icon|apple-touch-icon)[^"']*["'][^>]+href=["']([^"']+)["']/i,
+                /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'][^"']*(?:icon|apple-touch-icon)[^"']*["']/i,
+                /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+                /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i
+            ];
+            for(const re of patterns){const m=html.match(re);if(m?.[1])iconRefs.push(m[1].trim());}
+
+            // If no explicit icon is declared, accept a conventional project logo/image file.
+            for(const k of keys){
+                if(/(^|\/)(favicon|logo|icon)\.(svg|png|jpe?g|gif|webp|ico)$/i.test(k)) iconRefs.push(k);
+            }
+            if(!iconRefs.length){
+                const firstImage=keys.find(k=>/\.(svg|png|jpe?g|gif|webp|ico)$/i.test(k));
+                if(firstImage)iconRefs.push(firstImage);
+            }
+
+            for(const ref of iconRefs){
+                if(/^data:image\//i.test(ref)||/^(https?:|blob:|\/\/)/i.test(ref))return ref;
+                const clean=jsMiniNormalizeProjectPath(ref.split('?')[0].split('#')[0]);
+                const candidates=[clean,clean.replace(/^\.\//,''),keys.find(k=>jsMiniNormalizeProjectPath(k)===clean)];
+                for(const k of candidates){
+                    if(k && Object.prototype.hasOwnProperty.call(map,k)){
+                        const icon=jsMiniIconValue(map[k],k);
+                        if(icon)return icon;
+                    }
+                }
+            }
+            return jsMiniChromeFallbackIcon();
+        }
+
+        function buildJSMiniStandalone(files){
+            const keys=Object.keys(files).filter(k=>!k.endsWith('/'));
+
+            const htmlKey=
+                keys.find(k=>k.toLowerCase()==='index.html') ||
+                keys.find(k=>/\.html?$/i.test(k));
+
+            let html=htmlKey?String(files[htmlKey]||''):'';
+
+            const css=keys
+                .filter(k=>/\.css$/i.test(k))
+                .map(k=>files[k]||'')
+                .join('\n');
+
+            const js=keys
+                .filter(k=>/\.(js|mjs)$/i.test(k))
+                .map(k=>files[k]||'')
+                .join(';\n');
+
+            return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head><body>${html}<script>try{${js}}catch(e){console.error(e)}<\/script></body></html>`;
+        }
+
+        async function loadCloudSites(){
+            try{
+                let snap;
+
+                try{
+                    snap=await getDocs(
+                        query(
+                            collection(jsMiniDb,'public_projects'),
+                            where('jsMiniPublished','==',true)
+                        )
+                    );
+                }catch(e){
+                    throw e;
+                }
+
+                jsMiniCloudSites=[];
+
+                snap.forEach(d=>{
+                    jsMiniCloudSites.push({
+                        id:d.id,
+                        ...d.data()
+                    });
+                });
+
+                renderCloudSites();
+
+            }catch(e){
+                console.error('JS Mini sites load failed:',e);
+            }
+        }
+
+        function allSites(){
+            return jsMiniCloudSites
+                .filter(s=>s.visibility!=='unlisted')
+                .map(s=>({
+                    url:(s.virtualDomain||'')+'.jsmini',
+                    title:s.name||'Untitled Website',
+                    snippet:s.description||'Published on JS mini.Browser',
+                    theme:'dark',
+                    cloud:true,
+                    site:s
+                }));
+        }
+
+        function renderCloudSites(){
+            const el=document.getElementById('jsmini-cloud-sites');
+
+            if(!el)return;
+
+            const sites=jsMiniCloudSites.filter(s=>s.visibility!=='unlisted');
+
+            if(!sites.length){
+                el.innerHTML='<div class="text-xs text-gray-500">No public JS mini websites yet. Be the first to deploy one.</div>';
+                return;
+            }
+
+            el.innerHTML=sites.slice(0,12).map(s=>`
+                <div class="jsmini-site-card" onclick="loadSite('${escapeHTML((s.virtualDomain||'')+'.jsmini')}')">
+                    <div class="jsmini-home-site-card">
+                        ${s.siteIcon
+                            ? `<img class="jsmini-home-site-photo" src="${escapeHTML(s.siteIcon)}" alt="${escapeHTML(s.name||'Website')}" referrerpolicy="no-referrer">`
+                            : `<img class="jsmini-home-site-photo" src="${escapeHTML(jsMiniChromeFallbackIcon())}" alt="Website" referrerpolicy="no-referrer">`}
+                        <div style="min-width:0">
+                            <h3>${escapeHTML(s.name||'Untitled')}</h3>
+                            <div class="domain">${escapeHTML((s.virtualDomain||'')+'.jsmini')}</div>
+                        </div>
+                    </div>
+                    <p>${escapeHTML(s.description||'No description')}</p>
+                    <div class="domain">${escapeHTML(s.category||'Other')} · Published</div>
+                </div>
+            `).join('');
+        }
+
+        window.executeJSMiniSearch=async function(q){
+            const queryText=String(q||'').trim().toLowerCase();
+
+            if(!queryText){
+                goHome();
+                return;
+            }
+
+            await loadCloudSites();
+
+            jsMiniRecordHistory(`Search: ${q}`,String(q),'search');
+
+            const local=mockDatabase.map(x=>({...x,cloud:false}));
+
+            const sites=[
+                ...allSites(),
+                ...local
+            ].filter(s=>
+                `${s.title} ${s.snippet} ${s.url}`
+                    .toLowerCase()
+                    .includes(queryText)
+            );
+
+            document.getElementById('search-query-text').textContent=q;
+
+            const c=document.getElementById('results-container');
+
+            if(!sites.length){
+                c.innerHTML=`
+                    <div class="text-center py-20">
+                        <i data-lucide="search-x" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <h3 class="text-xl text-gray-300 font-medium">No JS mini websites found</h3>
+                        <p class="text-gray-500 mt-2">Only websites deployed inside JS mini.Browser are searchable here.</p>
+                    </div>`;
+            }else{
+                c.className='jsmini-chrome-results';
+                c.innerHTML=sites.map(s=>{
+                    const projectIcon = s.cloud && s.site && s.site.siteIcon
+                        ? escapeHTML(s.site.siteIcon)
+                        : escapeHTML(jsMiniChromeFallbackIcon());
+                    const avatar = `<img src="${projectIcon}" alt="${escapeHTML(s.title||'Website')}" referrerpolicy="no-referrer">`;
+                    return `
+                    <div class="jsmini-chrome-result"
+                        onclick="loadSite('${escapeHTML(s.url)}')">
+                        <div class="jsmini-result-avatar">${avatar}</div>
+                        <div class="jsmini-result-body">
+                            <div class="jsmini-result-url">
+                                js://${escapeHTML(s.url)}
+                                <span class="jsmini-result-badge">${s.cloud?'Published':'Demo'}</span>
+                            </div>
+                            <h3 class="jsmini-result-title">${escapeHTML(s.title)}</h3>
+                            <p class="jsmini-result-snippet">${escapeHTML(s.snippet)}</p>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            lucide.createIcons();
+            switchView('view-search-results');
+        };
+
+        window.loadJSMiniSite=async function(raw,fromHistory=false){
+            let domain=normalizeDomain(raw);
+
+            if(!domain)return;
+
+            const full=domain+'.jsmini';
+
+            document.getElementById('address-bar').value=full;
+
+            await loadCloudSites();
+
+            const site=jsMiniCloudSites.find(
+                s=>normalizeDomain(s.virtualDomain||'')===domain
+            );
+
+            if(site){
+                const c=document.getElementById('website-content');
+
+                c.innerHTML=`
+                    <div class="jsmini-sitebar">
+                        <div>
+                            <strong>${escapeHTML(site.name||domain)}</strong>
+                            <br>
+                            <span>${escapeHTML(full)} · ${escapeHTML(site.description||'')}</span>
+                        </div>
+                        <span>${escapeHTML(site.category||'Other')}</span>
+                    </div>
+
+                    <iframe
+                        class="jsmini-open-frame"
+                        sandbox="allow-scripts allow-forms allow-modals allow-popups"
+                        title="${escapeHTML(site.name||domain)}">
+                    </iframe>`;
+
+                const frame=c.querySelector('iframe');
+
+                frame.srcdoc=
+                    site.htmlBundle||'<h1>Empty website</h1>';
+
+                switchView('view-website');
+                jsMiniRecordHistory(site.name||domain,full,'page');
+
+                if(!fromHistory){
+                    jsMiniHistory=
+                        jsMiniHistory.slice(0,jsMiniHistoryIndex+1);
+
+                    jsMiniHistory.push(domain);
+
+                    jsMiniHistoryIndex=
+                        jsMiniHistory.length-1;
+                }
+
+                return;
+            }
+
+            const demo=mockDatabase.find(
+                x=>normalizeDomain(x.url)===domain
+            );
+
+            if(demo){
+                window.originalLoadSiteForJSMini
+                    ? window.originalLoadSiteForJSMini(raw)
+                    : null;
+                return;
+            }
+
+            loadSite(raw);
+        };
+
+        window.loadSite=window.loadJSMiniSite;
+        window.executeSearch=window.executeJSMiniSearch;
+
+        window.goJSMiniBack=function(){
+            if(jsMiniHistoryIndex>0){
+                jsMiniHistoryIndex--;
+                loadJSMiniSite(
+                    jsMiniHistory[jsMiniHistoryIndex],
+                    true
+                );
+            }else{
+                goHome();
+            }
+        };
+
+        window.goJSMiniForward=function(){
+            if(jsMiniHistoryIndex<jsMiniHistory.length-1){
+                jsMiniHistoryIndex++;
+                loadJSMiniSite(
+                    jsMiniHistory[jsMiniHistoryIndex],
+                    true
+                );
+            }
+        };
+
+        window.handleJSMiniDeployFromURL=async function(){
+            const p=new URLSearchParams(location.search);
+
+            const id=p.get('deploy');
+            const site=p.get('site');
+
+            /*
+             * Opening js-mini-browser.html normally always shows
+             * the JS mini.Browser home page.
+             */
+            if(id){
+                await window.openJSMiniDeploy(id);
+                return;
+            }
+
+            if(site){
+                await loadJSMiniSite(site,true);
+                return;
+            }
+
+            goHome();
+        };
+
+        function addCloudSection(){
+            const home=document.getElementById('view-home');
+
+            if(!home||document.getElementById('jsmini-cloud-sites'))return;
+
+            const sec=document.createElement('div');
+
+            sec.className='jsmini-sites-section';
+
+            sec.innerHTML=`
+                <div class="jsmini-sites-title">
+                    Public JS mini websites
+                </div>
+                <div id="jsmini-cloud-sites" class="jsmini-sites-grid"></div>
+            `;
+
+            home.appendChild(sec);
+        }
+
+        window.addEventListener('DOMContentLoaded',async ()=>{
+            ensureJSMiniUI();
+            ensureJSMiniFeatureUI();
+            addCloudSection();
+            updateJSMiniAccountUI();
+
+            const user = await jsMiniAuthReady;
+
+            // Never initialize protected cloud features for signed-out users.
+            if(!user) return;
+
+            await loadCloudSites();
+
+            setTimeout(
+                ()=>window.handleJSMiniDeployFromURL(),
+                100
+            );
+        });
+    </script>
+
+    <script>
+        /*
+         * Preserve the original demo database while routing real
+         * JS mini sites through Firebase.
+         */
+        window.originalLoadSiteForJSMini = window.loadSite;
+    </script>
+
+</body>
+</html>

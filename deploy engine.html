@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JS Deploy Engine | JS CODE OUTPUT</title>
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --blue:#173b72;
+  --blue2:#245aa8;
+  --gold:#c9973e;
+  --gold2:#e0b65a;
+  --green:#55a66a;
+  --green2:#8bc99a;
+  --ink:#152033;
+  --muted:#687286;
+  --line:#e7e9ee;
+  --white:#fff;
+  --red:#c83232;
+  --shadow:0 12px 35px rgba(21,59,114,.09);
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#fff;
+  color:var(--ink);
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+/* subtle green background animation */
+.bg-animation{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+}
+
+.bg-animation span{
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(105,190,125,.055);
+  filter:blur(20px);
+  animation:floatGreen 16s ease-in-out infinite;
+}
+
+.bg-animation span:nth-child(1){
+  left:-80px;
+  top:10%;
+}
+
+.bg-animation span:nth-child(2){
+  right:-100px;
+  top:45%;
+  animation-delay:-6s;
+}
+
+.bg-animation span:nth-child(3){
+  left:40%;
+  bottom:-140px;
+  animation-delay:-11s;
+}
+
+@keyframes floatGreen{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(30px,-25px,0) scale(1.12)}
+}
+
+/* common */
+button{
+  font:inherit;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.app{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+}
+
+/* header */
+.topbar{
+  height:74px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.96);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.brand-mark{
+  width:40px;
+  height:40px;
+  border:2px solid var(--gold);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  color:var(--blue);
+  font-weight:900;
+  font-size:17px;
+  background:#fff;
+}
+
+.brand-title{
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.brand-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.icon-btn{
+  width:42px;
+  height:42px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--blue);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+}
+
+.icon-btn:active{
+  transform:scale(.96);
+}
+
+.account-mini{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:11px;
+  padding:8px 12px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:var(--blue);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:12px;
+}
+
+/* dashboard */
+.dashboard{
+  max-width:1380px;
+  margin:auto;
+  padding:38px 28px 70px;
+}
+
+.hero-title{
+  text-align:center;
+  margin-bottom:28px;
+}
+
+.hero-title h1{
+  margin:0;
+  color:var(--blue);
+  font-size:clamp(28px,4vw,43px);
+  letter-spacing:-1px;
+}
+
+.hero-title p{
+  margin:9px auto 0;
+  color:var(--muted);
+  max-width:650px;
+  line-height:1.6;
+}
+
+/* publish section */
+.publish-layout{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:22px;
+  margin-bottom:42px;
+}
+
+.publish-card{
+  min-height:290px;
+  border:1px solid #e5e9ef;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+
+.publish-copy{
+  padding:30px;
+  position:relative;
+  z-index:3;
+}
+
+.publish-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid #e7d4a7;
+  color:#8d6824;
+  background:#fffaf0;
+  padding:7px 11px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.publish-copy h2{
+  margin:18px 0 9px;
+  color:var(--blue);
+  font-size:29px;
+}
+
+.publish-copy p{
+  margin:0;
+  max-width:530px;
+  line-height:1.65;
+  color:var(--muted);
+}
+
+.publish-points{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:20px;
+}
+
+.publish-points span{
+  border:1px solid #e8ebef;
+  padding:7px 10px;
+  border-radius:8px;
+  font-size:12px;
+  color:#49566b;
+}
+
+/* animated browser */
+.browser-animation{
+  position:absolute;
+  right:28px;
+  top:43px;
+  width:330px;
+  height:205px;
+  border:1px solid #dce3ec;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 20px 45px rgba(20,50,90,.12);
+  animation:browserFloat 5s ease-in-out infinite;
+}
+
+@keyframes browserFloat{
+  0%,100%{transform:translateY(0) rotate(.3deg)}
+  50%{transform:translateY(-9px) rotate(-.3deg)}
+}
+
+.browser-top{
+  height:31px;
+  border-bottom:1px solid #e8ebef;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:0 10px;
+}
+
+.browser-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#d9dee5;
+}
+
+.browser-url{
+  margin-left:8px;
+  flex:1;
+  height:15px;
+  border-radius:10px;
+  background:#f1f3f6;
+}
+
+.browser-body{
+  padding:17px;
+}
+
+.browser-line{
+  height:9px;
+  background:#edf0f4;
+  border-radius:8px;
+  margin-bottom:9px;
+}
+
+.browser-line.short{width:55%}
+.browser-line.medium{width:75%}
+
+.publish-pulse{
+  margin:17px auto 0;
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  border:2px solid rgba(201,151,62,.35);
+  display:grid;
+  place-items:center;
+  color:var(--gold);
+  font-weight:900;
+  animation:pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,151,62,.12)}
+  50%{box-shadow:0 0 0 18px rgba(201,151,62,0)}
+}
+
+/* projects */
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:18px;
+}
+
+.section-heading h2{
+  margin:0;
+  color:var(--blue);
+  font-size:25px;
+}
+
+.section-heading p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.project-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:22px;
+}
+
+.project-card{
+  aspect-ratio:1/1;
+  min-width:0;
+  border:1px solid #e2e6ec;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 8px 25px rgba(22,50,87,.06);
+  padding:17px;
+  display:flex;
+  flex-direction:column;
+  cursor:pointer;
+  transition:.22s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.project-card:hover{
+  transform:translateY(-4px);
+  border-color:#d4bd82;
+  box-shadow:0 16px 36px rgba(22,50,87,.1);
+}
+
+.project-card:active{
+  transform:scale(.985);
+}
+
+.project-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.project-symbol{
+  width:45px;
+  height:45px;
+  border-radius:11px;
+  background:#f3f6fb;
+  color:var(--blue);
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  border:1px solid #e2e8f1;
+}
+
+.status{
+  font-size:10px;
+  font-weight:800;
+  border-radius:20px;
+  padding:5px 8px;
+  background:#eef9f0;
+  color:#378048;
+}
+
+.project-name{
+  font-size:18px;
+  font-weight:850;
+  margin-top:19px;
+  color:var(--blue);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.project-domain{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.project-space{
+  margin-top:auto;
+}
+
+.space-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:9px;
+}
+
+.space-row strong{
+  color:#36445b;
+}
+
+.mini-progress{
+  height:6px;
+  background:#eef1f4;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:5px;
+}
+
+.mini-progress i{
+  display:block;
+  height:100%;
+  width:30%;
+  background:linear-gradient(90deg,var(--blue),var(--gold));
+  border-radius:inherit;
+}
+
+/* project detail */
+.project-view{
+  display:none;
+  min-height:calc(100vh - 74px);
+}
+
+.project-view.active{
+  display:block;
+}
+
+.project-layout{
+  display:flex;
+  min-height:calc(100vh - 74px);
+}
+
+/* sidebar */
+.sidebar{
+  width:250px;
+  flex:none;
+  border-right:1px solid var(--line);
+  background:#fff;
+  padding:22px 14px;
+}
+
+.project-sidebar-title{
+  padding:4px 10px 17px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:12px;
+}
+
+.project-sidebar-title strong{
+  display:block;
+  color:var(--blue);
+  font-size:15px;
+}
+
+.project-sidebar-title span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#596477;
+  padding:12px 11px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  text-align:left;
+  margin:3px 0;
+  font-size:13px;
+  font-weight:700;
+}
+
+.nav-btn svg{
+  width:19px;
+  height:19px;
+  flex:none;
+}
+
+.nav-btn:hover{
+  background:#f6f8fb;
+  color:var(--blue);
+}
+
+.nav-btn.active{
+  background:#edf3fc;
+  color:var(--blue);
+}
+
+.sidebar-back{
+  margin-bottom:16px;
+  width:100%;
+  border:1px solid #dfe4ea;
+  background:#fff;
+  color:var(--blue);
+  border-radius:9px;
+  padding:10px;
+  font-weight:800;
+}
+
+/* content */
+.detail-content{
+  flex:1;
+  min-width:0;
+  padding:31px;
+  max-width:1300px;
+}
+
+.mobile-project-header{
+  display:none;
+}
+
+.section-page{
+  display:none;
+}
+
+.section-page.active{
+  display:block;
+  animation:pageIn .25s ease;
+}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+
+.page-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  margin-bottom:25px;
+}
+
+.page-head h1{
+  margin:0;
+  font-size:27px;
+  color:var(--blue);
+}
+
+.page-head p{
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* cards */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:17px;
+}
+
+.info-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 7px 25px rgba(30,50,80,.045);
+}
+
+.info-label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.info-value{
+  margin-top:8px;
+  color:var(--blue);
+  font-size:21px;
+  font-weight:850;
+}
+
+.usage-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:17px;
+  margin-top:20px;
+}
+
+.usage-card{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+}
+
+.usage-title{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.usage-title strong{
+  color:var(--blue);
+}
+
+.usage-value{
+  margin-top:8px;
+  font-size:24px;
+  font-weight:900;
+}
+
+.usage-limit{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.progress{
+  height:10px;
+  border-radius:20px;
+  background:#edf0f3;
+  overflow:hidden;
+  margin-top:17px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--blue),var(--gold));
+  transition:width .7s ease;
+}
+
+.percent{
+  margin-top:7px;
+  text-align:right;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.upgrade-btn{
+  border:0;
+  border-radius:9px;
+  background:var(--gold);
+  color:#fff;
+  font-weight:850;
+  padding:11px 17px;
+  box-shadow:0 7px 17px rgba(201,151,62,.18);
+}
+
+.upgrade-btn:active{
+  transform:scale(.97);
+}
+
+/* analytics */
+.analytics-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;
+}
+
+.metric-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  background:#fff;
+}
+
+.metric-name{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.metric-number{
+  margin-top:7px;
+  font-size:25px;
+  font-weight:900;
+  color:var(--blue);
+}
+
+.chart{
+  height:65px;
+  margin-top:13px;
+  display:flex;
+  align-items:end;
+  gap:5px;
+}
+
+.bar{
+  flex:1;
+  border-radius:5px 5px 0 0;
+  min-height:5px;
+}
+
+.chart.blue .bar{background:#386eb6}
+.chart.gold .bar{background:#d1a04a}
+.chart.green .bar{background:#5ba76d}
+.chart.violet .bar{background:#7957a8}
+
+.analytics-two{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:17px;
+  margin-top:17px;
+}
+
+.analytics-panel{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px;
+  background:#fff;
+}
+
+.panel-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:18px;
+}
+
+.panel-title strong{
+  color:var(--blue);
+  font-size:15px;
+}
+
+.date-picker{
+  border:1px solid #dce1e8;
+  border-radius:8px;
+  padding:8px 9px;
+  background:#fff;
+  color:#4d596d;
+  font-size:11px;
+}
+
+.line-chart{
+  height:170px;
+  position:relative;
+  border-left:1px solid #dfe3e8;
+  border-bottom:1px solid #dfe3e8;
+  background:
+    linear-gradient(#f1f3f6 1px,transparent 1px) 0 0/100% 25%;
+}
+
+.line-chart svg{
+  width:100%;
+  height:100%;
+}
+
+.location-list{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+
+.location-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12px;
+}
+
+.location-item span:first-child{
+  color:#526075;
+}
+
+.country-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.country{
+  border:1px solid #edf0f3;
+  border-radius:9px;
+  padding:11px;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+}
+
+.country strong{
+  color:var(--blue);
+}
+
+/* live */
+.live-layout{
+  display:grid;
+  grid-template-columns:1.5fr .5fr;
+  gap:18px;
+}
+
+.map-box{
+  min-height:450px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fafdff;
+  position:relative;
+  overflow:hidden;
+}
+
+.map-svg{
+  position:absolute;
+  inset:25px;
+  width:calc(100% - 50px);
+  height:calc(100% - 50px);
+}
+
+.live-dot{
+  fill:#c9973e;
+  animation:liveDot 1.8s infinite;
+}
+
+@keyframes liveDot{
+  0%,100%{opacity:.4;r:5}
+  50%{opacity:1;r:8}
+}
+
+.live-stats{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.live-number{
+  font-size:31px;
+  font-weight:900;
+  color:var(--blue);
+}
+
+.live-feed{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  background:#fff;
+}
+
+.feed-row{
+  padding:10px 0;
+  border-bottom:1px solid #eef0f3;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+}
+
+.feed-row:last-child{border-bottom:0}
+
+/* auth */
+.auth-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.auth-card{
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:22px;
+  background:#fff;
+}
+
+.auth-status{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-weight:800;
+  color:#347d46;
+  margin:15px 0;
+}
+
+.auth-status.off{
+  color:#b14a38;
+}
+
+.status-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#4ca963;
+}
+
+.auth-status.off .status-dot{
+  background:#c84e3d;
+}
+
+.code-box{
+  background:#121826;
+  color:#dce6f5;
+  border-radius:11px;
+  padding:16px;
+  overflow:auto;
+  font-family:Consolas,monospace;
+  font-size:12px;
+  line-height:1.65;
+  min-height:190px;
+  white-space:pre-wrap;
+}
+
+.auth-note{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* settings */
+.settings-grid{
+  max-width:760px;
+  display:grid;
+  gap:14px;
+}
+
+.setting-row{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+  background:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+
+.setting-row span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.setting-row strong{
+  color:var(--blue);
+  font-size:13px;
+  text-align:right;
+  word-break:break-word;
+}
+
+.checkout{
+  margin-top:18px;
+  border:1px solid #efcccc;
+  border-radius:13px;
+  padding:18px;
+  background:#fffafa;
+}
+
+.checkout p{
+  color:#6d5555;
+  font-size:12px;
+  line-height:1.6;
+}
+
+.checkout-btn{
+  border:0;
+  background:#c83232;
+  color:#fff;
+  border-radius:8px;
+  padding:11px 17px;
+  font-weight:850;
+}
+
+/* account */
+.account-card{
+  max-width:650px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:25px;
+  background:#fff;
+}
+
+.account-large{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.account-large .avatar{
+  width:60px;
+  height:60px;
+  font-size:21px;
+}
+
+.account-large strong{
+  display:block;
+  color:var(--blue);
+  font-size:17px;
+}
+
+.account-large span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+/* modal */
+.modal-backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(12,20,33,.48);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.modal-backdrop.show{
+  display:flex;
+}
+
+.modal{
+  width:min(680px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  border:1px solid #e2e5ea;
+  box-shadow:0 25px 80px rgba(0,0,0,.2);
+  padding:25px;
+  animation:modalIn .2s ease;
+}
+
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(15px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+
+.modal h2{
+  margin:0;
+  color:var(--blue);
+}
+
+.modal p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:20px;
+}
+
+.modal-close{
+  border:1px solid #dce1e7;
+  background:#fff;
+  color:#4c586b;
+  border-radius:8px;
+  padding:10px 15px;
+  font-weight:750;
+}
+
+.plan-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.plan{
+  border:1px solid #e1e5eb;
+  border-radius:12px;
+  padding:17px;
+  background:#fff;
+  cursor:pointer;
+}
+
+.plan.selected{
+  border:2px solid var(--gold);
+  background:#fffaf1;
+}
+
+.plan h3{
+  color:var(--blue);
+  margin:0;
+}
+
+.plan strong{
+  display:block;
+  margin-top:8px;
+  color:#39465a;
+}
+
+.plan p{
+  font-size:11px;
+}
+
+/* toast */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,20px);
+  background:#14233b;
+  color:#fff;
+  border-radius:10px;
+  padding:11px 16px;
+  font-size:12px;
+  opacity:0;
+  pointer-events:none;
+  z-index:200;
+  transition:.25s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* mobile */
+@media(max-width:1100px){
+  .project-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .browser-animation{
+    opacity:.5;
+    right:-30px;
+  }
+}
+
+@media(max-width:850px){
+  .topbar{
+    padding:0 15px;
+  }
+
+  .account-mini{
+    display:none;
+  }
+
+  .dashboard{
+    padding:28px 15px 50px;
+  }
+
+  .publish-layout{
+    grid-template-columns:1fr;
+  }
+
+  .publish-card{
+    min-height:300px;
+  }
+
+  .browser-animation{
+    width:290px;
+    right:-35px;
+    opacity:.38;
+  }
+
+  .project-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+
+  .project-layout{
+    display:block;
+  }
+
+  .sidebar{
+    width:100%;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+    display:none;
+  }
+
+  .sidebar.mobile-open{
+    display:block;
+  }
+
+  .detail-content{
+    padding:22px 15px 50px;
+  }
+
+  .mobile-project-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 15px;
+    border-bottom:1px solid var(--line);
+    background:#fff;
+  }
+
+  .mobile-project-header button{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--blue);
+    width:40px;
+    height:40px;
+    border-radius:9px;
+  }
+
+  .mobile-project-header strong{
+    color:var(--blue);
+  }
+
+  .mobile-project-header span{
+    display:block;
+    font-size:10px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  .analytics-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .analytics-two,
+  .live-layout,
+  .auth-grid{
+    grid-template-columns:1fr;
+  }
+
+  .usage-grid,
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar .sidebar-back{
+    display:none;
+  }
+}
+
+@media(max-width:520px){
+  .brand-title{
+    font-size:14px;
+  }
+
+  .brand-sub{
+    display:none;
+  }
+
+  .hero-title h1{
+    font-size:29px;
+  }
+
+  .publish-copy{
+    padding:22px;
+  }
+
+  .publish-copy h2{
+    font-size:24px;
+  }
+
+  .browser-animation{
+    display:none;
+  }
+
+  .project-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .project-card{
+    border-radius:14px;
+    padding:13px;
+  }
+
+  .project-symbol{
+    width:38px;
+    height:38px;
+    font-size:13px;
+  }
+
+  .project-name{
+    font-size:15px;
+    margin-top:13px;
+  }
+
+  .project-domain{
+    font-size:9px;
+  }
+
+  .space-row{
+    font-size:9px;
+  }
+
+  .section-heading{
+    display:block;
+  }
+
+  .page-head{
+    display:block;
+  }
+
+  .page-head .upgrade-btn{
+    margin-top:15px;
+  }
+
+  .analytics-grid{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .metric-card{
+    padding:13px;
+  }
+
+  .metric-number{
+    font-size:21px;
+  }
+
+  .panel-title{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .country-list{
+    grid-template-columns:1fr;
+  }
+
+  .setting-row{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  .setting-row strong{
+    text-align:left;
+  }
+
+  .plan-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+.logo-img{width:40px;height:40px;border-radius:10px;object-fit:cover;border:2px solid var(--gold);background:#fff}
+.account-mini{cursor:default}
+.account-mini .account-text{display:flex;flex-direction:column;min-width:90px}
+.account-mini .account-email{font-size:10px;color:var(--muted);font-weight:500;margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-actions .primary-btn,.page-actions .primary-btn{border:0;background:var(--blue);color:#fff;border-radius:9px;padding:10px 14px;font-weight:800}
+.page-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.danger-btn{border:1px solid #efc9c9;background:#fff7f7;color:#b32f2f;border-radius:9px;padding:10px 14px;font-weight:800}
+.secondary-btn{border:1px solid #dce2e9;background:#fff;color:var(--blue);border-radius:9px;padding:10px 14px;font-weight:800}
+.live-card{border:1px solid var(--line);border-radius:15px;background:#fff;padding:22px}
+.live-url{display:flex;gap:10px;align-items:center;margin-top:15px;flex-wrap:wrap}
+.live-url input{flex:1;min-width:220px;border:1px solid #dfe4ea;border-radius:9px;padding:11px 12px;color:var(--blue);font-weight:700;background:#fafbfd}
+.status-live{color:#347d46!important}.status-expired{color:#b34a38!important}.status-off{color:#687286!important}
+.expiry-note{margin-top:12px;color:var(--muted);font-size:12px}
+.plan-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.plan{cursor:pointer}.plan small{display:block;color:var(--muted);margin-top:8px;line-height:1.5}
+.auth-overlay{position:fixed;inset:0;background:rgba(10,18,30,.48);backdrop-filter:blur(8px);z-index:500;display:grid;place-items:center;padding:20px}
+.auth-box{width:min(430px,100%);background:#fff;border-radius:20px;border:1px solid #e4e7ec;box-shadow:0 30px 80px rgba(10,25,50,.2);padding:30px;text-align:center}
+.auth-box img{width:62px;height:62px;border-radius:15px;object-fit:cover;border:2px solid var(--gold);margin-bottom:15px}
+.auth-box h2{margin:0;color:var(--blue);font-size:25px}.auth-box p{color:var(--muted);line-height:1.6;font-size:13px}
+.google-btn{width:100%;border:1px solid #dce2e8;background:#fff;border-radius:10px;padding:12px 15px;font-weight:800;color:#26344a}
+.loading-state,.empty-state{grid-column:1/-1;border:1px dashed #d9dfe7;border-radius:16px;padding:35px;text-align:center;color:var(--muted);background:#fff}
+.hidden{display:none!important}
+@media(max-width:950px){.publish-layout{grid-template-columns:1fr}.browser-animation{opacity:.28;right:10px}.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.info-grid,.usage-grid{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.topbar{padding:0 14px}.brand-sub{display:none}.account-mini .account-text{display:none}.dashboard{padding:25px 14px 50px}.project-grid{grid-template-columns:1fr}.publish-copy{padding:23px}.browser-animation{display:none}.detail-content{padding:20px 14px}.page-head{flex-direction:column}.mobile-project-header{display:flex!important;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:74px;z-index:30}.mobile-project-header button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px}.sidebar{position:fixed;left:-270px;top:74px;bottom:0;z-index:80;transition:left .2s;box-shadow:15px 0 40px rgba(0,0,0,.08)}.sidebar.mobile-open{left:0}.project-layout{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <img class="logo-img" src="logo.jpeg" alt="JS CODE OUTPUT">
+    <div><div class="brand-title">JS Deploy Engine</div><div class="brand-sub">Project Management Dashboard</div></div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" id="dashboardHomeBtn" type="button" aria-label="Dashboard">⌂</button>
+    <a class="secondary-btn" href="deploy_website.html" style="text-decoration:none">Publish Project</a>
+    <div class="account-mini"><div class="avatar" id="topAvatar">?</div><div class="account-text"><span id="topAccountName" style="font-size:12px;font-weight:750">Loading...</span><span class="account-email" id="topAccountEmail"></span></div></div>
+  </div>
+</header>
+<main class="dashboard" id="dashboard">
+  <div class="hero-title"><h1>JS Projects Dashboard</h1><p>Manage your published websites, monitor storage and bandwidth, renew deployments, change plans, and control every live project from one place.</p></div>
+  <section class="publish-layout">
+    <div class="publish-card"><div class="publish-copy"><span class="publish-badge"><span>●</span> Real Deployment</span><h2>Publish your project as a live website</h2><p>Your signed-in Firebase project is connected to the deployment engine. Published files are stored in Firebase Storage and served through your live deployment domain.</p><div class="publish-points"><span>Firebase Storage</span><span>Razorpay Billing</span><span>Live Domain</span><span>Usage Limits</span></div></div><div class="browser-animation"><div class="browser-top"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><div class="browser-url"></div></div><div class="browser-body"><div class="browser-line medium"></div><div class="browser-line"></div><div class="browser-line short"></div><div class="publish-pulse">LIVE</div></div></div></div>
+    <div class="publish-card" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;padding:25px"><div style="font-size:12px;color:var(--muted);font-weight:800">DEPLOYMENT ENGINE</div><div style="font-size:36px;font-weight:950;color:var(--blue);margin-top:9px">Publish → Live</div><div style="width:70px;height:2px;background:var(--gold);margin:16px auto"></div><p style="color:var(--muted);font-size:13px;line-height:1.6">Choose a project, pay securely, publish its files, and manage the live deployment here.</p></div></div>
+  </section>
+  <section><div class="section-heading"><div><h2>Your Projects</h2><p id="projectSubtitle">Loading your published deployments...</p></div><div id="projectCount" style="font-size:12px;color:var(--muted)"></div></div><div class="project-grid" id="projectGrid"><div class="loading-state">Loading your deployments...</div></div></section>
+</main>
+<section class="project-view" id="projectView">
+  <div class="mobile-project-header"><button type="button" id="mobileBackBtn">←</button><div><strong id="mobileProjectName">Project</strong><span>JS Deploy Engine</span></div><button type="button" id="mobileMenuBtn" style="margin-left:auto">☰</button></div>
+  <div class="project-layout">
+    <aside class="sidebar" id="sidebar"><button class="sidebar-back" id="sidebarBack" type="button">← Back to Projects</button><div class="project-sidebar-title"><strong id="sideProjectName">Project</strong><span id="sideProjectDomain">domain</span></div><button class="nav-btn active" data-section="billing" type="button">▣ <span>Used & Billing</span></button><button class="nav-btn" data-section="live" type="button">↗ <span>Live Website</span></button><button class="nav-btn" data-section="settings" type="button">⚙ <span>Settings</span></button></aside>
+    <div class="detail-content">
+      <section class="section-page active" id="section-billing"><div class="page-head"><div><h1>Used & Billing</h1><p>Monitor your current plan, expiry date, storage, and bandwidth.</p></div><div class="page-actions"><button class="secondary-btn" id="renewBtn" type="button">Renew</button><button class="upgrade-btn" id="upgradeBtn" type="button">Change Plan</button></div></div><div class="info-grid"><div class="info-card"><div class="info-label">Current Plan</div><div class="info-value" id="planName">-</div></div><div class="info-card"><div class="info-label">Project Domain</div><div class="info-value" id="billingDomain" style="font-size:16px">-</div></div><div class="info-card"><div class="info-label">Project Status</div><div class="info-value status-live" id="projectStatus">-</div></div></div><div class="usage-grid"><div class="usage-card"><div class="usage-title"><strong>Storage</strong><span class="usage-limit" id="storageLimit">-</span></div><div class="usage-value" id="storageUsed">0 MB</div><div class="progress"><span id="storageProgress"></span></div><div class="percent" id="storagePercent">0%</div></div><div class="usage-card"><div class="usage-title"><strong>Bandwidth / Month</strong><span class="usage-limit" id="bandwidthLimit">-</span></div><div class="usage-value" id="bandwidthUsed">0 GB</div><div class="progress"><span id="bandwidthProgress"></span></div><div class="percent" id="bandwidthPercent">0%</div></div></div><div class="live-card" style="margin-top:18px"><strong style="color:var(--blue)">Deployment period</strong><div class="expiry-note" id="expiryNote">-</div></div></section>
+      <section class="section-page" id="section-live"><div class="page-head"><div><h1>Live Website</h1><p>Open the exact website currently served by the deployment engine.</p></div></div><div class="live-card"><div class="info-label">Live URL</div><div class="live-url"><input id="liveUrlInput" readonly value=""><button class="primary-btn" id="openLiveBtn" type="button">Open Website</button><button class="secondary-btn" id="copyLiveBtn" type="button">Copy URL</button></div><div class="expiry-note" id="liveStatusNote"></div></div></section>
+      <section class="section-page" id="section-settings"><div class="page-head"><div><h1>Deployment Settings</h1><p>Manage this deployment without changing your project files.</p></div></div><div class="settings-grid"><div class="setting-row"><span>Project ID</span><strong id="settingId">-</strong></div><div class="setting-row"><span>Project Name</span><strong id="settingName">-</strong></div><div class="setting-row"><span>Deployment Slug</span><strong id="settingSlug">-</strong></div><div class="setting-row"><span>Deployment Version</span><strong id="settingVersion">-</strong></div><div class="setting-row"><span>Payment</span><strong id="settingPayment">-</strong></div><div class="setting-row" style="border-color:#efd0d0;background:#fffafa"><div><strong style="color:#a52e2e;display:block">Unpublish website</strong><span>This removes the published files from Firebase Storage and makes the live website unavailable. Your source project remains in Firestore.</span></div><button class="danger-btn" id="checkoutBtn" type="button">Unpublish</button></div></div></section>
+    </div>
+  </div>
+</section>
+</div>
+<div class="modal-backdrop" id="upgradeModal"><div class="modal"><h2>Change Project Plan</h2><p>Choose the plan you want. The selected plan is billed through Razorpay before the deployment limits are changed.</p><div class="plan-grid"><div class="plan" data-plan="basic"><h3>Basic</h3><strong>₹9 / 30 days</strong><small>1 GB storage · 10 GB bandwidth</small></div><div class="plan" data-plan="pro"><h3>Pro</h3><strong>₹29 / 30 days</strong><small>5 GB storage · 50 GB bandwidth</small></div><div class="plan" data-plan="business"><h3>Business</h3><strong>₹99 / 30 days</strong><small>20 GB storage · 250 GB bandwidth</small></div></div><div class="modal-actions"><button class="modal-close" type="button" data-close-modal="upgradeModal">Cancel</button><button class="upgrade-btn" id="confirmUpgrade" type="button">Pay & Change Plan</button></div></div></div>
+<div class="modal-backdrop" id="checkoutModal"><div class="modal"><h2 style="color:#a52e2e">Unpublish Website?</h2><p>This will remove the published website files from Firebase Storage and make the live URL unavailable. Your source project in Firestore will not be deleted.</p><div class="modal-actions"><button class="modal-close" type="button" data-close-modal="checkoutModal">Cancel</button><button class="checkout-btn" id="confirmCheckout" type="button">Yes, Unpublish</button></div></div></div>
+<div class="toast" id="toast"></div>
+<div class="auth-overlay hidden" id="authOverlay"><div class="auth-box"><img src="logo.jpeg" alt="JS CODE OUTPUT"><h2>Sign in to JS Deploy Engine</h2><p>Use the same Google account you use for JS CODE OUTPUT so the dashboard can load your projects and deployments securely.</p><button class="google-btn" id="googleSignInBtn" type="button">Continue with Google</button></div></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,getDocs,query,orderBy} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
+
+const firebaseConfig={apiKey:"AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",authDomain:"js-code-output.firebaseapp.com",projectId:"js-code-output",storageBucket:"js-code-output.firebasestorage.app",messagingSenderId:"600350018167",appId:"1:600350018167:web:3ceaa5a5e0d1050504d472",measurementId:"G-L47M0E9V96"};
+// Keep the same project identity used by the main workspace. If your workspace config changes, update this object there too.
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const functions=getFunctions(app,"asia-south1");const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});
+const getWebsiteDeployment=httpsCallable(functions,"getWebsiteDeployment");
+const createWebsitePublishPayment=httpsCallable(functions,"createWebsitePublishPayment");
+const verifyWebsitePublishPayment=httpsCallable(functions,"verifyWebsitePublishPayment");
+const createWebsiteRenewalPayment=httpsCallable(functions,"createWebsiteRenewalPayment");
+const verifyWebsiteRenewalPayment=httpsCallable(functions,"verifyWebsiteRenewalPayment");
+const createWebsitePlanChangePayment=httpsCallable(functions,"createWebsitePlanChangePayment");
+const verifyWebsitePlanChangePayment=httpsCallable(functions,"verifyWebsitePlanChangePayment");
+const unpublishWebsite=httpsCallable(functions,"unpublishWebsite");
+
+let currentUser=null,currentProject=null,currentSection="billing",selectedPlan=null,toastTimer=null;
+const $=id=>document.getElementById(id);
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),3000)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function gb(bytes){return Number(bytes||0)/1073741824}
+function storageText(bytes){const b=Number(bytes||0);if(b>=1073741824)return (b/1073741824).toFixed(2).replace(/\.00$/,'')+" GB";return Math.round(b/1048576)+" MB"}
+function dateText(ms){if(!ms)return "Not available";return new Date(Number(ms)).toLocaleString([], {dateStyle:"medium",timeStyle:"short"})}
+function setAuthUI(){const name=currentUser?.displayName||"Google Account",email=currentUser?.email||"";$("topAccountName").textContent=name;$("topAccountEmail").textContent=email;$("topAvatar").textContent=name.trim().charAt(0).toUpperCase()||"G"}
+function requireAuth(){if(currentUser)return true;$("authOverlay").classList.remove("hidden");return false}
+async function loadProjects(){if(!currentUser)return;const grid=$("projectGrid");grid.innerHTML='<div class="loading-state">Loading your published deployments...</div>';try{const snap=await getDocs(collection(db,"users",currentUser.uid,"projects"));const projects=snap.docs.map(d=>({id:d.id,...d.data()}));const deployments=await Promise.all(projects.map(async p=>{try{const r=await getWebsiteDeployment({projectId:p.id});return r.data?{...r.data(),projectId:p.id,projectName:r.data.projectName||p.name||"Untitled Project"}:null}catch(e){console.warn("Deployment lookup failed",p.id,e);return null}}));DASHBOARD_DATA.projects=deployments.filter(Boolean);renderProjects()}catch(e){console.error(e);grid.innerHTML='<div class="empty-state">Could not load your projects. Check Firebase rules and sign-in, then refresh.</div>';toast("Could not load deployments")}}
+const DASHBOARD_DATA={projects:[]};
+function renderProjects(){const grid=$("projectGrid");grid.innerHTML="";const list=DASHBOARD_DATA.projects;$("projectCount").textContent=list.length+" published projects";$("projectSubtitle").textContent=list.length?"Open a project to view usage, billing and deployment controls.":"No published projects yet.";if(!list.length){grid.innerHTML='<div class="empty-state"><strong style="color:var(--blue);font-size:16px">No published projects</strong><p>Publish a project from the deployment page to see it here.</p><a class="primary-btn" href="deploy_website.html" style="display:inline-block;text-decoration:none;margin-top:10px">Publish a Project</a></div>';return}list.forEach(p=>{const storageLimit=Number(p.storageLimitBytes||0),used=Number(p.storageUsedBytes||0),pct=storageLimit?Math.min(100,used/storageLimit*100):0;const card=document.createElement("article");card.className="project-card";card.tabIndex=0;card.innerHTML='<div class="project-top"><div class="project-symbol">'+esc((p.projectName||"P").slice(0,2).toUpperCase())+'</div><span class="status">'+esc(p.status||((p.active)?"Published":"Inactive"))+'</span></div><div class="project-name">'+esc(p.projectName||"Untitled Project")+'</div><div class="project-domain">'+esc(p.liveUrl||"-")+'</div><div class="project-space"><div class="space-row"><span>Storage</span><strong>'+storageText(used)+'</strong></div><div class="mini-progress"><i style="width:'+pct+'%"></i></div><div class="space-row"><span>Bandwidth / month</span><strong>'+gb(p.bandwidthUsedBytes||0).toFixed(2)+' GB</strong></div></div>';card.onclick=()=>openProject(p.projectId);card.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openProject(p.projectId)}};grid.appendChild(card)})}
+function openProject(id){const p=DASHBOARD_DATA.projects.find(x=>x.projectId===id);if(!p)return;currentProject=p;$("dashboard").style.display="none";$("projectView").classList.add("active");$("mobileProjectName").textContent=p.projectName||"Project";$("sideProjectName").textContent=p.projectName||"Project";$("sideProjectDomain").textContent=p.liveUrl||"-";renderProject();showSection("billing");history.pushState({level:"project",projectId:id},"","#project-"+encodeURIComponent(id))}
+function renderProject(){const p=currentProject;if(!p)return;const active=!!p.active;$("planName").textContent=p.planName||String(p.plan||"").toUpperCase();$("billingDomain").textContent=p.liveUrl||"-";$("projectStatus").textContent=p.status||((active)?"live":"inactive");$("projectStatus").className="info-value "+(active?"status-live":"status-off");$("storageUsed").textContent=storageText(p.storageUsedBytes);$("storageLimit").textContent=(p.storageLimitGB||0)+" GB limit";$("bandwidthUsed").textContent=gb(p.bandwidthUsedBytes||0).toFixed(2)+" GB";$("bandwidthLimit").textContent=(p.bandwidthLimitGB||0)+" GB limit";const sp=p.storageLimitBytes?Math.min(100,Number(p.storageUsedBytes||0)/p.storageLimitBytes*100):0,bp=p.bandwidthLimitBytes?Math.min(100,Number(p.bandwidthUsedBytes||0)/p.bandwidthLimitBytes*100):0;$("storageProgress").style.width=sp+"%";$("bandwidthProgress").style.width=bp+"%";$("storagePercent").textContent=Math.round(sp)+"% used";$("bandwidthPercent").textContent=Math.round(bp)+"% used";$("expiryNote").textContent=active?"Expires: "+dateText(p.expiresAt):"Status: "+(p.status||"inactive");$("liveUrlInput").value=p.liveUrl||"";$("liveStatusNote").textContent=active?"Deployment is currently active until "+dateText(p.expiresAt):"This deployment is not currently serving the website.";$("settingId").textContent=p.projectId||"-";$("settingName").textContent=p.projectName||"-";$("settingSlug").textContent=p.slug||"-";$("settingVersion").textContent=p.version??"-";$("settingPayment").textContent=p.publishPaymentId||p.lastRenewalPaymentId||"-";$("renewBtn").textContent=active?"Renew":"Renew / Reactivate"}
+function showSection(section){currentSection=section;document.querySelectorAll(".section-page").forEach(x=>x.classList.remove("active"));const t=$("section-"+section);if(t)t.classList.add("active");document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x.dataset.section===section));if(window.innerWidth<=850)$("sidebar").classList.remove("mobile-open");}
+function backToDashboard(){currentProject=null;$("projectView").classList.remove("active");$("dashboard").style.display="";history.replaceState({level:"dashboard"},"",location.pathname);window.scrollTo({top:0,behavior:"smooth"})}
+function loadRazorpay(){return new Promise((resolve,reject)=>{if(window.Razorpay)return resolve();const s=document.createElement("script");s.src="https://checkout.razorpay.com/v1/checkout.js";s.onload=resolve;s.onerror=()=>reject(new Error("Razorpay checkout could not load."));document.head.appendChild(s)})}
+async function openPayment(order,verify,extra){await loadRazorpay();return new Promise((resolve,reject)=>{const opts={key:order.keyId,amount:order.amount,currency:order.currency||"INR",name:"JS CODE OUTPUT",description:order.description||"Website deployment",image:"logo.jpeg",order_id:order.orderId,handler:async response=>{try{const result=await verify({...extra,razorpay_order_id:response.razorpay_order_id,razorpay_payment_id:response.razorpay_payment_id,razorpay_signature:response.razorpay_signature});resolve(result.data)}catch(e){reject(e)}},modal:{ondismiss:()=>reject(new Error("Payment window closed."))},prefill:{name:currentUser?.displayName||"",email:currentUser?.email||""},theme:{color:"#173b72"}};new window.Razorpay(opts).open()})}
+async function renew(){if(!currentProject||!requireAuth())return;try{toast("Preparing Razorpay...");const order=await createWebsiteRenewalPayment({projectId:currentProject.projectId});const result=await openPayment(order.data,verifyWebsiteRenewalPayment,{projectId:currentProject.projectId});toast("Website renewed successfully");await loadProjects();currentProject=DASHBOARD_DATA.projects.find(x=>x.projectId===result?.projectId||x.projectId===currentProject.projectId)||currentProject;renderProject()}catch(e){console.error(e);toast(e?.message||"Renewal failed")}}
+async function changePlan(){if(!currentProject||!selectedPlan||!requireAuth())return;try{toast("Preparing plan change...");const order=await createWebsitePlanChangePayment({projectId:currentProject.projectId,plan:selectedPlan});const result=await openPayment(order.data,verifyWebsitePlanChangePayment,{projectId:currentProject.projectId,plan:selectedPlan});$("upgradeModal").classList.remove("show");toast("Plan changed successfully");await loadProjects();currentProject=DASHBOARD_DATA.projects.find(x=>x.projectId===currentProject.projectId)||currentProject;renderProject()}catch(e){console.error(e);toast(e?.message||"Plan change failed")}}
+async function unpublish(){if(!currentProject||!requireAuth())return;try{toast("Unpublishing website...");await unpublishWebsite({projectId:currentProject.projectId});$("checkoutModal").classList.remove("show");toast("Website unpublished");await loadProjects();backToDashboard()}catch(e){console.error(e);toast(e?.message||"Unpublish failed")}}
+$("upgradeBtn").onclick=()=>{if(!currentProject)return;selectedPlan=String(currentProject.plan||"basic").toLowerCase();document.querySelectorAll(".plan").forEach(x=>x.classList.toggle("selected",x.dataset.plan===selectedPlan));$("upgradeModal").classList.add("show")};
+document.querySelectorAll(".plan").forEach(x=>x.onclick=()=>{selectedPlan=x.dataset.plan;document.querySelectorAll(".plan").forEach(p=>p.classList.toggle("selected",p===x))});$("confirmUpgrade").onclick=changePlan;$("renewBtn").onclick=renew;$("checkoutBtn").onclick=()=>$("checkoutModal").classList.add("show");$("confirmCheckout").onclick=unpublish;$("openLiveBtn").onclick=()=>{if(currentProject?.liveUrl)window.open(currentProject.liveUrl,"_blank","noopener")};$("copyLiveBtn").onclick=async()=>{if(!currentProject?.liveUrl)return;try{await navigator.clipboard.writeText(currentProject.liveUrl);toast("Live URL copied")}catch(e){toast("Could not copy URL")}};$("dashboardHomeBtn").onclick=()=>currentProject?backToDashboard():window.scrollTo({top:0,behavior:"smooth"});$("sidebarBack").onclick=backToDashboard;$("mobileBackBtn").onclick=backToDashboard;$("mobileMenuBtn").onclick=()=>$("sidebar").classList.toggle("mobile-open");document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showSection(b.dataset.section));document.querySelectorAll("[data-close-modal]").forEach(b=>b.onclick=()=>$(b.dataset.closeModal).classList.remove("show"));document.querySelectorAll(".modal-backdrop").forEach(b=>b.onclick=e=>{if(e.target===b)b.classList.remove("show")});window.addEventListener("popstate",()=>currentProject?backToDashboard():null);$("googleSignInBtn").onclick=async()=>{try{const r=await signInWithPopup(auth,provider);currentUser=r.user;$("authOverlay").classList.add("hidden");setAuthUI();await loadProjects()}catch(e){console.error(e);toast("Google sign-in failed or was cancelled")}};
+onAuthStateChanged(auth,async user=>{currentUser=user||null;if(!user){$("authOverlay").classList.remove("hidden");return}$("authOverlay").classList.add("hidden");setAuthUI();await loadProjects()});
+</script>
+
+</body>
+</html>
