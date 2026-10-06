@@ -1,2 +1,35 @@
 rules_version = '2';
-service firebase.storage { match /b/{bucket}/o { match /published-sites/{uid}/{projectId}/{allPaths=**} { allow read,write: if request.auth != null && request.auth.uid == uid; } match /project-assets/{uid}/{projectId}/{allPaths=**} { allow read,write: if request.auth != null && request.auth.uid == uid; } match /{allPaths=**} { allow read,write: if false; } } }
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Published websites
+    match /published-sites/{uid}/{projectId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+                          && request.auth.uid == uid;
+    }
+
+    // Project assets
+    match /project-assets/{uid}/{projectId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+                          && request.auth.uid == uid;
+    }
+
+    // Templates
+    match /templates/{uid}/{allPaths=**} {
+      // Anyone can view/download templates
+      allow read: if true;
+
+      // Only the owner can upload/update templates
+      // Maximum file size: 25 MB
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 25 * 1024 * 1024;
+    }
+
+    // Deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
