@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "templates": {
+      ".read": true,
+      "$templateId": {
+        ".write": "auth != null && (!data.exists() ? newData.child('uid').val() == auth.uid : data.child('uid').val() == auth.uid)"
+      }
+    }
+  }
+}
