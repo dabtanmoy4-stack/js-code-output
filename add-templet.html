@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JS Code Output – Add Template</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f2e8;color:#17130f;font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:850px;margin:auto;padding:28px 16px 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#17130f}.brand img{width:42px;height:42px;border-radius:10px;border:1px solid #c6a45a;object-fit:cover}.brand b{font-size:18px}.btn{border:1px solid #b9954d;background:#17130f;color:#fff8eb;border-radius:10px;padding:11px 15px;text-decoration:none;font:600 12px Arial,sans-serif;cursor:pointer}.btn.gold{background:linear-gradient(135deg,#b48a35,#e0bd67);color:#191208}
+.hero{text-align:center;margin:15px auto 28px}.badge{display:inline-block;border:1px solid #c9aa63;border-radius:999px;padding:7px 12px;font:700 10px Arial,sans-serif;letter-spacing:.12em;color:#806326;background:#fff9ed}.hero h1{font-size:46px;font-weight:500;margin:15px 0 9px}.hero p{font:13px/1.6 Arial,sans-serif;color:#766a5a}
+.card{background:#fffaf2;border:1px solid #dcccae;border-radius:18px;padding:22px;box-shadow:0 15px 40px rgba(57,39,13,.07)}
+.notice{padding:13px 15px;border-radius:10px;background:#f2eadb;border:1px solid #dfceb0;font:12px/1.55 Arial,sans-serif;color:#625747;margin-bottom:18px}
+label{display:block;font:700 11px Arial,sans-serif;letter-spacing:.06em;color:#68583e;margin:16px 0 7px}input,textarea,select{width:100%;border:1px solid #d3c19e;background:#fffdf8;border-radius:10px;padding:13px;outline:none;font:14px Arial,sans-serif;color:#201a13}textarea{min-height:110px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:#b38a3e;box-shadow:0 0 0 3px rgba(179,138,62,.1)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.file{padding:12px}.paybox{margin-top:20px;border:1px solid #d6bf8e;border-radius:13px;padding:16px;background:#fff8e9;display:flex;justify-content:space-between;align-items:center;gap:14px}.price{font-size:25px}.small{font:11px Arial,sans-serif;color:#806f59;margin-top:4px}.submit{width:100%;margin-top:18px;padding:14px;border:0;border-radius:11px;background:#17130f;color:#fff8eb;font:700 13px Arial,sans-serif;cursor:pointer}.submit:disabled{opacity:.5;cursor:not-allowed}.status{text-align:center;font:12px/1.5 Arial,sans-serif;margin-top:14px;min-height:18px}.signed{display:none}.signed.show{display:block}.google{display:flex;align-items:center;justify-content:center;gap:10px}.google img{width:18px;height:18px}.modal{position:fixed;inset:0;background:rgba(15,11,8,.62);display:none;place-items:center;padding:18px;z-index:20}.modal.show{display:grid}.modalbox{max-width:410px;width:100%;background:#fffaf2;border-radius:17px;padding:25px;text-align:center;border:1px solid #c7a45c}.modalbox h2{font-weight:500;margin:4px 0 8px}.modalbox p{font:13px/1.6 Arial,sans-serif;color:#706353}.toast{position:fixed;right:18px;bottom:18px;background:#17130f;color:#fff8ea;padding:13px 16px;border-radius:10px;font:13px Arial,sans-serif;display:none}
+@media(max-width:600px){.row{grid-template-columns:1fr}.hero h1{font-size:38px}.top .btn{padding:9px 10px}.brand b{font-size:15px}.card{padding:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><a class="brand" href="templet.html"><img src="logo.jpeg"><b>JS Code Output</b></a><a class="btn" href="templet.html">Gallery</a></div>
+<section class="hero"><div class="badge">CREATOR UPLOAD</div><h1>Add Your Template.</h1><p>Publish a template to the shared JS Code Output gallery. Google sign-in and a ₹3 verification payment are required.</p></section>
+<div class="card">
+<div id="loginNotice" class="notice">Please sign in with Google first. Your account is used to associate the template and payment securely.</div>
+<div id="signed" class="signed"><div class="notice">Signed in as <b id="userEmail"></b>. Your ₹3 payment is required before publishing.</div></div>
+<div class="row"><div><label>Template Name</label><input id="name" maxlength="80" placeholder="e.g. Royal Portfolio"></div><div><label>Category</label><select id="category"><option>Portfolio</option><option>Business</option><option>Landing Page</option><option>Blog</option><option>Education</option><option>Dashboard</option><option>Other</option></select></div></div>
+<label>Description</label><textarea id="description" maxlength="500" placeholder="Tell users what this template is for..."></textarea>
+<div class="row"><div><label>Template File</label><input id="templateFile" class="file" type="file" accept=".zip,.html,.htm"></div><div><label>Preview Image (optional)</label><input id="previewFile" class="file" type="file" accept="image/png,image/jpeg,image/webp"></div></div>
+<label>Live Preview URL (optional)</label><input id="liveUrl" type="url" placeholder="https://example.com">
+<div class="paybox"><div><div class="price">₹3</div><div class="small">One-time template upload fee</div></div><button id="payBtn" class="btn gold">Sign in to Continue</button></div>
+<button id="submitBtn" class="submit" disabled>Pay ₹3 & Publish Template</button>
+<div id="status" class="status"></div>
+</div>
+</div>
+<div id="loginModal" class="modal"><div class="modalbox"><h2>Google Sign-in Required</h2><p>To upload a template, we need to connect the template to your account and verify the ₹3 payment. Guest upload is not available.</p><button id="googleBtn" class="btn gold google"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Continue with Google</button></div></div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,GoogleAuthProvider,signInWithPopup} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import {getStorage,ref as sref,uploadBytes,getDownloadURL} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+import {getDatabase,ref,set,push} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+const firebaseConfig={apiKey:"AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",authDomain:"js-code-output.firebaseapp.com",databaseURL:"https://js-code-output-default-rtdb.firebaseio.com",projectId:"js-code-output",storageBucket:"js-code-output.firebasestorage.app",messagingSenderId:"600350018167",appId:"1:600350018167:web:3ceaa5a5e0d1050504d472",measurementId:"G-L47M0E9V96"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app),storage=getStorage(app);
+const provider=new GoogleAuthProvider();
+let user=null,payment=null;
+const $=id=>document.getElementById(id),status=t=>{$("status").textContent=t};
+onAuthStateChanged(auth,u=>{
+ user=u;
+ $("signed").classList.toggle("show",!!u);$("loginNotice").style.display=u?"none":"block";
+ $("userEmail").textContent=u?.email||"";
+ $("submitBtn").disabled=!u;
+ $("payBtn").textContent=u?"Pay ₹3 & Publish":"Sign in to Continue";
+});
+async function login(){try{await signInWithPopup(auth,provider);$("loginModal").classList.remove("show")}catch(e){status=e.message||"Google sign-in failed"}}
+$("googleBtn").onclick=login;$("payBtn").onclick=()=>{if(!user){$("loginModal").classList.add("show");return}startPayment()};
+
+async function startPayment(){
+ const name=$("name").value.trim();
+ if(!name){status="Please enter the template name first.";return}
+ status="Creating secure payment order…";$("payBtn").disabled=true;
+ try{
+  const r=await fetch("/api/create-template-order",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await user.getIdToken()},body:JSON.stringify({name})});
+  const d=await r.json();if(!r.ok)throw Error(d.error||"Could not create payment order.");
+  const options={key:d.keyId,amount:300,currency:"INR",name:"JS Code Output",description:"Template upload fee",order_id:d.orderId,prefill:{email:user.email||""},theme:{color:"#b48a35"},
+   handler:async response=>{
+    status="Verifying payment…";
+    try{
+      const vr=await fetch("/api/verify-template-payment",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await user.getIdToken()},body:JSON.stringify(response)});
+      const vd=await vr.json();if(!vr.ok||!vd.verified)throw Error(vd.error||"Payment verification failed.");
+      payment=response;status="Payment verified. Uploading template…";await publish();
+    }catch(e){status=e.message||"Verification failed."}
+   },
+   modal:{ondismiss:()=>{status="Payment window closed."; $("payBtn").disabled=false}}
+  };
+  new Razorpay(options).open();
+ }catch(e){status=e.message||"Payment could not start.";$("payBtn").disabled=false}
+}
+async function publish(){
+ try{
+  const file=$("templateFile").files[0];if(!file)throw Error("Please select a template ZIP or HTML file.");
+  if(file.size>25*1024*1024)throw Error("Template file must be 25 MB or smaller.");
+  const id=push(ref(db,"templates")).key;
+  const path=`templates/${user.uid}/${id}/${file.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;
+  const snap=await uploadBytes(sref(storage,path),file,{contentType:file.type||"application/octet-stream"});
+  const templateUrl=await getDownloadURL(snap.ref);
+  let previewUrl="";
+  const pf=$("previewFile").files[0];
+  if(pf){const ps=`templates/${user.uid}/${id}/preview-${Date.now()}.${pf.name.split(".").pop()}`;const p=await uploadBytes(sref(storage,ps),pf,{contentType:pf.type});previewUrl=await getDownloadURL(p.ref)}
+  const record={name:$("name").value.trim(),description:$("description").value.trim(),category:$("category").value,templateUrl,previewUrl,liveUrl:$("liveUrl").value.trim(),uid:user.uid,author:user.displayName||user.email||"Creator",authorEmail:user.email||"",createdAt:Date.now(),status:"published",paymentId:payment.razorpay_payment_id};
+  await set(ref(db,"templates/"+id),record);
+  status="Template published successfully.";
+  $("submitBtn").disabled=true;$("payBtn").disabled=true;
+ }catch(e){status=e.message||"Upload failed.";$("payBtn").disabled=false}
+}
+$("submitBtn").onclick=()=>{if(user)startPayment();else $("loginModal").classList.add("show")};
+</script>
+</body>
+</html>
