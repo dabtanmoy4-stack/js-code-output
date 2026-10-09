@@ -5210,8 +5210,14 @@ applyTheme(savedTheme ? savedTheme === "dark" : prefersDark, false);
 let initialId = localStorage.getItem("js-code-output-active-project-id");
 let startupPendingTemplate = null;
 try {
-  const pendingRaw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template");
-  if(pendingRaw) startupPendingTemplate = JSON.parse(pendingRaw);
+  const pendingRaw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template") || localStorage.getItem("js-code-output-pending-template");
+  if(pendingRaw) {
+    const parsed = JSON.parse(pendingRaw);
+    startupPendingTemplate = (parsed && parsed.content) ? parsed : {
+      name: parsed && parsed.name ? parsed.name : "Untitled Template",
+      content: parsed && (parsed.html || parsed.previewSrcdoc || (parsed.files && parsed.files["index.html"])) ? (parsed.html || parsed.previewSrcdoc || parsed.files["index.html"]) : ""
+    };
+  }
 } catch(e) {
   console.warn("Could not inspect pending template during workspace startup:", e);
 }
@@ -5398,8 +5404,14 @@ document.addEventListener('click',function(e){
     let pendingTemplate = null;
     try { await (window.firebaseAuthReady || Promise.resolve()); } catch(e) {}
     try {
-      const raw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template");
-      if(raw) pendingTemplate = JSON.parse(raw);
+      const raw = localStorage.getItem("jsco_pending_template_v2") || sessionStorage.getItem("jsco_pending_template") || localStorage.getItem("js-code-output-pending-template");
+      if(raw) {
+        const parsed = JSON.parse(raw);
+        pendingTemplate = (parsed && parsed.content) ? parsed : {
+          name: parsed && parsed.name ? parsed.name : "Untitled Template",
+          content: parsed && (parsed.html || parsed.previewSrcdoc || (parsed.files && parsed.files["index.html"])) ? (parsed.html || parsed.previewSrcdoc || parsed.files["index.html"]) : ""
+        };
+      }
     } catch(e) {
       console.warn("Could not read pending template:", e);
     }
@@ -5443,6 +5455,7 @@ document.addEventListener('click',function(e){
         localStorage.setItem("js-code-output-active-project-id", id);
         localStorage.removeItem("jsco_pending_template_v2");
         sessionStorage.removeItem("jsco_pending_template");
+        localStorage.removeItem("js-code-output-pending-template");
 
         setTimeout(function(){
           try{
