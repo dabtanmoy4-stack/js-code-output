@@ -138,6 +138,8 @@
   .tree-item.drag-over { background: rgba(138,101,0,.16) !important; color: var(--brand) !important; outline: 1px dashed var(--brand); outline-offset: -2px; box-shadow: inset 0 0 0 1px rgba(138,101,0,.12), 0 0 0 2px rgba(138,101,0,.06); }
   .tree-item.drag-over .fa-folder,
   .tree-item.drag-over .fa-folder-open { color: var(--brand) !important; }
+  #fileExplorer.explorer-drop-active { background: rgba(138,101,0,.08); outline: 2px dashed var(--brand); outline-offset: -5px; border-radius: 8px; }
+  #fileExplorer.explorer-drop-active::after { content: "Drop files or folders here"; display:flex; align-items:center; justify-content:center; min-height:72px; margin:8px; border-radius:8px; color:var(--brand); font-size:11px; font-weight:800; letter-spacing:.04em; pointer-events:none; }
 
   .tree-item.active { background: rgba(138,101,0,.11); color: var(--brand); font-weight: 800; }
   .tree-actions { display: none; gap: 8px; align-items: center;}
@@ -1877,6 +1879,251 @@ html.dark .CodeMirror-dialog input {
 }
 </style>
 
+
+
+<style id="jco-functional-fixes">
+/* Functional fixes only: fullscreen output + GitHub-style search/replace. */
+#iframeContainer.jco-preview-fullscreen-fallback{
+  position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;
+  z-index:2147483000!important;background:#050505!important;
+  padding:0!important;margin:0!important;
+}
+#iframeContainer.jco-preview-fullscreen-fallback #outputIframe{
+  width:100%!important;height:100%!important;border-radius:0!important;
+}
+#codeSearchPanel.jco-github-search{
+  display:none;position:absolute!important;top:7px!important;right:10px!important;
+  width:min(720px,calc(100% - 20px));z-index:9000!important;
+  padding:7px!important;background:#050505!important;border:1px solid #303030!important;
+  border-radius:8px!important;box-shadow:0 14px 38px rgba(0,0,0,.45)!important;
+  flex-wrap:wrap;gap:6px!important;
+}
+#codeSearchPanel.jco-github-search.show{display:flex!important}
+#codeSearchPanel .jco-search-row{display:flex;align-items:center;gap:6px;width:100%}
+#codeSearchPanel .jco-search-field,#codeSearchPanel .jco-replace-field{
+  min-width:0;flex:1;height:30px;padding:0 9px;border:1px solid #3a3a3a!important;
+  border-radius:6px;background:#111!important;color:#f1f1f1!important;outline:none;
+  font:12px/1.2 "Fira Code",Consolas,monospace;
+}
+#codeSearchPanel .jco-search-field:focus,#codeSearchPanel .jco-replace-field:focus{border-color:#8a6500!important;box-shadow:0 0 0 2px rgba(138,101,0,.15)}
+#codeSearchPanel .jco-search-icon{color:#b88a16;font-size:12px;flex:0 0 auto}
+#codeSearchPanel .jco-search-count{min-width:58px;text-align:center;color:#a9a9a9;font-size:10px;white-space:nowrap}
+#codeSearchPanel .jco-search-action{
+  height:30px;min-width:30px;padding:0 8px;border:1px solid #303030!important;border-radius:6px;
+  background:#111!important;color:#d4af37!important;display:inline-flex;align-items:center;justify-content:center;
+}
+#codeSearchPanel .jco-search-action:hover{background:#181818!important;color:#fff0b3!important;border-color:#8a6500!important}
+#codeSearchPanel .jco-search-action.primary{background:#8a6500!important;color:#fff!important;border-color:#8a6500!important}
+#codeSearchPanel .jco-search-options{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%;padding:2px 4px 1px;color:#9a9a9a;font-size:10px}
+#codeSearchPanel .jco-search-options label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+#codeSearchPanel .jco-search-options input{accent-color:#8a6500;width:12px;height:12px;margin:0}
+#codeSearchPanel .jco-replace-row{display:none;width:100%;align-items:center;gap:6px}
+#codeSearchPanel.jco-show-replace .jco-replace-row{display:flex}
+#codeSearchPanel .cm-searching{background:rgba(240,201,90,.25);outline:1px solid rgba(240,201,90,.18)}
+#codeSearchPanel .cm-search-current{background:#8a6500!important;color:#fff!important;outline:1px solid #d4af37}
+@media(max-width:700px){
+ #codeSearchPanel.jco-github-search{top:5px!important;right:5px!important;width:calc(100% - 10px)}
+ #codeSearchPanel .jco-search-options{gap:8px}
+}
+</style>
+<style id="classic-onboarding-and-chrome-install">
+/* ===== Classic onboarding polish — visual only ===== */
+#workspaceTour .tour-spotlight{
+  border:1.5px solid #b08a4a!important;
+  box-shadow:
+    0 0 0 4px rgba(176,138,74,.10),
+    0 8px 28px rgba(66,48,25,.18),
+    0 0 0 9999px rgba(28,24,18,.58)!important;
+}
+#workspaceTour .tour-spotlight::before{
+  border:1px solid rgba(176,138,74,.28)!important;
+  animation:classicTourPulse 2.4s ease-in-out infinite!important;
+}
+@keyframes classicTourPulse{
+  0%,100%{opacity:.28;transform:scale(1)}
+  50%{opacity:.72;transform:scale(1.018)}
+}
+#workspaceTour .tour-tooltip{
+  background:linear-gradient(145deg,#fffdf8 0%,#f7f1e5 100%)!important;
+  color:#292319!important;
+  border:1px solid #d8c7a7!important;
+  border-radius:14px!important;
+  box-shadow:0 20px 55px rgba(49,38,21,.18),0 2px 8px rgba(49,38,21,.08)!important;
+}
+#workspaceTour .tour-tooltip::after{
+  background:#fffdf8!important;
+  border-left-color:#d8c7a7!important;
+  border-top-color:#d8c7a7!important;
+}
+#workspaceTour .tour-step-badge{
+  color:#8a6a3f!important;
+  letter-spacing:.12em!important;
+}
+#workspaceTour .tour-title{
+  color:#2a241b!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-weight:700!important;
+}
+#workspaceTour .tour-text{
+  color:#766348!important;
+}
+#workspaceTour .tour-progress{
+  background:#e8dfcf!important;
+}
+#workspaceTour .tour-progress span{
+  background:linear-gradient(90deg,#8a6a3f,#b08a4a,#8a6a3f)!important;
+}
+#workspaceTour .tour-btn{
+  background:#fffdf8!important;
+  color:#6f522f!important;
+  border:1px solid #d8c7a7!important;
+  box-shadow:0 2px 7px rgba(49,38,21,.06)!important;
+}
+#workspaceTour .tour-btn:hover{
+  border-color:#a9854f!important;
+  background:#f7f1e5!important;
+  color:#5f4529!important;
+}
+#workspaceTour .tour-btn.primary{
+  background:linear-gradient(135deg,#6f522f,#9a7744)!important;
+  color:#fffdf8!important;
+  border-color:#6f522f!important;
+  box-shadow:0 8px 20px rgba(111,82,47,.20)!important;
+}
+#workspaceTour .tour-btn.ghost{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+#workspaceTour .tour-btn.ghost:hover{
+  background:#f1e8d8!important;
+  border-color:#dfcfb3!important;
+}
+#workspaceTour .tour-finish{
+  background:rgba(31,26,20,.46)!important;
+}
+#workspaceTour .tour-finish-card{
+  background:linear-gradient(145deg,#fffdf8,#f5eee1)!important;
+  color:#2a241b!important;
+  border:1px solid #d8c7a7!important;
+  border-radius:20px!important;
+  box-shadow:0 30px 80px rgba(32,25,15,.28)!important;
+}
+#workspaceTour .tour-finish-icon{
+  background:#efe4d1!important;
+  color:#8a6a3f!important;
+}
+#workspaceTour .tour-finish h3{
+  color:#2a241b!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+#workspaceTour .tour-finish p{
+  color:#766348!important;
+}
+
+/* ===== Chrome-like Install as App notification ===== */
+#jcoInstallNotice{
+  position:fixed;
+  top:76px;
+  right:18px;
+  z-index:100000;
+  width:min(390px,calc(100vw - 28px));
+  display:none;
+  align-items:flex-start;
+  gap:12px;
+  padding:14px 14px 13px;
+  background:#fff;
+  color:#202124;
+  border:1px solid #dadce0;
+  border-radius:10px;
+  box-shadow:0 4px 18px rgba(60,64,67,.24),0 1px 3px rgba(60,64,67,.16);
+  font-family:Arial,Helvetica,sans-serif;
+  animation:jcoChromeNoticeIn .22s ease-out;
+}
+#jcoInstallNotice.show{display:flex}
+#jcoInstallNotice .jco-install-icon{
+  width:40px;height:40px;flex:0 0 40px;
+  border-radius:9px;
+  display:grid;place-items:center;
+  overflow:hidden;
+  background:#f1f3f4;
+  border:1px solid #dadce0;
+}
+#jcoInstallNotice .jco-install-icon img{
+  width:30px;height:30px;object-fit:cover;border-radius:7px;
+}
+#jcoInstallNotice .jco-install-body{min-width:0;flex:1}
+#jcoInstallNotice .jco-install-title{
+  margin:0 0 3px;
+  font-size:14px;
+  line-height:1.35;
+  font-weight:600;
+  color:#202124;
+}
+#jcoInstallNotice .jco-install-text{
+  margin:0;
+  font-size:12px;
+  line-height:1.5;
+  color:#5f6368;
+}
+#jcoInstallNotice .jco-install-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:11px;
+}
+#jcoInstallNotice button{
+  font:500 12px Arial,Helvetica,sans-serif;
+  border-radius:7px;
+  padding:7px 12px;
+  cursor:pointer;
+}
+#jcoInstallNotice .jco-install-later{
+  border:1px solid transparent;
+  background:transparent;
+  color:#5f6368;
+}
+#jcoInstallNotice .jco-install-later:hover{
+  background:#f1f3f4;
+}
+#jcoInstallNotice .jco-install-now{
+  border:1px solid #1a73e8;
+  background:#1a73e8;
+  color:#fff;
+  box-shadow:none;
+}
+#jcoInstallNotice .jco-install-now:hover{background:#1765cc}
+#jcoInstallNotice .jco-install-close{
+  position:absolute;
+  top:7px;right:7px;
+  width:25px;height:25px;
+  border:0!important;
+  padding:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  color:#5f6368!important;
+  display:grid;place-items:center;
+  font-size:17px!important;
+}
+#jcoInstallNotice .jco-install-close:hover{background:#f1f3f4!important}
+@keyframes jcoChromeNoticeIn{
+  from{opacity:0;transform:translateY(-8px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+@media(max-width:700px){
+  #jcoInstallNotice{
+    top:60px;
+    right:10px;
+    width:calc(100vw - 20px);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #jcoInstallNotice{animation:none}
+  #workspaceTour .tour-spotlight::before{animation:none!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -2028,15 +2275,15 @@ html.dark .CodeMirror-dialog input {
 <div class="explorer-head">
 <span>EXPLORER</span>
 <div class="flex gap-1">
-<button class="tool-btn" onclick="createNewFile()" style="padding:2px 6px" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
-<button class="tool-btn" onclick="createNewFolder()" style="padding:2px 6px" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
+<button type="button" class="tool-btn" onclick="createNewFile()" style="padding:2px 6px" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
+<button type="button" class="tool-btn" onclick="createNewFolder()" style="padding:2px 6px" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
 </div>
 </div>
 <div class="explorer-body" id="fileExplorer"></div>
 <div class="explorer-actions" data-tour="file-actions">
 <div class="action-row">
-<button onclick="createNewFile()"><i class="fa-solid fa-file-circle-plus"></i> File</button>
-<button onclick="createNewFolder()"><i class="fa-solid fa-folder-plus"></i> Folder</button>
+<button type="button" onclick="createNewFile()"><i class="fa-solid fa-file-circle-plus"></i> File</button>
+<button type="button" onclick="createNewFolder()"><i class="fa-solid fa-folder-plus"></i> Folder</button>
 </div>
 <div class="action-row">
 <button onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-upload"></i> Files</button>
@@ -2055,13 +2302,26 @@ html.dark .CodeMirror-dialog input {
 <button aria-label="All Clear" class="tool-btn" onclick="clearEditors()" style="padding:4px 8px" title="All Clear"><i class="fa-solid fa-eraser"></i></button>
 </div>
 </div>
-<div class="code-search-panel" id="codeSearchPanel" role="search">
-<input autocomplete="off" id="codeSearchInput" placeholder="Search in current file…" type="text"/>
-<span class="code-search-count" id="codeSearchCount">0 / 0</span>
-<button class="code-search-btn" onclick="searchPrevious()" title="Previous (Shift+Enter)" type="button">↑</button>
-<button class="code-search-btn" onclick="searchNext()" title="Next (Enter)" type="button">↓</button>
-<button class="code-search-btn" onclick="closeCodeSearch()" title="Close (Esc)" type="button">×</button>
-<span class="code-search-hint">Enter ↵</span>
+<div class="code-search-panel jco-github-search" id="codeSearchPanel" role="search" aria-label="Search and replace">
+<div class="jco-search-row">
+<i class="fa-solid fa-magnifying-glass jco-search-icon"></i>
+<input autocomplete="off" class="jco-search-field" id="codeSearchInput" placeholder="Find in current file" type="text"/>
+<span class="jco-search-count" id="codeSearchCount">0 / 0</span>
+<button class="jco-search-action" id="codeSearchPrev" onclick="searchPrevious()" title="Previous match (Shift+Enter)" type="button">↑</button>
+<button class="jco-search-action" id="codeSearchNext" onclick="searchNext()" title="Next match (Enter)" type="button">↓</button>
+<button class="jco-search-action" onclick="closeCodeSearch()" title="Close (Esc)" type="button">×</button>
+</div>
+<div class="jco-replace-row">
+<i class="fa-solid fa-arrow-turn-down jco-search-icon"></i>
+<input autocomplete="off" class="jco-replace-field" id="codeReplaceInput" placeholder="Replace with" type="text"/>
+<button class="jco-search-action" onclick="replaceCurrentMatch()" title="Replace current match" type="button">Replace</button>
+<button class="jco-search-action primary" onclick="replaceAllMatches()" title="Replace all matches" type="button">Replace All</button>
+</div>
+<div class="jco-search-options">
+<label><input id="codeSearchCase" type="checkbox"> Match Case</label>
+<label><input id="codeSearchWhole" type="checkbox"> Whole Word</label>
+<label><input id="codeSearchRegex" type="checkbox"> Regex</label>
+</div>
 </div>
 <div class="editor-container-wrapper">
 <div class="editor-content">
@@ -3135,54 +3395,146 @@ copyPublishedLink();
 }
 }
 
-function triggerSearch(){
-if(!editor) return;
-const panel=document.getElementById("codeSearchPanel"), input=document.getElementById("codeSearchInput");
-if(!panel||!input) return;
-panel.classList.add("show"); input.focus(); input.select(); updateCodeSearch();
+function getJcoSearchOptions(){
+  const input = document.getElementById("codeSearchInput");
+  const q = input ? input.value : "";
+  const matchCase = !!document.getElementById("codeSearchCase")?.checked;
+  const wholeWord = !!document.getElementById("codeSearchWhole")?.checked;
+  const regex = !!document.getElementById("codeSearchRegex")?.checked;
+  return {q, matchCase, wholeWord, regex};
 }
-function clearSearchMarks(){ if(editor) editor.getAllMarks().forEach(m=>{if(m.__jcoSearch)m.clear();}); }
-function closeCodeSearch(){ document.getElementById("codeSearchPanel")?.classList.remove("show"); clearSearchMarks(); searchMatches=[]; searchIndex=-1; editor?.focus(); }
+
+function jcoEscapeRegExp(value){
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function jcoBuildQuery(q, opts){
+  if(!opts.regex) q = jcoEscapeRegExp(q);
+  if(opts.wholeWord) q = `\\b(?:${q})\\b`;
+  try { return new RegExp(q, opts.matchCase ? "g" : "gi"); }
+  catch(e) { return null; }
+}
+
+function triggerSearch(showReplace=false){
+  if(!editor) return;
+  const panel=document.getElementById("codeSearchPanel"), input=document.getElementById("codeSearchInput");
+  if(!panel||!input) return;
+  panel.classList.add("show");
+  panel.classList.toggle("jco-show-replace", !!showReplace);
+  input.focus();
+  input.select();
+  updateCodeSearch();
+}
+function closeCodeSearch(){
+  const panel=document.getElementById("codeSearchPanel");
+  if(panel) panel.classList.remove("show","jco-show-replace");
+  clearSearchMarks();
+  searchMatches=[]; searchIndex=-1;
+  if(editor) editor.focus();
+}
+function clearSearchMarks(){
+  if(!editor) return;
+  editor.getAllMarks().forEach(m=>{if(m.__jcoSearch)m.clear();});
+}
 function updateCodeSearch(){
-if(!editor)return;
-const q=document.getElementById("codeSearchInput")?.value||"", count=document.getElementById("codeSearchCount");
-clearSearchMarks(); searchMatches=[]; searchIndex=-1;
-if(!q){if(count)count.textContent="0 / 0";return;}
-const c=editor.getSearchCursor(q,CodeMirror.Pos(0,0),{caseFold});
-while(c.findNext()) searchMatches.push({from:c.from(),to:c.to()});
-if(!searchMatches.length){if(count)count.textContent="0 / 0";return;}
-searchMatches.forEach(m=>{const mark=editor.markText(m.from,m.to,{className:"cm-searching"});mark.__jcoSearch=true;});
-searchIndex=0; selectSearchMatch();
+  if(!editor) return;
+  const {q,matchCase,wholeWord,regex}=getJcoSearchOptions();
+  const count=document.getElementById("codeSearchCount");
+  clearSearchMarks(); searchMatches=[]; searchIndex=-1;
+  if(!q){if(count) count.textContent="0 / 0";return;}
+
+  if(regex || wholeWord){
+    const re=jcoBuildQuery(q,{matchCase,wholeWord,regex});
+    if(!re){if(count) count.textContent="Invalid regex";return;}
+    const text=editor.getValue(); let m;
+    while((m=re.exec(text))!==null){
+      if(m[0]===""){re.lastIndex++;continue;}
+      const from=editor.posFromIndex(m.index), to=editor.posFromIndex(m.index+m[0].length);
+      searchMatches.push({from,to,index:m.index,length:m[0].length,text:m[0]});
+    }
+  } else {
+    const c=editor.getSearchCursor(q,CodeMirror.Pos(0,0),{caseFold:!matchCase});
+    while(c.findNext()) searchMatches.push({from:c.from(),to:c.to()});
+  }
+
+  if(!searchMatches.length){if(count) count.textContent="0 / 0";return;}
+  searchMatches.forEach(m=>{
+    const mark=editor.markText(m.from,m.to,{className:"cm-searching"});
+    mark.__jcoSearch=true;
+    m.mark=mark;
+  });
+  searchIndex=0;
+  selectSearchMatch();
 }
 function selectSearchMatch(){
-if(!editor||!searchMatches.length)return;
-const m=searchMatches[searchIndex]; editor.setSelection(m.from,m.to); editor.scrollIntoView({from:m.from,to:m.to},120);
-const count=document.getElementById("codeSearchCount"); if(count)count.textContent=`${searchIndex+1} / ${searchMatches.length}`;
+  if(!editor||!searchMatches.length)return;
+  searchMatches.forEach(m=>{
+    if(m.mark) m.mark.clear();
+    m.mark=editor.markText(m.from,m.to,{className:"cm-searching"});
+    m.mark.__jcoSearch=true;
+  });
+  const m=searchMatches[searchIndex];
+  if(m.mark){
+    m.mark.clear();
+    m.mark=editor.markText(m.from,m.to,{className:"cm-search-current"});
+    m.mark.__jcoSearch=true;
+  }
+  editor.setSelection(m.from,m.to);
+  editor.scrollIntoView({from:m.from,to:m.to},120);
+  const count=document.getElementById("codeSearchCount");
+  if(count) count.textContent=`${searchIndex+1} / ${searchMatches.length}`;
 }
-function searchNext(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex+1)%searchMatches.length;selectSearchMatch();}
-function searchPrevious(){if(!searchMatches.length){updateCodeSearch();return;}searchIndex=(searchIndex-1+searchMatches.length)%searchMatches.length;selectSearchMatch();}
-
-function triggerReplace() {
-if (editor) {
-editor.execCommand("replace");
-setTimeout(attachCloseBtnToDialog, 50);
+function searchNext(){
+  if(!searchMatches.length){updateCodeSearch();return;}
+  searchIndex=(searchIndex+1)%searchMatches.length;selectSearchMatch();
 }
+function searchPrevious(){
+  if(!searchMatches.length){updateCodeSearch();return;}
+  searchIndex=(searchIndex-1+searchMatches.length)%searchMatches.length;selectSearchMatch();
 }
-
-function attachCloseBtnToDialog() {
-const dialog = document.querySelector(".CodeMirror-dialog");
-if (dialog && !dialog.querySelector(".cm-dialog-close")) {
-const closeBtn = document.createElement("button");
-closeBtn.className = "cm-dialog-close";
-closeBtn.innerHTML = "×";
-closeBtn.title = "Close Search (Esc)";
-closeBtn.style.cssText = "background; border; color:#94a3b8; font-size:18px; font-weight; cursor; padding:0 6px; margin-left;";
-closeBtn.onclick = () => {
-dialog.remove();
-if(editor) editor.focus();
-};
-dialog.appendChild(closeBtn);
+function triggerReplace(){ triggerSearch(true); }
+function replaceCurrentMatch(){
+  if(!editor) return;
+  if(!searchMatches.length){updateCodeSearch();if(!searchMatches.length)return;}
+  const m=searchMatches[searchIndex];
+  const replacement=document.getElementById("codeReplaceInput")?.value ?? "";
+  editor.replaceRange(replacement,m.from,m.to);
+  projectDirty=true;
+  syncEditor();
+  scheduleLocalProjectSave();
+  scheduleCloudSave();
+  updatePreview(true);
+  updateCodeSearch();
+  if(searchMatches.length) selectSearchMatch();
+  showToast("Match replaced.");
 }
+function replaceAllMatches(){
+  if(!editor) return;
+  const {q,matchCase,wholeWord,regex}=getJcoSearchOptions();
+  if(!q) return;
+  updateCodeSearch();
+  if(!searchMatches.length) return showToast("No matches found.");
+  const replacement=document.getElementById("codeReplaceInput")?.value ?? "";
+  // Replace from bottom to top so earlier positions never shift.
+  const matches=searchMatches.slice().sort((a,b)=>editor.indexFromPos(b.from)-editor.indexFromPos(a.from));
+  matches.forEach(m=>{
+    let value=replacement;
+    if(regex){
+      const re=jcoBuildQuery(q,{matchCase,wholeWord,regex});
+      if(re){
+        const flags=matchCase?"":"i";
+        try { value=m.text.replace(new RegExp(re.source,flags),replacement); } catch(e) {}
+      }
+    }
+    editor.replaceRange(value,m.from,m.to);
+  });
+  projectDirty=true;
+  syncEditor();
+  scheduleLocalProjectSave();
+  scheduleCloudSave();
+  updatePreview(true);
+  updateCodeSearch();
+  showToast(`${matches.length} match${matches.length===1?"":"es"} replaced.`);
 }
 
 function toggleEditorFullscreen() {
@@ -4075,6 +4427,163 @@ window.moveExplorerItem = function(sourcePath, targetFolderPath) {
   showToast(`Moved "${sourceName}" into "${targetFolderPath}"`);
 };
 
+/* OS file/folder drag-and-drop into the Explorer */
+(function setupExplorerExternalDrop(){
+  const explorer = document.getElementById("fileExplorer");
+  if(!explorer) return;
+
+  let dragDepth = 0;
+
+  function isExternalDrag(e){
+    const types = e.dataTransfer?.types;
+    if(!types) return false;
+    return Array.from(types).includes("Files");
+  }
+
+  function showDropState(){
+    explorer.classList.add("explorer-drop-active");
+  }
+  function hideDropState(){
+    dragDepth = 0;
+    explorer.classList.remove("explorer-drop-active");
+  }
+
+  explorer.addEventListener("dragenter", e => {
+    if(!isExternalDrag(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    dragDepth++;
+    showDropState();
+    if(e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+  });
+
+  explorer.addEventListener("dragover", e => {
+    if(!isExternalDrag(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    showDropState();
+    if(e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+  });
+
+  explorer.addEventListener("dragleave", e => {
+    if(!isExternalDrag(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    dragDepth = Math.max(0, dragDepth - 1);
+    if(dragDepth === 0) hideDropState();
+  });
+
+  explorer.addEventListener("drop", async e => {
+    if(!isExternalDrag(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    hideDropState();
+
+    try {
+      const items = Array.from(e.dataTransfer?.items || []);
+      const entries = items.map(item => {
+        try { return item.webkitGetAsEntry?.(); } catch(_) { return null; }
+      }).filter(Boolean);
+
+      if(entries.length){
+        await handleExplorerDroppedEntries(entries);
+      } else {
+        const filesDropped = Array.from(e.dataTransfer?.files || []);
+        await handleExplorerDroppedFiles(filesDropped);
+      }
+    } catch(err) {
+      console.error("Explorer drop failed:", err);
+      showToast("Could not add the dropped item(s).");
+    }
+  });
+})();
+
+function readDirectoryEntries(entry){
+  return new Promise((resolve, reject) => {
+    const reader = entry.createReader();
+    const all = [];
+    const readBatch = () => reader.readEntries(entries => {
+      if(!entries.length) return resolve(all);
+      all.push(...entries);
+      readBatch();
+    }, reject);
+    readBatch();
+  });
+}
+
+function readEntryFile(entry){
+  return new Promise((resolve, reject) => entry.file(resolve, reject));
+}
+
+async function collectExplorerEntryFiles(entry, parentPath = ""){
+  if(!entry) return [];
+  if(entry.isFile){
+    const file = await readEntryFile(entry);
+    file.__jcoDropPath = parentPath + file.name;
+    return [file];
+  }
+  if(entry.isDirectory){
+    const folderPath = parentPath + entry.name + "/";
+    const children = await readDirectoryEntries(entry);
+    const nested = await Promise.all(children.map(child => collectExplorerEntryFiles(child, folderPath)));
+    return nested.flat();
+  }
+  return [];
+}
+
+async function handleExplorerDroppedEntries(entries){
+  const filesDropped = [];
+  for(const entry of entries){
+    try {
+      const found = await collectExplorerEntryFiles(entry, "");
+      filesDropped.push(...found);
+    } catch(err) {
+      console.warn("Could not read dropped entry:", entry?.name, err);
+    }
+  }
+  await handleExplorerDroppedFiles(filesDropped);
+}
+
+async function handleExplorerDroppedFiles(filesDropped){
+  if(!filesDropped.length){
+    showToast("No readable files were found in the dropped item.");
+    return;
+  }
+
+  const normalized = filesDropped.map(file => {
+    const path = file.__jcoDropPath || file.webkitRelativePath || file.name;
+    return Object.assign(file, { __jcoDropPath: String(path || file.name).replace(/^\/+/, "") });
+  });
+
+  const { results, failed } = await processFilesWithProgress(normalized, true);
+  if(!results.length){
+    showToast(failed.length ? "Upload blocked: only files under 900 KB are supported." : "Could not read the dropped file(s).");
+    return;
+  }
+
+  results.forEach(x => addUploadedFilePath(x.path, x.content));
+  window.files = files;
+  hasTypedInSession = true;
+
+  const preferred =
+    results.find(x => /(^|\/)index\.html$/i.test(x.path)) ||
+    results.find(x => !isBinary(getExt(x.path))) ||
+    results[0];
+
+  renderFileExplorer();
+  if(preferred?.path) openFile(preferred.path);
+  try { updatePreview(true); } catch(err) { console.warn("Preview update after drop failed:", err); }
+  projectDirty = true;
+  saveLocalProjectFiles();
+  scheduleCloudSave();
+
+  if(failed.length){
+    showToast(`${results.length} dropped file(s) added; ${failed.length} skipped (files must be under 900 KB).`);
+  } else {
+    showToast(`${results.length} file(s)/folder contents added successfully.`);
+  }
+}
+
 window.toggleFolder = function(path, e) {
 e.stopPropagation();
 folderState[path] = folderState[path] === false ? true : false;
@@ -4190,35 +4699,68 @@ renderFileExplorer();
 }
 
 window.createNewFile = function(basePath = "") {
-const n = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.scss, script.ts`);
-if(!n) return;
-const name = n.trim();
-if(!name) return;
-const fullPath = basePath + name;
-if(files[fullPath] !== undefined) return alert("File already exists.");
-files[fullPath] = "";
-if(basePath) folderState[basePath] = true;
+  basePath = String(basePath || "").replace(/^\/+/, "");
+  if(basePath && !basePath.endsWith("/")) basePath += "/";
 
-hasTypedInSession = true;
+  const raw = prompt(`Enter file name ${basePath ? '(inside '+basePath+')' : ''}:\ne.g. index.html, style.css, script.js`);
+  if(raw === null) return;
+  const name = String(raw).trim().replace(/^\/+/, "").replace(/\\/g, "/");
+  if(!name) return showToast("File name cannot be empty.");
+  if(name.endsWith("/")) return showToast("Please enter a file name, not a folder name.");
+  if(name.split("/").some(part => !part || part === "." || part === "..")) return showToast("Invalid file path.");
 
-saveLocalProjectFiles();
-renderFileExplorer();
-openFile(fullPath);
-updatePreview(true);
+  const fullPath = basePath + name;
+  if(Object.prototype.hasOwnProperty.call(files, fullPath)) return showToast("File already exists.");
+
+  // Create any intermediate folders automatically when a nested path is entered.
+  const parts = fullPath.split("/");
+  let folder = "";
+  for(let i=0;i<parts.length-1;i++){
+    folder += parts[i] + "/";
+    if(!Object.prototype.hasOwnProperty.call(files, folder)) files[folder] = "";
+    folderState[folder] = true;
+  }
+
+  files[fullPath] = "";
+  window.files = files;
+  hasTypedInSession = true;
+  projectDirty = true;
+  if(basePath) folderState[basePath] = true;
+
+  saveLocalProjectFiles();
+  scheduleCloudSave();
+  renderFileExplorer();
+  renderEditorTabs();
+  openFile(fullPath);
+  updatePreview(true);
+  showToast(`Created ${fullPath}`);
 };
 
 window.createNewFolder = function(basePath = "") {
-const n = prompt(`Enter folder name ${basePath ? '(inside '+basePath+')' : ''}:`);
-if(!n) return;
-const name = n.trim();
-if(!name) return;
-const fullPath = basePath + name + "/";
-if(files[fullPath] !== undefined) return alert("Folder already exists.");
-files[fullPath] = "";
-folderState[fullPath] = true;
-if(basePath) folderState[basePath] = true;
-projectDirty = true;
-renderFileExplorer();
+  basePath = String(basePath || "").replace(/^\/+/, "");
+  if(basePath && !basePath.endsWith("/")) basePath += "/";
+
+  const raw = prompt(`Enter folder name ${basePath ? '(inside '+basePath+')' : ''}:`);
+  if(raw === null) return;
+  const name = String(raw).trim().replace(/^\/+|\/+$/g, "").replace(/\\/g, "/");
+  if(!name) return showToast("Folder name cannot be empty.");
+  if(name.split("/").some(part => !part || part === "." || part === "..")) return showToast("Invalid folder name.");
+
+  const fullPath = basePath + name + "/";
+  if(Object.prototype.hasOwnProperty.call(files, fullPath)) return showToast("Folder already exists.");
+
+  // Keep empty folders in the project map so they remain visible and downloadable.
+  files[fullPath] = "";
+  window.files = files;
+  folderState[fullPath] = true;
+  if(basePath) folderState[basePath] = true;
+  projectDirty = true;
+
+  saveLocalProjectFiles();
+  scheduleCloudSave();
+  renderFileExplorer();
+  renderEditorTabs();
+  showToast(`Created ${fullPath}`);
 };
 
 window.deleteItem = function(path) {
@@ -4304,7 +4846,7 @@ const chunkPromises = chunk.map(async (f) => {
   }
   try {
     return {
-      path: f.webkitRelativePath || f.name,
+      path: f.__jcoDropPath || f.webkitRelativePath || f.name,
       content: await readUploadedFile(f)
     };
   } catch(err) {
@@ -4660,30 +5202,44 @@ renderedPreviewVersion = previewVersion;
 
 }
 
-function toggleFullScreenPreview() {
-const elem = document.getElementById("iframeContainer");
-if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
-if (elem.requestFullscreen) {
-elem.requestFullscreen();
-} else if (elem.msRequestFullscreen) {
-elem.msRequestFullscreen();
-} else if (elem.mozRequestFullScreen) {
-elem.mozRequestFullScreen();
-} else if (elem.webkitRequestFullscreen) {
-elem.webkitRequestFullscreen();
+async function toggleFullScreenPreview() {
+  const elem=document.getElementById("iframeContainer");
+  if(!elem) return;
+
+  const active=document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || elem.classList.contains("jco-preview-fullscreen-fallback");
+  if(active){
+    try{
+      if(document.exitFullscreen) await document.exitFullscreen();
+      else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if(document.msExitFullscreen) document.msExitFullscreen();
+    }catch(e){}
+    elem.classList.remove("jco-preview-fullscreen-fallback");
+    setTimeout(()=>window.editor?.refresh?.(),50);
+    return;
+  }
+
+  try{
+    const request=elem.requestFullscreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+    if(request){
+      await request.call(elem);
+      setTimeout(()=>window.editor?.refresh?.(),50);
+      return;
+    }
+  }catch(e){
+    console.warn("Native preview fullscreen unavailable; using fallback.",e);
+  }
+
+  elem.classList.add("jco-preview-fullscreen-fallback");
+  setTimeout(()=>window.editor?.refresh?.(),50);
 }
-} else {
-if (document.exitFullscreen) {
-document.exitFullscreen();
-} else if (document.msExitFullscreen) {
-document.msExitFullscreen();
-} else if (document.mozCancelFullScreen) {
-document.mozCancelFullScreen();
-} else if (document.webkitExitFullscreen) {
-document.webkitExitFullscreen();
-}
-}
-}
+
+document.addEventListener("fullscreenchange",()=>{
+  const elem=document.getElementById("iframeContainer");
+  if(!elem) return;
+  if(!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement){
+    elem.classList.remove("jco-preview-fullscreen-fallback");
+  }
+});
 
 function scheduleCloudSave(){
 const u = window.firebaseCurrentUser;
@@ -5310,7 +5866,21 @@ readOnly: false
 });
 window.editor = editor;
 const searchInput=document.getElementById("codeSearchInput");
+const replaceInput=document.getElementById("codeReplaceInput");
+const searchCase=document.getElementById("codeSearchCase");
+const searchWhole=document.getElementById("codeSearchWhole");
+const searchRegex=document.getElementById("codeSearchRegex");
 if(searchInput){searchInput.addEventListener("input",updateCodeSearch);searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.shiftKey ? searchPrevious() : searchNext()}if(e.key==="Escape"){e.preventDefault();closeCodeSearch()}});}
+if(replaceInput){replaceInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();replaceCurrentMatch()}if(e.key==="Escape"){e.preventDefault();closeCodeSearch()}});}
+[searchCase,searchWhole,searchRegex].forEach(el=>el?.addEventListener("change",updateCodeSearch));
+if(!window.__jcoSearchKeyboardBound){
+  window.__jcoSearchKeyboardBound=true;
+  document.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="f"){e.preventDefault();triggerSearch(false);}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="h"){e.preventDefault();triggerReplace();}
+    if(e.key==="Escape" && document.getElementById("codeSearchPanel")?.classList.contains("show")){closeCodeSearch();}
+  });
+}
 wireProjectContextActions();
 
 if(typeof emmetCodeMirror !== 'undefined') {
@@ -5497,4 +6067,113 @@ document.addEventListener('click',function(e){
   else
     bootWorkspace();
 })();
-</script></body></html>
+</script>
+<!-- Chrome-style Install as App notification -->
+<div id="jcoInstallNotice" role="dialog" aria-label="Install JS CODE OUTPUT as an app">
+  <button class="jco-install-close" id="jcoInstallClose" type="button" aria-label="Close">×</button>
+  <div class="jco-install-icon">
+    <img src="logo.jpeg" alt="JS CODE OUTPUT">
+  </div>
+  <div class="jco-install-body">
+    <p class="jco-install-title">Install JS CODE OUTPUT</p>
+    <p class="jco-install-text">Install this site as an app for faster access and a dedicated window.</p>
+    <div class="jco-install-actions">
+      <button class="jco-install-later" id="jcoInstallLater" type="button">Not now</button>
+      <button class="jco-install-now" id="jcoInstallNow" type="button">Install</button>
+    </div>
+  </div>
+</div>
+
+
+<script id="classic-onboarding-install-script">
+(function(){
+  "use strict";
+
+  /* Keep the existing onboarding logic untouched. This block only changes
+     its appearance through CSS and adds the install notification. */
+
+  let jcoDeferredInstallPrompt = null;
+  const JCO_INSTALL_DISMISSED = "jco_install_notice_dismissed_v1";
+
+  function jcoIsStandalone(){
+    return window.matchMedia &&
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+  }
+
+  function jcoNotice(){
+    return document.getElementById("jcoInstallNotice");
+  }
+
+  function jcoShowInstallNotice(){
+    const notice = jcoNotice();
+    if(!notice || jcoIsStandalone()) return;
+
+    /* Do not repeatedly interrupt someone who explicitly dismissed it. */
+    try{
+      if(localStorage.getItem(JCO_INSTALL_DISMISSED) === "true") return;
+    }catch(e){}
+
+    notice.classList.add("show");
+  }
+
+  function jcoHideInstallNotice(remember){
+    const notice = jcoNotice();
+    if(notice) notice.classList.remove("show");
+    if(remember){
+      try{ localStorage.setItem(JCO_INSTALL_DISMISSED,"true"); }catch(e){}
+    }
+  }
+
+  window.addEventListener("beforeinstallprompt", function(event){
+    event.preventDefault();
+    jcoDeferredInstallPrompt = event;
+    jcoShowInstallNotice();
+  });
+
+  window.addEventListener("appinstalled", function(){
+    jcoDeferredInstallPrompt = null;
+    jcoHideInstallNotice(true);
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    const installNow = document.getElementById("jcoInstallNow");
+    const installLater = document.getElementById("jcoInstallLater");
+    const installClose = document.getElementById("jcoInstallClose");
+
+    if(installNow){
+      installNow.addEventListener("click", async function(){
+        if(!jcoDeferredInstallPrompt){
+          jcoHideInstallNotice(false);
+          return;
+        }
+
+        try{
+          const promptEvent = jcoDeferredInstallPrompt;
+          jcoDeferredInstallPrompt = null;
+          await promptEvent.prompt();
+          await promptEvent.userChoice;
+        }catch(error){
+          console.warn("Install prompt was not completed:", error);
+        }finally{
+          jcoHideInstallNotice(false);
+        }
+      });
+    }
+
+    if(installLater){
+      installLater.addEventListener("click", function(){
+        jcoHideInstallNotice(true);
+      });
+    }
+
+    if(installClose){
+      installClose.addEventListener("click", function(){
+        jcoHideInstallNotice(true);
+      });
+    }
+  });
+})();
+</script>
+
+</body></html>
