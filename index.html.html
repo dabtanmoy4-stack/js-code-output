@@ -1639,6 +1639,42 @@ html.dark .thumbnail-card {
 /* Tighten the space between the top bar and the hero content */
 .premium-hero{padding-top:0!important;align-items:start!important;}
 </style>
+
+<style id="js-template-gallery-hero-cta">
+#landingPage .premium-template-gallery-cta-wrap{
+  display:block!important; position:relative; width:min(100%,560px); max-width:560px;
+  margin:18px 0 0!important; clear:both; z-index:5;
+}
+#landingPage .premium-template-gallery-cta{
+  position:relative; isolation:isolate; display:flex; align-items:center; justify-content:center;
+  gap:14px; width:100%; min-height:82px; box-sizing:border-box; padding:20px 26px;
+  overflow:hidden; border:1px solid rgba(191,150,64,.78); border-radius:20px;
+  background:linear-gradient(110deg,#fff 0%,#fff0f6 23%,#e0f4ff 45%,#e8ffef 67%,#e7f3ff 100%);
+  color:#b88a2d!important; text-decoration:none!important; font-size:clamp(18px,2vw,23px);
+  font-weight:900; letter-spacing:.055em; text-align:center;
+  box-shadow:0 12px 28px rgba(210,177,112,.18),inset 0 1px 0 rgba(255,255,255,.96);
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+  animation:jsGalleryCtaFloat 3.8s ease-in-out infinite;
+}
+#landingPage .premium-template-gallery-cta::before{
+  content:""; position:absolute; z-index:-1; inset:-40% auto -40% -45%; width:35%;
+  transform:skewX(-22deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
+  animation:jsGalleryCtaShimmer 3.2s ease-in-out infinite;
+}
+#landingPage .premium-template-gallery-cta::after{
+  content:""; position:absolute; inset:4px; border:1px solid rgba(255,255,255,.82);
+  border-radius:15px; pointer-events:none;
+}
+#landingPage .gallery-cta-spark{color:#c69a3d;font-size:25px;animation:jsGallerySpark 2s ease-in-out infinite;}
+#landingPage .gallery-cta-arrow{font-size:25px;transition:transform .25s ease;color:#c69a3d;}
+#landingPage .premium-template-gallery-cta:hover{transform:translateY(-3px) scale(1.01);border-color:#d2ac58;box-shadow:0 18px 38px rgba(210,177,112,.27),0 0 24px rgba(255,231,173,.45);}
+#landingPage .premium-template-gallery-cta:hover .gallery-cta-arrow{transform:translate(3px,-3px);}
+@keyframes jsGalleryCtaFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes jsGalleryCtaShimmer{0%,25%{left:-45%}70%,100%{left:130%}}
+@keyframes jsGallerySpark{0%,100%{opacity:.72;transform:scale(.9) rotate(-8deg)}50%{opacity:1;transform:scale(1.15) rotate(8deg)}}
+@media(max-width:600px){#landingPage .premium-template-gallery-cta-wrap{width:100%;margin-top:14px!important}#landingPage .premium-template-gallery-cta{min-height:72px;padding:17px 14px;border-radius:16px;font-size:17px;gap:10px}}
+@media(prefers-reduced-motion:reduce){#landingPage .premium-template-gallery-cta,#landingPage .premium-template-gallery-cta::before,#landingPage .gallery-cta-spark{animation:none!important}}
+</style>
 </head>
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -2094,6 +2130,12 @@ html.dark .thumbnail-card {
         <div class="premium-actions">
           <button type="button" class="primary-btn premium-primary start-building-btn" onclick="startBuilding(event)">🚀 Get Started Free <i class="fa-solid fa-arrow-right ml-2"></i></button>
           <a class="premium-mini" href="js-mini-browser.html"><span>●</span><span>Open JS mini.Browser</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+        <div class="premium-template-gallery-cta-wrap">
+          <a class="premium-template-gallery-cta" href="templet.html" aria-label="Open JS Template Gallery">
+            <span class="gallery-cta-title"><span class="gallery-cta-main-text">JS Template Gallery</span><span class="gallery-cta-visit-now">Visit Now</span></span>
+            <span class="gallery-cta-arrow" aria-hidden="true">↗</span>
+          </a>
         </div>
 
 
@@ -3551,7 +3593,7 @@ html,body{height:100%;background:#dde2ec;font-family:&quot;Inter&quot;,&quot;Seg
 #stage{position:relative;width:min(100vw,100vh);aspect-ratio:1/1;margin:auto;top:50%;transform:translateY(-50%);background:#fff;overflow:hidden;container-type:inline-size}
 #stage:before{content:&quot;&quot;;position:absolute;inset:0 0 auto 0;height:1.4cqw;background:linear-gradient(90deg,var(--blue),var(--sky),var(--vio),var(--pink),var(--org))}
 .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7cqw;opacity:0;transform:scale(.97);transition:opacity .4s,transform .4s;pointer-events:none}
-.scene.on{opacity:1;transform:none}
+.scene.on{opacity:1;transform:none;pointer-events:auto}
 .logo{height:34cqw;border-radius:50%;box-shadow:0 2cqw 7cqw rgba(29,74,157,.2)}
 h1{font-size:10.5cqw;line-height:1.04;font-weight:800;letter-spacing:-.035em}
 h2{font-size:6.8cqw;line-height:1.08;font-weight:800;letter-spacing:-.03em}
@@ -3771,7 +3813,7 @@ a.btn{display:inline-block;text-decoration:none;cursor:pointer}
   &lt;div class=&quot;scene&quot; id=&quot;s7&quot;&gt;
     &lt;img class=&quot;logo&quot; src=&quot;logo.jpeg&quot; alt=&quot;JS Code Output logo&quot;&gt;
     &lt;h2 style=&quot;margin-top:5cqw&quot;&gt;Start coding with&lt;br&gt;&lt;span class=&quot;g&quot;&gt;JS Template Gallery&lt;/span&gt;&lt;/h2&gt;
-    &lt;a class=&quot;btn&quot; href=&quot;template.html&quot;&gt;Try it free&lt;/a&gt;
+    &lt;div class=&quot;btn&quot; style=&quot;position:relative;z-index:1000;cursor:default;&quot;&gt;Explore Now&lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -3814,7 +3856,7 @@ play();setInterval(play,total);
           scrolling="no"
           allow="autoplay"
           style="width:100%;height:100%;min-height:450px;border:0;display:block;background:transparent;border-radius:22px;"
-        ></iframe>
+         sandbox="allow-scripts allow-top-navigation-by-user-activation"></iframe>
       </div>
     </section>
 
@@ -4510,5 +4552,190 @@ document.addEventListener("DOMContentLoaded", function(){
       border:3px solid #fff;
     }
 </style>
+<script>
+(function(){
+  window.addEventListener('message', function(event) {
+    var frame = document.querySelector('iframe[title="JS Template Gallery announcement animation"]');
+    if (!frame || event.source !== frame.contentWindow) return;
+    if (event.origin !== window.location.origin && event.origin !== 'null') return;
+    if (event.data !== 'JS_CODE_OUTPUT_OPEN_TEMPLATES' &&
+        !(event.data && event.data.type === 'JS_CODE_OUTPUT_NAVIGATE' && event.data.path === 'templet.html')) return;
+    window.location.assign(new URL('/templet.html', window.location.origin).href);
+  });
+})();
+</script>
+
+<style id="js-template-gallery-polish-final">
+/* Refined gallery CTA: boxier shape, richer pastel gradient and gold shimmer */
+#landingPage .premium-template-gallery-cta-wrap{
+  display:block!important; position:relative!important; width:min(100%,560px)!important;
+  max-width:560px!important; margin:18px 0 0!important; clear:both!important;
+  align-self:flex-start!important; order:20!important;
+}
+#landingPage .premium-template-gallery-cta{
+  display:flex!important; width:100%!important; min-height:78px!important;
+  box-sizing:border-box!important; padding:19px 24px!important; gap:12px!important;
+  border:1.5px solid #d8b45a!important; border-radius:12px!important;
+  background:linear-gradient(105deg,#ffffff 0%,#fff0f5 22%,#dff3ff 44%,#e5ffed 66%,#dceeff 84%,#fffaf0 100%)!important;
+  color:#b58a2b!important; text-shadow:0 0 10px rgba(212,170,70,.28);
+  box-shadow:0 10px 26px rgba(187,151,68,.18),inset 0 1px 0 #fff;
+  animation:jsGalleryGoldPulse 3s ease-in-out infinite!important;
+  overflow:hidden!important; isolation:isolate!important;
+}
+#landingPage .premium-template-gallery-cta::before{
+ content:""!important; position:absolute!important; z-index:-1!important; top:-35%!important; bottom:-35%!important;
+ left:-55%!important; width:36%!important; transform:skewX(-20deg)!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.98),rgba(255,220,125,.5),transparent)!important;
+ animation:jsGalleryGoldSweep 3s ease-in-out infinite!important;
+}
+#landingPage .premium-template-gallery-cta::after{
+ content:""!important; position:absolute!important; inset:4px!important;
+ border:1px solid rgba(255,255,255,.9)!important; border-radius:8px!important; pointer-events:none!important;
+}
+#landingPage .gallery-cta-arrow{color:#bd9237!important;font-size:23px!important;transition:transform .25s ease}
+#landingPage .premium-template-gallery-cta:hover{transform:translateY(-2px)!important;box-shadow:0 15px 32px rgba(187,151,68,.27),0 0 20px rgba(255,224,143,.35)!important}
+#landingPage .premium-template-gallery-cta:hover .gallery-cta-arrow{transform:translate(3px,-2px)}
+@keyframes jsGalleryGoldPulse{0%,100%{border-color:#d8b45a;box-shadow:0 10px 26px rgba(187,151,68,.18),inset 0 1px 0 #fff}50%{border-color:#f0d58a;box-shadow:0 12px 30px rgba(187,151,68,.28),0 0 16px rgba(230,194,94,.2),inset 0 1px 0 #fff}}
+@keyframes jsGalleryGoldSweep{0%,20%{left:-55%}75%,100%{left:135%}}
+@media(max-width:600px){
+ #landingPage .premium-template-gallery-cta-wrap{width:100%!important;max-width:100%!important;margin:14px 0 0!important;order:20!important;}
+ #landingPage .premium-template-gallery-cta{min-height:70px!important;padding:16px 13px!important;border-radius:11px!important;font-size:17px!important;gap:8px!important;}
+ #landingPage .premium-actions{order:10!important;}
+}
+@media(prefers-reduced-motion:reduce){#landingPage .premium-template-gallery-cta,#landingPage .premium-template-gallery-cta::before{animation:none!important}}
+</style>
+
+
+<style id="js-template-gallery-responsive-final-fix">
+/* Desktop: make the gallery CTA a neat, clearly box-shaped card. */
+@media (min-width:701px){
+  #landingPage .premium-template-gallery-cta-wrap{width:440px!important;max-width:100%!important;margin-top:16px!important;}
+  #landingPage .premium-template-gallery-cta{min-height:74px!important;padding:17px 22px!important;border-radius:10px!important;}
+}
+/* Mobile: explicitly restore both original hero buttons and place the gallery CTA immediately below them. */
+@media (max-width:700px){
+  #landingPage .premium-copy{display:contents!important;}
+  #landingPage .premium-copy > .premium-title{order:1!important;}
+  #landingPage .premium-copy > p{order:2!important;}
+  #landingPage .premium-copy > .premium-actions{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;order:3!important;width:100%!important;flex-wrap:wrap!important;gap:10px!important;margin-top:20px!important;z-index:10!important;}
+  #landingPage .premium-actions .premium-primary{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;max-width:100%!important;}
+  #landingPage .premium-actions .premium-mini{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;max-width:100%!important;}
+  #landingPage .premium-copy > .premium-template-gallery-cta-wrap{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;order:4!important;width:100%!important;max-width:100%!important;margin:12px 0 0!important;z-index:9!important;}
+  #landingPage .premium-template-gallery-cta{display:flex!important;width:100%!important;min-height:68px!important;padding:15px 12px!important;font-size:16px!important;border-radius:10px!important;}
+  #landingPage .premium-stage.new-publish-animation{order:5!important;}
+  #landingPage .premium-copy > .hero-template-section{order:6!important;}
+  #landingPage .premium-copy > .premium-stats{order:7!important;}
+}
+</style>
+
+
+<style id="js-template-gallery-deep-multicolor-border">
+/* Deep animated multicolour frame for the JS Template Gallery card */
+#landingPage .premium-template-gallery-cta-wrap{
+  isolation:isolate!important; padding:4px!important; box-sizing:border-box!important;
+  border-radius:24px!important;
+  background:conic-gradient(from var(--gallery-border-angle,0deg),#ffd76a,#ff72b6,#b16cff,#55c8ff,#69f0c0,#fff0a3,#ffd76a)!important;
+  animation:galleryBorderTurn 5s linear infinite, galleryBorderGlow 2.8s ease-in-out infinite!important;
+  box-shadow:0 0 10px rgba(255,190,75,.35),0 0 22px rgba(122,117,255,.2),0 0 34px rgba(80,210,255,.13)!important;
+}
+#landingPage .premium-template-gallery-cta{
+  width:100%!important; border:2px solid rgba(255,255,255,.92)!important;
+  border-radius:20px!important;
+  background:linear-gradient(115deg,#fff 0%,#fff0f6 22%,#e2f5ff 43%,#eaffef 64%,#e8f0ff 82%,#fff8df 100%)!important;
+  box-shadow:inset 0 1px 0 #fff, inset 0 -3px 9px rgba(197,164,89,.1),0 4px 12px rgba(35,28,50,.1)!important;
+}
+#landingPage .premium-template-gallery-cta::before{
+  width:45%!important; left:-55%!important; z-index:0!important; opacity:.85!important;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.98),rgba(255,224,143,.65),transparent)!important;
+  animation:jsGalleryCtaShimmer 2.3s ease-in-out infinite!important;
+}
+#landingPage .premium-template-gallery-cta span{position:relative;z-index:2;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+#landingPage .premium-template-gallery-cta:hover{
+  box-shadow:inset 0 1px 0 #fff,0 0 12px rgba(255,214,106,.5),0 0 25px rgba(177,108,255,.25),0 0 34px rgba(85,200,255,.25)!important;
+}
+@property --gallery-border-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes galleryBorderTurn{to{--gallery-border-angle:360deg}}
+@keyframes galleryBorderGlow{0%,100%{filter:saturate(1);box-shadow:0 0 9px rgba(255,190,75,.3),0 0 18px rgba(122,117,255,.17)}50%{filter:saturate(1.3);box-shadow:0 0 14px rgba(255,190,75,.48),0 0 28px rgba(122,117,255,.28),0 0 35px rgba(80,210,255,.18)}}
+@media(max-width:600px){#landingPage .premium-template-gallery-cta-wrap{border-radius:20px!important;padding:3px!important}#landingPage .premium-template-gallery-cta{border-radius:17px!important}}
+@media(prefers-reduced-motion:reduce){#landingPage .premium-template-gallery-cta-wrap{animation:none!important}}
+</style>
+
+
+<style id="js-template-gallery-compact-visit-now">
+/* Compact gallery button with a small Visit Now line inside the card. */
+#landingPage .premium-template-gallery-cta-wrap{
+  width:min(100%,420px)!important;max-width:420px!important;margin-top:12px!important;
+  padding:3px!important;border-radius:17px!important;
+}
+#landingPage .premium-template-gallery-cta{
+  min-height:58px!important;padding:9px 16px!important;gap:10px!important;
+  border-radius:14px!important;font-size:17px!important;line-height:1.15!important;
+}
+#landingPage .premium-template-gallery-cta .gallery-cta-title{
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:3px!important;min-width:0!important;
+}
+#landingPage .premium-template-gallery-cta .gallery-cta-main-text{
+  display:block!important;font-size:17px!important;font-weight:900!important;line-height:1.15!important;
+}
+#landingPage .premium-template-gallery-cta .gallery-cta-visit-now{
+  display:block!important;font-size:10px!important;font-weight:700!important;
+  line-height:1!important;letter-spacing:.12em!important;text-transform:uppercase!important;
+  color:#78602c!important;text-shadow:none!important;opacity:.9!important;
+}
+#landingPage .premium-template-gallery-cta .gallery-cta-arrow{font-size:20px!important;flex-shrink:0!important}
+@media(max-width:700px){
+ #landingPage .premium-template-gallery-cta-wrap{width:100%!important;max-width:360px!important;margin:10px 0 0!important;padding:3px!important;border-radius:15px!important}
+ #landingPage .premium-template-gallery-cta{width:100%!important;min-height:54px!important;padding:8px 12px!important;border-radius:12px!important;font-size:16px!important;gap:8px!important}
+ #landingPage .premium-template-gallery-cta .gallery-cta-main-text{font-size:16px!important}
+ #landingPage .premium-template-gallery-cta .gallery-cta-visit-now{font-size:9px!important}
+ #landingPage .premium-template-gallery-cta .gallery-cta-arrow{font-size:18px!important}
+}
+</style>
+
+
+<style id="js-template-gallery-narrower-taller-final">
+/* Final size adjustment: narrower footprint and a little more vertical height. */
+#landingPage .premium-template-gallery-cta-wrap{
+  width:min(100%,340px)!important;max-width:340px!important;
+  margin-top:14px!important;
+}
+#landingPage .premium-template-gallery-cta{
+  min-height:82px!important;padding:15px 18px!important;
+}
+@media(max-width:700px){
+  #landingPage .premium-template-gallery-cta-wrap{width:min(100%,300px)!important;max-width:300px!important;margin:12px auto 0!important;}
+  #landingPage .premium-template-gallery-cta{min-height:76px!important;padding:13px 14px!important;}
+}
+</style>
+
+
+
+<style id="js-template-gallery-responsive-width-final">
+/* Desktop: a little wider. Phone: narrower. Keep the current height unchanged. */
+@media (min-width:701px){
+  #landingPage .premium-template-gallery-cta-wrap{width:min(100%,400px)!important;max-width:400px!important;}
+}
+@media (max-width:700px){
+  #landingPage .premium-template-gallery-cta-wrap{width:min(100%,180px)!important;max-width:180px!important;margin-left:auto!important;margin-right:auto!important;}
+}
+</style>
+
+
+<style id="js-template-gallery-phone-width-enforced">
+/* Enforce a genuinely narrower gallery button on phones only. */
+@media screen and (max-width:700px){
+  #landingPage .premium-template-gallery-cta-wrap{
+    box-sizing:border-box!important;width:90px!important;max-width:90px!important;min-width:0!important;
+    margin-left:auto!important;margin-right:auto!important;
+  }
+  #landingPage .premium-template-gallery-cta{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+  }
+  #landingPage .premium-template-gallery-cta .gallery-cta-title{min-width:0!important;max-width:100%!important;}
+  #landingPage .premium-template-gallery-cta .gallery-cta-main-text{overflow-wrap:anywhere!important;text-align:center!important;}
+}
+</style>
+
 </body>
 </html>
