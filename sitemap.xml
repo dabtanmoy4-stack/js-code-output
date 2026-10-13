@@ -224,5 +224,10 @@
 
 <url>
         <loc>https://jscodoutput.in/javascript.html</loc>
- </url>    
+ </url>   
+
+<url>
+        <loc>https://jscodoutput.in/html-runner.html</loc>
+ </url>   
+    
 </urlset>
