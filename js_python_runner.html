@@ -82,6 +82,22 @@ header {
   font-size:clamp(17px,3vw,23px);
   font-weight:800;
   color:var(--gold);
+  white-space:nowrap;
+}
+.brand-js {
+  display:inline-block;
+  color:#ff4fd8;
+  background:linear-gradient(90deg,#ff3d81,#ffb347,#fff16a,#42f5c5,#45a3ff,#b66bff,#ff3d81);
+  background-size:300% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:jsRainbowFlow 3.5s linear infinite;
+  filter:drop-shadow(0 0 5px #a66bff40);
+}
+@keyframes jsRainbowFlow {
+  0% { background-position:0% 50%; }
+  100% { background-position:300% 50%; }
 }
 
 .spacer { flex:1; }
@@ -558,6 +574,37 @@ body.light .cm-variable-2 { color:#006b7a!important; }
 body.light .cm-builtin { color:#8a4b00!important; }
 body.light .cm-operator,
 body.light .cm-variable { color:#111111!important; }
+
+
+/* Responsive refinements for desktop, tablet and phones; editor styling is untouched. */
+header { flex-wrap:wrap; }
+@media (max-width:650px) {
+  header { min-height:58px; padding:9px 10px; gap:8px; }
+  .brand { font-size:clamp(14px,4vw,18px); }
+  .spacer { min-width:4px; }
+  .account-btn { max-width:45vw; }
+  .account-btn.signed-in { max-width:48vw; }
+  .account-btn.signed-in #accountLabel { max-width:clamp(55px,24vw,135px); }
+  .toolbar { gap:6px; }
+  .toolbar .btn { min-height:36px; }
+  .workspace { min-height:calc(100dvh - 150px); }
+  .editor-pane { min-height:52vh; }
+  .editor-wrap,.CodeMirror { min-height:52vh; }
+  .output { min-height:180px; }
+  .status { flex-wrap:wrap; }
+}
+@media (max-width:380px) {
+  .logo { width:28px; }
+  .brand { font-size:13px; }
+  #themeToggle { min-width:34px; }
+  .account-btn { gap:5px; }
+  .account-btn #accountAvatar { width:22px;height:22px; }
+  .toolbar .btn { font-size:10px; padding:7px 6px; }
+  .workspace { grid-template-columns:88px minmax(0,1fr); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .brand-js { animation-duration:12s; }
+}
 
 </style>
 </head>
@@ -1438,18 +1485,21 @@ function renderAccount(user){
   const label=$('accountLabel'),avatar=$('accountAvatar'),button=$('accountBtn');
   avatar.replaceChildren();
   if(user){
-    const displayName=(user.displayName||'').trim();
-    label.textContent=displayName||user.email||'Google Account';
-    if(user.photoURL){
+    const googleProfile=(user.providerData||[]).find(p=>p.providerId==='google.com')||{};
+    const displayName=(user.displayName||googleProfile.displayName||'').trim();
+    const email=user.email||googleProfile.email||'';
+    const photoURL=user.photoURL||googleProfile.photoURL||'';
+    label.textContent=displayName||email||'Google Account';
+    if(photoURL){
       const img=document.createElement('img');
-      img.alt=''; img.referrerPolicy='no-referrer'; img.src=user.photoURL;
-      img.onerror=()=>{avatar.textContent=(displayName||user.email||'G').charAt(0).toUpperCase();};
+      img.alt=''; img.referrerPolicy='no-referrer'; img.src=photoURL;
+      img.onerror=()=>{avatar.textContent=(displayName||email||'G').charAt(0).toUpperCase();};
       avatar.appendChild(img);
     }else{
-      avatar.textContent=(displayName||user.email||'G').charAt(0).toUpperCase();
+      avatar.textContent=(displayName||email||'G').charAt(0).toUpperCase();
     }
-    button.title=[displayName,user.email].filter(Boolean).join(' · ')||'Google account';
-    button.setAttribute('aria-label','Signed in as '+(displayName||user.email||'Google account'));
+    button.title=[displayName,email].filter(Boolean).join(' · ')||'Google account';
+    button.setAttribute('aria-label','Signed in as '+(displayName||email||'Google account'));
     button.classList.add('signed-in');
   }else{
     label.textContent='Sign in'; avatar.textContent='♙';
