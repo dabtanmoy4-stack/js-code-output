@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#160d2c">
+<title>Choose Your Country | JS CODE OUTPUT</title>
+<style>
+:root{--bg:#f3eee4;--panel:#fffdf8;--panel2:#f8f1e4;--gold:#a77b2e;--gold2:#76521c;--purple:#4b3768;--text:#211a28;--muted:#706779;--line:#d8c7a3}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(135deg,#f7f2e8,#ece2d0);display:flex;align-items:center;justify-content:center;padding:24px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:14px;border:1px solid rgba(167,123,46,.22);pointer-events:none}
+.page{width:min(100%,470px);position:relative;z-index:1}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 22px}
+.brand img{width:48px;height:48px;object-fit:contain;border-radius:8px}
+.brand span{font-size:17px;font-weight:850;letter-spacing:1.5px}
+.brand b{color:var(--gold2)}
+.card{padding:30px;border:1px solid var(--line);border-radius:8px;background:var(--panel);box-shadow:0 18px 42px rgba(54,38,16,.10);position:relative}
+.card:before{content:"";position:absolute;inset:6px;border:1px solid rgba(167,123,46,.15);pointer-events:none;border-radius:4px}
+h1{font-size:27px;line-height:1.2;text-align:center;margin:0 0 8px;letter-spacing:.1px;color:#342342}
+.subtitle{text-align:center;color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 26px}
+.field{margin-top:18px}
+label{display:block;font-size:14px;font-weight:700;margin-bottom:9px;color:#4b3768}
+input{width:100%;height:49px;border:1px solid #d6c7ab;border-radius:5px;background:#fffefa;color:var(--text);font:inherit;font-family:Arial,sans-serif;padding:0 14px;outline:none;transition:border .2s,box-shadow .2s}
+input::placeholder{color:#978c9a}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(167,123,46,.12)}
+.country-wrap{position:relative}
+.searchbox{position:relative}
+.searchbox input{padding-right:42px}
+.search-icon{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:19px;pointer-events:none}
+..country-list{margin-top:8px;max-height:210px;overflow-y:auto;border:1px solid #d6c7ab;border-radius:5px;background:#fffefa;scrollbar-width:thin;scrollbar-color:#b69a67 #f4ecdd}
+.country-option{width:100%;border:0;background:transparent;color:#30263a;text-align:left;padding:11px 13px;font:inherit;font-family:Arial,sans-serif;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.country-option:hover,.country-option:focus{background:#f3ead8;outline:none}
+.country-option[aria-selected="true"]{background:#f5ecd9;color:var(--gold2)}
+.country-option .check{color:var(--gold);font-weight:900}
+.selected{margin-top:9px;min-height:18px;color:var(--gold2);font-size:12px}
+.continue-btn{width:100%;height:50px;margin-top:10px;border:1px solid #8c6425;border-radius:5px;background:linear-gradient(135deg,#8e682b,#b18a46 52%,#8e682b);color:#fffdf7;font-family:Georgia,"Times New Roman",serif;font-size:16px;font-weight:700;letter-spacing:.3px;cursor:pointer;box-shadow:0 5px 12px rgba(89,62,20,.13);transition:filter .2s,transform .2s,opacity .2s}
+.continue-btn span{margin-left:7px;font-family:Arial,sans-serif}
+.continue-btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.continue-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+.note{margin:20px 0 0;color:#84798a;font-size:12px;text-align:center;line-height:1.5}
+.error{min-height:17px;color:#a52e3b;font-size:12px;margin-top:8px}
+@media(max-width:480px){body{padding:16px}.card{padding:24px 19px}h1{font-size:24px}.brand span{font-size:15px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="brand">
+    <img src="logo.jpeg" alt="JS CODE OUTPUT logo">
+    <span><b>JS CODE OUTPUT</b></span>
+  </div>
+  <section class="card" aria-labelledby="heading">
+    <h1 id="heading">Let’s get to know you</h1>
+    <p class="subtitle">Enter your details and choose your country to continue.</p>
+    <form id="countryForm" autocomplete="on">
+      <div class="field">
+        <label for="fullName">Your name</label>
+        <input id="fullName" name="name" type="text" placeholder="Enter your name" autocomplete="name" required maxlength="100">
+      </div>
+      <div class="field">
+        <label for="age">Your age</label>
+        <input id="age" name="age" type="number" placeholder="Enter your age" min="1" max="120" inputmode="numeric" required>
+      </div>
+      <div class="field">
+        <label for="countrySearch">Your country</label>
+        <div class="country-wrap">
+          <div class="searchbox">
+            <input id="countrySearch" type="search" placeholder="Search or select a country" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="countryList" aria-autocomplete="list" required>
+            <span class="search-icon" aria-hidden="true">⌕</span>
+          </div>
+          <div class="country-list" id="countryList" role="listbox" aria-label="Countries"></div>
+          <div class="selected" id="selectedCountry" aria-live="polite">Select your country from the list.</div>
+          <input id="countryCode" name="countryCode" type="hidden" required>
+        </div>
+      </div>
+      <div class="error" id="error" role="alert"></div>
+      <button class="continue-btn" id="continueBtn" type="submit" disabled>Continue <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="note">Your country helps determine the appropriate payment option.</p>
+  </section>
+</main>
+<script>
+const countries = [
+["Afghanistan","AF"],["Albania","AL"],["Algeria","DZ"],["Andorra","AD"],["Angola","AO"],["Antigua and Barbuda","AG"],["Argentina","AR"],["Armenia","AM"],["Australia","AU"],["Austria","AT"],["Azerbaijan","AZ"],
+["Bahamas","BS"],["Bahrain","BH"],["Bangladesh","BD"],["Barbados","BB"],["Belarus","BY"],["Belgium","BE"],["Belize","BZ"],["Benin","BJ"],["Bhutan","BT"],["Bolivia","BO"],["Bosnia and Herzegovina","BA"],["Botswana","BW"],["Brazil","BR"],["Brunei","BN"],["Bulgaria","BG"],["Burkina Faso","BF"],["Burundi","BI"],
+["Cabo Verde","CV"],["Cambodia","KH"],["Cameroon","CM"],["Canada","CA"],["Central African Republic","CF"],["Chad","TD"],["Chile","CL"],["China","CN"],["Colombia","CO"],["Comoros","KM"],["Congo (Republic)","CG"],["Costa Rica","CR"],["Côte d’Ivoire","CI"],["Croatia","HR"],["Cuba","CU"],["Cyprus","CY"],["Czechia","CZ"],
+["Democratic Republic of the Congo","CD"],["Denmark","DK"],["Djibouti","DJ"],["Dominica","DM"],["Dominican Republic","DO"],
+["Ecuador","EC"],["Egypt","EG"],["El Salvador","SV"],["Equatorial Guinea","GQ"],["Eritrea","ER"],["Estonia","EE"],["Eswatini","SZ"],["Ethiopia","ET"],
+["Fiji","FJ"],["Finland","FI"],["France","FR"],
+["Gabon","GA"],["Gambia","GM"],["Georgia","GE"],["Germany","DE"],["Ghana","GH"],["Greece","GR"],["Grenada","GD"],["Guatemala","GT"],["Guinea","GN"],["Guinea-Bissau","GW"],["Guyana","GY"],
+["Haiti","HT"],["Honduras","HN"],["Hungary","HU"],
+["Iceland","IS"],["India","IN"],["Indonesia","ID"],["Iran","IR"],["Iraq","IQ"],["Ireland","IE"],["Israel","IL"],["Italy","IT"],
+["Jamaica","JM"],["Japan","JP"],["Jordan","JO"],
+["Kazakhstan","KZ"],["Kenya","KE"],["Kiribati","KI"],["Kosovo","XK"],["Kuwait","KW"],["Kyrgyzstan","KG"],
+["Laos","LA"],["Latvia","LV"],["Lebanon","LB"],["Lesotho","LS"],["Liberia","LR"],["Libya","LY"],["Liechtenstein","LI"],["Lithuania","LT"],["Luxembourg","LU"],
+["Madagascar","MG"],["Malawi","MW"],["Malaysia","MY"],["Maldives","MV"],["Mali","ML"],["Malta","MT"],["Marshall Islands","MH"],["Mauritania","MR"],["Mauritius","MU"],["Mexico","MX"],["Micronesia","FM"],["Moldova","MD"],["Monaco","MC"],["Mongolia","MN"],["Montenegro","ME"],["Morocco","MA"],["Mozambique","MZ"],["Myanmar","MM"],
+["Namibia","NA"],["Nauru","NR"],["Nepal","NP"],["Netherlands","NL"],["New Zealand","NZ"],["Nicaragua","NI"],["Niger","NE"],["Nigeria","NG"],["North Korea","KP"],["North Macedonia","MK"],["Norway","NO"],
+["Oman","OM"],
+["Pakistan","PK"],["Palau","PW"],["Palestine","PS"],["Panama","PA"],["Papua New Guinea","PG"],["Paraguay","PY"],["Peru","PE"],["Philippines","PH"],["Poland","PL"],["Portugal","PT"],
+["Qatar","QA"],
+["Romania","RO"],["Russia","RU"],["Rwanda","RW"],
+["Saint Kitts and Nevis","KN"],["Saint Lucia","LC"],["Saint Vincent and the Grenadines","VC"],["Samoa","WS"],["San Marino","SM"],["São Tomé and Príncipe","ST"],["Saudi Arabia","SA"],["Senegal","SN"],["Serbia","RS"],["Seychelles","SC"],["Sierra Leone","SL"],["Singapore","SG"],["Slovakia","SK"],["Slovenia","SI"],["Solomon Islands","SB"],["Somalia","SO"],["South Africa","ZA"],["South Korea","KR"],["South Sudan","SS"],["Spain","ES"],["Sri Lanka","LK"],["Sudan","SD"],["Suriname","SR"],["Sweden","SE"],["Switzerland","CH"],["Syria","SY"],
+["Taiwan","TW"],["Tajikistan","TJ"],["Tanzania","TZ"],["Thailand","TH"],["Timor-Leste","TL"],["Togo","TG"],["Tonga","TO"],["Trinidad and Tobago","TT"],["Tunisia","TN"],["Türkiye","TR"],["Turkmenistan","TM"],["Tuvalu","TV"],
+["Uganda","UG"],["Ukraine","UA"],["United Arab Emirates","AE"],["United Kingdom","GB"],["United States","US"],["Uruguay","UY"],["Uzbekistan","UZ"],
+["Vanuatu","VU"],["Vatican City","VA"],["Venezuela","VE"],["Vietnam","VN"],
+["Yemen","YE"],
+["Zambia","ZM"],["Zimbabwe","ZW"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+const form=document.getElementById('countryForm');
+const search=document.getElementById('countrySearch');
+const list=document.getElementById('countryList');
+const selected=document.getElementById('selectedCountry');
+const codeInput=document.getElementById('countryCode');
+const error=document.getElementById('error');
+const continueBtn=document.getElementById('continueBtn');
+const nameInput=document.getElementById('fullName');
+const ageInput=document.getElementById('age');
+let chosen=null;
+function updateContinue(){
+ continueBtn.disabled=!(nameInput.value.trim().length>0 && ageInput.value!=='' && ageInput.validity.valid && chosen!==null);
+}
+nameInput.addEventListener('input',updateContinue);
+ageInput.addEventListener('input',updateContinue);
+function renderCountries(filter=''){
+ const q=filter.trim().toLocaleLowerCase();
+ const matches=countries.filter(c=>c[0].toLocaleLowerCase().includes(q)||c[1].toLowerCase()===q);
+ list.replaceChildren();
+ if(!matches.length){
+   const empty=document.createElement('div');empty.className='country-option';empty.textContent='No country found';empty.setAttribute('aria-disabled','true');list.append(empty);return;
+ }
+ matches.forEach(([name,code])=>{
+   const option=document.createElement('button');option.type='button';option.className='country-option';option.setAttribute('role','option');option.setAttribute('aria-selected',String(chosen?.[1]===code));
+   const label=document.createElement('span');label.textContent=name;option.append(label);
+   if(chosen?.[1]===code){const check=document.createElement('span');check.className='check';check.textContent='✓';option.append(check);}
+   option.addEventListener('click',()=>selectCountry(name,code));
+   list.append(option);
+ });
+}
+function selectCountry(name,code){
+ chosen=[name,code];search.value=name;codeInput.value=code;selected.textContent='Selected: '+name;error.textContent='';renderCountries(search.value);updateContinue();
+}
+search.addEventListener('input',()=>{chosen=null;codeInput.value='';selected.textContent='Choose a country from the results.';renderCountries(search.value);updateContinue();});
+search.addEventListener('focus',()=>renderCountries(search.value));
+form.addEventListener('submit',event=>{
+ event.preventDefault();
+ if(!form.reportValidity())return;
+ if(!chosen){error.textContent='Please select a country from the list.';search.focus();return;}
+ const details={name:document.getElementById('fullName').value.trim(),age:Number(document.getElementById('age').value),country:chosen[0],countryCode:chosen[1],paymentProvider:chosen[1]==='IN'?'razorpay':'paypal'};
+ // Connect this payload to your trusted backend before initiating payment.
+ // Never trust a browser-supplied country/paymentProvider as final payment authorization.
+ window.dispatchEvent(new CustomEvent('jsco:user-details-ready',{detail:details}));
+ error.textContent='Details ready. Connect this form to your backend to continue to payment.';
+ console.log('User details ready for backend:',details);
+});
+renderCountries();
+updateContinue();
+</script>
+</body>
+</html>
