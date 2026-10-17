@@ -1675,6 +1675,64 @@ html.dark .thumbnail-card {
 @media(max-width:600px){#landingPage .premium-template-gallery-cta-wrap{width:100%;margin-top:14px!important}#landingPage .premium-template-gallery-cta{min-height:72px;padding:17px 14px;border-radius:16px;font-size:17px;gap:10px}}
 @media(prefers-reduced-motion:reduce){#landingPage .premium-template-gallery-cta,#landingPage .premium-template-gallery-cta::before,#landingPage .gallery-cta-spark{animation:none!important}}
 </style>
+
+<style id="start-auth-popup-styles">
+#startAuthOverlay{
+  --sa-bg:#fff;--sa-surface:#fff;--sa-text:#1c2333;--sa-muted:#5d6678;
+  --sa-line:#d9dee8;--sa-brand:#1a73e8;--sa-gold:#a77b27;--sa-hover:#f8f5ed;
+  position:fixed;inset:0;z-index:100001;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(32,33,36,.35);backdrop-filter:blur(3px);
+}
+#startAuthOverlay.show{display:flex}
+#startAuthOverlay *{box-sizing:border-box}
+#startAuthOverlay .start-auth-modal{
+  position:relative;width:100%;max-width:400px;max-height:calc(100vh - 40px);overflow-y:auto;
+  background:var(--sa-surface);color:var(--sa-text);border:1px solid var(--sa-line);
+  border-radius:18px;padding:36px 28px 26px;box-shadow:0 24px 60px rgba(0,0,0,.18);
+  text-align:center;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  animation:startAuthPop .22s ease-out;
+}
+@keyframes startAuthPop{from{transform:translateY(12px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+#startAuthOverlay .start-auth-close{
+  position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:0;
+  background:transparent;color:var(--sa-muted);font-size:24px;cursor:pointer;z-index:2;
+}
+#startAuthOverlay .start-auth-close:hover{background:var(--sa-hover)}
+#startAuthOverlay .start-auth-logo{width:64px;height:64px;border-radius:15px;object-fit:contain;display:block;margin:0 auto 18px}
+#startAuthOverlay h2{margin:0 0 8px;font-size:22px;letter-spacing:-.01em;line-height:1.4;font-weight:750}
+#startAuthOverlay .start-auth-js{background:linear-gradient(120deg,#4285f4 0%,#34a853 28%,#fbbc05 58%,#ea4335 85%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+#startAuthOverlay .start-auth-gold{color:var(--sa-gold);text-shadow:0 1px 0 rgba(167,123,39,.12)}
+#startAuthOverlay .start-auth-sub{margin:0 0 24px;color:var(--sa-muted);font-size:14.5px;line-height:1.5}
+#startAuthOverlay .start-auth-google,#startAuthOverlay .start-auth-guest{
+  width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:12px;
+  border-radius:23px;padding:10px 16px;font-family:"Roboto","Inter",system-ui,sans-serif;
+  font-size:14.5px;font-weight:500;cursor:pointer;transition:background .15s,box-shadow .15s;
+}
+#startAuthOverlay .start-auth-google{background:var(--sa-surface);color:var(--sa-text);border:1px solid #747775}
+#startAuthOverlay .start-auth-google:hover{box-shadow:0 1px 3px rgba(0,0,0,.18);background:var(--sa-hover)}
+#startAuthOverlay .start-auth-google:disabled,#startAuthOverlay .start-auth-guest:disabled{opacity:.7;cursor:progress}
+#startAuthOverlay .start-auth-google svg{width:20px;height:20px;flex:none}
+#startAuthOverlay .start-auth-guest{margin-top:10px;background:transparent;color:var(--sa-text);border:1px dashed #9aa1b0}
+#startAuthOverlay .start-auth-guest:hover{background:var(--sa-hover)}
+#startAuthOverlay .start-auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--sa-muted);font-size:13px}
+#startAuthOverlay .start-auth-divider:before,#startAuthOverlay .start-auth-divider:after{content:"";flex:1;height:1px;background:var(--sa-line)}
+#startAuthOverlay .start-auth-email{width:100%;border:1px solid var(--sa-line);background:transparent;color:var(--sa-text);border-radius:10px;padding:12px 14px;font-size:15px;margin-bottom:10px}
+#startAuthOverlay .start-auth-email:focus{outline:2px solid var(--sa-brand);border-color:transparent}
+#startAuthOverlay .start-auth-primary{width:100%;background:var(--sa-brand);color:#fff;border:0;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer}
+#startAuthOverlay .start-auth-primary:hover{background:#1557b0}
+#startAuthOverlay .start-auth-secure{display:flex;align-items:center;justify-content:center;gap:6px;margin:16px 0 0;font-size:12.5px;color:var(--sa-muted)}
+#startAuthOverlay .start-auth-terms{margin:20px 0 0;font-size:12.5px;color:var(--sa-muted);line-height:1.8}
+#startAuthOverlay .start-auth-link{color:var(--sa-gold);text-decoration:none;font-weight:600}
+#startAuthOverlay .start-auth-link:hover{text-decoration:underline}
+#startAuthOverlay .start-auth-status{min-height:18px;margin-top:12px;font-size:13px;color:var(--sa-muted);line-height:1.5}
+#startAuthOverlay .start-auth-status.error{color:#c62828}
+#startAuthOverlay .start-auth-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--sa-line);border-top-color:var(--sa-brand);border-radius:50%;animation:startAuthSpin .7s linear infinite;vertical-align:-2px;margin-right:7px}
+@keyframes startAuthSpin{to{transform:rotate(360deg)}}
+#startAuthOverlay button:focus-visible,#startAuthOverlay a:focus-visible,#startAuthOverlay input:focus-visible{outline:3px solid var(--sa-brand);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#startAuthOverlay .start-auth-modal{animation:none}#startAuthOverlay .start-auth-spinner{animation:none}}
+@media(max-width:420px){#startAuthOverlay .start-auth-modal{padding:34px 22px 24px}#startAuthOverlay h2{font-size:21px}}
+</style>
+
 </head>
 <style id="public-viewer-extra-css">
 .public-viewer{min-height:100vh;background:#f8fafc;color:#0f172a;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -4066,6 +4124,38 @@ play();setInterval(play,total);
   </div>
 </div>
 
+<div id="startAuthOverlay" aria-hidden="true">
+  <div class="start-auth-modal" role="dialog" aria-modal="true" aria-labelledby="startAuthTitle">
+    <button class="start-auth-close" id="startAuthClose" type="button" aria-label="Close">&times;</button>
+    <div class="start-auth-form">
+      <img class="start-auth-logo" src="logo.jpeg" alt="JS CODE OUTPUT logo">
+      <h2 id="startAuthTitle">
+        <span class="start-auth-gold">Welcome to</span>
+        <span class="start-auth-js">JS</span>
+        <span class="start-auth-gold">CODE OUTPUT</span>
+      </h2>
+      <p class="start-auth-sub">Sign in to continue to your account.</p>
+      <button class="start-auth-google" id="startAuthGoogle" type="button" onclick="startAuthGoogleSignIn()">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.9 2.4 30.4 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/>
+          <path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/>
+          <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+      <button class="start-auth-guest" id="startAuthGuest" type="button" onclick="startAuthContinueAsGuest()">Continue as Guest</button>
+      <div class="start-auth-divider">or</div>
+      <input class="start-auth-email" id="startAuthEmail" type="email" placeholder="Email address" autocomplete="email" aria-label="Email address">
+      <button class="start-auth-primary" id="startAuthEmailBtn" type="button">Continue with email</button>
+      <div class="start-auth-status" id="startAuthStatus" aria-live="polite"></div>
+      <p class="start-auth-secure">&#128274; Secure sign-in. We never see your Google password.</p>
+      <p class="start-auth-terms">By continuing, you agree to our <a class="start-auth-link" href="terms.html">Terms</a> and <a class="start-auth-link" href="privacy.html">Privacy Policy</a>.</p>
+    </div>
+  </div>
+</div>
+
+
 <button class="floating-theme" onclick="toggleTheme()" title="Switch theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
 
 
@@ -4115,6 +4205,85 @@ play();setInterval(play,total);
 </script>
 
 <script>
+
+function openStartAuthModal(){
+  const overlay = document.getElementById("startAuthOverlay");
+  if(!overlay) return;
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden","false");
+  const status = document.getElementById("startAuthStatus");
+  if(status){status.textContent="";status.className="start-auth-status";}
+  const googleBtn = document.getElementById("startAuthGoogle");
+  if(googleBtn) googleBtn.disabled = false;
+  const guestBtn = document.getElementById("startAuthGuest");
+  if(guestBtn) guestBtn.disabled = false;
+  if(googleBtn) googleBtn.focus();
+}
+function closeStartAuthModal(){
+  const overlay = document.getElementById("startAuthOverlay");
+  if(overlay){overlay.classList.remove("show");overlay.setAttribute("aria-hidden","true");}
+}
+function setStartAuthBusy(busy,message,error){
+  const googleBtn=document.getElementById("startAuthGoogle");
+  const guestBtn=document.getElementById("startAuthGuest");
+  const emailBtn=document.getElementById("startAuthEmailBtn");
+  if(googleBtn) googleBtn.disabled=busy;
+  if(guestBtn) guestBtn.disabled=busy;
+  if(emailBtn) emailBtn.disabled=busy;
+  const status=document.getElementById("startAuthStatus");
+  if(status){
+    status.className="start-auth-status"+(error?" error":"");
+    status.innerHTML=busy&&message?'<span class="start-auth-spinner" aria-hidden="true"></span>'+message:(message||"");
+  }
+}
+function startAuthDestination(){
+  const pendingTemplate=!!(localStorage.getItem("jsco_pending_template_v2")||sessionStorage.getItem("jsco_pending_template"));
+  window.location.href=pendingTemplate?"workspace.html":"projects.html";
+}
+async function startAuthGoogleSignIn(){
+  setStartAuthBusy(true,"Opening Google sign-in…");
+  try{
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    googleProvider.setCustomParameters({prompt:"select_account"});
+    await auth.signInWithPopup(googleProvider);
+    setStartAuthBusy(true,"Signed in successfully. Opening…");
+    startAuthDestination();
+  }catch(error){
+    console.error("Google sign-in error:",error);
+    if(error&&(error.code==="auth/popup-blocked"||error.code==="auth/popup-closed-by-user"||error.code==="auth/cancelled-popup-request"||error.code==="auth/operation-not-supported-in-this-environment")){
+      try{
+        setStartAuthBusy(true,"Redirecting to Google sign-in…");
+        await auth.signInWithRedirect(googleProvider);
+        return;
+      }catch(redirectError){console.error("Google redirect sign-in error:",redirectError);error=redirectError;}
+    }
+    setStartAuthBusy(false,error&&error.code?"Google sign-in failed ("+error.code+"). Please try again.":"Google sign-in was not completed. Please try again.",true);
+  }
+}
+async function startAuthContinueAsGuest(){
+  setStartAuthBusy(true,"Signing in as guest…");
+  try{
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    await auth.signInAnonymously();
+    try{sessionStorage.setItem("jsco_guest_mode","true");localStorage.setItem("jsco_guest_mode","true");}catch(e){console.warn("Could not save guest mode:",e);}
+    setStartAuthBusy(true,"Guest sign-in successful. Opening…");
+    startAuthDestination();
+  }catch(error){
+    console.error("Anonymous guest sign-in error:",error);
+    const message=error&&error.code==="auth/operation-not-allowed"?"Guest sign-in is not enabled in Firebase Authentication.":(error&&error.code?"Guest sign-in failed ("+error.code+"). Please try again.":"Guest sign-in could not be completed. Please try again.");
+    setStartAuthBusy(false,message,true);
+  }
+}
+document.getElementById("startAuthClose").addEventListener("click",closeStartAuthModal);
+document.getElementById("startAuthOverlay").addEventListener("click",function(event){if(event.target===this)closeStartAuthModal();});
+document.addEventListener("keydown",function(event){const overlay=document.getElementById("startAuthOverlay");if(event.key==="Escape"&&overlay&&overlay.classList.contains("show"))closeStartAuthModal();});
+document.getElementById("startAuthEmailBtn").addEventListener("click",function(){
+  const input=document.getElementById("startAuthEmail");
+  const value=input.value.trim();
+  setStartAuthBusy(false,/^\S+@\S+\.\S+$/.test(value)?"Email sign-in is not connected yet. Please use Continue with Google or Continue as Guest.":"Enter a valid email address.",!/^\S+@\S+\.\S+$/.test(value));
+});
+document.getElementById("startAuthEmail").addEventListener("keydown",function(event){if(event.key==="Enter")document.getElementById("startAuthEmailBtn").click();});
+
 async function startBuilding(){
   // Wait briefly for Firebase to restore the previous session.
   // Never let Get Started become unresponsive if auth/network restoration is slow.
@@ -4128,7 +4297,7 @@ async function startBuilding(){
     return;
   }
   // Guest access is available only from Get Started / Start Building.
-  openAuthModal(true);
+  openStartAuthModal();
 }
 function openMiniBrowserAuth(){
   openAuthModal(false);
