@@ -1,0 +1,13 @@
+
+{
+  "name": "js-code-output",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "razorpay": "^2.9.5"
+  }
+}
