@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Your Runner | JS CODE OUTPUT</title>
+
+<style>
+:root {
+  --bg: #fbfaf6;
+  --paper: #ffffff;
+  --gold: #b68a35;
+  --gold-light: #f5df9b;
+  --blue: #58bde9;
+  --silver: #c7ccd3;
+  --text: #292a2d;
+  --muted: #777b83;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(ellipse at 10% 5%, #f5e8c5 0, transparent 32%),
+    radial-gradient(ellipse at 90% 85%, #dff5ff 0, transparent 35%),
+    var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .28;
+  background-image:
+    linear-gradient(#b68a3510 1px, transparent 1px),
+    linear-gradient(90deg, #b68a3510 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+header {
+  height: 88px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffffd9;
+  border-bottom: 1px solid #e8dfcf;
+  box-shadow: 0 5px 25px #33260c08;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #e8d6a7;
+  background: white;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1.1px;
+  color: #6f522f;
+}
+
+.brand-name span {
+  background: linear-gradient(
+    90deg, #98702b, #f2d98c, #55bce9, #a9afb8, #98702b
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nameShine 5s linear infinite;
+}
+
+.header-label {
+  color: #8b795a;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+main {
+  max-width: 1240px;
+  margin: auto;
+  padding: 78px 28px 85px;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #96702e;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font: bold 11px Arial, sans-serif;
+  margin-bottom: 19px;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: "";
+  width: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c6a354);
+}
+
+h1 {
+  font-size: clamp(36px, 5vw, 57px);
+  line-height: 1.13;
+  font-weight: normal;
+  letter-spacing: -1.4px;
+  margin-bottom: 18px;
+}
+
+h1 span {
+  background: linear-gradient(
+    90deg, #9d7126, #e8c86e, #5bbce8, #a5aab1, #9d7126
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nameShine 6s linear infinite;
+}
+
+.intro p {
+  max-width: 600px;
+  margin: auto;
+  color: var(--muted);
+  font: 15px/1.8 Arial, sans-serif;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 27px;
+}
+
+.runner-card {
+  position: relative;
+  isolation: isolate;
+  min-height: 370px;
+  padding: 29px 25px 28px;
+  border-radius: 19px;
+  background: linear-gradient(145deg, #fff, #fffdf8 65%, #f9fbfd);
+  border: 1px solid #e7dfd1;
+  box-shadow: 0 12px 35px #46391c0b, inset 0 1px #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform .35s ease, box-shadow .35s ease;
+  overflow: hidden;
+}
+
+.runner-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg, #d5b15b, #ffffff, #69c9f1, #c5cad0, #efd78f, #d5b15b
+  );
+  background-size: 300% 300%;
+  animation: borderShine 7s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.runner-card::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -105px;
+  top: -105px;
+  border-radius: 50%;
+  background: #b8eaff42;
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.runner-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 48px #65502517;
+}
+
+.card-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 27px;
+}
+
+.number {
+  font: 12px Arial, sans-serif;
+  letter-spacing: 2px;
+  color: #a17d3b;
+}
+
+.status {
+  border: 1px solid #e8dfcf;
+  border-radius: 30px;
+  padding: 6px 10px;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 1px;
+  color: #8c7957;
+  background: #fffdf8;
+}
+
+.language-logo {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff, #f6f4ee);
+  border: 1px solid #e8e0d1;
+  box-shadow: 0 7px 20px #53401b0c, inset 0 1px white;
+  margin-bottom: 23px;
+}
+
+.language-logo img {
+  width: 57px;
+  height: 57px;
+  object-fit: contain;
+}
+
+.language-logo .python-logo {
+  width: 60px;
+  height: 60px;
+}
+
+.language-logo .html-logo {
+  width: 58px;
+  height: 58px;
+}
+
+.language-logo .cpp-logo {
+  width: 61px;
+  height: 61px;
+}
+
+.runner-card h2 {
+  font-size: 25px;
+  font-weight: normal;
+  margin-bottom: 13px;
+  line-height: 1.3;
+}
+
+.runner-card h2 .js {
+  display: inline-block;
+  background: linear-gradient(
+    90deg, #a77923, #e8c56b, #5bbce9, #9da3ad, #a77923
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nameShine 4s linear infinite;
+  font-weight: bold;
+}
+
+.description {
+  font: 13px/1.7 Arial, sans-serif;
+  color: #777b83;
+  min-height: 44px;
+  margin-bottom: 24px;
+}
+
+.build-btn {
+  position: relative;
+  margin-top: auto;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #c9a24e;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(110deg, #94702e, #c6a04d, #a17b34);
+  background-size: 200% auto;
+  box-shadow: 0 5px 15px #b18a3b25, inset 0 1px #ffffff50;
+  font: bold 12px Arial, sans-serif;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: .3s ease;
+  animation: buttonShine 6s linear infinite;
+}
+
+.build-btn:hover {
+  background-position: right center;
+  box-shadow: 0 8px 22px #b18a3b40;
+  transform: translateY(-2px);
+}
+
+.build-btn .arrow {
+  font-size: 17px;
+  transition: transform .25s ease;
+}
+
+.build-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+.card-html .build-btn {
+  border-color: #66bfe5;
+  background: linear-gradient(110deg, #298cb8, #62c8ed, #347fa7);
+  background-size: 200% auto;
+}
+
+.card-cpp .build-btn {
+  color: #42464c;
+  border-color: #c6cbd2;
+  background: linear-gradient(110deg, #d5d9df, #ffffff, #aeb6c0);
+  background-size: 200% auto;
+}
+
+.card-cpp .build-btn:hover {
+  color: #252930;
+}
+
+footer {
+  padding: 23px;
+  border-top: 1px solid #e8dfcf;
+  text-align: center;
+  color: #938c80;
+  font: 12px/1.8 Arial, sans-serif;
+}
+
+footer strong {
+  color: #987337;
+  font-weight: normal;
+}
+
+/* Unavailable feature popup */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #24262980;
+  backdrop-filter: blur(7px);
+}
+
+.modal-overlay.show {
+  display: flex;
+  animation: fadeIn .25s ease;
+}
+
+.modal {
+  width: min(100%, 420px);
+  padding: 35px 30px 29px;
+  text-align: center;
+  border: 1px solid #e1c77f;
+  border-radius: 19px;
+  background: linear-gradient(145deg, #fff, #fbf8ef);
+  box-shadow: 0 25px 90px #0003;
+  animation: modalIn .3s ease;
+}
+
+.modal-icon {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 21px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 30px Arial, sans-serif;
+  color: #9c792f;
+  border: 1px solid #e5d3a2;
+  background: linear-gradient(135deg, #fff9e9, #e6f7ff);
+}
+
+.modal h3 {
+  font-size: 25px;
+  font-weight: normal;
+  margin-bottom: 13px;
+  color: #353332;
+}
+
+.modal p {
+  font: 14px/1.8 Arial, sans-serif;
+  color: #777b83;
+  margin-bottom: 25px;
+}
+
+.got-it {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(100deg, #a47a2e, #d8b85e, #a47a2e);
+  color: white;
+  font: bold 12px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.got-it:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+@keyframes nameShine {
+  to { background-position: 300% center; }
+}
+
+@keyframes borderShine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes buttonShine {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(12px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 900px) {
+  main { padding-top: 55px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card-cpp { grid-column: 1 / -1; }
+  .card-cpp { width: calc(50% - 14px); justify-self: center; }
+}
+
+@media (max-width: 600px) {
+  header { height: 75px; padding: 0 20px; }
+  .brand img { width: 40px; height: 40px; }
+  .brand-name { font-size: 16px; }
+  .header-label { font-size: 9px; letter-spacing: 1px; }
+  main { padding: 48px 18px 55px; }
+  .intro { margin-bottom: 35px; }
+  .intro p { font-size: 13px; }
+  .cards { grid-template-columns: 1fr; gap: 19px; }
+  .runner-card { min-height: 350px; }
+  .card-cpp { grid-column: auto; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <img src="logo.jpeg" alt="JS CODE OUTPUT Logo">
+    <div class="brand-name"><span>JS CODE OUTPUT</span></div>
+  </div>
+  <div class="header-label">Developer Workspace</div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="eyebrow">Your creative workspace</div>
+    <h1>Choose Your <span>Runner</span></h1>
+    <p>
+      Select your workspace and start building.
+      A simple, elegant place for your next great idea.
+    </p>
+  </section>
+
+  <section class="cards">
+
+    <!-- CARD 1: PYTHON -->
+    <article class="runner-card card-python">
+      <div class="card-top">
+        <span class="number">NO. 01</span>
+        <span class="status">PYTHON</span>
+      </div>
+
+      <div class="language-logo">
+        <img class="python-logo"
+             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+             alt="Python logo">
+      </div>
+
+      <h2><span class="js">JS</span> Python Runner</h2>
+      <p class="description">
+        Write Python code, run your ideas and explore programming.
+      </p>
+
+      <a class="build-btn" href="py_projects.html">
+        Start Build <span class="arrow">→</span>
+      </a>
+    </article>
+
+    <!-- CARD 2: HTML -->
+    <article class="runner-card card-html">
+      <div class="card-top">
+        <span class="number">NO. 02</span>
+        <span class="status">WEB DEVELOPMENT</span>
+      </div>
+
+      <div class="language-logo">
+        <img class="html-logo"
+             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+             alt="HTML5 logo">
+      </div>
+
+      <h2><span class="js">JS</span> HTML Runner</h2>
+      <p class="description">
+        Create web pages and build your next website with HTML.
+      </p>
+
+      <a class="build-btn" href="projects.html">
+        Start Build <span class="arrow">→</span>
+      </a>
+    </article>
+
+    <!-- CARD 3: C++ -->
+    <article class="runner-card card-cpp">
+      <div class="card-top">
+        <span class="number">NO. 03</span>
+        <span class="status">C++</span>
+      </div>
+
+      <div class="language-logo">
+        <img class="cpp-logo"
+             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+             alt="C++ logo">
+      </div>
+
+      <h2><span class="js">JS</span> C++ Runner</h2>
+      <p class="description">
+        A dedicated C++ coding workspace is coming soon.
+      </p>
+
+      <button class="build-btn" type="button" id="cppButton">
+        Start Build <span class="arrow">→</span>
+      </button>
+    </article>
+
+  </section>
+</main>
+
+<footer>
+  <strong>JS CODE OUTPUT</strong><br>
+  Write code. Run it. See the output. A focused browser-first
+  environment for learning, testing and building.
+</footer>
+
+<!-- C++ UNAVAILABLE POPUP -->
+<div class="modal-overlay" id="cppModal"
+     role="dialog" aria-modal="true"
+     aria-labelledby="modalTitle"
+     aria-describedby="modalDescription">
+
+  <div class="modal">
+    <div class="modal-icon">   <img src="logo.jpeg" alt="JS CODE OUTPUT Logo"> </div>
+    <h3 id="modalTitle">Feature Temporarily Unavailable</h3>
+    <p id="modalDescription">
+      This feature might be unavailable right now.
+      Please check back again later.
+    </p>
+    <button class="got-it" type="button" id="gotItButton">
+      Got it
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const cppButton = document.getElementById("cppButton");
+  const modal = document.getElementById("cppModal");
+  const gotItButton = document.getElementById("gotItButton");
+
+  function openModal() {
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+    gotItButton.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+    cppButton.focus();
+  }
+
+  cppButton.addEventListener("click", openModal);
+  gotItButton.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && modal.classList.contains("show")) {
+      closeModal();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
