@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#160d2c">
 <title>Choose Your Country | JS CODE OUTPUT</title>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#f3eee4;--panel:#fffdf8;--panel2:#f8f1e4;--gold:#a77b2e;--gold2:#76521c;--purple:#4b3768;--text:#211a28;--muted:#706779;--line:#d8c7a3}
 *{box-sizing:border-box}
@@ -28,7 +30,7 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(167,123,46,.12)}
 .searchbox{position:relative}
 .searchbox input{padding-right:42px}
 .search-icon{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:19px;pointer-events:none}
-..country-list{margin-top:8px;max-height:210px;overflow-y:auto;border:1px solid #d6c7ab;border-radius:5px;background:#fffefa;scrollbar-width:thin;scrollbar-color:#b69a67 #f4ecdd}
+ .country-list{margin-top:8px;max-height:210px;overflow-y:auto;border:1px solid #d6c7ab;border-radius:5px;background:#fffefa;scrollbar-width:thin;scrollbar-color:#b69a67 #f4ecdd}
 .country-option{width:100%;border:0;background:transparent;color:#30263a;text-align:left;padding:11px 13px;font:inherit;font-family:Arial,sans-serif;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
 .country-option:hover,.country-option:focus{background:#f3ead8;outline:none}
 .country-option[aria-selected="true"]{background:#f5ecd9;color:var(--gold2)}
@@ -40,7 +42,16 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(167,123,46,.12)}
 .continue-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
 .note{margin:20px 0 0;color:#84798a;font-size:12px;text-align:center;line-height:1.5}
 .error{min-height:17px;color:#a52e3b;font-size:12px;margin-top:8px}
-@media(max-width:480px){body{padding:16px}.card{padding:24px 19px}h1{font-size:24px}.brand span{font-size:15px}}
+.payment-card[hidden]{display:none}
+.summary{border:1px solid #e2d5bd;background:#fbf6ec;border-radius:5px;padding:5px 14px;margin:18px 0 12px;font-family:Arial,sans-serif}
+.summary>div{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:11px 0;border-bottom:1px solid #e8ddca;font-size:13px}
+.summary>div:last-child{border-bottom:0}
+.summary span{color:#776d7d}.summary strong{text-align:right;color:#3c2b4e;overflow-wrap:anywhere}
+.payment-actions{display:flex;gap:10px;margin-top:8px}.payment-actions .continue-btn{margin-top:0;flex:1}
+.back-btn{min-width:92px;height:50px;border:1px solid #c8b89c;border-radius:5px;background:#fffdf8;color:#4b3768;font:700 14px Georgia,serif;cursor:pointer}
+button:focus-visible{outline:3px solid rgba(167,123,46,.35);outline-offset:2px}
+.country-blocker[hidden]{display:none}.country-blocker{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(20,13,32,.62);backdrop-filter:blur(4px)}.country-blocker-card{width:min(100%,390px);padding:30px 25px 24px;border:1px solid #d5bd8b;border-radius:10px;background:#fffdf8;box-shadow:0 24px 70px rgba(0,0,0,.28);text-align:center}.country-blocker-card h2{margin:0 0 12px;color:#342342;font-size:25px;line-height:1.2}.country-blocker-card p{margin:0 0 23px;color:#706779;font:15px/1.65 Arial,sans-serif}.country-blocker-card button{width:100%;height:47px;border:1px solid #8c6425;border-radius:5px;background:linear-gradient(135deg,#8e682b,#b18a46 52%,#8e682b);color:#fffdf7;font:700 15px Georgia,serif;cursor:pointer}
+@media(max-width:480px){body{padding:16px}.card{padding:24px 19px}h1{font-size:24px}.brand span{font-size:15px}.payment-actions{flex-direction:column-reverse}.back-btn{width:100%}}
 </style>
 </head>
 <body>
@@ -78,8 +89,45 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(167,123,46,.12)}
     </form>
     <p class="note">Your country helps determine the appropriate payment option.</p>
   </section>
+
+  <section class="card payment-card" id="paymentStep" hidden aria-labelledby="paymentHeading" style="margin-top:16px">
+    <h1 id="paymentHeading">Confirm your payment</h1>
+    <p class="subtitle" id="paymentIntro">Your details are ready. Choose Continue to open the secure payment flow.</p>
+    <div class="summary">
+      <div><span>Feature</span><strong id="featureName">Project Download</strong></div>
+      <div><span>Account name</span><strong id="summaryName">—</strong></div>
+      <div><span>Country</span><strong id="summaryCountry">—</strong></div>
+      <div><span>Payment method</span><strong id="summaryProvider">—</strong></div>
+      <div><span>Access period</span><strong>24 hours</strong></div>
+      <div><span>Price</span><strong id="summaryPrice">—</strong></div>
+    </div>
+    <div class="error" id="paymentError" role="alert"></div>
+    <div class="payment-actions">
+      <button class="back-btn" id="backBtn" type="button">Back</button>
+      <button class="continue-btn" id="payBtn" type="button">Continue to payment <span aria-hidden="true">→</span></button>
+    </div>
+    <p class="note">Access is activated only after the server confirms the payment. Do not close the page during checkout.</p>
+  </section>
 </main>
+<div class="country-blocker" id="countryBlocker" hidden role="dialog" aria-modal="true" aria-labelledby="countryBlockTitle" aria-describedby="countryBlockMessage">
+  <div class="country-blocker-card">
+    <h2 id="countryBlockTitle">Sorry, we can’t continue</h2>
+    <p id="countryBlockMessage">Sorry, due to some reason we cannot continue with your country.</p>
+    <button type="button" id="countryBlockGotIt">Got it</button>
+  </div>
+</div>
 <script>
+const firebaseConfig={apiKey:'AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw',authDomain:'js-code-output.firebaseapp.com',databaseURL:'https://js-code-output-default-rtdb.firebaseio.com',projectId:'js-code-output',storageBucket:'js-code-output.firebasestorage.app',messagingSenderId:'600350018167',appId:'1:600350018167:web:3ceaa5a5e0d1050504d472',measurementId:'G-L47M0E9V96'};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const firebaseAuth=firebase.auth();
+function getSignedInUser(){
+ if(firebaseAuth.currentUser) return Promise.resolve(firebaseAuth.currentUser);
+ return new Promise((resolve,reject)=>{
+   let done=false;
+   const timer=setTimeout(()=>{if(!done){done=true;unsubscribe();reject(new Error('Google sign-in is required. Return to JS Python Runner and sign in first.'));}},5000);
+   const unsubscribe=firebaseAuth.onAuthStateChanged(user=>{if(done)return;done=true;clearTimeout(timer);unsubscribe();if(user)resolve(user);else reject(new Error('Google sign-in is required. Return to JS Python Runner and sign in first.'));});
+ });
+}
 const countries = [
 ["Afghanistan","AF"],["Albania","AL"],["Algeria","DZ"],["Andorra","AD"],["Angola","AO"],["Antigua and Barbuda","AG"],["Argentina","AR"],["Armenia","AM"],["Australia","AU"],["Austria","AT"],["Azerbaijan","AZ"],
 ["Bahamas","BS"],["Bahrain","BH"],["Bangladesh","BD"],["Barbados","BB"],["Belarus","BY"],["Belgium","BE"],["Belize","BZ"],["Benin","BJ"],["Bhutan","BT"],["Bolivia","BO"],["Bosnia and Herzegovina","BA"],["Botswana","BW"],["Brazil","BR"],["Brunei","BN"],["Bulgaria","BG"],["Burkina Faso","BF"],["Burundi","BI"],
@@ -113,6 +161,10 @@ const selected=document.getElementById('selectedCountry');
 const codeInput=document.getElementById('countryCode');
 const error=document.getElementById('error');
 const continueBtn=document.getElementById('continueBtn');
+const countryBlocker=document.getElementById('countryBlocker');
+const countryBlockGotIt=document.getElementById('countryBlockGotIt');
+countryBlockGotIt.addEventListener('click',()=>{countryBlocker.hidden=true;search.focus();});
+countryBlocker.addEventListener('click',event=>{if(event.target===countryBlocker){countryBlocker.hidden=true;search.focus();}});
 const nameInput=document.getElementById('fullName');
 const ageInput=document.getElementById('age');
 let chosen=null;
@@ -141,19 +193,79 @@ function selectCountry(name,code){
 }
 search.addEventListener('input',()=>{chosen=null;codeInput.value='';selected.textContent='Choose a country from the results.';renderCountries(search.value);updateContinue();});
 search.addEventListener('focus',()=>renderCountries(search.value));
+const paymentStep=document.getElementById('paymentStep');
+const payBtn=document.getElementById('payBtn');
+const paymentError=document.getElementById('paymentError');
+const params=new URLSearchParams(window.location.search);
+if(params.get('payment')==='cancelled'){error.textContent='Payment was cancelled. You can try again.';}
+if(params.get('payment')==='success'){error.textContent='Payment return received. The backend must verify the payment before access is granted.';}
+const allowedActions=['download','share'];
+let action=(params.get('action')||'download').toLowerCase();
+if(!allowedActions.includes(action)) action='download';
+const projectId=params.get('projectId')||'';
+const rawReturn=params.get('returnUrl')||'js_python_runner.html';
+function safeReturnUrl(value){
+ try{const url=new URL(value,window.location.href);if(url.origin!==window.location.origin)return new URL('js_python_runner.html',window.location.href).href;return url.href;}
+ catch(_){return new URL('js_python_runner.html',window.location.href).href;}
+}
+const returnUrl=safeReturnUrl(rawReturn);
+document.getElementById('featureName').textContent=action==='share'?'Share Project':'Project Download';
+document.getElementById('paymentHeading').textContent=action==='share'?'Unlock Project Sharing':'Unlock Project Downloads';
+document.getElementById('paymentIntro').textContent=action==='share'?'Pay to publish your project and get a shareable live link.':'Pay to download your project files as a ZIP archive.';
 form.addEventListener('submit',event=>{
  event.preventDefault();
  if(!form.reportValidity())return;
  if(!chosen){error.textContent='Please select a country from the list.';search.focus();return;}
- const details={name:document.getElementById('fullName').value.trim(),age:Number(document.getElementById('age').value),country:chosen[0],countryCode:chosen[1],paymentProvider:chosen[1]==='IN'?'razorpay':'paypal'};
- // Connect this payload to your trusted backend before initiating payment.
- // Never trust a browser-supplied country/paymentProvider as final payment authorization.
- window.dispatchEvent(new CustomEvent('jsco:user-details-ready',{detail:details}));
- error.textContent='Details ready. Connect this form to your backend to continue to payment.';
- console.log('User details ready for backend:',details);
+ if(chosen[1]!=='IN'){paymentStep.hidden=true;countryBlocker.hidden=false;countryBlockGotIt.focus();return;}
+ document.getElementById('summaryName').textContent=nameInput.value.trim();
+ document.getElementById('summaryCountry').textContent=chosen[0];
+ document.getElementById('summaryProvider').textContent='Razorpay';
+ document.getElementById('summaryPrice').textContent='₹2.00';
+ paymentError.textContent='';
+ paymentStep.hidden=false;
+ continueBtn.textContent='Details confirmed ✓';
+ continueBtn.disabled=true;
+ paymentStep.scrollIntoView({behavior:'smooth',block:'start'});
 });
-renderCountries();
-updateContinue();
+document.getElementById('backBtn').addEventListener('click',()=>{
+ paymentStep.hidden=true;continueBtn.textContent='Continue →';updateContinue();
+ document.querySelector('.card[aria-labelledby="heading"]').scrollIntoView({behavior:'smooth',block:'start'});
+});
+function loadScript(src){return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(new Error('Could not load payment checkout. Please try again.'));document.head.appendChild(script);});}
+async function beginPayment(){
+ paymentError.textContent='';payBtn.disabled=true;payBtn.textContent='Connecting securely…';
+ try{
+   const signedInUser=await getSignedInUser();
+   const idToken=await signedInUser.getIdToken();
+   const payload={
+     action,
+     projectId:projectId||null,
+     user:{name:nameInput.value.trim(),age:Number(ageInput.value),country:chosen[0],countryCode:chosen[1]},
+     provider:'razorpay',
+     returnUrl
+   };
+   const response=await fetch('/api/payments/create',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+idToken},credentials:'same-origin',body:JSON.stringify(payload)});
+   let data={};try{data=await response.json();}catch(_){ }
+   if(!response.ok)throw new Error(data.error||'Payment service is not connected yet. Please try again after backend setup.');
+   if(payload.provider==='razorpay'){
+     if(!data.keyId||!data.orderId||!data.amount||!data.currency)throw new Error('Payment backend returned incomplete Razorpay checkout details.');
+     await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+     if(typeof Razorpay==='undefined')throw new Error('Razorpay checkout could not be loaded.');
+     const checkout=new Razorpay({key:data.keyId,order_id:data.orderId,amount:data.amount,currency:data.currency,name:'JS CODE OUTPUT',description:action==='share'?'24-hour Project Sharing Access':'24-hour Project Download Access',prefill:{name:nameInput.value.trim()},theme:{color:'#8e682b'},handler:async function(result){
+       try{
+         const verify=await fetch('/api/payments/verify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+await signedInUser.getIdToken()},credentials:'same-origin',body:JSON.stringify({provider:'razorpay',action,projectId:projectId||null,orderId:result.razorpay_order_id,paymentId:result.razorpay_payment_id,signature:result.razorpay_signature})});
+         const verified=await verify.json();if(!verify.ok||verified.verified!==true)throw new Error(verified.error||'Payment verification failed.');
+         const destination=new URL(returnUrl);destination.searchParams.set('payment','success');destination.searchParams.set('action',action);if(verified.sessionId)destination.searchParams.set('sessionId',verified.sessionId);window.location.assign(destination.href);
+       }catch(e){paymentError.textContent=e.message||'Could not verify payment. Contact support before paying again.';payBtn.disabled=false;payBtn.textContent='Retry payment';}
+     }});
+     checkout.on('payment.failed',event=>{paymentError.textContent=event.error?.description||'Payment failed. Please try again.';payBtn.disabled=false;payBtn.textContent='Retry payment';});
+     checkout.open();
+   }
+ }catch(e){paymentError.textContent=e.message||'Could not start payment. Please try again.';payBtn.disabled=false;payBtn.textContent='Retry payment';}
+}
+payBtn.addEventListener('click',beginPayment);
+renderCountries();updateContinue();
+
 </script>
 </body>
 </html>
