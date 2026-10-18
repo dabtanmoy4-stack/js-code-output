@@ -10,7 +10,9 @@ function initFirebaseAdmin() {
     process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 
   if (!serviceAccountText) {
-    throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON is not configured");
+    throw new Error(
+      "FIREBASE_SERVICE_ACCOUNT_JSON is not configured"
+    );
   }
 
   const serviceAccount = JSON.parse(serviceAccountText);
@@ -25,8 +27,24 @@ function initFirebaseAdmin() {
 
 function getBearerToken(req) {
   const header = req.headers.authorization || "";
+
   if (!header.startsWith("Bearer ")) return null;
+
   return header.slice(7);
+}
+
+function safeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") {
+    return false;
+  }
+
+  const first = Buffer.from(a, "utf8");
+  const second = Buffer.from(b, "utf8");
+
+  return (
+    first.length === second.length &&
+    crypto.timingSafeEqual(first, second)
+  );
 }
 
 module.exports = async function handler(req, res) {
@@ -34,7 +52,11 @@ module.exports = async function handler(req, res) {
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed" });
+
+    return res.status(405).json({
+      verified: false,
+      error: "Method not allowed",
+    });
   }
 
   try {
@@ -43,13 +65,16 @@ module.exports = async function handler(req, res) {
 
     if (!keyId || !keySecret) {
       return res.status(500).json({
+        verified: false,
         error: "Razorpay environment variables are not configured",
       });
     }
 
     const token = getBearerToken(req);
+
     if (!token) {
       return res.status(401).json({
+        verified: false,
         error: "Please sign in first",
       });
     }
@@ -57,28 +82,38 @@ module.exports = async function handler(req, res) {
     const firebase = initFirebaseAdmin();
     const decoded = await firebase.auth().verifyIdToken(token);
 
-    const {
-      razorpay_order_id: orderId,
-      razorpay_payment_id: paymentId,
-      razorpay_signature: signature,
-    } = req.body || {};
+    const body = req.body || {};
+
+    // Accept both frontend and Razorpay field names.
+    const orderId =
+      body.razorpay_order_id || body.orderId;
+
+    const paymentId =
+      body.razorpay_payment_id || body.paymentId;
+
+    const signature =
+      body.razorpay_signature || body.signature;
 
     if (
       typeof orderId !== "string" ||
       typeof paymentId !== "string" ||
-      typeof signature !== "string"
+      typeof signature !== "string" ||
+      !orderId ||
+      !paymentId ||
+      !signature
     ) {
       return res.status(400).json({
+        verified: false,
         error: "Missing payment verification fields",
       });
     }
 
-    // Verify that this order belongs to this signed-in user.
     const razorpay = new Razorpay({
       key_id: keyId,
       key_secret: keySecret,
     });
 
+    // Confirm the order belongs to the signed-in user.
     const order = await razorpay.orders.fetch(orderId);
 
     if (
@@ -88,29 +123,25 @@ module.exports = async function handler(req, res) {
       order.notes?.purpose !== "download_share_24h"
     ) {
       return res.status(400).json({
+        verified: false,
         error: "Payment order is invalid",
       });
     }
 
+    // Verify Razorpay's payment signature.
     const expectedSignature = crypto
       .createHmac("sha256", keySecret)
       .update(`${orderId}|${paymentId}`)
       .digest("hex");
 
-    const received = Buffer.from(signature, "utf8");
-    const expected = Buffer.from(expectedSignature, "utf8");
-
-    if (
-      received.length !== expected.length ||
-      !crypto.timingSafeEqual(received, expected)
-    ) {
+    if (!safeEqual(signature, expectedSignature)) {
       return res.status(400).json({
         verified: false,
         error: "Payment signature is invalid",
       });
     }
 
-    // Confirm payment status with Razorpay, not only the browser response.
+    // Verify payment status directly with Razorpay.
     const payment = await razorpay.payments.fetch(paymentId);
 
     if (
@@ -125,18 +156,22 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Grant 24-hour access to this Firebase user.
-    const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+    // Grant or renew access for 24 hours.
+    const now = Date.now();
+    const expiresAt = now + 24 * 60 * 60 * 1000;
 
-    await firebase.database().ref(
-      `payment_entitlements/${decoded.uid}/download_share`
-    ).set({
-      active: true,
-      expiresAt,
-      orderId,
-      paymentId,
-      updatedAt: Date.now(),
-    });
+    await firebase
+      .database()
+      .ref(
+        `payment_entitlements/${decoded.uid}/download_share`
+      )
+      .set({
+        active: true,
+        expiresAt,
+        orderId,
+        paymentId,
+        updatedAt: now,
+      });
 
     return res.status(200).json({
       verified: true,
@@ -144,6 +179,7 @@ module.exports = async function handler(req, res) {
       message: "Payment verified successfully",
     });
   } catch (error) {
+    // Keep detailed errors in server logs, not in the public response.
     console.error("Verify payment failed:", error.message);
 
     return res.status(500).json({
