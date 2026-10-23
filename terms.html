@@ -1,110 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JS Code Output – Template Gallery</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Georgia,"Times New Roman",serif}
-body{background:#f7f2e8;color:#17130f;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:-20%;background:radial-gradient(circle at 15% 20%,rgba(198,155,65,.13),transparent 28%),radial-gradient(circle at 85% 15%,rgba(71,43,91,.08),transparent 25%);animation:drift 14s ease-in-out infinite alternate;pointer-events:none}
-@keyframes drift{to{transform:translate3d(2%,-1%,0) scale(1.03)}}
-header{position:sticky;top:0;z-index:20;background:rgba(247,242,232,.96);border-bottom:1px solid rgba(151,113,43,.25);backdrop-filter:blur(10px)}
-.nav{max-width:1200px;margin:auto;min-height:76px;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#17130f}
-.brand img{width:43px;height:43px;object-fit:cover;border-radius:10px;border:1px solid #c6a45a}
-.brand strong{font-size:19px;letter-spacing:.04em}.brand span{display:block;font:11px Arial,sans-serif;color:#77654a;margin-top:2px}
-.nav-actions{display:flex;gap:10px;align-items:center}
-.btn{border:1px solid #b9954d;background:#17130f;color:#f9f3e7;border-radius:10px;padding:11px 16px;font:600 13px Arial,sans-serif;text-decoration:none;cursor:pointer;transition:.2s}
-.btn:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(60,39,12,.15)}
-.btn.light{background:#fffaf1;color:#211a13}.btn.gold{background:linear-gradient(135deg,#b48a35,#e0bd67);color:#1b140a}
-main{max-width:1200px;margin:auto;padding:55px 22px 80px}
-.hero{text-align:center;max-width:800px;margin:0 auto 34px}
-.badge{display:inline-block;padding:7px 13px;border:1px solid #c9aa63;border-radius:999px;color:#806326;background:#fff9ed;font:700 11px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
-h1{font-size:clamp(42px,7vw,76px);line-height:.96;margin:18px 0 15px;font-weight:500;letter-spacing:-.04em}
-.hero p{font:15px/1.7 Arial,sans-serif;color:#6d6254;max-width:650px;margin:auto}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:35px 0 24px}
-.search{flex:1 1 280px;min-width:220px;border:1px solid #d4c3a2;background:#fffaf2;border-radius:12px;padding:13px 15px;outline:none;font:14px Arial,sans-serif;color:#201a13}
-.search:focus{border-color:#b38a3e;box-shadow:0 0 0 3px rgba(179,138,62,.1)}
-.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #d2c09e;background:#fffaf2;color:#695a45;border-radius:999px;padding:9px 13px;font:12px Arial,sans-serif;cursor:pointer}.chip.active{background:#1b1713;color:#fff8eb;border-color:#1b1713}
-.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.card{background:#fffaf2;border:1px solid #dcccae;border-radius:17px;overflow:hidden;box-shadow:0 12px 30px rgba(57,39,13,.06);transition:.25s}
-.card:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(57,39,13,.12)}
-.preview{aspect-ratio:16/10;background:#211b17;position:relative;overflow:hidden}
-.preview iframe{width:100%;height:100%;border:0;background:white}
-.preview .placeholder{height:100%;display:grid;place-items:center;color:#d8b967;font:700 18px Georgia,serif;background:linear-gradient(135deg,#17130f,#35271a,#17130f)}
-.cardbody{padding:18px}.meta{display:flex;justify-content:space-between;gap:8px;align-items:center}.category{font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#997533}.date{font:10px Arial,sans-serif;color:#998c79}
-.card h3{font-size:23px;font-weight:500;margin:10px 0 8px}.desc{font:13px/1.6 Arial,sans-serif;color:#756b5e;min-height:42px}.cardactions{display:flex;gap:8px;margin-top:16px}.cardactions .btn{flex:1;text-align:center;padding:10px 9px;font-size:12px}
-.empty{text-align:center;border:1px dashed #cdb98e;border-radius:17px;padding:55px 20px;background:rgba(255,250,242,.65);grid-column:1/-1}
-.empty h2{font-size:28px;font-weight:500;margin:0 0 8px}.empty p{font:13px Arial,sans-serif;color:#776b5b}
-footer{text-align:center;border-top:1px solid #decfb1;padding:25px;color:#897b67;font:11px Arial,sans-serif}
-.toast{position:fixed;right:18px;bottom:18px;background:#17130f;color:#fff8ea;padding:13px 16px;border-radius:10px;font:13px Arial,sans-serif;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1;transform:none}
-@media(max-width:850px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.nav{padding:10px 14px}.brand strong{font-size:16px}.brand span{display:none}.nav .btn{padding:9px 11px}.nav-actions .light{display:none}main{padding:38px 14px 60px}h1{font-size:48px}.gallery{grid-template-columns:1fr}.toolbar{margin-top:27px}.search{flex-basis:100%}.card:hover{transform:none}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f2">
+  <meta name="description" content="Terms and Conditions for JS CODE OUTPUT. Read the rules for accounts, projects, code generation, downloads, publishing, payments, and responsible use.">
+  <title>Terms &amp; Conditions | JS CODE OUTPUT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #111315;
+      --ink: #20272d;
+      --muted: #626d75;
+      --sky: #8ed8f4;
+      --sky-deep: #247fa6;
+      --gold: #b78a36;
+      --gold-light: #ead49a;
+      --warm: #f8f7f2;
+      --white: #ffffff;
+      --line: rgba(29, 44, 54, .12);
+      --shadow: 0 18px 55px rgba(20, 42, 54, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 5%, rgba(142,216,244,.23), transparent 28rem),
+        radial-gradient(circle at 94% 20%, rgba(234,212,154,.20), transparent 25rem),
+        var(--warm);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: -1;
+      opacity: .27;
+      background-image: radial-gradient(rgba(36,127,166,.22) .7px, transparent .7px);
+      background-size: 23px 23px;
+      animation: drift 32s linear infinite;
+    }
+    @keyframes drift { from { background-position: 0 0; } to { background-position: 230px 230px; } }
+    @keyframes shine { 0%,100% { box-shadow: 0 0 0 rgba(183,138,54,0); } 50% { box-shadow: 0 0 26px rgba(183,138,54,.22); } }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    a { color: var(--sky-deep); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: #155a79; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--black), var(--sky), var(--gold), var(--warm), var(--black)); background-size: 220% 100%; animation: gradientMove 9s linear infinite; }
+    @keyframes gradientMove { to { background-position: 220% 0; } }
+    .site-header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(248,247,242,.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(29,44,54,.09);
+    }
+    .nav {
+      width: min(1180px, calc(100% - 40px)); margin: auto; min-height: 78px;
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--black); text-decoration: none; min-width: 0; }
+    .brand img { width: 48px; height: 48px; object-fit: contain; border-radius: 13px; background: #fff; border: 1px solid rgba(183,138,54,.38); padding: 4px; box-shadow: 0 4px 15px rgba(17,19,21,.08); }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.2; }
+    .brand-name { font-family: Manrope, sans-serif; font-weight: 800; letter-spacing: .045em; font-size: 1rem; }
+    .brand-sub { color: var(--muted); font-size: .72rem; margin-top: 4px; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-link, .back-link {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      text-decoration: none; font-weight: 700; font-size: .88rem; border-radius: 999px;
+      padding: 10px 16px; transition: transform .2s ease, background .2s ease;
+    }
+    .nav-link { color: var(--white); background: var(--black); border: 1px solid var(--black); }
+    .nav-link:hover { color: var(--black); background: var(--gold-light); transform: translateY(-2px); }
+    .back-link { color: var(--ink); border: 1px solid var(--line); background: rgba(255,255,255,.62); }
+    .back-link:hover { background: var(--white); transform: translateY(-2px); }
+    .hero { width: min(1180px, calc(100% - 40px)); margin: 48px auto 28px; }
+    .hero-card {
+      position: relative; overflow: hidden; padding: clamp(28px, 5vw, 62px);
+      border-radius: 30px; color: var(--white);
+      background: linear-gradient(120deg, #111315 0%, #1d2c34 62%, #214e63 100%);
+      box-shadow: var(--shadow); isolation: isolate;
+    }
+    .hero-card::before {
+      content: ""; position: absolute; z-index: -1; width: 420px; height: 420px; border-radius: 50%;
+      right: -100px; top: -200px; border: 1px solid rgba(234,212,154,.45);
+      box-shadow: 0 0 0 28px rgba(142,216,244,.04), 0 0 0 62px rgba(234,212,154,.035);
+      animation: float 7s ease-in-out infinite;
+    }
+    .hero-card::after {
+      content: ""; position: absolute; z-index: -1; width: 240px; height: 240px; border-radius: 50%;
+      right: 80px; bottom: -180px; background: rgba(142,216,244,.18); filter: blur(4px);
+    }
+    .eyebrow { display: inline-flex; gap: 9px; align-items: center; border: 1px solid rgba(234,212,154,.48); border-radius: 999px; padding: 6px 12px; color: var(--gold-light); font-size: .75rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--sky); box-shadow: 0 0 12px var(--sky); }
+    h1, h2, h3 { font-family: Manrope, sans-serif; line-height: 1.25; }
+    h1 { font-size: clamp(2.25rem, 6vw, 4.6rem); letter-spacing: -.055em; margin: 20px 0 16px; max-width: 800px; }
+    .hero p { color: #e3ebee; max-width: 760px; margin: 0; font-size: clamp(1rem, 2vw, 1.12rem); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 27px; }
+    .meta-chip { border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.07); border-radius: 10px; padding: 8px 12px; color: #edf4f6; font-size: .8rem; }
+    .meta-chip strong { color: var(--gold-light); }
+    .layout { width: min(1180px, calc(100% - 40px)); margin: 0 auto 70px; display: grid; grid-template-columns: 280px minmax(0,1fr); align-items: start; gap: 25px; }
+    .toc {
+      position: sticky; top: 98px; padding: 22px; background: rgba(255,255,255,.82);
+      border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 12px 35px rgba(20,42,54,.045);
+      max-height: calc(100vh - 120px); overflow: auto;
+    }
+    .toc h2 { font-size: .98rem; margin: 0 0 12px; color: var(--black); }
+    .toc ol { padding-left: 19px; margin: 0; }
+    .toc li { padding: 4px 0; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+    .toc a { color: #3b535e; text-decoration: none; }
+    .toc a:hover { color: var(--gold); text-decoration: underline; }
+    .terms { min-width: 0; }
+    .notice {
+      padding: 17px 20px; border: 1px solid rgba(36,127,166,.23); border-left: 4px solid var(--sky-deep);
+      border-radius: 14px; background: rgba(255,255,255,.75); margin-bottom: 18px; font-size: .91rem;
+    }
+    .notice strong { color: var(--black); }
+    .term-card {
+      background: rgba(255,255,255,.87); border: 1px solid var(--line); border-radius: 20px;
+      padding: clamp(20px, 3.5vw, 32px); margin-bottom: 16px; box-shadow: 0 10px 30px rgba(20,42,54,.035);
+      transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+    }
+    .term-card:hover { border-color: rgba(183,138,54,.5); box-shadow: 0 14px 34px rgba(20,42,54,.07); transform: translateY(-2px); }
+    .term-card h2 { font-size: clamp(1.08rem, 2.3vw, 1.32rem); margin: 0 0 13px; color: var(--black); display: flex; gap: 12px; align-items: flex-start; }
+    .number { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; color: #624716; background: linear-gradient(145deg, #f5e7bc, #d9b969); font-size: .85rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .term-card p { margin: 10px 0; color: #46525a; font-size: .94rem; }
+    .term-card ul { margin: 8px 0 12px; padding-left: 23px; color: #46525a; font-size: .94rem; }
+    .term-card li { margin: 5px 0; padding-left: 2px; }
+    .term-card strong { color: #20272d; }
+    .small-note { font-size: .83rem !important; color: var(--muted) !important; }
+    .footer {
+      background: var(--black); color: #dce4e7; padding: 34px 20px;
+      border-top: 3px solid transparent; border-image: linear-gradient(90deg,var(--sky),var(--gold),var(--warm)) 1;
+    }
+    .footer-inner { width: min(1180px, 100%); margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    .footer-brand { display: flex; align-items: center; gap: 12px; }
+    .footer-brand img { width: 40px; height: 40px; object-fit: contain; border-radius: 10px; background: white; padding: 3px; }
+    .footer-brand strong { display: block; font-family: Manrope,sans-serif; color: white; letter-spacing: .04em; }
+    .footer-brand span { display: block; font-size: .78rem; color: #b7c3c9; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 15px; }
+    .footer-links a { color: var(--gold-light); text-decoration: none; font-size: .85rem; }
+    .footer-links a:hover { color: var(--sky); text-decoration: underline; }
+    .copyright { width: 100%; border-top: 1px solid rgba(255,255,255,.12); padding-top: 16px; margin-top: 6px; color: #aebbc1; font-size: .8rem; }
+    .to-top { position: fixed; right: 20px; bottom: 20px; z-index: 15; width: 44px; height: 44px; border: 1px solid rgba(183,138,54,.5); border-radius: 14px; background: var(--black); color: var(--gold-light); font-size: 1.2rem; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.16); transition: transform .2s ease, background .2s ease; }
+    .to-top:hover { transform: translateY(-3px); background: #27353b; }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc { position: relative; top: auto; max-height: none; }
+      .toc ol { columns: 2; column-gap: 24px; }
+      .toc li { break-inside: avoid; }
+    }
+    @media (max-width: 560px) {
+      .nav { width: min(100% - 24px, 1180px); min-height: 68px; }
+      .brand img { width: 42px; height: 42px; }
+      .brand-name { font-size: .83rem; }
+      .brand-sub { font-size: .65rem; }
+      .nav-actions { gap: 6px; }
+      .nav-link, .back-link { padding: 9px 11px; font-size: .78rem; }
+      .hero { width: calc(100% - 24px); margin-top: 24px; }
+      .hero-card { border-radius: 22px; }
+      .layout { width: calc(100% - 24px); gap: 15px; margin-bottom: 40px; }
+      .toc { padding: 18px; }
+      .toc ol { columns: 1; }
+      .term-card { border-radius: 16px; }
+      .term-card p, .term-card ul { font-size: .91rem; }
+      .footer-inner { align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
-<body>
-<header><div class="nav">
-<a class="brand" href="projects.html"><img src="logo.jpeg" alt="JS Code Output"><div><strong>JS Code Output</strong><span>Template Gallery</span></div></a>
-<div class="nav-actions"><a class="btn light" href="projects.html">Back</a><a class="btn gold" href="add-templet.html">＋ Add Template</a></div>
-</div></header>
-<main>
-<section class="hero">
-<div class="badge">Template Gallery</div>
-<h1>Build Something Beautiful.</h1>
-<p>Explore ready-made templates, preview them live, and use the one that fits your next project.</p>
-</section>
-<div class="toolbar">
-<input id="search" class="search" placeholder="Search templates..." autocomplete="off">
-<div id="chips" class="chips"></div>
-</div>
-<section id="gallery" class="gallery"><div class="empty"><h2>Loading Templates…</h2><p>Connecting to the template gallery.</p></div></section>
-</main>
-<footer>JS CODE OUTPUT · Templates for creators</footer>
-<div id="toast" class="toast"></div>
+<body id="top">
+  <div class="topline"></div>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html.html" aria-label="JS CODE OUTPUT home">
+        <img src="logo.jpeg" alt="JS CODE OUTPUT logo" onerror="this.style.display='none'">
+        <span class="brand-copy">
+          <span class="brand-name">JS CODE OUTPUT</span>
+          <span class="brand-sub">Build. Test. Create.</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <a class="back-link" href="index.html.html">← Home</a>
+        <a class="nav-link" href="#terms-start">Read Terms <span aria-hidden="true">↘</span></a>
+      </div>
+    </nav>
+  </header>
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">Legal &amp; responsible use</span>
+        <h1>Terms &amp; Conditions</h1>
+        <p>These terms explain the rules for accessing and using JS CODE OUTPUT, including its coding workspace, tools, projects, downloads, publishing features and related services. Please read them carefully before using the platform.</p>
+        <div class="hero-meta">
+          <span class="meta-chip"><strong>Effective:</strong> 23 October 2026</span>
+          <span class="meta-chip"><strong>Applies to:</strong> Website &amp; services</span>
+          <span class="meta-chip"><strong>Read time:</strong> About 8–10 minutes</span>
+        </div>
+      </div>
+    </section>
 
-const firebaseConfig={
- apiKey:"AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
- authDomain:"js-code-output.firebaseapp.com",
- databaseURL:"https://js-code-output-default-rtdb.firebaseio.com",
- projectId:"js-code-output",
- storageBucket:"js-code-output.firebasestorage.app",
- messagingSenderId:"600350018167",
- appId:"1:600350018167:web:3ceaa5a5e0d1050504d472",
- measurementId:"G-L47M0E9V96"
-};
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app);
-const gallery=document.getElementById("gallery"),search=document.getElementById("search"),chips=document.getElementById("chips");
-let all=[],category="All";
+    <section class="layout" id="terms-start">
+      <aside class="toc" aria-label="Terms contents">
+        <h2>On this page</h2>
+        <ol>
+          <li><a href="#s1">Acceptance of Terms</a></li>
+          <li><a href="#s2">About the Platform</a></li>
+          <li><a href="#s3">Eligibility</a></li>
+          <li><a href="#s4">Accounts and Security</a></li>
+          <li><a href="#s5">Projects and User Content</a></li>
+          <li><a href="#s6">Code and AI Tools</a></li>
+          <li><a href="#s7">Testing and Execution</a></li>
+          <li><a href="#s8">Downloads and Publishing</a></li>
+          <li><a href="#s9">Payments and Plans</a></li>
+          <li><a href="#s10">Refunds and Disputes</a></li>
+          <li><a href="#s11">Acceptable Use</a></li>
+          <li><a href="#s12">Third-Party Services</a></li>
+          <li><a href="#s13">Privacy and Data</a></li>
+          <li><a href="#s14">Security and Availability</a></li>
+          <li><a href="#s15">Intellectual Property</a></li>
+          <li><a href="#s16">Disclaimers</a></li>
+          <li><a href="#s17">Limitation of Liability</a></li>
+          <li><a href="#s18">Indemnity</a></li>
+          <li><a href="#s19">Suspension and Termination</a></li>
+          <li><a href="#s20">Changes to These Terms</a></li>
+          <li><a href="#s21">Governing Law</a></li>
+          <li><a href="#s22">Contact</a></li>
+        </ol>
+      </aside>
 
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function render(){
- const q=search.value.trim().toLowerCase();
- const list=all.filter(t=>(category==="All"||String(t.category||"Other")===category)&&((t.name||"").toLowerCase().includes(q)||(t.description||"").toLowerCase().includes(q)));
- if(!list.length){gallery.innerHTML='<div class="empty"><h2>No Templates Found</h2><p>Try another search or category.</p></div>';return}
- gallery.innerHTML=list.map(t=>{
-   const preview=t.previewUrl?`<iframe loading="lazy" sandbox="allow-scripts" src="${esc(t.previewUrl)}"></iframe>`:`<div class="placeholder">${esc(t.name||"Template")}</div>`;
-   const use=t.templateUrl||t.liveUrl||"workspace.html";
-   return `<article class="card"><div class="preview">${preview}</div><div class="cardbody"><div class="meta"><span class="category">${esc(t.category||"Other")}</span><span class="date">${t.createdAt?new Date(t.createdAt).toLocaleDateString():""}</span></div><h3>${esc(t.name||"Untitled Template")}</h3><div class="desc">${esc(t.description||"A beautiful template for your next project.")}</div><div class="cardactions"><a class="btn light" target="_blank" rel="noopener" href="${esc(t.liveUrl||t.previewUrl||use)}">Live Preview</a><a class="btn" href="${esc(use)}">Use Template</a></div></div></article>`;
- }).join("");
-}
-function renderChips(){
- const cats=["All",...new Set(all.map(x=>x.category||"Other"))];
- chips.innerHTML=cats.map(c=>`<button class="chip ${c===category?"active":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
- chips.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{category=b.dataset.cat;renderChips();render()});
-}
-onValue(ref(db,"templates"),snap=>{
- const data=snap.val()||{};
- all=Object.entries(data).map(([id,v])=>({id,...v})).filter(x=>x.status!=="rejected").sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
- renderChips();render();
-},err=>{gallery.innerHTML='<div class="empty"><h2>Gallery Unavailable</h2><p>Please check Firebase Database rules/configuration.</p></div>';console.error(err)});
-search.addEventListener("input",render);
-onAuthStateChanged(auth,()=>{});
-</script>
+      <div class="terms">
+        <div class="notice"><strong>Important:</strong> These terms are a general website-use agreement template. Review them against your actual features, payment settings and business details before publishing. They are not a substitute for advice from a qualified legal professional.</div>
+
+        <article class="term-card" id="s1">
+          <h2><span class="number">01</span> Acceptance of Terms</h2>
+          <p>By visiting, accessing, creating an account on, or using JS CODE OUTPUT (“Platform”, “we”, “us” or “our”), you agree to these Terms &amp; Conditions (“Terms”) and any policies clearly linked from them. If you do not agree, do not use the Platform.</p>
+          <p>If you use the Platform on behalf of another person or organisation, you confirm that you have authority to accept these Terms for them. Additional terms may apply to particular features, offers or services; if they conflict with these Terms, the feature-specific terms apply to that feature to the extent of the conflict.</p>
+        </article>
+
+        <article class="term-card" id="s2">
+          <h2><span class="number">02</span> About JS CODE OUTPUT</h2>
+          <p>JS CODE OUTPUT provides web-based coding and project-building features. Depending on availability, these may include code editing, preview or execution tools, project workspaces, templates, code-generation assistance, file downloads, account sign-in and project publishing.</p>
+          <p>Features may change over time, differ by device or account, or be temporarily unavailable. We may introduce, modify, limit or discontinue a feature where reasonably necessary, subject to applicable law and any paid commitments that apply to you.</p>
+        </article>
+
+        <article class="term-card" id="s3">
+          <h2><span class="number">03</span> Eligibility and Responsible Use</h2>
+          <p>You must be legally able to enter into a binding agreement under the laws that apply to you. If you are under the age of majority where you live, use the Platform only with the involvement and permission of a parent or legal guardian where required by law.</p>
+          <p>You are responsible for making sure your use of the Platform is lawful in your location and complies with applicable rules, including rules relating to privacy, intellectual property, consumer protection and online conduct.</p>
+        </article>
+
+        <article class="term-card" id="s4">
+          <h2><span class="number">04</span> Accounts and Account Security</h2>
+          <p>Some features may require sign-in, including sign-in through a third-party identity provider. You agree to provide accurate information when requested and to keep your account information reasonably up to date.</p>
+          <ul>
+            <li>You are responsible for activity carried out through your account, except where applicable law provides otherwise.</li>
+            <li>Keep your sign-in credentials and devices secure. Do not share access in a way that compromises your account or violates these Terms.</li>
+            <li>Notify us promptly if you suspect unauthorised access or misuse of your account.</li>
+            <li>Do not impersonate another person, misrepresent your affiliation, or create accounts for fraudulent purposes.</li>
+          </ul>
+          <p>Third-party sign-in providers may apply their own terms and privacy policies. We do not control their authentication systems.</p>
+        </article>
+
+        <article class="term-card" id="s5">
+          <h2><span class="number">05</span> Projects, Files and User Content</h2>
+          <p>“User Content” means code, text, images, files, project names, prompts and other material you submit, create, upload, store or publish through the Platform.</p>
+          <p>As between you and us, you retain rights you already own in your User Content. You are responsible for ensuring you have the necessary rights, permissions and licences for anything you upload, include in a project or publish.</p>
+          <p>You grant us a limited, non-exclusive permission to host, process, reproduce, transmit and display your User Content only as reasonably necessary to operate, secure, maintain and provide the features you choose, and as otherwise described in the applicable privacy notice or agreed by you. This permission ends when the content is removed, except for copies retained in backups, records or as required by law for a reasonable period.</p>
+          <p>Save backups of important projects. Unless a feature expressly promises storage or recovery, we do not guarantee that content will always be retained, recoverable or available across devices.</p>
+        </article>
+
+        <article class="term-card" id="s6">
+          <h2><span class="number">06</span> Generated Code, Templates and Assistance Tools</h2>
+          <p>Some tools may suggest or generate code, text, designs or other output based on your instructions (“Generated Output”). Generated Output can be incomplete, inaccurate, insecure, similar to material produced for others, or unsuitable for your intended purpose.</p>
+          <ul>
+            <li>Review and test Generated Output before using it in a real project or production environment.</li>
+            <li>Check licences, attribution requirements, security risks, accessibility, performance and compatibility before publishing or distributing code.</li>
+            <li>Do not assume Generated Output is unique, error-free, legally cleared or guaranteed to be owned exclusively by you.</li>
+            <li>Do not submit secrets, passwords, private keys, payment details or confidential information into a tool unless you have reviewed the relevant data-handling terms and are comfortable doing so.</li>
+          </ul>
+          <p>Any ownership or licence in a template or third-party component remains subject to its applicable licence and terms. If a template is offered under separate terms, those terms govern your use of that template.</p>
+        </article>
+
+        <article class="term-card" id="s7">
+          <h2><span class="number">07</span> Code Execution, Preview and Testing</h2>
+          <p>Code execution and previews are provided for convenience and may run in a browser, sandbox or third-party environment. Results can differ from how code behaves on another device, browser, server or production system.</p>
+          <p>Do not use execution features to run malicious code, attack systems, mine cryptocurrency without permission, bypass security controls, or access data or systems you are not authorised to use. You are responsible for reviewing code before running it and for the effects of code you submit.</p>
+          <p>We do not guarantee that every programming language, library, package, browser API, file format or runtime will be supported or work without errors.</p>
+        </article>
+
+        <article class="term-card" id="s8">
+          <h2><span class="number">08</span> Downloads, Sharing and Publishing</h2>
+          <p>If download, export, sharing or publishing features are available, you are responsible for checking your project before using them. Published projects may be accessible to other people through a public URL or other sharing mechanism, depending on the settings you select.</p>
+          <ul>
+            <li>Do not publish private information, credentials, copyrighted material or other content unless you have permission to do so.</li>
+            <li>Check public files for API keys, access tokens, database credentials, personal data and other secrets before publishing.</li>
+            <li>You are responsible for the content, functionality, legal compliance and ongoing maintenance of projects you publish.</li>
+            <li>We may remove or restrict a shared project where we reasonably believe it violates these Terms, infringes rights, creates a security risk or is required to be removed by law.</li>
+          </ul>
+          <p>Third-party hosting, domains and publishing providers may impose additional limits or terms. We cannot guarantee that a published link will remain available indefinitely.</p>
+        </article>
+
+        <article class="term-card" id="s9">
+          <h2><span class="number">09</span> Payments, Fees and Plans</h2>
+          <p>Certain features, downloads, publishing options or plans may require payment. Any price, currency, billing period, feature limit and applicable tax should be shown before you confirm the purchase. Please check the checkout details carefully before paying.</p>
+          <ul>
+            <li>Where a payment provider is used, your payment may also be subject to that provider’s terms and processing rules.</li>
+            <li>Prices, plan features and usage limits may change for future purchases or renewals, subject to applicable law and any notice required.</li>
+            <li>A payment confirmation does not guarantee that third-party hosting, external websites or every project feature will operate without interruption.</li>
+            <li>Do not attempt to evade payment controls, reverse a valid payment fraudulently, or misuse a promotional offer.</li>
+          </ul>
+          <p>Unless checkout clearly states otherwise, do not assume that a purchase automatically renews, grants unlimited use, or includes third-party services. Any time-limited access or download entitlement will be governed by the offer shown at the time of purchase.</p>
+        </article>
+
+        <article class="term-card" id="s10">
+          <h2><span class="number">10</span> Refunds, Cancellations and Payment Disputes</h2>
+          <p>Before completing a purchase, review the displayed price, scope, duration and refund conditions. Refund eligibility depends on the terms presented at checkout and applicable consumer-protection law. Nothing in these Terms removes rights that cannot legally be excluded.</p>
+          <p>If you believe you were charged incorrectly, contact us with the transaction reference, date and a description of the issue. Do not send full card numbers, passwords, one-time passcodes or other sensitive authentication details. Payment disputes may also be handled by the payment provider or your bank under their processes.</p>
+          <p class="small-note">Operator note: publish a specific refund and cancellation policy here if your checkout requires one, and ensure it matches your payment provider configuration and applicable law.</p>
+        </article>
+
+        <article class="term-card" id="s11">
+          <h2><span class="number">11</span> Acceptable Use and Prohibited Activities</h2>
+          <p>You agree not to use the Platform to:</p>
+          <ul>
+            <li>Break the law, violate another person’s rights, or encourage unlawful conduct.</li>
+            <li>Upload or distribute malware, ransomware, spyware, phishing pages or other harmful material.</li>
+            <li>Attempt unauthorised access to accounts, systems, networks, databases or projects.</li>
+            <li>Probe, scan or test a system for vulnerabilities without permission, or interfere with service operation.</li>
+            <li>Bypass authentication, rate limits, payment requirements, access restrictions or security measures.</li>
+            <li>Harass, threaten, defraud, impersonate or expose the private information of another person.</li>
+            <li>Infringe copyright, trademark, privacy, publicity or other intellectual-property or personal rights.</li>
+            <li>Send spam, conduct deceptive promotions, or use the Platform to mislead users.</li>
+            <li>Overload, disrupt, scrape or automate access to the Platform in a way that harms service stability or violates applicable restrictions.</li>
+            <li>Use the Platform to create or distribute content that is unlawful or that violates applicable third-party terms.</li>
+          </ul>
+          <p>We may investigate suspected misuse and take reasonable action, including limiting access, removing content or reporting conduct to relevant authorities where appropriate or legally required.</p>
+        </article>
+
+        <article class="term-card" id="s12">
+          <h2><span class="number">12</span> Third-Party Services and Links</h2>
+          <p>The Platform may rely on or link to services operated by other organisations, such as identity providers, payment processors, hosting platforms, code libraries, fonts or analytics providers. These services are controlled by their respective operators and may have separate terms, privacy policies, fees and availability limits.</p>
+          <p>We are not responsible for third-party content or services to the extent permitted by law. A link or integration does not necessarily mean that we endorse the third party. You should review the relevant third-party terms before using those services.</p>
+        </article>
+
+        <article class="term-card" id="s13">
+          <h2><span class="number">13</span> Privacy and Data</h2>
+          <p>Our handling of personal information should be explained in a separate Privacy Policy. That policy should describe what information is collected, why it is used, which service providers may process it, how long it is retained, and how users can exercise applicable rights.</p>
+          <p>By using the Platform, you acknowledge that technical information may be processed as needed to provide features, maintain security, prevent abuse and troubleshoot problems, subject to the applicable privacy notice and law. Do not upload another person’s personal information unless you have a lawful basis and any required permission.</p>
+          <p><strong>Read alongside:</strong> <a href="privacy.html">Privacy Policy</a> (update this link if your privacy page uses a different filename).</p>
+        </article>
+
+        <article class="term-card" id="s14">
+          <h2><span class="number">14</span> Security, Maintenance and Availability</h2>
+          <p>We take reasonable steps appropriate to the service to maintain and protect the Platform, but no website, network, storage system or transmission method can be guaranteed completely secure. You use the Platform with this understanding.</p>
+          <p>The Platform may be unavailable because of maintenance, updates, outages, internet problems, third-party failures, security incidents or circumstances beyond our reasonable control. We may apply usage limits or temporarily restrict features to protect users and service reliability.</p>
+          <p>You should keep independent backups of important code and project files, use secure credentials, and avoid relying on the Platform as the sole storage location for critical work.</p>
+        </article>
+
+        <article class="term-card" id="s15">
+          <h2><span class="number">15</span> Intellectual Property</h2>
+          <p>The Platform’s branding, logo, visual design, website layout, original text, software and other materials owned by the operator are protected by applicable intellectual-property laws, except for User Content and third-party material governed by their own rights or licences.</p>
+          <p>These Terms do not transfer ownership of the Platform or its underlying technology to you. You may not copy, resell, reverse engineer, redistribute or commercially exploit parts of the Platform except where permitted by law, an applicable open-source licence, or our prior written permission.</p>
+          <p>If you believe content on the Platform infringes your rights, contact us with enough information to identify the material, explain the right you own or represent, and provide a way to contact you. We may request additional information before acting.</p>
+        </article>
+
+        <article class="term-card" id="s16">
+          <h2><span class="number">16</span> Disclaimers</h2>
+          <p>To the maximum extent permitted by applicable law, the Platform and its features are provided on an “as available” and, where legally permitted, “as is” basis. We do not promise that the Platform will be uninterrupted, error-free, compatible with every device, or suitable for every particular purpose.</p>
+          <p>We do not warrant that code, templates, generated output, previews, project exports or third-party integrations will be accurate, secure, complete, non-infringing or fit for production. You are responsible for independently checking any output before relying on it.</p>
+          <p>These disclaimers apply only to the extent permitted by law and do not exclude any guarantee or right that cannot legally be excluded.</p>
+        </article>
+
+        <article class="term-card" id="s17">
+          <h2><span class="number">17</span> Limitation of Liability</h2>
+          <p>To the maximum extent permitted by law, JS CODE OUTPUT and its operator will not be liable for indirect, incidental, special, consequential or punitive losses, or for loss of profits, revenue, business opportunity, goodwill, data or project availability arising from or related to use of the Platform.</p>
+          <p>To the maximum extent permitted by law, any liability arising from the Platform will be limited to the amount you paid directly to us for the relevant paid feature during the three months before the event giving rise to the claim, or the minimum amount required by applicable law if a limit is not permitted. This clause does not limit liability that cannot lawfully be limited.</p>
+          <p>Nothing in these Terms excludes or limits liability for fraud, wilful misconduct, or any other liability where exclusion or limitation is prohibited by law.</p>
+        </article>
+
+        <article class="term-card" id="s18">
+          <h2><span class="number">18</span> Indemnity</h2>
+          <p>To the extent permitted by applicable law, you agree to be responsible for claims, losses and reasonable costs arising from your unlawful use of the Platform, your breach of these Terms, or your User Content infringing another person’s rights. This clause does not apply to the extent a claim is caused by our own unlawful conduct or where such an obligation is not permitted by law.</p>
+        </article>
+
+        <article class="term-card" id="s19">
+          <h2><span class="number">19</span> Suspension and Termination</h2>
+          <p>You may stop using the Platform at any time. If account deletion is available, use the provided account controls or contact us for assistance. Deleting an account may not immediately remove information that must be retained for legal, security, fraud-prevention or legitimate recordkeeping reasons.</p>
+          <p>We may suspend or restrict access where reasonably necessary to protect the Platform or its users, respond to a security incident, enforce these Terms, comply with law, or address non-payment or suspected fraud. Where appropriate and practical, we will provide notice and an opportunity to resolve the issue.</p>
+          <p>Terms that by their nature should continue after termination—including provisions on intellectual property, disclaimers, liability, indemnity and disputes—will continue to apply as permitted by law.</p>
+        </article>
+
+        <article class="term-card" id="s20">
+          <h2><span class="number">20</span> Changes to These Terms</h2>
+          <p>We may update these Terms to reflect changes to the Platform, our practices or legal requirements. The updated version will be posted on this page with a revised effective date. If a change materially affects users, we will provide notice where required by law or reasonably practicable.</p>
+          <p>Using the Platform after updated Terms take effect means you accept the updated Terms to the extent allowed by law. If you do not agree with a change, stop using the affected services.</p>
+        </article>
+
+        <article class="term-card" id="s21">
+          <h2><span class="number">21</span> Governing Law and Disputes</h2>
+          <p>These Terms are subject to the laws applicable in India, without overriding any mandatory consumer rights or protections that apply to you. Courts with appropriate jurisdiction in India may hear disputes, subject to applicable law and any mandatory dispute-resolution process.</p>
+          <p>Before starting formal proceedings, you and we are encouraged to try to resolve a concern informally by contacting us and providing a clear description of the issue. This does not prevent either party from seeking urgent legal relief or exercising statutory rights.</p>
+        </article>
+
+        <article class="term-card" id="s22">
+          <h2><span class="number">22</span> Contact and General Provisions</h2>
+          <p>If you have questions about these Terms, a project, a purchase or a suspected violation, contact the JS CODE OUTPUT team through the official contact method published on the website.</p>
+          <p><strong>Website:</strong> <a href="https://jscodoutput.in/">jscodoutput.in</a></p>
+          <p class="small-note">Before publishing, add a monitored support email or contact form here. Do not publish a personal email address unless you want it to be publicly available.</p>
+          <p>If any provision of these Terms is found unenforceable, the remaining provisions will continue to apply to the extent permitted by law. Our failure to enforce a provision is not a waiver of our right to do so later. You may not transfer your rights under these Terms without our consent where consent is legally required; we may transfer these Terms as part of a lawful business reorganisation or transfer, subject to applicable law.</p>
+          <p>These Terms, together with any policies or feature-specific terms referenced here, describe the agreement between you and us concerning your use of the Platform. Headings are included for convenience and do not change the meaning of the Terms.</p>
+        </article>
+
+        <div class="notice"><strong>Thank you for using JS CODE OUTPUT.</strong> Use the Platform responsibly, keep backups of important work, and review your projects before running, downloading or publishing them.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.jpeg" alt="JS CODE OUTPUT logo" onerror="this.style.display='none'">
+        <div><strong>JS CODE OUTPUT</strong><span>Build. Test. Create.</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html.html">Home</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="#top">Back to top ↑</a>
+      </div>
+      <div class="copyright">© <span id="year">2026</span> JS CODE OUTPUT. All rights reserved. Use of this website is subject to these Terms &amp; Conditions.</div>
+    </div>
+  </footer>
+  <button class="to-top" type="button" aria-label="Back to top" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <script>
+    // Keep the footer year current automatically.
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
