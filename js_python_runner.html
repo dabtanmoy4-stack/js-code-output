@@ -354,34 +354,6 @@ body.light .cm-def { color:#087c91!important; }
   overflow-wrap:anywhere;
 }
 
-
-/* Classic blue and gold Boost warning and output notice. */
-.output .boost-notice{font-family:Inter,Arial,sans-serif;white-space:normal;max-width:620px;margin:4px auto;padding:clamp(16px,3vw,28px);border:1px solid #c7a64a;border-radius:10px;background:#102b4c;box-shadow:0 8px 24px #0002;color:#f7f9ff}
-.output .boost-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:8px;margin-bottom:16px;padding:5px;background:#d5b34d;box-shadow:none;overflow:hidden}
-.output .boost-icon img{display:block;width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff;padding:3px}
-.output .boost-brand{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:#f0c653;margin:0 0 7px!important}
-.output .boost-notice h3{margin:0 0 10px;font-size:clamp(18px,2.5vw,23px);line-height:1.3;color:#f0c653}
-.output .boost-notice p{margin:8px 0;line-height:1.65;font-size:13px;color:#f7f9ff}
-.output .boost-notice .boost-sub{color:#c8d9ec}
-.output .boost-button{display:inline-flex;align-items:center;gap:9px;margin-top:12px;padding:11px 16px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-weight:800;box-shadow:none;transition:background .2s;cursor:pointer}
-.output .boost-button:hover{background:#2674b8}
-.output .boost-foot{font-size:11px!important;color:#c8d9ec!important;margin-top:13px!important}
-.boost-warning-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,12,25,.78);backdrop-filter:blur(7px)}
-.boost-warning-overlay[hidden]{display:none}
-.boost-warning-card{position:relative;width:min(540px,100%);padding:clamp(22px,5vw,36px);border:1px solid #c7a64a;border-radius:12px;background:#102b4c;color:#f8fbff;box-shadow:0 18px 55px #0007;text-align:left;font-family:Inter,Arial,sans-serif;animation:boostWarningIn .24s ease-out}
-@keyframes boostWarningIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.boost-warning-close{position:absolute;right:12px;top:12px;width:36px;height:36px;border:1px solid #8baac7;border-radius:10px;background:#ffffff0c;color:#fff;font-size:25px;line-height:1;cursor:pointer}
-.boost-warning-close:hover{background:#ffffff20}
-.boost-warning-kicker{margin:0 42px 9px 0;color:#f0c653;font-size:11px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}
-.boost-warning-card h2{margin:0 35px 12px 0;font-size:clamp(22px,4vw,30px);line-height:1.2;color:#f0c653}
-.boost-warning-card p{margin:10px 0;color:#e8f1fb;font-size:14px;line-height:1.7}
-.boost-warning-actions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:20px}
-.boost-warning-actions button{font-weight:800;cursor:pointer}
-.boost-warning-go{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-size:14px;box-shadow:none}
-.boost-warning-go:hover{background:#2674b8}
-.boost-warning-change{padding:5px 2px;border:0;background:transparent;color:#c9d9e9;font-size:12px;text-decoration:underline;text-underline-offset:3px}
-.boost-warning-change:hover{color:#f0c653}
-
 .status {
   display:flex;
   justify-content:space-between;
@@ -634,6 +606,122 @@ header { flex-wrap:wrap; }
   .brand-js { animation-duration:12s; }
 }
 
+/* Classic download payment dialog */
+.payment-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,7,12,.72);backdrop-filter:blur(3px)}
+.payment-overlay.open{display:flex}
+.payment-card{width:min(100%,390px);padding:27px 24px;background:linear-gradient(145deg,#fffdf7,#f2e8d4);color:#241b2d;border:1px solid #c5a25c;border-radius:12px;box-shadow:0 22px 70px rgba(0,0,0,.38);text-align:center;position:relative}
+.payment-card:before{content:"";position:absolute;inset:6px;border:1px solid rgba(167,123,46,.24);border-radius:7px;pointer-events:none}
+.payment-card h2{margin:0 0 9px;font-family:Georgia,'Times New Roman',serif;font-size:25px;color:#38264d}
+.payment-card p{margin:0;color:#65596c;font-size:14px;line-height:1.6}
+.payment-price{margin:18px 0 8px;font-family:Georgia,'Times New Roman',serif;font-size:39px;font-weight:800;color:#8d6524}
+.payment-price small{font-family:Inter,Arial,sans-serif;font-size:13px;font-weight:600;color:#65596c}
+.payment-actions{display:flex;gap:10px;margin-top:20px;position:relative}
+.payment-actions button{flex:1;min-height:44px;border-radius:5px;font:700 14px Inter,Arial,sans-serif;cursor:pointer}
+.pay-continue{border:1px solid #8d6524;background:linear-gradient(135deg,#8d6524,#c09a4d,#8d6524);color:white}
+.pay-cancel{border:1px solid #cbbda4;background:#fffdf8;color:#493b53}
+.payment-footnote{display:block;margin-top:13px!important;font-size:11px!important;color:#84798a!important}
+
+
+/* Classic blue and gold Boost warning and output notice. */
+.output .boost-notice{font-family:Inter,Arial,sans-serif;white-space:normal;max-width:620px;margin:4px auto;padding:clamp(16px,3vw,28px);border:1px solid #c7a64a;border-radius:10px;background:#102b4c;box-shadow:0 8px 24px #0002;color:#f7f9ff}
+.output .boost-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:8px;margin-bottom:16px;padding:5px;background:#d5b34d;box-shadow:none;overflow:hidden}
+.output .boost-icon img{display:block;width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff;padding:3px}
+.output .boost-brand{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:#f0c653;margin:0 0 7px!important}
+.output .boost-notice h3{margin:0 0 10px;font-size:clamp(18px,2.5vw,23px);line-height:1.3;color:#f0c653}
+.output .boost-notice p{margin:8px 0;line-height:1.65;font-size:13px;color:#f7f9ff}
+.output .boost-notice .boost-sub{color:#c8d9ec}
+.output .boost-button{display:inline-flex;align-items:center;gap:9px;margin-top:12px;padding:11px 16px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-weight:800;box-shadow:none;transition:background .2s;cursor:pointer}
+.output .boost-button:hover{background:#2674b8}
+.output .boost-foot{font-size:11px!important;color:#c8d9ec!important;margin-top:13px!important}
+.boost-warning-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,12,25,.78);backdrop-filter:blur(7px)}
+.boost-warning-overlay[hidden]{display:none}
+.boost-warning-card{position:relative;width:min(540px,100%);padding:clamp(22px,5vw,36px);border:1px solid #c7a64a;border-radius:12px;background:#102b4c;color:#f8fbff;box-shadow:0 18px 55px #0007;text-align:left;font-family:Inter,Arial,sans-serif;animation:boostWarningIn .24s ease-out}
+@keyframes boostWarningIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.boost-warning-close{position:absolute;right:12px;top:12px;width:36px;height:36px;border:1px solid #8baac7;border-radius:10px;background:#ffffff0c;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.boost-warning-close:hover{background:#ffffff20}
+.boost-warning-kicker{margin:0 42px 9px 0;color:#f0c653;font-size:11px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}
+.boost-warning-card h2{margin:0 35px 12px 0;font-size:clamp(22px,4vw,30px);line-height:1.2;color:#f0c653}
+.boost-warning-card p{margin:10px 0;color:#e8f1fb;font-size:14px;line-height:1.7}
+.boost-warning-actions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:20px}
+.boost-warning-actions button{font-weight:800;cursor:pointer}
+.boost-warning-go{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-size:14px;box-shadow:none}
+.boost-warning-go:hover{background:#2674b8}
+.boost-warning-change{padding:5px 2px;border:0;background:transparent;color:#c9d9e9;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.boost-warning-change:hover{color:#f0c653}
+
+
+
+/* Fixed CodePen-style workspace: long code scrolls inside the editor, not the page. */
+html, body {
+  width:100%;
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+body {
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+header, nav, .search-panel {
+  flex:0 0 auto;
+}
+.workspace {
+  flex:1 1 auto;
+  min-height:0 !important;
+  height:0;
+  overflow:hidden;
+  grid-template-rows:minmax(0,1fr) !important;
+}
+.pane, .editor-pane, .output-pane, .explorer {
+  min-height:0 !important;
+  height:100%;
+  overflow:hidden;
+}
+.file-list, #fileDropZone {
+  min-height:0;
+  overflow:auto;
+}
+.editor-wrap {
+  flex:1 1 auto;
+  height:0;
+  min-height:0 !important;
+  overflow:hidden;
+}
+.CodeMirror {
+  height:100% !important;
+  min-height:0 !important;
+}
+.CodeMirror-scroll {
+  overflow:auto !important;
+}
+.output {
+  min-height:0;
+  height:0;
+  max-height:none;
+}
+.console-panel, #consoleOutput {
+  max-height:min(22dvh,180px);
+}
+@media (max-width:900px) {
+  .workspace {
+    grid-template-rows:minmax(0,1fr) minmax(130px,30dvh) !important;
+  }
+  .explorer { min-height:0 !important; }
+  .editor-pane { min-height:0 !important; }
+  .output-pane { min-height:0 !important; }
+  .editor-wrap { min-height:0 !important; }
+  .CodeMirror { min-height:0 !important; }
+  .output { min-height:0 !important; }
+}
+@media (max-width:500px) {
+  .workspace {
+    grid-template-columns:90px minmax(0,1fr) !important;
+    grid-template-rows:minmax(0,1fr) minmax(125px,29dvh) !important;
+  }
+}
+
 </style>
 </head>
 
@@ -656,6 +744,7 @@ header { flex-wrap:wrap; }
   <button class="btn" id="consoleBtn" type="button" title="Toggle console">▣ Console</button>
   <button class="btn primary" id="runBtn" type="button">▶ Run</button>
   <button class="btn" id="downloadBtn" type="button">⬇ Download</button>
+  <button class="btn" id="shareProjectBtn" type="button">↗ Share Project</button>
 </nav>
 
 <section class="search-panel" id="searchPanel" hidden>
@@ -668,6 +757,19 @@ header { flex-wrap:wrap; }
   <button class="icon-action" id="closeSearchBtn" type="button" aria-label="Close search">×</button>
   <span id="searchCount">Ready</span>
 </section>
+<div class="payment-overlay" id="downloadPaymentOverlay" role="dialog" aria-modal="true" aria-labelledby="downloadPaymentTitle">
+  <div class="payment-card">
+    <h2 id="downloadPaymentTitle">Unlock Project Downloads</h2>
+    <p id="downloadPaymentDescription">Pay once and download any project for the next 24 hours.</p>
+    <div class="payment-price">₹2 <small>/ 24 hours</small></div>
+    <p>Google sign-in is required. Payments are available through the India payment flow.</p>
+    <div class="payment-actions">
+      <button class="pay-cancel" id="cancelDownloadPayment" type="button">Cancel</button>
+      <button class="pay-continue" id="payDownloadFee" type="button">Pay ₹2</button>
+    </div>
+    <p class="payment-footnote" id="paymentFootnote">You’ll continue to country selection before payment.</p>
+  </div>
+</div>
 <main class="workspace">
 
   <aside class="pane explorer">
@@ -744,6 +846,9 @@ print(greet("Python Developer"))</textarea>
 
 <div class="notice" id="notice" role="status" aria-live="polite"></div>
 <div id="explorerContextMenu" class="context-menu" hidden></div>
+
+
+
 <div class="boost-warning-overlay" id="boostWarningOverlay" role="dialog" aria-modal="true" aria-labelledby="boostWarningTitle" hidden>
   <div class="boost-warning-card">
     <button type="button" class="boost-warning-close" id="boostWarningClose" aria-label="Close warning" title="Close">×</button>
@@ -1233,7 +1338,6 @@ async function loadPython(){
   }
 }
 
-
 function showBoostNotice(stdout='', detail='', runtimeUnavailable=false){
   const output=$('output');
   const overlay=$('boostWarningOverlay');
@@ -1359,8 +1463,61 @@ $('eraseCodeBtn').addEventListener('click',()=>{
   notify('Current editor code erased.');
 });
 
-/* Download the complete Explorer project as a ZIP archive */
-$('downloadBtn').addEventListener('click',async()=>{
+/* Download and Share: Google sign-in first, then the ₹2 / 24-hour payment flow.
+   The country page and server-side payment verification/publishing API are to be connected next. */
+let pendingActionAfterSignIn=null;
+let activePaidAction='download';
+function openPayment(action='download'){
+  activePaidAction=action;
+  const isShare=action==='share';
+  $('downloadPaymentTitle').textContent=isShare?'Unlock Project Sharing':'Unlock Project Downloads';
+  $('downloadPaymentDescription').textContent=isShare
+    ?'Pay once to publish your current project and get a shareable live link for the next 24 hours.'
+    :'Pay once and download any project for the next 24 hours.';
+  $('payDownloadFee').textContent='Pay ₹2';
+  $('paymentFootnote').textContent='You’ll continue to country selection before payment.';
+  $('downloadPaymentOverlay').classList.add('open');
+  $('payDownloadFee').focus();
+}
+function closeDownloadPayment(){ $('downloadPaymentOverlay').classList.remove('open'); }
+async function requestPaidAction(action){
+  if(!auth){notify('Google sign-in is unavailable. Check Firebase setup and try again.');return;}
+  if(!auth.currentUser){
+    pendingActionAfterSignIn=action;
+    try{
+      const provider=new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({prompt:'select_account'});
+      await auth.signInWithPopup(provider);
+      if(auth.currentUser){const next=pendingActionAfterSignIn||action;pendingActionAfterSignIn=null;openPayment(next);}
+    }catch(err){
+      pendingActionAfterSignIn=null;
+      notify(err.code==='auth/popup-blocked'?'Allow popups for Google sign-in.':(err.message||'Google sign-in failed.'));
+    }
+    return;
+  }
+  openPayment(action);
+}
+async function requestDownloadAccess(){return requestPaidAction('download');}
+$('downloadBtn').addEventListener('click',requestDownloadAccess);
+$('shareProjectBtn').addEventListener('click',()=>requestPaidAction('share'));
+$('cancelDownloadPayment').addEventListener('click',closeDownloadPayment);
+$('downloadPaymentOverlay').addEventListener('click',e=>{if(e.target===$('downloadPaymentOverlay'))closeDownloadPayment();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDownloadPayment();});
+$('payDownloadFee').addEventListener('click',()=>{
+  // Backend will create/verify the payment and grant a 24-hour entitlement.
+  // Keep the intended action and return URL so the backend can resume the correct workflow.
+  const returnUrl=new URL(window.location.href);
+  returnUrl.searchParams.delete('payment');
+  returnUrl.searchParams.delete('action');
+  const target=new URL('country_selection.html',window.location.href);
+  target.searchParams.set('purpose',activePaidAction);
+  target.searchParams.set('returnUrl',returnUrl.href);
+  target.searchParams.set('returnAction',activePaidAction);
+  window.location.href=target.href;
+});
+
+/* Full project ZIP export. Backend entitlement verification will be enforced before this is enabled. */
+async function downloadProjectZip(){
   saveEditor();
   persist();
   const button=$('downloadBtn');
@@ -1373,41 +1530,48 @@ $('downloadBtn').addEventListener('click',async()=>{
   status('Building project ZIP…');
   try{
     const zip=new JSZip();
-    const folderMap=new Map();
-    // Folders are currently root-level in this Explorer model.
+    const foldersById=new Map(folders.map(folder=>[folder.id,folder]));
+    function folderPath(folderId){
+      const parts=[];let current=foldersById.get(folderId);let guard=0;
+      while(current&&guard++<100){parts.unshift(current.name);current=foldersById.get(current.parentId);}
+      return parts.join('/');
+    }
     folders.forEach(folder=>{
-      folderMap.set(folder.id,folder.name);
-      zip.folder(folder.name);
+      const path=folderPath(folder.id);
+      if(path)zip.folder(path);
     });
     files.forEach(file=>{
-      const folderName=folderMap.get(file.folderId);
-      const path=folderName ? folderName+'/'+file.name : file.name;
+      const parent=folderPath(file.folderId);
+      const path=parent?parent+'/'+file.name:file.name;
       zip.file(path,file.content||'');
     });
-    zip.file('README.txt',
-      'JS Python Runner project export\\n'+
-      'Contains all files and folders currently listed in Explorer.\\n'+
-      'Python execution uses Pyodide in the browser.\\n');
+    zip.file('README.txt','JS Python Runner project export\nContains the files and folders currently listed in Explorer.\nPython execution uses Pyodide in the browser.\n');
     const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
     const url=URL.createObjectURL(blob);
-    const link=document.createElement('a');
-    link.href=url;
-    link.download='js-python-runner-project.zip';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),1500);
-    status('Project ZIP downloaded');
-    notify('Full project ZIP downloaded.');
-  }catch(error){
-    console.error(error);
-    notify('Could not create ZIP: '+String(error));
-    status('ZIP export failed');
-  }finally{
-    button.disabled=false;
-    button.textContent='⬇ Download';
+    const link=document.createElement('a');link.href=url;link.download='js-python-runner-project.zip';
+    document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    status('Project ZIP downloaded');notify('Full project ZIP downloaded.');
+  }catch(error){console.error(error);notify('Could not create ZIP: '+String(error));status('ZIP export failed');}
+  finally{button.disabled=false;button.textContent='⬇ Download';}
+}
+
+/* Share publishing is completed when the backend endpoint is added. */
+async function publishProjectAndShare(){
+  saveEditor();persist();
+  notify('The Share Project screen is ready. Live publishing will activate after the payment and publishing backend is connected.');
+}
+
+/* If country/payment flow returns to this page, never trust a query-string success flag by itself.
+   Backend verification must be added before enabling downloads or issuing live project URLs. */
+const returnedParams=new URLSearchParams(window.location.search);
+if(returnedParams.get('payment')==='success'){
+  const action=returnedParams.get('action')||returnedParams.get('returnAction')||'download';
+  if(action==='share'){
+    notify('Payment return detected. The server must verify payment before creating a live share link.');
+  }else{
+    notify('Payment return detected. The server must verify payment before enabling ZIP downloads.');
   }
-});
+}
 
 /* GitHub-style search and replace */
 const searchPanel=$('searchPanel');
@@ -1554,8 +1718,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')contextMenu.hidden=t
 function renameItem(type,id){const list=type==='file'?files:folders;const item=list.find(x=>x.id===id);if(!item)return;const entered=prompt('New name:',item.name);if(entered===null)return;const name=entered.trim();if(!validName(name)){notify('Invalid name.');return;}item.name=uniqueName(name,list,type==='file'?item.folderId:null);if(type==='file'&&id===activeId)$('fileTitle').textContent=item.name;persist();renderExplorer();}
 function copyFile(id){const f=files.find(x=>x.id===id);if(!f)return;const clone={...f,id:nextId++,name:uniqueName(f.name,files,f.folderId),content:f.content};files.push(clone);persist();renderExplorer();notify('File copied.');}
 function copyFolder(id){const f=folders.find(x=>x.id===id);if(!f)return;const clone={...f,id:nextId++,name:uniqueName(f.name,folders,null),open:true};folders.push(clone);files.filter(x=>x.folderId===id).forEach(x=>files.push({...x,id:nextId++,folderId:clone.id,name:uniqueName(x.name,files,clone.id)}));persist();renderExplorer();notify('Folder copied.');}
-function downloadOneFile(id){const f=files.find(x=>x.id===id);if(!f)return;const a=document.createElement('a');const u=URL.createObjectURL(new Blob([f.content||''],{type:'application/octet-stream'}));a.href=u;a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
-async function downloadFolderZip(id){const f=folders.find(x=>x.id===id);if(!f)return;const zip=new JSZip();zip.folder(f.name);files.filter(x=>x.folderId===id).forEach(x=>zip.file(f.name+'/'+x.name,x.content||''));const blob=await zip.generateAsync({type:'blob'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=f.name+'.zip';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function downloadOneFile(id){const f=files.find(x=>x.id===id);if(!f)return;notify('Individual file export will use the same paid download access.');requestDownloadAccess();}
+async function downloadFolderZip(id){const f=folders.find(x=>x.id===id);if(!f)return;requestDownloadAccess();}
 function createFileInFolder(folderId){const entered=prompt('File name:','script.py');if(entered===null)return;let name=entered.trim();if(!name)return;if(!/\.[a-zA-Z0-9]+$/.test(name))name+='.py';if(!validName(name))return notify('Invalid filename.');const f={id:nextId++,name:uniqueName(name,files,folderId),folderId,content:'# '+name+'\\n\\n'};files.push(f);const folder=folders.find(x=>x.id===folderId);if(folder)folder.open=true;persist();switchFile(f.id);renderExplorer();}
 function moveIntoFolder(raw,folderId){try{const p=JSON.parse(raw);if(p.type!=='file')return;const f=files.find(x=>x.id===p.id);if(!f)return;f.folderId=folderId;const folder=folders.find(x=>x.id===folderId);if(folder)folder.open=true;persist();renderExplorer();notify('File moved.');}catch(_){}}
 /* Full-screen editor/output panels */
@@ -1596,7 +1760,7 @@ try{
   if(window.firebase){
     if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
     auth=firebase.auth();
-    auth.onAuthStateChanged(renderAccount);
+    auth.onAuthStateChanged(user=>{renderAccount(user);if(user&&pendingActionAfterSignIn){const action=pendingActionAfterSignIn;pendingActionAfterSignIn=null;openPayment(action);}});
   }
 }catch(err){console.error('Firebase auth setup failed',err);}
 $('accountBtn').addEventListener('click',async()=>{
