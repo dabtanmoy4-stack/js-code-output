@@ -1079,17 +1079,17 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
 
 /* Refined header controls, matching the existing file/action SVG language */
 .topbar { display:flex; gap:12px; }
-.header-project-area { position:relative; margin-right:auto; min-width:0; }
+.header-project-area { position:relative; margin-right:auto; min-width:0; z-index:10051; }
 .header-project-btn { min-height:38px; background:var(--panel2); display:inline-flex; align-items:center; gap:8px; }
 .project-chevron,.account-chevron { opacity:.72; }
-.account-area { position:relative; margin-left:auto; flex:0 0 auto; }
+.account-area { position:relative; margin-left:auto; flex:0 0 auto; z-index:10051; }
 .account-button { min-height:40px; max-width:245px; display:flex; align-items:center; gap:9px; padding:5px 10px; border:1px solid var(--border); border-radius:9px; background:var(--panel2); color:var(--text); box-shadow:var(--3d-box-shadow); text-align:left; }
 .account-button:hover { border-color:var(--gold); }
 .google-g { width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:#fff; color:#4285f4; font:800 19px Arial,sans-serif; border:1px solid #d7dce3; flex-shrink:0; }
 .account-copy { display:flex; flex-direction:column; gap:2px; min-width:0; }
 .account-copy strong { font-size:11px; font-weight:750; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:155px; }
 .account-copy small { font-size:9px; color:var(--muted); white-space:nowrap; }
-.header-popover { position:absolute; z-index:10050; top:calc(100% + 8px); min-width:235px; max-width:min(330px, calc(100vw - 20px)); padding:10px; border:1px solid var(--border); border-radius:11px; background:var(--surface); color:var(--text); box-shadow:0 16px 42px #0008; }
+.header-popover { position:absolute; z-index:20001; top:calc(100% + 8px); min-width:235px; max-width:min(330px, calc(100vw - 20px)); padding:10px; border:1px solid var(--border); border-radius:11px; background:var(--surface); color:var(--text); box-shadow:0 16px 42px #0008; }
 .header-popover[hidden] { display:none !important; }
 .projects-popover { left:0; }
 .account-popover { right:0; }
@@ -1127,6 +1127,19 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
  .header-popover { position:fixed; top:64px; right:8px; left:auto; width:min(300px,calc(100vw - 16px)); max-width:none; }
  .projects-popover { right:auto; left:8px; }
 }
+
+
+/* Final workspace refinements */
+.topbar { align-items:center; }
+.top-actions { margin-left:auto; display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.account-area { margin-left:0; }
+.output-actions #runBtn { order:0; }
+.output-actions #clearOutputBtn { order:2; }
+.output-actions #consoleBtn { order:1; }
+.panel.is-fullscreen { position:fixed !important; inset:8px !important; z-index:20000 !important; width:auto !important; height:auto !important; min-height:0 !important; max-height:none !important; margin:0 !important; overflow:auto !important; background:var(--panel); }
+.panel.is-fullscreen .CodeMirror { height:calc(100vh - 150px) !important; }
+.panel.is-fullscreen .output { max-height:none !important; height:calc(100vh - 180px) !important; }
+@media(max-width:760px){ .top-actions { display:flex !important; gap:4px; margin-left:0; } .premium-pill { display:none !important; } .top-actions .theme-toggle { width:34px; min-width:34px; height:34px; } .account-area { margin-left:auto; } .output-actions { flex-wrap:wrap; } .output-actions .fullscreen-btn span { display:none; } }
 
 </style>
 </head>
@@ -1172,6 +1185,7 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
       <div class="header-popover projects-popover" id="projectsPopover" hidden></div>
     </div>
 
+
     <div class="top-actions">
       <!-- Masterclass 3D Glowing Crown Badge -->
       <span class="premium-pill">
@@ -1198,19 +1212,7 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
         </svg>
       </button>
 
-      <!-- Masterclass Play Button SVG -->
-      <button class="btn gold run" id="runBtn">
-        <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <defs>
-            <linearGradient id="playGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#2D1A04"/>
-              <stop offset="100%" stop-color="#000000"/>
-            </linearGradient>
-          </defs>
-          <path d="M8 5v14l11-7L8 5z" fill="url(#playGrad)" stroke="#2D1A04" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-        <span>Run Python</span>
-      </button>
+
     </div>
     <div class="account-area">
       <button class="account-button" id="accountBtn" aria-haspopup="true" aria-expanded="false" title="Google account">
@@ -1310,7 +1312,7 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
       <section class="panel editor-panel">
         <div class="panel-head">
           <span class="panel-title">CODE EDITOR</span>
-          <span class="panel-sub" id="editorLanguage">Python 3</span>
+          <span style="display:flex;align-items:center;gap:6px"><span class="panel-sub" id="editorLanguage">Python 3</span><button class="small-btn fullscreen-btn" data-fullscreen="editor-panel" title="Fullscreen editor" aria-label="Fullscreen editor"><svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg></button></span>
         </div>
 
         <div class="editor-toolbar">
@@ -1350,7 +1352,7 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
           <div class="output-tabs">
             <button class="output-tab active" data-output-tab="output">
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-              Python Output
+              Program Output
             </button>
             <button class="output-tab" data-output-tab="console">
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/></svg>
@@ -1362,6 +1364,20 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
             </button>
           </div>
           <div class="output-actions">
+            <button class="btn fullscreen-btn" data-fullscreen="output-panel" title="Fullscreen output" aria-label="Fullscreen output"><svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg><span>Full screen</span></button>
+            <!-- Masterclass Play Button SVG -->
+                  <button class="btn gold run" id="runBtn">
+                    <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <defs>
+                        <linearGradient id="playGrad" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#2D1A04"/>
+                          <stop offset="100%" stop-color="#000000"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M8 5v14l11-7L8 5z" fill="url(#playGrad)" stroke="#2D1A04" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Run Code</span>
+                  </button>
             <button class="btn" id="consoleBtn">
               <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
               REPL Mode
@@ -1376,14 +1392,14 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
         <div class="loader-wrap" id="loaderWrap">
           <div class="loader-orb"></div>
           <div class="loader-copy" style="flex:1">
-            <strong id="loaderTitle">Executing Python program...</strong>
+            <strong id="loaderTitle">Executing program...</strong>
             <span id="loaderSubtitle">Your output will appear here when ready.</span>
             <div class="loader-bar"></div>
           </div>
           <span id="loaderTimer" style="color:var(--gold);font:11px monospace">0.000s</span>
         </div>
 
-        <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your Python output will appear here...</span></div>
+        <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your program output will appear here...</span></div>
 
         <!-- Interactive Input Bar for input() function -->
         <div class="input-bar" id="inputBar">
@@ -1832,7 +1848,7 @@ function showOutputTab(tab) {
       : "✓ No problems reported in the last run.";
   } else {
     $("consoleExtra").classList.remove("show");
-    $("output").textContent = currentOutputText || "✦ Your Python output will appear here...";
+    $("output").textContent = currentOutputText || "✦ Your program output will appear here...";
   }
 }
 
@@ -1908,7 +1924,7 @@ function stopRuntimeClock() {
 
 function showRunningAnimation() {
   $("loaderWrap").classList.add("show");
-  $("loaderTitle").textContent = "Executing Python program...";
+  $("loaderTitle").textContent = "Executing program...";
   $("loaderSubtitle").textContent = "Runtime active · Waiting for output";
   $("runBtn").disabled = true;
   $("runBtn").querySelector("span").textContent = "Running...";
@@ -1990,6 +2006,16 @@ async function runProgram() {
     return;
   }
 
+  const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
+  let compiler;
+  if (fileName.endsWith(".py")) compiler = "python-3.14";
+  else if (fileName.endsWith(".js")) compiler = "nodejs-24";
+  else if (fileName.endsWith(".ts")) compiler = "typescript-deno";
+  else {
+    toast("Online run supports .py, .js and .ts files currently.");
+    return;
+  }
+
   running = true;
   currentOutputText = "";
   currentErrors = [];
@@ -1999,27 +2025,63 @@ async function runProgram() {
   showOutputTab("output");
   showRunningAnimation();
   startRuntimeClock();
+  setStatus("Online compiler running");
 
   try {
-    await runInPyodide(source);
+    const response = await fetch("/api/run-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        compiler,
+        code: source,
+        input: $("consoleInput").value || ""
+      })
+    });
 
-    if (!currentOutputText.trim()) writeOutput("✓ Program finished with no output.\n", "success");
-    else writeOutput("\n✓ Execution finished.\n", "success");
+    let result;
+    try { result = await response.json(); }
+    catch { throw new Error("The run API returned an invalid response."); }
 
-    $("loaderTitle").textContent = "Execution finished";
-    $("loaderSubtitle").textContent = "Program completed successfully.";
-    setStatus("Python runtime ready");
+    if (!response.ok) {
+      throw new Error(result.error || result.message || `Run API failed (${response.status}).`);
+    }
+
+    const outputText = String(result.output || "");
+    const errorText = String(result.error || "");
+    if (outputText) writeOutput(outputText);
+    if (errorText) {
+      currentErrors.push(errorText);
+      writeOutput(errorText.endsWith("\n") ? errorText : errorText + "\n", "error");
+    }
+
+    if (!outputText.trim() && !errorText.trim()) {
+      writeOutput(result.status === "success" ? "✓ Program finished with no output.\n" : "Program finished.\n", "success");
+    }
+
+    if (result.status === "success" && Number(result.exit_code ?? 0) === 0) {
+      writeOutput("\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\n", "success");
+      $("loaderTitle").textContent = "Execution finished";
+      $("loaderSubtitle").textContent = "Program completed successfully.";
+      setStatus("Online compiler ready");
+    } else {
+      if (!errorText && result.exit_code !== undefined) writeOutput(`\nExit code: ${result.exit_code}\n`, "error");
+      $("loaderTitle").textContent = "Execution stopped";
+      $("loaderSubtitle").textContent = "Check output for errors.";
+      setStatus("Execution error");
+    }
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
     currentErrors.push(message);
     writeOutput("\n" + message + "\n", "error");
     $("loaderTitle").textContent = "Execution stopped";
-    $("loaderSubtitle").textContent = "Check output for errors.";
+    $("loaderSubtitle").textContent = "Check the Vercel API route and environment variable.";
     setStatus("Execution error");
   } finally {
     stopRuntimeClock();
     running = false;
     hideRunningAnimation();
+    $("runBtn").disabled = false;
+    $("runBtn").querySelector("span").textContent = "Run Code";
     $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
   }
 }
@@ -2326,17 +2388,16 @@ loadPython().catch(() => {
  function togglePopover(id,btn){const el=$(id),was=el.hidden;closePopovers();el.hidden=!was;if(btn)btn.setAttribute('aria-expanded',String(was));if(id==='projectsPopover'&&was)renderProjects();}
  $('projectsBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('projectsPopover',$('projectsBtn'));});
  $('accountBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('accountPopover',$('accountBtn'));});
- const savedLabel=localStorage.getItem(ACCOUNT_KEY);if(savedLabel){$('accountLabel').textContent=savedLabel;$('accountSubLabel').textContent='Local display profile';}
- $('setAccountLabelBtn')?.addEventListener('click',()=>{const name=prompt('Display name for the account button (Google OAuth is not configured on this page):',$('accountLabel').textContent==='Google Account'?'':$('accountLabel').textContent);if(name===null)return;if(name.trim()){localStorage.setItem(ACCOUNT_KEY,name.trim());$('accountLabel').textContent=name.trim();$('accountSubLabel').textContent='Local display profile';}closePopovers();});
+ // Account label is populated by Firebase Authentication below.
  $('mobileMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();const pop=$('mobileActionsPopover');if(pop.innerHTML.trim()===''){
-  const actions=[['Run Python','runBtn','file'],['Toggle theme','themeBtn','more'],['New file','newFileBtn','plus'],['New folder','newFolderBtn','folder'],['Find','findBtn','file'],['Replace','replaceBtn','rename'],['Save file','downloadBtn','download'],['Hide / show Explorer','explorerToggle','folder']];
+  const actions=[['Toggle theme','themeBtn','more'],['New file','newFileBtn','plus'],['New folder','newFolderBtn','folder'],['Find','findBtn','file'],['Replace','replaceBtn','rename'],['Save file','downloadBtn','download'],['Hide / show Explorer','explorerToggle','folder']];
   pop.innerHTML=actions.map(([label,id,ic])=>'<button data-action="'+id+'">'+svg(ic)+'<span>'+label+'</span></button>').join('');pop.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.action);closePopovers();if(target)target.click();}));
  }togglePopover('mobileActionsPopover',$('mobileMoreBtn'));});
  document.addEventListener('click',e=>{if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn'))closePopovers();});
  // Close any open context/choice menu on an outside click or tap.
  document.addEventListener('pointerdown',e=>{
    if(e.target.closest('.context-menu,.choice-menu')) return;
-   if(document.querySelector('.context-menu,.choice-menu')) closeMenus();
+   document.querySelectorAll('.context-menu,.choice-menu').forEach(n=>n.remove());
    if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn')) closePopovers();
  },true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopovers();});
@@ -2349,6 +2410,29 @@ loadPython().catch(() => {
  // Let the Projects control remain the left-side workspace switcher; account stays at far right.
  renderProjects();
 })();
+</script>
+
+
+<!-- Firebase Authentication (Google sign-in) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+(function(){
+ const firebaseConfig={apiKey:"AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",authDomain:"js-code-output.firebaseapp.com",databaseURL:"https://js-code-output-default-rtdb.firebaseio.com",projectId:"js-code-output",storageBucket:"js-code-output.firebasestorage.app",messagingSenderId:"600350018167",appId:"1:600350018167:web:3ceaa5a5e0d1050504d472",measurementId:"G-L47M0E9V96"};
+ try {
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth();
+  const label=document.getElementById('accountLabel'), sub=document.getElementById('accountSubLabel'), pop=document.getElementById('accountPopover');
+  if(pop){pop.innerHTML='<strong>Google account</strong><p id="firebaseAccountMessage">Sign in to connect your Google account.</p><button class="btn" id="googleSignInBtn"><svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.2c0-.7-.06-1.37-.18-2H12v3.8h5.24a4.5 4.5 0 0 1-1.94 2.95v2.46h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/><path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.46c-.87.58-1.98.93-3.31.93-2.54 0-4.7-1.72-5.47-4.04H3.28v2.54A9.74 9.74 0 0 0 12 21.5z"/><path fill="#FBBC05" d="M6.53 13.57A5.85 5.85 0 0 1 6.22 12c0-.54.1-1.07.3-1.57V7.89H3.28A9.5 9.5 0 0 0 2.25 12c0 1.53.37 2.97 1.03 4.11z"/><path fill="#EA4335" d="M12 6.39c1.43 0 2.71.49 3.72 1.47l2.79-2.79C16.84 3.52 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.72 5.39l3.24 2.54C7.3 8.11 9.46 6.39 12 6.39z"/></svg> Sign in with Google</button><button class="btn" id="googleSignOutBtn" style="margin-left:6px" hidden>Sign out</button>'; }
+  auth.onAuthStateChanged(user=>{if(user){label.textContent=user.displayName||'Google Account';sub.textContent=user.email||'Connected';document.getElementById('googleSignInBtn')?.setAttribute('hidden','');document.getElementById('googleSignOutBtn')?.removeAttribute('hidden');const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=user.email||'Google account connected.';}else{label.textContent='Google Account';sub.textContent='Not connected';document.getElementById('googleSignInBtn')?.removeAttribute('hidden');document.getElementById('googleSignOutBtn')?.setAttribute('hidden','');}});
+  document.addEventListener('click',async e=>{if(e.target.closest('#googleSignInBtn')){try{const provider=new firebase.auth.GoogleAuthProvider();await auth.signInWithPopup(provider);}catch(err){const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=(err.code==='auth/unauthorized-domain'?'Add this website domain to Firebase Authentication → Settings → Authorized domains. ': '')+(err.message||'Google sign-in failed.');}}if(e.target.closest('#googleSignOutBtn')){try{await auth.signOut();}catch(err){console.error(err);}}});
+ }catch(err){console.error('Firebase setup failed',err);}
+})();
+</script>
+<script>
+// Fullscreen toggles for editor and output panels; Escape exits fullscreen panel mode.
+document.querySelectorAll('[data-fullscreen]').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.querySelector('.'+btn.dataset.fullscreen);if(!panel)return;panel.classList.toggle('is-fullscreen');setTimeout(()=>{if(window.editor&&panel.classList.contains('editor-panel'))editor.refresh();},80);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.panel.is-fullscreen').forEach(p=>p.classList.remove('is-fullscreen'));});
 </script>
 
 </body>
