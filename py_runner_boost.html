@@ -492,9 +492,9 @@ body.light {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 7px 9px;
-  border-radius: 6px;
-  min-height: 34px;
+  padding: 6px 8px 6px calc(8px + (var(--depth, 0) * 16px));
+  border-radius: 5px;
+  min-height: 29px;
   cursor: pointer;
   color: var(--text);
   font-size: 12px;
@@ -521,6 +521,17 @@ body.light {
 .tree-row .filename { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-shadow: var(--3d-text-shadow); }
 .tree-row .tree-action { opacity: 0.75; color: var(--muted); font-size: 11px; display: inline-flex; align-items: center; }
 .tree-row .tree-action:hover { color: var(--red); }
+/* VS Code-like nested workspace tree */
+#fileTree { font-size:12px; }
+#fileTree .tree-row { position:relative; gap:7px; margin:1px 3px; width:calc(100% - 6px); }
+#fileTree .tree-row > svg { width:15px; height:15px; flex:0 0 15px; }
+#fileTree .tree-row .tree-chevron { width:11px; height:11px; flex:0 0 11px; color:var(--muted); transition:transform .12s ease; }
+#fileTree .tree-row .tree-chevron.open { transform:rotate(90deg); }
+#fileTree .tree-row .tree-chevron.spacer { opacity:0; }
+#fileTree .tree-row.active { background:rgba(232,199,127,.13); border-left:2px solid var(--gold); }
+#fileTree .tree-row:hover { background:var(--panel2); }
+body.light #fileTree .tree-row.active { background:rgba(181,137,45,.12); }
+
 
 .file-footer {
   padding: 11px;
@@ -1016,7 +1027,7 @@ body { background:#08090b; }
 body.light { background:#f5f6f8; }
 .status-strip, .footer, .drop-hint, .file-footer { display:none !important; }
 .app { height:100vh; min-height:0; max-width:none; padding:8px; display:flex; flex-direction:column; gap:8px; overflow:hidden; }
-.topbar { flex:0 0 auto; min-height:58px; padding:8px 14px; border-radius:10px; }
+.topbar { flex:0 0 auto; min-height:58px; padding:8px 14px; border-radius:10px; overflow:visible !important; }
 .workspace { flex:1 1 auto; min-height:0; margin-top:0; grid-template-columns:250px minmax(0,1fr); gap:8px; overflow:hidden; }
 .explorer { min-height:0; height:100%; display:flex; flex-direction:column; }
 .tree { min-height:0; overflow:auto; padding:5px 7px 12px; }
@@ -1060,13 +1071,19 @@ body.light .output { background:#fff; color:#111827; }
 .tree-row .tree-action { display:none; }
 .tree-row:hover .tree-action { display:inline-flex; }
 .tree-row.drop-target { outline:1px solid var(--gold); background:rgba(214,173,85,.12); }
-.context-menu,.choice-menu { position:fixed; z-index:9999; min-width:190px; padding:5px; background:#17191f; border:1px solid #454955; border-radius:7px; box-shadow:0 12px 34px #0009; color:#f8fafc; }
-.context-menu button,.choice-menu button { display:flex; align-items:center; gap:9px; width:100%; padding:8px 10px; border:0; border-radius:4px; background:transparent; color:inherit; text-align:left; box-shadow:none; font-size:12px; }
-.context-menu button:hover,.choice-menu button:hover { background:#303746; transform:none; }
+.context-menu,.choice-menu { position:fixed; z-index:9999; min-width:218px; padding:7px; background:linear-gradient(155deg,#1b1d23,#111318); border:1px solid rgba(218,181,95,.58); border-radius:12px; box-shadow:0 18px 48px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.035) inset,0 0 22px rgba(214,173,85,.09); color:#f8fafc; backdrop-filter:blur(16px); animation:menuIn .14s ease-out; }
+@keyframes menuIn { from{opacity:0;transform:translateY(5px) scale(.985)} to{opacity:1;transform:translateY(0) scale(1)} }
+.context-menu button,.choice-menu button { display:flex; align-items:center; gap:10px; width:100%; padding:10px 11px; border:0; border-radius:8px; background:transparent; color:inherit; text-align:left; box-shadow:none; font-size:12px; font-weight:600; transition:background .15s ease,color .15s ease; }
+.context-menu button:hover,.choice-menu button:hover { background:linear-gradient(90deg,rgba(214,173,85,.2),rgba(214,173,85,.07)); color:#ffe7a3; transform:none; }
 .context-menu .danger { color:#ff8585; }
-.context-menu .menu-sep { height:1px; background:#393d47; margin:4px 2px; }
-body.light .context-menu,body.light .choice-menu { background:#fff; color:#111827; border-color:#cbd5e1; box-shadow:0 12px 34px #0002; }
-body.light .context-menu button:hover,body.light .choice-menu button:hover { background:#edf2f7; }
+.context-menu .menu-sep,.choice-menu .menu-sep { height:1px; background:linear-gradient(90deg,transparent,rgba(214,173,85,.42),transparent); margin:6px 3px; }
+body.light .context-menu,body.light .choice-menu { background:linear-gradient(155deg,#fff,#f8fafc); color:#111827; border-color:#d6b96d; box-shadow:0 18px 42px #0002,0 0 0 1px #fff inset; }
+body.light .context-menu button:hover,body.light .choice-menu button:hover { background:linear-gradient(90deg,#fff4d2,#fffaf0); color:#75530a; }
+
+.name-dialog-backdrop{position:fixed;inset:0;z-index:30000;display:grid;place-items:center;padding:18px;background:rgba(3,5,9,.62);backdrop-filter:blur(7px);animation:menuIn .16s ease-out}
+.name-dialog{width:min(420px,100%);padding:22px;border:1px solid rgba(218,181,95,.62);border-radius:18px;background:linear-gradient(145deg,#202127,#111318);color:#f8fafc;box-shadow:0 25px 80px #0009,0 0 35px rgba(214,173,85,.10)}
+.name-dialog h3{margin:0 0 7px;font-size:17px;letter-spacing:.1px}.name-dialog p{margin:0 0 17px;color:#aab0bd;font-size:12px;line-height:1.55}.name-dialog input{box-sizing:border-box;width:100%;padding:12px 13px;border:1px solid #444955;border-radius:10px;background:#0c0e13;color:#fff;outline:none;font:13px Inter,sans-serif}.name-dialog input:focus{border-color:#d6ad55;box-shadow:0 0 0 3px rgba(214,173,85,.13)}.name-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.name-dialog-actions button{padding:9px 14px;border-radius:9px;border:1px solid #454955;background:#242730;color:#e8eaf0;font-size:12px;font-weight:650;cursor:pointer}.name-dialog-actions button.primary{border-color:#d6ad55;background:linear-gradient(135deg,#f0d58c,#bd8e32);color:#19150b}.name-dialog-actions button:hover{filter:brightness(1.08)}
+body.light .name-dialog{background:linear-gradient(145deg,#fff,#f7f8fb);color:#111827;box-shadow:0 25px 80px #0003}body.light .name-dialog p{color:#64748b}body.light .name-dialog input{background:#fff;color:#111827;border-color:#cbd5e1}body.light .name-dialog-actions button{background:#f1f5f9;color:#1f2937;border-color:#cbd5e1}
 #fileTree { flex:1; min-height:0; }
 .tree-label { padding-top:9px; }
 .explorer.is-collapsed { width:43px; }
@@ -1078,7 +1095,10 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
 
 
 /* Refined header controls, matching the existing file/action SVG language */
-.topbar { display:flex; gap:12px; }
+.topbar { display:flex; gap:12px; position:relative; z-index:15000; overflow:visible !important; isolation:isolate; }
+.workspace { position:relative; z-index:1; }
+.header-project-area,.account-area { position:relative; z-index:15002; }
+.header-popover { z-index:15010; }
 .header-project-area { position:relative; margin-right:auto; min-width:0; z-index:10051; }
 .header-project-btn { min-height:38px; background:var(--panel2); display:inline-flex; align-items:center; gap:8px; }
 .project-chevron,.account-chevron { opacity:.72; }
@@ -1140,6 +1160,68 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
 .panel.is-fullscreen .CodeMirror { height:calc(100vh - 150px) !important; }
 .panel.is-fullscreen .output { max-height:none !important; height:calc(100vh - 180px) !important; }
 @media(max-width:760px){ .top-actions { display:flex !important; gap:4px; margin-left:0; } .premium-pill { display:none !important; } .top-actions .theme-toggle { width:34px; min-width:34px; height:34px; } .account-area { margin-left:auto; } .output-actions { flex-wrap:wrap; } .output-actions .fullscreen-btn span { display:none; } }
+
+
+/* Compact, consistent icons inside Projects and the mobile three-dot menu */
+.header-popover .project-item > svg.svg-ic {
+  width: 17px !important; height: 17px !important;
+  min-width: 17px !important; max-width: 17px !important;
+  flex: 0 0 17px !important; display: block; stroke-width: 1.8;
+}
+.mobile-actions-popover button > svg.svg-ic {
+  width: 16px !important; height: 16px !important;
+  min-width: 16px !important; max-width: 16px !important;
+  flex: 0 0 16px !important; display: block; stroke-width: 1.8;
+}
+.mobile-more-btn > svg.svg-ic {
+  width: 18px !important; height: 18px !important;
+  min-width: 18px !important; max-width: 18px !important;
+  flex: 0 0 18px !important; display: block;
+}
+.header-popover .project-item { min-height: 44px; }
+.mobile-actions-popover button { min-height: 40px; }
+
+/* VS Code-inspired inline code suggestions */
+.CodeMirror-hints {
+  z-index: 30000 !important;
+  max-width: min(420px, calc(100vw - 24px));
+  min-width: 220px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid var(--gold2, #b68a42);
+  border-radius: 9px;
+  background: #11141b;
+  color: #f4f5f7;
+  box-shadow: 0 14px 38px rgba(0,0,0,.55);
+  font: 12px/1.5 "JetBrains Mono", Consolas, monospace;
+}
+.CodeMirror-hint {
+  padding: 5px 9px;
+  border-radius: 5px;
+  color: #e7eaf0;
+  white-space: nowrap;
+}
+li.CodeMirror-hint-active {
+  background: rgba(232,199,127,.18);
+  color: #ffdc8a;
+}
+body.light .CodeMirror-hints {
+  background: #fff;
+  color: #202532;
+  border-color: #b68a42;
+  box-shadow: 0 14px 38px rgba(20,20,30,.2);
+}
+body.light .CodeMirror-hint { color: #202532; }
+body.light li.CodeMirror-hint-active { background: #fff0c8; color: #7a4e00; }
+
+
+
+/* GitHub-style editor Find / Replace panel */
+.find-replace-panel{position:fixed!important;z-index:2147483000!important;top:84px;right:18px;width:min(460px,calc(100vw - 36px));max-height:calc(100vh - 105px);overflow:visible;padding:10px;background:#161b22;border:1px solid #30363d;border-radius:9px;box-shadow:0 14px 36px rgba(0,0,0,.48);color:#e6edf3;font:13px/1.4 Inter,system-ui,sans-serif}
+.find-replace-panel[hidden]{display:none!important;pointer-events:none}.find-replace-panel:not([hidden]){display:block;pointer-events:auto}.find-replace-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.find-replace-tabs{display:flex;gap:4px}.find-replace-tab{border:0;background:transparent;color:#8b949e;padding:6px 9px;border-radius:6px;font-weight:650;cursor:pointer}.find-replace-tab.active{color:#f0f6fc;background:#30363d}.find-replace-close{border:0;background:transparent;color:#8b949e;font-size:20px;line-height:1;padding:2px 6px;cursor:pointer;border-radius:5px}.find-replace-close:hover{background:#30363d;color:#fff}.fr-input-row{display:flex;align-items:center;gap:5px;margin-top:6px}.fr-input-wrap{display:flex;align-items:center;gap:6px;min-width:0;flex:1;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:0 7px}.fr-input-wrap:focus-within{border-color:#4493f8;box-shadow:0 0 0 2px rgba(56,139,253,.2)}.fr-input-wrap input{width:100%;min-width:0;background:transparent;border:0;outline:0;color:#e6edf3;padding:7px 0;font:12px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}.fr-input-wrap input::placeholder{color:#6e7681}.fr-mini{display:flex;align-items:center;justify-content:center;flex-shrink:0;min-width:25px;height:25px;padding:0 5px;border:1px solid #30363d;border-radius:5px;background:#21262d;color:#c9d1d9;font-size:11px;cursor:pointer}.fr-mini:hover{background:#30363d}.fr-mini.active{border-color:#d29922;color:#f2cc60;background:#3d2d08}.fr-count{font-size:11px;color:#8b949e;white-space:nowrap;min-width:48px;text-align:right}.fr-action{border:1px solid #3d444d;border-radius:6px;background:#21262d;color:#e6edf3;padding:7px 9px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer}.fr-action:hover{background:#30363d}.fr-action.primary{background:#238636;border-color:#2ea043;color:#fff}.fr-action.primary:hover{background:#2ea043}.fr-status{min-height:15px;margin:7px 2px 0;color:#8b949e;font-size:11px}.fr-status.error{color:#ff7b72}.cm-fr-match{background:rgba(210,153,34,.26);outline:1px solid rgba(210,153,34,.7);border-radius:2px}.cm-fr-current{background:rgba(255,190,50,.58);outline:1px solid #e3b341;border-radius:2px;color:#fff!important}
+body.light .find-replace-panel{background:#fff;border-color:#d0d7de;color:#1f2328;box-shadow:0 14px 36px rgba(31,35,40,.2)}body.light .find-replace-tab{color:#656d76}body.light .find-replace-tab.active{background:#eaeef2;color:#1f2328}body.light .find-replace-close{color:#656d76}body.light .fr-input-wrap{background:#f6f8fa;border-color:#d0d7de}body.light .fr-input-wrap input{color:#1f2328}body.light .fr-mini,body.light .fr-action{background:#f6f8fa;border-color:#d0d7de;color:#24292f}body.light .fr-mini:hover,body.light .fr-action:hover{background:#eaeef2}body.light .fr-mini.active{background:#fff8c5;color:#7d4e00;border-color:#d4a72c}body.light .cm-fr-current{color:#1f2328!important}
+@media(max-width:600px){.find-replace-panel{position:fixed!important;z-index:2147483000!important;top:72px;left:8px;right:8px;width:auto;max-height:calc(100vh - 84px);padding:8px}.fr-input-row{gap:4px}.fr-action{padding:7px 7px;font-size:11px}.fr-count{min-width:40px}}
 
 </style>
 </head>
@@ -1451,6 +1533,8 @@ body.light .context-menu button:hover,body.light .choice-menu button:hover { bac
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
 
 <script>
@@ -1587,9 +1671,64 @@ const editor = CodeMirror.fromTextArea($("code"), {
     "Ctrl-S": () => downloadActiveFile(),
     "Cmd-S": () => downloadActiveFile(),
     "Ctrl-F": cm => cm.execCommand("find"),
-    "Cmd-F": cm => cm.execCommand("find")
+    "Cmd-F": cm => cm.execCommand("find"),
+    "Ctrl-Space": cm => showCodeSuggestions(cm, true),
+    "Cmd-Space": cm => showCodeSuggestions(cm, true)
   }
 });
+
+/* Lightweight local IntelliSense for Python and JavaScript.
+   Suggestions combine language keywords, common APIs, and words already in the project. */
+const COMPLETION_WORDS = {
+  python: `False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield print len range str int float bool list dict set tuple sum min max abs round enumerate zip map filter sorted reversed any all isinstance type super open input format help dir vars self cls __name__ __init__ append extend insert pop remove sort keys values items get update split join strip replace lower upper startswith endswith find count read write close json math random datetime pathlib os sys re`,
+  javascript: `const let var function return if else for while do switch case break continue try catch finally throw new class extends import export from default async await Promise setTimeout setInterval clearTimeout fetch JSON Math Date Array Object String Number Boolean Map Set console log warn error document window navigator localStorage sessionStorage querySelector querySelectorAll getElementById addEventListener removeEventListener preventDefault stopPropagation createElement appendChild removeChild classList innerHTML textContent value map filter reduce forEach find includes startsWith endsWith split join trim parseInt parseFloat isNaN typeof`,
+  markdown: `# ## ### #### - * ** [] () link image code`
+};
+function showCodeSuggestions(cm, explicit = false) {
+  if (!window.CodeMirror || !CodeMirror.showHint) return;
+  const cursor = cm.getCursor();
+  const line = cm.getLine(cursor.line) || "";
+  const before = line.slice(0, cursor.ch);
+  const match = before.match(/[A-Za-z_$][\\w$]*$/);
+  if (!explicit && (!match || match[0].length < 1)) return;
+  const mode = String(cm.getOption("mode") || "python").toLowerCase();
+  const language = mode.includes("javascript") || mode === "text/javascript" ? "javascript" : mode.includes("markdown") ? "markdown" : "python";
+  const typed = match ? match[0] : "";
+  const builtins = COMPLETION_WORDS[language].split(/\\s+/);
+  const seen = new Set();
+  const candidates = [];
+  const add = word => {
+    if (!word || seen.has(word) || word === typed || (typed && !word.toLowerCase().startsWith(typed.toLowerCase()))) return;
+    seen.add(word);
+    candidates.push(word);
+  };
+  builtins.forEach(add);
+  const wordRe = /[A-Za-z_$][\\w$]*/g;
+  let m;
+  while ((m = wordRe.exec(cm.getValue())) !== null) add(m[0]);
+  candidates.sort((a,b) => {
+    const aExact = a.startsWith(typed), bExact = b.startsWith(typed);
+    return aExact === bExact ? a.localeCompare(b) : (aExact ? -1 : 1);
+  });
+  if (!candidates.length) return;
+  CodeMirror.showHint(cm, () => ({
+    list: candidates.slice(0, 80).map(text => ({text, displayText: text})),
+    from: CodeMirror.Pos(cursor.line, cursor.ch - typed.length),
+    to: CodeMirror.Pos(cursor.line, cursor.ch)
+  }), {completeSingle: false, closeOnUnfocus: true, alignWithWord: true});
+}
+editor.on("inputRead", (cm, change) => {
+  if (!change || !change.text || !change.text.length) return;
+  const last = change.text[change.text.length - 1] || "";
+  if (/^[A-Za-z_$]$/.test(last)) showCodeSuggestions(cm, false);
+});
+editor.on("keydown", (cm, event) => {
+  if ((event.ctrlKey || event.metaKey) && event.code === "Space") {
+    event.preventDefault();
+    showCodeSuggestions(cm, true);
+  }
+});
+
 
 function renderTabs() {
   const tabsContainer = $("editorTabs");
@@ -1768,12 +1907,15 @@ function createFile() {
 
 function createFolder() {
   const name = prompt("New folder name:", "new_folder");
-  if (!name) return;
-  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "");
+  if (name === null || !name.trim()) return;
+  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "").replace(/^\/+|\/+$/g, "");
   if (!safe) return toast("Enter a valid folder name.");
-  if (folders.includes(safe)) return toast("Folder already exists.");
-
-  folders.push(safe);
+  const parts = safe.split("/").filter(Boolean);
+  let path = "";
+  for (const part of parts) {
+    path = path ? path + "/" + part : part;
+    if (!folders.includes(path)) folders.push(path);
+  }
   persistWorkspace();
   renderTree();
   toast("Folder created.");
@@ -2184,7 +2326,7 @@ $("runBtn").addEventListener("click", runProgram);
 $("copyBtn").addEventListener("click", copyCode);
 $("downloadBtn").addEventListener("click", downloadActiveFile);
 $("formatBtn").addEventListener("click", formatCode);
-$("findBtn").addEventListener("click", () => editor.execCommand("find"));
+$("findBtn").addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); if (typeof window.openFindReplace === "function") window.openFindReplace("find"); });
 
 $("clearOutputBtn").addEventListener("click", () => {
   currentOutputText = "";
@@ -2268,15 +2410,15 @@ loadPython().catch(() => {
   const editorEl = document.querySelector('.editor-toolbar .editor-tools');
   if (editorEl && !$('replaceBtn')) {
     const b=document.createElement('button'); b.className='btn'; b.id='replaceBtn'; b.textContent='Replace'; b.title='Find and replace (Ctrl+H)'; editorEl.insertBefore(b, $('findBtn').nextSibling);
-    b.addEventListener('click', replaceInEditor);
+    b.addEventListener('click', (e)=>{e.preventDefault();e.stopPropagation();if(typeof window.openFindReplace==='function')window.openFindReplace('replace');});
   }
   // Logo references consistently use logo.jpeg where an image logo is shown.
   document.querySelectorAll('.logo-wrap').forEach(w=>{ if(!w.querySelector('img')) w.innerHTML='<img src="logo.jpeg" alt="Logo" style="width:34px;height:34px;object-fit:contain">'; });
   // Keep the starter workspace focused: only main.py for a fresh browser profile.
   function normalizePath(v){ return String(v||'').replace(/\\/g,'/').replace(/^\/+|\/+$/g,'').replace(/\/+/g,'/'); }
   function allFolderPaths(){
-    const set=new Set((window.folders||[]).map(normalizePath).filter(Boolean));
-    Object.keys(window.files||{}).forEach(p=>{const parts=normalizePath(p).split('/'); for(let i=1;i<parts.length;i++) set.add(parts.slice(0,i).join('/'));});
+    const set=new Set((folders||[]).map(normalizePath).filter(Boolean));
+    Object.keys(files||{}).forEach(p=>{const parts=normalizePath(p).split('/'); for(let i=1;i<parts.length;i++) set.add(parts.slice(0,i).join('/'));});
     return [...set].sort((a,b)=>a.localeCompare(b));
   }
   function ensureFolder(path){ path=normalizePath(path); if(!path)return; const parts=path.split('/'); for(let i=1;i<=parts.length;i++){const p=parts.slice(0,i).join('/'); if(!folders.includes(p)) folders.push(p);} }
@@ -2285,21 +2427,21 @@ loadPython().catch(() => {
     closeMenus(); const m=document.createElement('div');m.className=klass;m.style.left=Math.min(x,innerWidth-220)+'px';m.style.top=Math.min(y,innerHeight-300)+'px';
     items.forEach(it=>{if(it.sep){const s=document.createElement('div');s.className='menu-sep';m.appendChild(s);return;}const b=document.createElement('button');b.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';if(it.danger)b.classList.add('danger');b.addEventListener('click',()=>{closeMenus();it.run();});m.appendChild(b);});document.body.appendChild(m);return m;
   }
-  function promptName(label,placeholder){const v=prompt(label,placeholder||'');return v===null?'':v.trim();}
-  function createFileIn(folder=''){
-    const n=promptName('New file name (example: main.py):','new_file.py'); if(!n)return;
+  function promptName(label,placeholder){return new Promise(resolve=>{const back=document.createElement('div');back.className='name-dialog-backdrop';const isFolder=/folder/i.test(label);const title=isFolder?'Create folder':'Create file';const hint=isFolder?'Choose a name. Use / to create nested folders.':'Choose a file name, including its extension.';back.innerHTML='<form class="name-dialog" role="dialog" aria-modal="true"><h3>'+title+'</h3><p>'+hint+'</p><input id="nameDialogInput" autocomplete="off" spellcheck="false" placeholder="'+String(placeholder||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" value="'+String(placeholder||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"><div class="name-dialog-actions"><button type="button" data-cancel>Cancel</button><button class="primary" type="submit">Create</button></div></form>';document.body.appendChild(back);const form=back.querySelector('form'),input=back.querySelector('input');const done=v=>{back.remove();resolve(v)};form.addEventListener('submit',e=>{e.preventDefault();done(input.value.trim())});back.querySelector('[data-cancel]').addEventListener('click',()=>done(''));back.addEventListener('click',e=>{if(e.target===back)done('')});input.focus();input.select();back.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();done('')}});});}
+  async function createFileIn(folder=''){
+    const n=await promptName('New file name (example: main.py):','new_file.py'); if(!n)return;
     const path=normalizePath(folder?folder+'/'+n:n); if(files[path]!==undefined)return toast('That file already exists.');
     ensureFolder(path.split('/').slice(0,-1).join('/')); files[path]=''; persistWorkspace(); renderTree(); openFile(path); toast('File created.');
   }
-  function createFolderIn(parent=''){
-    const n=promptName('New folder name:','new_folder'); if(!n)return;
+  async function createFolderIn(parent=''){
+    const n=await promptName('New folder name:','new_folder'); if(!n)return;
     const path=normalizePath(parent?parent+'/'+n:n); if(allFolderPaths().includes(path))return toast('Folder already exists.');
     ensureFolder(path); persistWorkspace(); renderTree(); toast('Folder created.');
   }
   function uploadInto(folder=''){ $('uploadFiles').dataset.targetFolder=folder; $('uploadFiles').click(); }
   function downloadFile(name){ if(files[name]===undefined)return; downloadBlob(name.split('/').pop(),files[name]); }
-  function renameFile(old){ const n=promptName('Rename file:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(files[next]!==undefined)return toast('Name already exists.');files[next]=files[old];delete files[old];openTabs=openTabs.map(x=>x===old?next:x);if(activeFile===old)activeFile=next;persistWorkspace();renderTree();openFile(next);toast('File renamed.'); }
-  function renameFolder(old){ const n=promptName('Rename folder:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(allFolderPaths().includes(next))return toast('Folder already exists.');
+  async function renameFile(old){ const n=await promptName('Rename file:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(files[next]!==undefined)return toast('Name already exists.');files[next]=files[old];delete files[old];openTabs=openTabs.map(x=>x===old?next:x);if(activeFile===old)activeFile=next;persistWorkspace();renderTree();openFile(next);toast('File renamed.'); }
+  async function renameFolder(old){ const n=await promptName('Rename folder:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(allFolderPaths().includes(next))return toast('Folder already exists.');
     const moved={};Object.keys(files).forEach(k=>{if(k===old||k.startsWith(old+'/')){moved[next+k.slice(old.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);ensureFolder(next);if(activeFile===old||activeFile.startsWith(old+'/'))activeFile=next+activeFile.slice(old.length);openTabs=openTabs.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Folder renamed.'); }
   function copyFile(name){let base=name,ext='';const slash=base.lastIndexOf('/');const dir=slash>=0?base.slice(0,slash+1):'';let leaf=slash>=0?base.slice(slash+1):base;const dot=leaf.lastIndexOf('.');if(dot>0){ext=leaf.slice(dot);leaf=leaf.slice(0,dot);}let next=dir+leaf+'_copy'+ext,i=2;while(files[next]!==undefined)next=dir+leaf+'_copy'+i+++ext;files[next]=files[name];persistWorkspace();renderTree();openFile(next);toast('File copied.');}
   function deleteFolder(path){if(!confirm('Delete folder "'+path+'" and all files inside it?'))return;Object.keys(files).forEach(k=>{if(k===path||k.startsWith(path+'/')){delete files[k];openTabs=openTabs.filter(t=>t!==k);}});folders=folders.filter(f=>f!==path&&!f.startsWith(path+'/'));if(!Object.keys(files).length)files['main.py']='# Start coding here\nprint("Hello, world!")\n';if(!files[activeFile])activeFile=Object.keys(files)[0];persistWorkspace();renderTree();openFile(activeFile);toast('Folder deleted.');}
@@ -2311,10 +2453,17 @@ loadPython().catch(() => {
     const entries=[...visibleFolders.map(path=>({path,folder:true})),...visibleFiles.map(path=>({path,folder:false}))].sort((a,b)=>{const da=a.path.split('/').length,db=b.path.split('/').length; if(da!==db)return da-db;return a.path.localeCompare(b.path);});
     const seen=new Set();
     entries.forEach(item=>{const path=item.path;const parent=path.includes('/')?path.slice(0,path.lastIndexOf('/')):'';if(parent&&!seen.has(parent)&&!filter)return;const ancestors=path.split('/').slice(0,-1);if(ancestors.some((_,i)=>collapsedFolders.has(ancestors.slice(0,i+1).join('/')))&&!filter)return;const row=document.createElement('div');row.className='tree-row'+(!item.folder&&path===activeFile?' active':'');row.dataset[item.folder?'folder':'file']=path;row.style.setProperty('--depth',Math.max(0,path.split('/').length-1));row.draggable=true;row.title=path;
-      const icon=item.folder?SVG_ICONS.folder:getSvgForFile(path);row.innerHTML=icon+'<span class="filename">'+escapeHTML(path.split('/').pop())+'</span>'+(item.folder?'<span style="color:var(--muted);font-size:10px">▸</span>':'');
+      const icon=item.folder?SVG_ICONS.folder:getSvgForFile(path);
+      const depth=Math.max(0,path.split('/').length-1);
+      const hasChildren=item.folder&&foldersAll.some(f=>f!==path&&f.startsWith(path+'/')) || item.folder&&visibleFiles.some(f=>f.startsWith(path+'/'));
+      const isClosed=collapsedFolders.has(path);
+      const chevron=item.folder?(hasChildren?'<svg class="tree-chevron '+(!isClosed?'open':'')+'" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 3 5 5-5 5"/></svg>':'<span class="tree-chevron spacer"></span>'):'<span class="tree-chevron spacer"></span>';
+      row.style.setProperty('--depth',depth);
+      row.innerHTML=chevron+icon+'<span class="filename">'+escapeHTML(path.split('/').pop())+'</span>';
       row.addEventListener('click',()=>{if(item.folder){if(collapsedFolders.has(path))collapsedFolders.delete(path);else collapsedFolders.add(path);renderTree();}else openFile(path);});
+      if(item.folder) row.addEventListener('dblclick',e=>{e.preventDefault();menuTarget={path,folder:true};showMenu(e.clientX,e.clientY,[{label:'Add Folder',icon:'▰',run:()=>createFolderIn(path)},{label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Upload Files',icon:'⇧',run:()=>uploadInto(path)}]);});
       row.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();menuTarget={path,folder:item.folder};const p=item.folder?[
-        {label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Add File Name',icon:'✎',run:()=>createFileIn(path)},{label:'Upload',icon:'⇧',run:()=>uploadInto(path)},{sep:true},{label:'Rename',icon:'✎',run:()=>renameFolder(path)},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFolder(path)}
+        {label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Add Folder',icon:'▰',run:()=>createFolderIn(path)},{label:'Add File Name',icon:'✎',run:()=>createFileIn(path)},{label:'Upload Files',icon:'⇧',run:()=>uploadInto(path)},{sep:true},{label:'Rename',icon:'✎',run:()=>renameFolder(path)},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFolder(path)}
       ]:[{label:'Open',icon:'↗',run:()=>openFile(path)},{label:'Copy',icon:'▣',run:()=>copyFile(path)},{label:'Rename',icon:'✎',run:()=>renameFile(path)},{label:'Download',icon:'⇩',run:()=>downloadFile(path)},{sep:true},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFile(path)}];showMenu(e.clientX,e.clientY,p);});
       row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/x-workspace-path',path);e.dataTransfer.setData(item.folder?'text/x-folder':'text/x-file',path);e.dataTransfer.effectAllowed='move';row.classList.add('dragging');});row.addEventListener('dragend',()=>row.classList.remove('dragging'));
       row.addEventListener('dragover',e=>{if(item.folder||e.dataTransfer.types.includes('Files')){e.preventDefault();row.classList.add('drop-target');}});row.addEventListener('dragleave',()=>row.classList.remove('drop-target'));
@@ -2337,7 +2486,54 @@ loadPython().catch(() => {
   function clearWordMarks(){wordMarks.forEach(m=>m.clear());wordMarks=[];}
   function highlightWord(){if(!window.editor)return;clearWordMarks();const cur=editor.getCursor(),line=editor.getLine(cur.line)||'',match=line.slice(0,cur.ch).match(/[A-Za-z_$][\w$]*/);let word=match?match[0]:null;if(!word){const after=line.slice(cur.ch).match(/^[A-Za-z_$][\w$]*/);word=after?after[0]:null;}if(!word||word.length<2)return;const escaped=word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp('\\b'+escaped+'\\b','g');for(let i=0;i<editor.lineCount();i++){const txt=editor.getLine(i);let m;while((m=re.exec(txt))!==null)wordMarks.push(editor.markText({line:i,ch:m.index},{line:i,ch:m.index+m[0].length},{className:'cm-word-highlight'}));}}
   if(window.editor){editor.on('cursorActivity',highlightWord);editor.on('change',highlightWord);}
-  function replaceInEditor(){const find=prompt('Find text in current file:');if(find===null||!find)return;const replace=prompt('Replace with:','');if(replace===null)return;const text=editor.getValue();let count=0;const next=text.replace(new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),()=>{count++;return replace;});editor.setValue(next);toast('Replaced '+count+' occurrence(s).');}
+  function replaceInEditor(){window.openFindReplace&&window.openFindReplace('replace');}
+  // Accessible, GitHub-inspired Find / Replace widget with real editor navigation.
+  (function installFindReplace(){
+    // `editor` is this file's local CodeMirror instance; it is not exported as window.editor.
+    // Checking window.editor here prevented the entire Find/Replace panel from ever being created.
+    if(!editor)return;
+    const panel=document.createElement('div');panel.className='find-replace-panel';panel.hidden=true;panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Find and replace');
+    panel.innerHTML='<div class="find-replace-head"><div class="find-replace-tabs"><button type="button" class="find-replace-tab active" data-mode="find">Find</button><button type="button" class="find-replace-tab" data-mode="replace">Replace</button></div><button type="button" class="find-replace-close" aria-label="Close find and replace" title="Close (Esc)">×</button></div><div class="fr-input-row"><label class="fr-input-wrap"><input class="fr-find" type="text" placeholder="Find" autocomplete="off" spellcheck="false" aria-label="Find text"><button class="fr-mini" data-option="case" type="button" title="Match case (Aa)" aria-label="Match case">Aa</button><button class="fr-mini" data-option="word" type="button" title="Match whole word" aria-label="Match whole word">ab</button></label><span class="fr-count">0 results</span><button class="fr-mini" data-step="prev" type="button" title="Previous match (Shift+Enter)" aria-label="Previous match">↑</button><button class="fr-mini" data-step="next" type="button" title="Next match (Enter)" aria-label="Next match">↓</button></div><div class="fr-input-row fr-replace-row" hidden><label class="fr-input-wrap"><input class="fr-replace" type="text" placeholder="Replace" autocomplete="off" spellcheck="false" aria-label="Replace with"></label><button type="button" class="fr-action" data-action="replace">Replace</button><button type="button" class="fr-action primary" data-action="all">Replace all</button></div><div class="fr-status" aria-live="polite"></div>';
+    const host=document.body;if(!host)return;host.appendChild(panel);
+    const findInput=panel.querySelector('.fr-find'),replaceInput=panel.querySelector('.fr-replace'),countEl=panel.querySelector('.fr-count'),status=panel.querySelector('.fr-status'),replaceRow=panel.querySelector('.fr-replace-row');
+    let mode='find',matches=[],current=-1,marks=[],matchCase=false,wholeWord=false;
+    function clearMarks(){marks.forEach(m=>{try{m.clear()}catch(_){}});marks=[];}
+    function posFromIndex(text,index){const before=text.slice(0,index).split('\n');return {line:before.length-1,ch:before[before.length-1].length};}
+    function indexFromPos(text,pos){const lines=text.split('\n');let n=0;for(let i=0;i<pos.line;i++)n+=(lines[i]||'').length+1;return n+pos.ch;}
+    function getMatches(){const text=editor.getValue(),needle=findInput.value;matches=[];if(!needle)return;const hay=matchCase?text:text.toLocaleLowerCase(),term=matchCase?needle:needle.toLocaleLowerCase();let from=0,idx;while((idx=hay.indexOf(term,from))!==-1){const end=idx+term.length;const boundary=c=>!c||!/[A-Za-z0-9_$]/.test(c);if(!wholeWord||(boundary(text[idx-1])&&boundary(text[end]))){matches.push({from:posFromIndex(text,idx),to:posFromIndex(text,end),start:idx,end});}from=Math.max(end,idx+1);}}
+    function paint(){clearMarks();getMatches();matches.forEach((m,i)=>marks.push(editor.markText(m.from,m.to,{className:i===current?'cm-fr-current':'cm-fr-match'})));countEl.textContent=matches.length?(current+1)+' of '+matches.length: (findInput.value?'0 results':'');status.classList.toggle('error',!!findInput.value&&!matches.length);status.textContent=findInput.value&&!matches.length?'No results found':(matches.length?'':'Type to search in the current file');}
+    function selectCurrent(){if(!matches.length){current=-1;paint();return;}if(current<0||current>=matches.length)current=0;paint();const m=matches[current];editor.setSelection(m.from,m.to);editor.scrollIntoView({from:m.from,to:m.to},80);editor.focus();countEl.textContent=(current+1)+' of '+matches.length;}
+    function refreshSearch(preserve){const old=current;getMatches();current=matches.length?(preserve?Math.min(Math.max(old,0),matches.length-1):0):-1;paint();if(matches.length){const m=matches[current];editor.setSelection(m.from,m.to);editor.scrollIntoView({from:m.from,to:m.to},70);}}
+    function step(dir){getMatches();if(!matches.length){current=-1;paint();return;}current=(current+dir+matches.length)%matches.length;selectCurrent();}
+    function setMode(next){mode=next;panel.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));replaceRow.hidden=mode!=='replace';if(mode==='replace')replaceInput.focus();else findInput.focus();panel.querySelector('.fr-action[data-action="replace"]').textContent='Replace';}
+    function open(next){panel.hidden=false;setMode(next||'find');if(!findInput.value){const sel=editor.getSelection();if(sel&&!sel.includes('\n'))findInput.value=sel;}refreshSearch(false);findInput.focus();findInput.select();}
+    function close(){panel.hidden=true;clearMarks();editor.focus();}
+    function replaceOne(){getMatches();if(!matches.length){paint();status.textContent='No match to replace.';return;}let m=matches[current]||matches[0];if(!m)return;const start=m.start;editor.operation(()=>{editor.replaceRange(replaceInput.value,m.from,m.to,'+replace');});getMatches();if(matches.length){let next=matches.findIndex(x=>x.start>=start+replaceInput.value.length);current=next>=0?next:Math.max(0,matches.length-1);paint();const hit=matches[current];if(hit){editor.setSelection(hit.from,hit.to);editor.scrollIntoView({from:hit.from,to:hit.to},70);}}else{current=-1;paint();}status.classList.remove('error');status.textContent='Replaced 1 occurrence.';}
+    function replaceAll(){const needle=findInput.value;if(!needle){status.textContent='Enter text to find first.';return;}getMatches();if(!matches.length){paint();return;}const text=editor.getValue(),replacement=replaceInput.value;let out='',last=0;matches.forEach(m=>{out+=text.slice(last,m.start)+replacement;last=m.end;});out+=text.slice(last);const count=matches.length;editor.setValue(out);current=-1;paint();status.textContent='Replaced '+count+' occurrence'+(count===1?'':'s')+'.';}
+    window.openFindReplace=open;
+    // Route CodeMirror shortcuts to this custom panel instead of the unavailable built-in find addon.
+    editor.addKeyMap({
+      'Ctrl-F': function(){ open('find'); },
+      'Cmd-F': function(){ open('find'); },
+      'Ctrl-H': function(){ open('replace'); },
+      'Cmd-H': function(){ open('replace'); }
+    });
+    // Keep the floating panel above editor stacking contexts and place it directly under <body>.
+    panel.style.position='fixed';
+    panel.style.zIndex='2147483647';
+    panel.style.pointerEvents='auto';
+    findInput.addEventListener('input',()=>{current=0;refreshSearch(false);});replaceInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();replaceOne();}});
+    findInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();step(e.shiftKey?-1:1);}else if(e.key==='Escape'){e.preventDefault();close();}});
+    panel.querySelector('.find-replace-close').addEventListener('click',close);
+    panel.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+    panel.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>step(b.dataset.step==='prev'?-1:1)));
+    panel.querySelectorAll('[data-option]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.option==='case')matchCase=!matchCase;else wholeWord=!wholeWord;b.classList.toggle('active',b.dataset.option==='case'?matchCase:wholeWord);current=0;refreshSearch(false);findInput.focus();}));
+    panel.querySelector('[data-action="replace"]').addEventListener('click',replaceOne);panel.querySelector('[data-action="all"]').addEventListener('click',replaceAll);
+    document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(mod&&e.key.toLowerCase()==='f'){e.preventDefault();open('find');}else if(mod&&e.key.toLowerCase()==='h'){e.preventDefault();open('replace');}else if(e.key==='Escape'&&!panel.hidden)close();});
+    editor.on('change',()=>{if(!panel.hidden){const old=current;refreshSearch(true);}});
+    const originalSetValue=editor.setValue.bind(editor); // keep marks refreshed when file switches
+    editor.on('blur',()=>{});
+  })();
   // Shortcuts: Ctrl/Cmd+H replace, Ctrl/Cmd+Shift+F workspace search, Ctrl/Cmd+B explorer toggle.
   document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(!mod)return;const k=e.key.toLowerCase();if(k==='h'){e.preventDefault();replaceInEditor();}if(k==='b'){e.preventDefault();$('explorerToggle').click();}if(e.shiftKey&&k==='f'){e.preventDefault();$('searchInput').focus();$('searchInput').select();}});
   $('explorerToggle').addEventListener('click',()=>{collapsed=!collapsed;document.querySelector('.explorer').classList.toggle('is-collapsed',collapsed);$('explorerToggle').title=collapsed?'Show explorer':'Hide explorer';setTimeout(()=>editor.refresh(),60);});
@@ -2423,9 +2619,9 @@ loadPython().catch(() => {
   if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
   const auth=firebase.auth();
   const label=document.getElementById('accountLabel'), sub=document.getElementById('accountSubLabel'), pop=document.getElementById('accountPopover');
-  if(pop){pop.innerHTML='<strong>Google account</strong><p id="firebaseAccountMessage">Sign in to connect your Google account.</p><button class="btn" id="googleSignInBtn"><svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.2c0-.7-.06-1.37-.18-2H12v3.8h5.24a4.5 4.5 0 0 1-1.94 2.95v2.46h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/><path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.46c-.87.58-1.98.93-3.31.93-2.54 0-4.7-1.72-5.47-4.04H3.28v2.54A9.74 9.74 0 0 0 12 21.5z"/><path fill="#FBBC05" d="M6.53 13.57A5.85 5.85 0 0 1 6.22 12c0-.54.1-1.07.3-1.57V7.89H3.28A9.5 9.5 0 0 0 2.25 12c0 1.53.37 2.97 1.03 4.11z"/><path fill="#EA4335" d="M12 6.39c1.43 0 2.71.49 3.72 1.47l2.79-2.79C16.84 3.52 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.72 5.39l3.24 2.54C7.3 8.11 9.46 6.39 12 6.39z"/></svg> Sign in with Google</button><button class="btn" id="googleSignOutBtn" style="margin-left:6px" hidden>Sign out</button>'; }
-  auth.onAuthStateChanged(user=>{if(user){label.textContent=user.displayName||'Google Account';sub.textContent=user.email||'Connected';document.getElementById('googleSignInBtn')?.setAttribute('hidden','');document.getElementById('googleSignOutBtn')?.removeAttribute('hidden');const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=user.email||'Google account connected.';}else{label.textContent='Google Account';sub.textContent='Not connected';document.getElementById('googleSignInBtn')?.removeAttribute('hidden');document.getElementById('googleSignOutBtn')?.setAttribute('hidden','');}});
-  document.addEventListener('click',async e=>{if(e.target.closest('#googleSignInBtn')){try{const provider=new firebase.auth.GoogleAuthProvider();await auth.signInWithPopup(provider);}catch(err){const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=(err.code==='auth/unauthorized-domain'?'Add this website domain to Firebase Authentication → Settings → Authorized domains. ': '')+(err.message||'Google sign-in failed.');}}if(e.target.closest('#googleSignOutBtn')){try{await auth.signOut();}catch(err){console.error(err);}}});
+  if(pop){pop.innerHTML='<strong>Google account</strong><p id="firebaseAccountMessage">Sign in to connect your Google account.</p><button class="btn" id="googleSignInBtn"><svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.2c0-.7-.06-1.37-.18-2H12v3.8h5.24a4.5 4.5 0 0 1-1.94 2.95v2.46h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/><path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.46c-.87.58-1.98.93-3.31.93-2.54 0-4.7-1.72-5.47-4.04H3.28v2.54A9.74 9.74 0 0 0 12 21.5z"/><path fill="#FBBC05" d="M6.53 13.57A5.85 5.85 0 0 1 6.22 12c0-.54.1-1.07.3-1.57V7.89H3.28A9.5 9.5 0 0 0 2.25 12c0 1.53.37 2.97 1.03 4.11z"/><path fill="#EA4335" d="M12 6.39c1.43 0 2.71.49 3.72 1.47l2.79-2.79C16.84 3.52 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.72 5.39l3.24 2.54C7.3 8.11 9.46 6.39 12 6.39z"/></svg> Sign in with Google</button>'; }
+  auth.onAuthStateChanged(user=>{if(user){label.textContent=user.displayName||'Google Account';sub.textContent=user.email||'Connected';document.getElementById('googleSignInBtn')?.setAttribute('hidden','');const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=user.email||'Google account connected.';}else{label.textContent='Google Account';sub.textContent='Not connected';document.getElementById('googleSignInBtn')?.removeAttribute('hidden');}});
+  document.addEventListener('click',async e=>{if(e.target.closest('#googleSignInBtn')){try{const provider=new firebase.auth.GoogleAuthProvider();await auth.signInWithPopup(provider);}catch(err){const msg=document.getElementById('firebaseAccountMessage');if(msg)msg.textContent=(err.code==='auth/unauthorized-domain'?'Add this website domain to Firebase Authentication → Settings → Authorized domains. ': '')+(err.message||'Google sign-in failed.');}}});
  }catch(err){console.error('Firebase setup failed',err);}
 })();
 </script>
