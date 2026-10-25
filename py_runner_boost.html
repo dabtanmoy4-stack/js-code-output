@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090b">
+<title>JS Python Runner BOOST — Masterclass IDE</title>
+
+<!-- Fonts & CodeMirror Assets -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #09090b;
+  --surface: #111114;
+  --panel: #151518;
+  --panel2: #1b1b1f;
+  --editor: #0e0e11;
+  --text: #f5f3ee;
+  --muted: #929097;
+  --gold: #e8c77f;
+  --gold2: #b68a42;
+  --border: #393126;
+  --line: rgba(232, 199, 127, 0.17);
+  --green: #69e6a1;
+  --red: #ff7185;
+  --shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+
+  /* 3D Corner Depth & Text Shadow Tokens */
+  --3d-box-shadow: 2px 3px 0px rgba(0, 0, 0, 0.8), 3px 4px 8px rgba(0, 0, 0, 0.5), inset 1px 1px 1px rgba(255, 255, 255, 0.12);
+  --3d-box-shadow-hover: 3px 5px 0px rgba(0, 0, 0, 0.9), 4px 7px 12px rgba(232, 199, 127, 0.25), inset 1px 1px 1px rgba(255, 255, 255, 0.2);
+  --3d-text-shadow: 1px 1.5px 2px rgba(0, 0, 0, 0.85), 2px 2px 4px rgba(232, 199, 127, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #665239 transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 5% 0%, rgba(155, 118, 32, 0.09), transparent 35%),
+    radial-gradient(ellipse at 95% 10%, rgba(184, 139, 61, 0.05), transparent 35%),
+    var(--bg);
+  color: var(--text);
+  font: 13px Inter, sans-serif;
+  transition: background 0.25s, color 0.25s;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: var(--3d-box-shadow);
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.12);
+  box-shadow: var(--3d-box-shadow-hover);
+  transform: translateY(-1px) translateX(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px) translateX(1px);
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Light Theme Variables */
+body.light {
+  color-scheme: light;
+  --bg: #f2f3f6;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --panel2: #f3f4f6;
+  --editor: #ffffff;
+  --text: #202027;
+  --muted: #73737f;
+  --gold: #a77925;
+  --gold2: #c9a34f;
+  --border: #d5c8ad;
+  --line: rgba(167, 121, 37, 0.19);
+  --green: #138c54;
+  --red: #d83c58;
+  --shadow: 0 12px 35px rgba(37, 37, 37, 0.08);
+  --3d-box-shadow: 2px 3px 0px rgba(180, 160, 130, 0.6), 3px 4px 6px rgba(0, 0, 0, 0.08), inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+  --3d-box-shadow-hover: 3px 5px 0px rgba(160, 135, 100, 0.7), 4px 6px 10px rgba(167, 121, 37, 0.2), inset 1px 1px 1px rgba(255, 255, 255, 0.9);
+  --3d-text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  background: radial-gradient(ellipse at 5% 0%, rgba(244, 231, 201, 0.67), transparent 40%), #f2f3f6;
+}
+
+.app {
+  max-width: 1900px;
+  margin: auto;
+  padding: 15px;
+  min-height: 100vh;
+}
+
+/* Masterclass SVG Utility Styling */
+.svg-ic {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.4));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.svg-ic:hover {
+  filter: drop-shadow(0px 3px 6px rgba(232, 199, 127, 0.35));
+}
+
+/* Header and Brand */
+.topbar {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 18px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.topbar:after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  pointer-events: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo-wrap {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  overflow: hidden;
+  border: 1px solid var(--gold);
+  background: radial-gradient(circle at 30% 30%, #201a12, #0d0b08);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--3d-box-shadow);
+}
+
+.brand-name {
+  font-weight: 900;
+  letter-spacing: -0.7px;
+  font-size: 19px;
+  white-space: nowrap;
+}
+
+.rainbow-js {
+  display: inline-block;
+  background: linear-gradient(90deg, #ff4848, #ffb52e, #f7ef56, #51e18a, #4cb7ff, #ba6aff, #ff5cbd, #ff4848);
+  background-size: 300% 100%;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: rainbow 3.8s linear infinite;
+}
+
+/* CLEAN ELEGANT RUNNER TEXT WITHOUT NEON GLOW */
+.runner-text {
+  color: var(--gold);
+  font-weight: 850;
+  text-shadow: var(--3d-text-shadow);
+}
+
+@keyframes rainbow { to { background-position: 300% 0; } }
+
+.brand-sub {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* BOOST GLOW ANIMATION */
+.boost {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  font-size: 10px;
+  color: #ffe6a3;
+  animation: boostGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes boostGlow {
+  0% {
+    color: #ffd875;
+    text-shadow: 0 0 6px rgba(255, 216, 117, 0.6), 0 0 12px rgba(232, 199, 127, 0.4);
+  }
+  100% {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 230, 163, 0.95), 0 0 22px rgba(255, 188, 87, 0.8), 0 0 32px rgba(212, 150, 42, 0.6);
+  }
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel2);
+  color: var(--text);
+  font-weight: 650;
+  font-size: 11px;
+  white-space: nowrap;
+  text-shadow: var(--3d-text-shadow);
+}
+
+.btn:hover { border-color: var(--gold); }
+
+.btn.icon-only {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 9px;
+  font-size: 14px;
+}
+
+.btn.gold {
+  background: linear-gradient(135deg, #f2dca5, #c49a4f);
+  border-color: #e8c77f;
+  color: #20170b;
+  font-weight: 850;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.btn.run { min-width: 112px; }
+
+/* FULLY GLOWING PREMIUM BADGE */
+.premium-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 15px;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  background: linear-gradient(135deg, rgba(255, 215, 120, 0.22), rgba(182, 138, 66, 0.28));
+  border: 1px solid #ffe399;
+  user-select: none;
+  animation: premiumFullGlow 2s ease-in-out infinite alternate;
+}
+
+.premium-pill .crown-svg {
+  animation: crownFloat 2s ease-in-out infinite alternate;
+}
+
+@keyframes premiumFullGlow {
+  0% {
+    border-color: #e8c77f;
+    box-shadow: 0 0 8px rgba(232, 199, 127, 0.4), inset 0 0 6px rgba(255, 230, 163, 0.2);
+    text-shadow: 0 0 5px rgba(255, 220, 130, 0.6);
+  }
+  100% {
+    border-color: #ffffff;
+    box-shadow: 0 0 18px rgba(255, 215, 100, 0.85), 0 0 30px rgba(232, 175, 60, 0.5), inset 0 0 12px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 200, 90, 0.8);
+  }
+}
+
+@keyframes crownFloat {
+  0% { transform: translateY(0); filter: drop-shadow(0 0 2px rgba(255,220,130,0.5)); }
+  100% { transform: translateY(-2px); filter: drop-shadow(0 0 8px rgba(255,255,255,0.9)); }
+}
+
+.theme-toggle {
+  display: grid !important;
+  place-items: center !important;
+  background: var(--panel2) !important;
+  border-color: var(--border) !important;
+}
+
+/* Status Strip */
+.status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 5px 4px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+
+.status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: var(--3d-text-shadow);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+}
+
+.dot.gold-dot { background: var(--gold); }
+.dot.busy { background: #ffb64d; animation: blink 0.8s infinite; }
+@keyframes blink { 50% { opacity: 0.2; } }
+
+/* Workspace */
+.workspace {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+  align-items: stretch;
+}
+
+.panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.panel-head {
+  min-height: 43px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel2);
+}
+
+.panel-title {
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.15px;
+  text-shadow: var(--3d-text-shadow);
+}
+
+.panel-sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.small-btn {
+  height: 29px;
+  min-width: 29px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  box-shadow: var(--3d-box-shadow);
+  text-shadow: var(--3d-text-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* File Explorer */
+.explorer {
+  display: flex;
+  flex-direction: column;
+  min-height: 590px;
+  background: var(--surface);
+}
+
+.explorer-tools {
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: inset 1px 2px 4px rgba(0,0,0,0.5);
+}
+
+.search-box input {
+  min-width: 0;
+  width: 100%;
+  height: 34px;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  outline: 0;
+  font-size: 11px;
+}
+
+.search-box:focus-within { border-color: var(--gold); }
+.search-shortcut { font-size: 9px; color: var(--muted); white-space: nowrap; }
+
+.explorer-actions { display: flex; gap: 5px; }
+.explorer-actions .btn { flex: 1; padding: 7px 5px; min-height: 34px; font-size: 10px; }
+
+.tree {
+  padding: 3px 5px 10px;
+  flex: 1;
+  min-height: 180px;
+  overflow-y: auto;
+}
+
+.tree-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px 5px;
+  font-size: 10px;
+  font-weight: 850;
+  color: var(--muted);
+  letter-spacing: 0.7px;
+  text-shadow: var(--3d-text-shadow);
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  border-radius: 6px;
+  min-height: 34px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 12px;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.tree-row:hover {
+  background: var(--panel2);
+  border-color: var(--border);
+  box-shadow: var(--3d-box-shadow);
+}
+
+.tree-row.active {
+  background: rgba(232, 199, 127, 0.12);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: var(--3d-box-shadow);
+}
+
+.tree-row.dragging { opacity: 0.4; }
+.tree-row.drop-target { border-color: var(--gold); background: rgba(177, 138, 60, 0.15); }
+.tree-row .filename { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-shadow: var(--3d-text-shadow); }
+.tree-row .tree-action { opacity: 0.75; color: var(--muted); font-size: 11px; display: inline-flex; align-items: center; }
+.tree-row .tree-action:hover { color: var(--red); }
+
+.file-footer {
+  padding: 11px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.drop-hint {
+  margin: 8px;
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.drop-hint.drag-over { border-color: var(--gold); background: rgba(177, 138, 60, 0.1); }
+.explorer-collapse { display: none; }
+
+/* Main Workspace & CodeMirror */
+.main { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.editor-panel { min-width: 0; }
+
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+  background: var(--panel);
+  box-shadow: var(--3d-box-shadow);
+  text-shadow: var(--3d-text-shadow);
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--surface); border-color: var(--line); color: var(--text); }
+.tab .tab-close { font-size: 10px; opacity: 0.6; display: inline-flex; align-items: center; }
+.tab .tab-close:hover { opacity: 1; color: var(--red); }
+
+.editor-tools { display: flex; gap: 5px; flex-wrap: wrap; }
+.editor-tools .btn { min-height: 30px; padding: 6px 9px; font-size: 10px; }
+
+.editor-body { position: relative; min-width: 0; }
+.CodeMirror {
+  height: 390px;
+  min-height: 240px;
+  padding: 10px 0;
+  background: var(--editor);
+  color: var(--text);
+  font: 13px/1.8 "JetBrains Mono", monospace;
+}
+
+.CodeMirror-gutters { background: var(--editor); border-right: 1px solid var(--line); }
+.CodeMirror-linenumber { color: #77717f; padding: 0 10px 0 5px; }
+.CodeMirror-cursor { border-left: 2px solid var(--gold); }
+.CodeMirror-selected { background: rgba(177, 138, 60, 0.22) !important; }
+.CodeMirror-focused .CodeMirror-selected { background: rgba(177, 138, 60, 0.28) !important; }
+.CodeMirror-scroll { min-height: 240px; }
+
+body.light .CodeMirror { background: #ffffff; color: #252530; }
+body.light .CodeMirror-gutters { background: #f7f7fa; }
+body.light .CodeMirror-linenumber { color: #9994a3; }
+
+.editor-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.editor-foot span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Output & Terminal Panel */
+.output-panel { min-width: 0; display: flex; flex-direction: column; }
+.output-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.output-tabs { display: flex; align-items: center; gap: 5px; }
+
+.output-tab {
+  padding: 7px 9px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  cursor: pointer;
+  text-shadow: var(--3d-text-shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.output-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.output-actions { display: flex; gap: 5px; }
+.output-actions .btn { min-height: 28px; padding: 5px 8px; font-size: 10px; }
+
+.output {
+  min-height: 185px;
+  max-height: 350px;
+  overflow: auto;
+  padding: 15px;
+  background: var(--editor);
+  color: var(--text);
+  font: 12px/1.85 "JetBrains Mono", monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.output-placeholder { color: var(--muted); }
+.output-line-error { color: var(--red); }
+.output-line-success { color: var(--green); }
+.output-line-info { color: var(--gold); }
+
+/* Interactive Input Bar */
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid var(--line);
+  background: var(--panel2);
+}
+
+.prompt-mark { font-family: monospace; color: var(--gold); font-weight: 800; text-shadow: var(--3d-text-shadow); }
+.input-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  outline: 0;
+  font-size: 11px;
+  box-shadow: inset 1px 2px 4px rgba(0,0,0,0.5);
+}
+
+.input-bar input:focus { border-color: var(--gold); }
+.input-bar .btn { min-height: 34px; }
+
+/* REPL Console Extra */
+.console-extra {
+  display: none;
+  padding: 12px;
+  border-top: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--muted);
+  font: 11px/1.8 "JetBrains Mono", monospace;
+}
+
+.console-extra.show { display: block; }
+.console-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.console-row input {
+  min-width: 0;
+  flex: 1;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: inset 1px 2px 4px rgba(0,0,0,0.5);
+}
+
+.console-note { margin-top: 7px; font-size: 10px; color: var(--muted); }
+
+/* Loader Progress Bar */
+.loader-wrap {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel2);
+}
+
+.loader-wrap.show { display: flex; }
+.loader-orb {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid #5e4826;
+  border-top-color: var(--gold);
+  border-right-color: #f8e2aa;
+  box-shadow: var(--3d-box-shadow);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-copy strong { display: block; font-size: 10px; color: var(--gold); margin-bottom: 4px; text-shadow: var(--3d-text-shadow); }
+.loader-copy span { font-size: 10px; color: var(--muted); }
+.loader-bar { height: 2px; margin-top: 6px; background: var(--border); overflow: hidden; border-radius: 5px; }
+.loader-bar:after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, var(--gold), #fff0b6, transparent);
+  animation: loadBar 1.1s ease-in-out infinite;
+}
+
+@keyframes loadBar { from { transform: translateX(-120%); } to { transform: translateX(330%); } }
+.hidden { display: none !important; }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 15px 4px 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.footer strong { color: var(--gold); text-shadow: var(--3d-text-shadow); }
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  z-index: 1000;
+  padding: 11px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-size: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s, opacity 0.25s;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Responsive Styles */
+@media(min-width: 1200px) {
+  .workspace { grid-template-columns: 245px minmax(0, 1fr); }
+  .main { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); align-items: start; }
+  .editor-panel, .output-panel { min-width: 0; }
+  .CodeMirror { height: calc(100vh - 310px); min-height: 400px; max-height: 850px; }
+  .output { min-height: calc(100vh - 425px); max-height: 650px; flex: 1; }
+}
+
+@media(max-width: 1199px) { .workspace { grid-template-columns: 220px minmax(0, 1fr); } }
+
+@media(max-width: 760px) {
+  .app { padding: 6px; padding-bottom: 18px; }
+  .topbar { padding: 11px; border-radius: 12px; gap: 10px; }
+  .brand { gap: 9px; }
+  .brand-name { font-size: 15px; white-space: normal; line-height: 1.4; }
+  .brand-sub { font-size: 8px; letter-spacing: 0.6px; }
+  .logo-wrap { width: 40px; height: 40px; border-radius: 10px; }
+  .top-actions { display: flex; align-items: center; gap: 7px; width: 100%; flex-wrap: wrap; }
+  .top-actions .btn { min-height: 40px; padding: 8px 10px; font-size: 11px; }
+  .top-actions .btn.icon-only { width: 40px; height: 40px; min-height: 40px; }
+  .top-actions .premium-pill { width: 100%; justify-content: center; }
+  .top-actions .run { flex: 1; min-height: 40px; }
+  .status-strip { padding: 9px 3px 3px; gap: 7px; }
+  .status-left, .status-right { gap: 8px; }
+  .status-item { font-size: 9px; }
+  .workspace { grid-template-columns: minmax(0, 1fr); gap: 9px; margin-top: 8px; }
+  .explorer { min-height: unset; }
+  .explorer-collapse { display: inline-flex; align-items: center; justify-content: center; }
+  .explorer.is-collapsed .explorer-tools,
+  .explorer.is-collapsed .tree,
+  .explorer.is-collapsed .drop-hint,
+  .explorer.is-collapsed .file-footer { display: none; }
+  .explorer.is-collapsed .panel-head { border-bottom: 0; }
+  .explorer-tools { padding: 8px; }
+  .search-box input { height: 40px; font-size: 12px; }
+  .search-shortcut { display: none; }
+  .explorer-actions { gap: 6px; }
+  .explorer-actions .btn { min-height: 40px; font-size: 11px; }
+  .tree { min-height: 90px; max-height: 235px; overflow: auto; }
+  .tree-row { min-height: 38px; font-size: 12px; padding: 8px 10px; }
+  .drop-hint { margin: 7px; font-size: 11px; }
+  .main { gap: 9px; }
+  .panel { border-radius: 10px; }
+  .panel-head { min-height: 42px; padding: 10px; }
+  .editor-toolbar { padding: 7px; gap: 7px; }
+  .tabs { width: 100%; order: 0; }
+  .tab { padding: 8px 10px; }
+  .editor-tools { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .editor-tools .btn { min-height: 38px; padding: 8px; font-size: 11px; }
+  .CodeMirror { height: 350px; min-height: 280px; font-size: 13px; line-height: 1.7; padding: 7px 0; }
+  .CodeMirror-scroll { min-height: 280px; }
+  .CodeMirror-linenumber { padding: 0 8px 0 4px; }
+  .editor-foot { padding: 9px 10px; font-size: 9px; gap: 6px; }
+  .output-panel { min-height: 0; }
+  .output-head { align-items: center; }
+  .output-tabs { gap: 2px; flex-wrap: wrap; }
+  .output-tab { padding: 9px 7px; font-size: 10px; }
+  .output-actions .btn { min-height: 34px; padding: 7px; font-size: 10px; }
+  .output { height: 350px; min-height: 350px; max-height: none; overflow: auto; padding: 12px; font-size: 12px; line-height: 1.7; }
+  .input-bar { padding: 8px; gap: 6px; }
+  .input-bar input { padding: 11px 9px; font-size: 12px; min-height: 40px; }
+  .input-bar .btn { min-height: 40px; padding: 8px; }
+  .console-extra { padding: 9px; }
+  .console-row input { min-height: 40px; font-size: 12px; }
+  .footer { padding: 12px 3px 4px; gap: 7px; line-height: 1.6; }
+}
+
+@media(max-width: 390px) {
+  .app { padding: 5px; }
+  .brand-name { font-size: 14px; }
+  .boost { font-size: 8px; }
+  .top-actions .btn { font-size: 10px; }
+  .CodeMirror { height: 320px; }
+  .output { height: 320px; min-height: 320px; }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+/* === Refined reference-image palette: obsidian, antique gold, ivory, BOOST red === */
+:root {
+  --bg: #07080a;
+  --surface: #0d0e10;
+  --panel: #111214;
+  --panel2: #191817;
+  --editor: #090a0c;
+  --text: #f6f0df;
+  --muted: #a7a092;
+  --gold: #e8c875;
+  --gold2: #a87b30;
+  --border: #49391f;
+  --line: rgba(232, 200, 117, .19);
+  --green: #d9b760;
+  --red: #e52b1e;
+  --shadow: 0 16px 42px rgba(0,0,0,.52);
+  --3d-box-shadow: 0 2px 0 rgba(0,0,0,.85), 0 5px 12px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,245,214,.07);
+  --3d-box-shadow-hover: 0 3px 0 rgba(0,0,0,.8), 0 8px 22px rgba(190,145,58,.15), inset 0 1px 0 rgba(255,245,214,.12);
+  --3d-text-shadow: 0 1px 1px rgba(0,0,0,.75), 0 0 12px rgba(232,200,117,.09);
+}
+body {
+  background:
+    radial-gradient(ellipse at 50% -8%, rgba(213,170,76,.14), transparent 36%),
+    radial-gradient(ellipse at 12% 55%, rgba(168,123,48,.055), transparent 32%),
+    radial-gradient(ellipse at 88% 85%, rgba(229,43,30,.035), transparent 28%),
+    var(--bg);
+}
+body.light {
+  --bg: #f7f5ef;
+  --surface: #fffefa;
+  --panel: #fffdf8;
+  --panel2: #f3eee2;
+  --editor: #fffefa;
+  --text: #242019;
+  --muted: #766f62;
+  --gold: #9a6c20;
+  --gold2: #d1ad5d;
+  --border: #d6c49a;
+  --line: rgba(154,108,32,.18);
+  --green: #9a6c20;
+  --red: #bd261b;
+  --shadow: 0 12px 32px rgba(69,51,19,.08);
+  --3d-box-shadow: 0 2px 0 rgba(173,148,94,.35), 0 4px 10px rgba(69,51,19,.06), inset 0 1px 0 #fff;
+  --3d-box-shadow-hover: 0 3px 0 rgba(173,148,94,.4), 0 7px 16px rgba(154,108,32,.12), inset 0 1px 0 #fff;
+  background: radial-gradient(ellipse at 50% 0%, rgba(220,190,120,.20), transparent 42%), #f7f5ef;
+}
+/* JS uses the same restrained champagne-gold sweep as the reference title. */
+.rainbow-js {
+  background: linear-gradient(105deg,#fff9e9 0%,#d8b65e 20%,#fff5cc 36%,#9d712b 52%,#fff9e5 67%,#c6a04b 82%,#fff9e9 100%);
+  background-size: 260% 100%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: goldSweep 5.5s ease-in-out infinite;
+}
+@keyframes goldSweep { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.runner-text {
+  color: var(--gold);
+  text-shadow: 0 1px 0 rgba(255,255,255,.10), 0 0 12px rgba(232,200,117,.15);
+}
+.boost {
+  color: #f02f20;
+  background: linear-gradient(180deg,#ff7452 0%,#f02f20 48%,#9c160f 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.6));
+  animation: boostRedGlow 2.8s ease-in-out infinite alternate;
+}
+@keyframes boostRedGlow { from { filter: drop-shadow(0 0 2px rgba(240,47,32,.18)); } to { filter: drop-shadow(0 0 7px rgba(240,47,32,.48)); } }
+.premium-pill {
+  color: #fff2cb;
+  background: linear-gradient(115deg,rgba(232,200,117,.08),rgba(168,123,48,.20),rgba(232,200,117,.06));
+  border-color: rgba(232,200,117,.8);
+  animation: premiumGoldPulse 3.2s ease-in-out infinite alternate;
+}
+@keyframes premiumGoldPulse {
+  from { box-shadow: 0 0 4px rgba(232,200,117,.10), inset 0 0 4px rgba(255,245,214,.04); }
+  to { box-shadow: 0 0 11px rgba(232,200,117,.28), inset 0 0 7px rgba(255,245,214,.08); }
+}
+.btn.gold {
+  color: #1b1408;
+  border-color: #f0d58a;
+  background: linear-gradient(115deg,#f8e8b7 0%,#d7b45e 34%,#a8792c 65%,#f1dc9a 100%);
+  background-size: 220% 100%;
+  animation: goldButtonShine 6s ease-in-out infinite;
+  box-shadow: 0 2px 0 #75531f, 0 5px 12px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.55);
+}
+@keyframes goldButtonShine { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.topbar, .panel {
+  border-color: color-mix(in srgb, var(--border) 76%, var(--gold));
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,239,191,.025);
+}
+.topbar { background: linear-gradient(115deg, var(--surface), color-mix(in srgb,var(--surface) 94%,#6f501b)); }
+.topbar::after {
+  background: linear-gradient(90deg,transparent,#9b762f,#fff0bd,#c69c43,transparent);
+  background-size: 220% 100%;
+  animation: goldSweep 7s ease-in-out infinite;
+}
+.panel-head { background-color: var(--panel2); background-image: linear-gradient(100deg,rgba(232,200,117,.055),transparent 65%); }
+.panel, .topbar, .logo-wrap, .btn, .small-btn, .tab, .search-box, .input-bar input, .console-row input { transition: border-color .25s, box-shadow .25s, background-color .25s, transform .2s; }
+.panel:hover { border-color: color-mix(in srgb,var(--gold) 48%,var(--border)); }
+.tree-row.active { background: rgba(232,200,117,.11); border-left-color: var(--gold); }
+.dot, .dot.gold-dot { background: var(--gold); box-shadow: 0 0 6px rgba(232,200,117,.35); }
+.dot.busy { background: #e52b1e; box-shadow: 0 0 7px rgba(229,43,30,.42); }
+.output-line-success { color: #e8c875; }
+.output-line-info { color: #f0d58a; }
+.loader-orb { border-color: #514022; border-top-color: #e8c875; border-right-color: #fff3c7; }
+.loader-bar:after { background: linear-gradient(90deg,transparent,#a8792c,#fff0b6,#e52b1e,transparent); }
+.toast { border-color: var(--gold); box-shadow: 0 12px 34px rgba(0,0,0,.35),0 0 12px rgba(232,200,117,.09); }
+.btn:hover:not(:disabled), .tree-row:hover, .tab:hover { border-color: var(--gold); }
+/* Match editor syntax accents to the warm reference palette, without changing editor behavior. */
+.cm-s-material-darker .cm-keyword, .cm-s-material-darker .cm-atom, .cm-s-material-darker .cm-number { color: #e8c875; }
+.cm-s-material-darker .cm-def, .cm-s-material-darker .cm-variable-2, .cm-s-material-darker .cm-property { color: #f0dfb2; }
+.cm-s-material-darker .cm-string, .cm-s-material-darker .cm-string-2 { color: #d8b46b; }
+.cm-s-material-darker .cm-comment { color: #8e887b; }
+.cm-s-material-darker .cm-error { color: #ff6b5e; }
+body.light .cm-s-material-darker .cm-keyword, body.light .cm-s-material-darker .cm-number { color: #8b621c; }
+body.light .cm-s-material-darker .cm-string { color: #9a6c20; }
+@media (max-width:760px) {
+  .topbar, .panel { box-shadow: 0 8px 24px rgba(0,0,0,.20); }
+  .premium-pill { box-shadow: 0 0 7px rgba(232,200,117,.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-js, .boost, .premium-pill, .btn.gold, .topbar::after { animation: none !important; }
+}
+
+
+/* Clean VS Code-inspired workspace and high-contrast editor */
+:root { --gold:#d6ad55; --gold2:#9f7728; --border:#343434; --line:rgba(214,173,85,.18); }
+body { background:#08090b; }
+body.light { background:#f5f6f8; }
+.status-strip, .footer, .drop-hint, .file-footer { display:none !important; }
+.app { height:100vh; min-height:0; max-width:none; padding:8px; display:flex; flex-direction:column; gap:8px; overflow:hidden; }
+.topbar { flex:0 0 auto; min-height:58px; padding:8px 14px; border-radius:10px; }
+.workspace { flex:1 1 auto; min-height:0; margin-top:0; grid-template-columns:250px minmax(0,1fr); gap:8px; overflow:hidden; }
+.explorer { min-height:0; height:100%; display:flex; flex-direction:column; }
+.tree { min-height:0; overflow:auto; padding:5px 7px 12px; }
+.explorer-tools { padding:8px; }
+.explorer-actions { display:none; }
+.main { min-height:0; height:100%; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr); align-items:stretch; gap:8px; overflow:hidden; }
+.editor-panel,.output-panel { min-height:0; height:100%; display:flex; flex-direction:column; }
+.editor-body { flex:1; min-height:0; }
+.CodeMirror { height:100% !important; min-height:0 !important; max-height:none !important; background:#090b10 !important; color:#f8fafc !important; font:14px/1.72 "JetBrains Mono",Consolas,monospace; }
+.CodeMirror-gutters { background:#0d1017 !important; border-right:1px solid #303846 !important; }
+.CodeMirror-linenumber { color:#8492a6 !important; }
+.CodeMirror-cursor { border-left:2px solid #f8c65d !important; }
+.CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected { background:#264f78 !important; }
+.cm-s-material-darker .cm-keyword { color:#ff7ab2 !important; font-weight:700; }
+.cm-s-material-darker .cm-def,.cm-s-material-darker .cm-variable-2 { color:#82aaff !important; }
+.cm-s-material-darker .cm-string,.cm-s-material-darker .cm-string-2 { color:#c3e88d !important; }
+.cm-s-material-darker .cm-number { color:#f78c6c !important; }
+.cm-s-material-darker .cm-comment { color:#9aa4b2 !important; font-style:italic; }
+.cm-s-material-darker .cm-builtin { color:#ffcb6b !important; }
+.cm-s-material-darker .cm-operator { color:#89ddff !important; }
+.cm-word-highlight { background:rgba(255,205,86,.22); border-bottom:1px solid #ffcb6b; border-radius:2px; }
+body.light .CodeMirror { background:#fff !important; color:#111827 !important; }
+body.light .CodeMirror-gutters { background:#f1f4f8 !important; border-right:1px solid #cbd5e1 !important; }
+body.light .CodeMirror-linenumber { color:#64748b !important; }
+body.light .cm-s-material-darker .cm-keyword { color:#a21caf !important; }
+body.light .cm-s-material-darker .cm-def,body.light .cm-s-material-darker .cm-variable-2 { color:#0759b5 !important; }
+body.light .cm-s-material-darker .cm-string,body.light .cm-s-material-darker .cm-string-2 { color:#087443 !important; }
+body.light .cm-s-material-darker .cm-number { color:#b45309 !important; }
+body.light .cm-s-material-darker .cm-comment { color:#64748b !important; }
+body.light .cm-s-material-darker .cm-builtin { color:#9a6700 !important; }
+body.light .cm-s-material-darker .cm-operator { color:#0369a1 !important; }
+body.light .cm-word-highlight { background:rgba(202,138,4,.22); border-bottom:1px solid #a16207; }
+.output-panel .output { flex:1; min-height:0; max-height:none; height:auto; background:#090b10; color:#f8fafc; }
+body.light .output { background:#fff; color:#111827; }
+.output-panel .input-bar { flex:0 0 auto; }
+.panel { border-color:#343434; border-radius:9px; }
+.panel-head { flex:0 0 auto; }
+.tree-row { position:relative; min-height:29px; padding:5px 8px 5px calc(8px + var(--depth,0)*16px); border-radius:4px; font-size:12px; gap:7px; }
+.tree-row.active { background:rgba(214,173,85,.15); border-left:2px solid var(--gold); }
+.tree-row .filename { flex:1; }
+.tree-row .tree-action { display:none; }
+.tree-row:hover .tree-action { display:inline-flex; }
+.tree-row.drop-target { outline:1px solid var(--gold); background:rgba(214,173,85,.12); }
+.context-menu,.choice-menu { position:fixed; z-index:9999; min-width:190px; padding:5px; background:#17191f; border:1px solid #454955; border-radius:7px; box-shadow:0 12px 34px #0009; color:#f8fafc; }
+.context-menu button,.choice-menu button { display:flex; align-items:center; gap:9px; width:100%; padding:8px 10px; border:0; border-radius:4px; background:transparent; color:inherit; text-align:left; box-shadow:none; font-size:12px; }
+.context-menu button:hover,.choice-menu button:hover { background:#303746; transform:none; }
+.context-menu .danger { color:#ff8585; }
+.context-menu .menu-sep { height:1px; background:#393d47; margin:4px 2px; }
+body.light .context-menu,body.light .choice-menu { background:#fff; color:#111827; border-color:#cbd5e1; box-shadow:0 12px 34px #0002; }
+body.light .context-menu button:hover,body.light .choice-menu button:hover { background:#edf2f7; }
+#fileTree { flex:1; min-height:0; }
+.tree-label { padding-top:9px; }
+.explorer.is-collapsed { width:43px; }
+.explorer.is-collapsed .explorer-tools,.explorer.is-collapsed .tree { display:none; }
+.explorer.is-collapsed .panel-title { font-size:0; }
+.explorer.is-collapsed .panel-title:after { content:'EX'; font-size:10px; }
+@media(max-width:1100px) { .workspace { grid-template-columns:220px minmax(0,1fr); } .main { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(320px,1fr) minmax(260px,.8fr); overflow:auto; } .editor-panel,.output-panel { min-height:300px; } }
+@media(max-width:760px) { .app { height:auto; min-height:100vh; overflow:visible; padding:5px; } .workspace { display:flex; flex-direction:column; overflow:visible; } .explorer { height:auto; max-height:300px; } .main { display:flex; flex-direction:column; overflow:visible; } .editor-panel { height:62vh; min-height:400px; } .output-panel { height:50vh; min-height:300px; } .CodeMirror { height:100% !important; } .topbar { padding:8px; } .brand-name { font-size:14px; } .top-actions { width:auto; gap:5px; } .premium-pill { display:none; } }
+
+
+/* Refined header controls, matching the existing file/action SVG language */
+.topbar { display:flex; gap:12px; }
+.header-project-area { position:relative; margin-right:auto; min-width:0; }
+.header-project-btn { min-height:38px; background:var(--panel2); display:inline-flex; align-items:center; gap:8px; }
+.project-chevron,.account-chevron { opacity:.72; }
+.account-area { position:relative; margin-left:auto; flex:0 0 auto; }
+.account-button { min-height:40px; max-width:245px; display:flex; align-items:center; gap:9px; padding:5px 10px; border:1px solid var(--border); border-radius:9px; background:var(--panel2); color:var(--text); box-shadow:var(--3d-box-shadow); text-align:left; }
+.account-button:hover { border-color:var(--gold); }
+.google-g { width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:#fff; color:#4285f4; font:800 19px Arial,sans-serif; border:1px solid #d7dce3; flex-shrink:0; }
+.account-copy { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.account-copy strong { font-size:11px; font-weight:750; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:155px; }
+.account-copy small { font-size:9px; color:var(--muted); white-space:nowrap; }
+.header-popover { position:absolute; z-index:10050; top:calc(100% + 8px); min-width:235px; max-width:min(330px, calc(100vw - 20px)); padding:10px; border:1px solid var(--border); border-radius:11px; background:var(--surface); color:var(--text); box-shadow:0 16px 42px #0008; }
+.header-popover[hidden] { display:none !important; }
+.projects-popover { left:0; }
+.account-popover { right:0; }
+.header-popover p { margin:8px 0 10px; color:var(--muted); font-size:11px; line-height:1.6; }
+.header-popover .project-item { width:100%; display:flex; align-items:center; gap:9px; padding:9px 8px; border:0; border-radius:7px; background:transparent; color:inherit; box-shadow:none; text-align:left; }
+.header-popover .project-item:hover { background:var(--panel2); transform:none; }
+.header-popover .project-item span { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.header-popover .project-item strong { font-size:11px; }
+.header-popover .project-item small { color:var(--muted); font-size:9px; }
+.header-popover .popover-divider { height:1px; background:var(--line); margin:7px 0; }
+.mobile-more-btn { display:none; width:38px; min-width:38px; height:38px; padding:0; }
+.mobile-actions-popover { right:0; top:calc(100% + 7px); }
+.mobile-actions-popover button { width:100%; display:flex; align-items:center; gap:9px; padding:10px; border:0; background:transparent; color:var(--text); box-shadow:none; text-align:left; border-radius:7px; }
+.mobile-actions-popover button:hover { background:var(--panel2); transform:none; }
+.context-menu button svg,.choice-menu button svg { width:15px; height:15px; flex:0 0 15px; }
+@media(max-width:760px) {
+ .topbar { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; padding:7px; }
+ .brand { flex:0 1 auto; min-width:0; }
+ .brand-sub { display:none; }
+ .header-project-area { margin-left:auto; margin-right:0; }
+ .header-project-btn { min-height:36px; padding:7px 9px; }
+ .header-project-btn span { display:none; }
+ .project-chevron { display:none; }
+ .top-actions { display:none !important; }
+ .account-area { margin-left:0; }
+ .account-button { width:38px; min-width:38px; height:38px; padding:4px; justify-content:center; }
+ .account-copy,.account-chevron { display:none; }
+ .google-g { width:26px; height:26px; font-size:17px; }
+ .mobile-more-btn { display:inline-flex; align-items:center; justify-content:center; }
+ .workspace { gap:7px; }
+ .explorer .panel-head { padding:8px; }
+ .explorer .panel-head > div { gap:3px !important; }
+ .explorer .small-btn { min-width:32px; height:32px; }
+ .tree-row { min-height:38px; touch-action:pan-y; }
+ .header-popover { position:fixed; top:64px; right:8px; left:auto; width:min(300px,calc(100vw - 16px)); max-width:none; }
+ .projects-popover { right:auto; left:8px; }
+}
+
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-wrap" title="Python 3 Masterclass Engine">
+        <!-- Masterclass Metallic 3D Python Emblem SVG -->
+        <svg class="svg-ic" width="34" height="34" viewBox="0 0 128 128" fill="none">
+          <defs>
+            <linearGradient id="pyBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFF0B0"/>
+              <stop offset="50%" stop-color="#D6AD4D"/>
+              <stop offset="100%" stop-color="#8B6220"/>
+            </linearGradient>
+            <linearGradient id="pyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFE873"/>
+              <stop offset="50%" stop-color="#FFD43B"/>
+              <stop offset="100%" stop-color="#B8860B"/>
+            </linearGradient>
+            <filter id="pyDrop" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.6"/>
+            </filter>
+          </defs>
+          <path d="M63.2 6.5c-28.5 0-26.7 12.4-26.7 12.4l.1 12.8h27.3v3.9H25.6S6.5 33.5 6.5 62.4c0 28.9 16.7 27.9 16.7 27.9h10V77.4s-.6-15.5 15.2-15.5h26.4s14.6.2 14.6-14.2V20.8s2.2-14.3-26.2-14.3zm-14.5 8.7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z" fill="url(#pyBlue)" filter="url(#pyDrop)"/>
+          <path d="M64.6 121.5c28.5 0 26.7-12.4 26.7-12.4l-.1-12.8H63.9v-3.9h38.3s19.1 2.1 19.1-26.8c0-28.9-16.7-27.9-16.7-27.9h-10v12.9s.6 15.5-15.2 15.5H53s-14.6-.2-14.6 14.2v26.9s-2.2 14.3 26.2 14.3zm14.5-8.7c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z" fill="url(#pyGold)" filter="url(#pyDrop)"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name"><span class="rainbow-js">JS</span> <span>Python</span> <span class="runner-text">Runner</span> <span class="boost">BOOST</span></div>
+        <div class="brand-sub">Premium development environment</div>
+      </div>
+    </div>
+
+    <div class="header-project-area">
+      <button class="btn header-project-btn" id="projectsBtn" aria-haspopup="true" aria-expanded="false" title="Projects">
+        <svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg><span>Projects</span><svg class="svg-ic project-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+      </button>
+      <div class="header-popover projects-popover" id="projectsPopover" hidden></div>
+    </div>
+
+    <div class="top-actions">
+      <!-- Masterclass 3D Glowing Crown Badge -->
+      <span class="premium-pill">
+        <svg class="svg-ic crown-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <defs>
+            <linearGradient id="crownGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFF5C0"/>
+              <stop offset="50%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#DAA520"/>
+            </linearGradient>
+          </defs>
+          <path d="M5 16L3 5l5.5 5L12 3l3.5 7L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" fill="url(#crownGrad)"/>
+          <circle cx="12" cy="3" r="1.5" fill="#FFF"/>
+          <circle cx="3" cy="5" r="1.2" fill="#FFF"/>
+          <circle cx="21" cy="5" r="1.2" fill="#FFF"/>
+        </svg>
+        PREMIUM
+      </span>
+
+      <!-- Masterclass Theme Toggle Button (3D Sun / Moon SVG) -->
+      <button class="btn theme-toggle icon-only" id="themeBtn" title="Switch theme" aria-label="Switch theme">
+        <svg class="svg-ic" id="themeSvg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <!-- Dynamically swapped via JS -->
+        </svg>
+      </button>
+
+      <!-- Masterclass Play Button SVG -->
+      <button class="btn gold run" id="runBtn">
+        <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <defs>
+            <linearGradient id="playGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2D1A04"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+          </defs>
+          <path d="M8 5v14l11-7L8 5z" fill="url(#playGrad)" stroke="#2D1A04" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span>Run Python</span>
+      </button>
+    </div>
+    <div class="account-area">
+      <button class="account-button" id="accountBtn" aria-haspopup="true" aria-expanded="false" title="Google account">
+        <span class="google-g" aria-hidden="true">G</span><span class="account-copy"><strong id="accountLabel">Google Account</strong><small id="accountSubLabel">Not connected</small></span><svg class="svg-ic account-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+      </button>
+      <div class="header-popover account-popover" id="accountPopover" hidden><strong>Google account</strong><p>This UI is ready for your account display. Google sign-in needs your site's OAuth client configuration.</p><button class="btn" id="setAccountLabelBtn"><svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> Set display name</button></div>
+    </div>
+    <button class="btn mobile-more-btn" id="mobileMoreBtn" aria-label="More actions" title="More actions"><svg class="svg-ic" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+    <div class="header-popover mobile-actions-popover" id="mobileActionsPopover" hidden></div>
+  </header>
+
+  <!-- Status Bar -->
+  <div class="status-strip">
+    <div class="status-left">
+      <span class="status-item"><i class="dot" id="runtimeDot"></i><span id="runtimeStatus">Initializing Python...</span></span>
+      <span class="status-item"><i class="dot gold-dot"></i> Python 3 · Browser Runtime</span>
+    </div>
+    <div class="status-right">
+      <span class="status-item">⏱ Runtime: <strong id="runtimeCount">0.000s</strong></span>
+      <span class="status-item">⌘ <span id="fileCount">4 files</span></span>
+    </div>
+  </div>
+
+  <!-- Workspace Grid -->
+  <div class="workspace">
+    <!-- File Explorer Sidebar -->
+    <aside class="panel explorer">
+      <div class="panel-head">
+        <span class="panel-title">EXPLORER</span>
+        <div style="display:flex;gap:5px">
+          <button class="small-btn explorer-collapse" id="explorerToggle" title="Collapse explorer" aria-expanded="true">
+            <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <!-- New File SVG -->
+          <button class="small-btn" id="newFileBtn" title="New File">
+            <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          </button>
+          <!-- New Folder SVG -->
+          <button class="small-btn" id="newFolderBtn" title="New Folder">
+            <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+          </button>
+          <!-- Refresh SVG -->
+          <button class="small-btn" id="refreshBtn" title="Refresh">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="explorer-tools">
+        <div class="search-box">
+          <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="searchInput" type="search" placeholder="Search files and code..." aria-label="Search files and code">
+          <span class="search-shortcut">Ctrl P</span>
+        </div>
+        <div class="explorer-actions">
+          <button class="btn" id="uploadBtn">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload
+          </button>
+          <button class="btn" id="importFolderBtn">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Folder
+          </button>
+          <input type="file" id="uploadFiles" multiple hidden>
+          <input type="file" id="uploadFolder" webkitdirectory multiple hidden>
+        </div>
+      </div>
+
+      <div class="tree" id="fileTree">
+        <div class="tree-label">WORKSPACE</div>
+        <div class="tree-row">
+          <svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="url(#fldGrad)" stroke="#B8860B" stroke-width="1"/></svg>
+          <span class="filename">my_project</span>
+        </div>
+        <div class="tree-label">FOLDERS <button class="small-btn" id="newFolderSmall">＋</button></div>
+        <div id="folderList"></div>
+        <div class="tree-label">FILES <button class="small-btn" id="newFileSmall">＋</button></div>
+        <div id="fileList"></div>
+      </div>
+
+      <div class="drop-hint" id="dropZone">
+        <div style="margin-bottom:5px">
+          <svg class="svg-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        Drop files here to import<br>
+        <span>Drag files into the workspace</span>
+      </div>
+      <div class="file-footer">
+        <div>⌘ Local workspace</div>
+        <div>Autosave · LocalStorage</div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main">
+      <!-- Editor Panel -->
+      <section class="panel editor-panel">
+        <div class="panel-head">
+          <span class="panel-title">CODE EDITOR</span>
+          <span class="panel-sub" id="editorLanguage">Python 3</span>
+        </div>
+
+        <div class="editor-toolbar">
+          <div class="tabs" id="editorTabs">
+            <div class="tab active" id="activeTab"><span id="activeFileIcon"></span><span id="activeFileName">main.py</span></div>
+          </div>
+          <div class="editor-tools">
+            <button class="btn" id="formatBtn" title="Basic indentation helper">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+              Format
+            </button>
+            <button class="btn" id="findBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Find
+            </button>
+            <button class="btn" id="copyBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+            <button class="btn" id="downloadBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-body"><textarea id="code"></textarea></div>
+        <div class="editor-foot">
+          <span><i class="dot gold-dot"></i><span id="editorFilePath">my_project / main.py</span></span>
+          <span><span id="cursorPosition">Ln 1, Col 1</span> · UTF-8 · Spaces: 4</span>
+        </div>
+      </section>
+
+      <!-- Output / Terminal Panel -->
+      <section class="panel output-panel" id="outputPanel">
+        <div class="panel-head output-head">
+          <div class="output-tabs">
+            <button class="output-tab active" data-output-tab="output">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Python Output
+            </button>
+            <button class="output-tab" data-output-tab="console">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/></svg>
+              Console REPL
+            </button>
+            <button class="output-tab" data-output-tab="problems">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Problems
+            </button>
+          </div>
+          <div class="output-actions">
+            <button class="btn" id="consoleBtn">
+              <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              REPL Mode
+            </button>
+            <button class="btn" id="clearOutputBtn">
+              <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="loader-wrap" id="loaderWrap">
+          <div class="loader-orb"></div>
+          <div class="loader-copy" style="flex:1">
+            <strong id="loaderTitle">Executing Python program...</strong>
+            <span id="loaderSubtitle">Your output will appear here when ready.</span>
+            <div class="loader-bar"></div>
+          </div>
+          <span id="loaderTimer" style="color:var(--gold);font:11px monospace">0.000s</span>
+        </div>
+
+        <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your Python output will appear here...</span></div>
+
+        <!-- Interactive Input Bar for input() function -->
+        <div class="input-bar" id="inputBar">
+          <span class="prompt-mark">›</span>
+          <input id="consoleInput" placeholder="Program input appears here when input() is called..." autocomplete="off">
+          <button class="btn gold" id="sendInputBtn">
+            Send
+            <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+
+        <!-- REPL Command Runner -->
+        <div class="console-extra" id="consoleExtra">
+          <div class="console-row">
+            <span style="color:var(--gold)">›</span>
+            <input id="consoleCommand" placeholder="Console command or Python expression (e.g. 2 + 2)">
+            <button class="btn" id="consoleCommandBtn">Execute</button>
+          </div>
+          <div class="console-note" id="consoleNote">Console REPL ready. Run a program or execute expressions directly.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <span><strong>♛ JS Python Runner BOOST</strong> · Premium IDE</span>
+    <span>Browser Python · <span id="footerStatus">Starting runtime...</span></span>
+    <span>Made for developers ✦</span>
+  </footer>
+</div>
+
+<!-- Global Shared SVG Definitions -->
+<svg style="display:none;">
+  <defs>
+    <!-- Gold Folder Gradient -->
+    <linearGradient id="fldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#FFCA28"/>
+      <stop offset="100%" stop-color="#C79100"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- CodeMirror & Pyodide Core Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+// Masterclass SVG Vector Templates for Files and Controls
+const SVG_ICONS = {
+  sun: `<path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" fill="#FFD700" stroke="#FFA500" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>`,
+  moon: `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#E8C77F" stroke="#B68A42" stroke-width="1.5"/>`,
+  pythonFile: `<svg class="svg-ic" width="16" height="16" viewBox="0 0 128 128"><path d="M63.2 6.5c-28.5 0-26.7 12.4-26.7 12.4l.1 12.8h27.3v3.9H25.6S6.5 33.5 6.5 62.4c0 28.9 16.7 27.9 16.7 27.9h10V77.4s-.6-15.5 15.2-15.5h26.4s14.6.2 14.6-14.2V20.8s2.2-14.3-26.2-14.3zm-14.5 8.7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z" fill="#306998"/><path d="M64.6 121.5c28.5 0 26.7-12.4 26.7-12.4l-.1-12.8H63.9v-3.9h38.3s19.1 2.1 19.1-26.8c0-28.9-16.7-27.9-16.7-27.9h-10v12.9s.6 15.5-15.2 15.5H53s-14.6-.2-14.6 14.2v26.9s-2.2 14.3 26.2 14.3zm14.5-8.7c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z" fill="#FFE873"/></svg>`,
+  markdownFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B3A2FF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15V9l3 3 3-3v6M17 15l-2-2h4"/></svg>`,
+  jsonFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DFB36D" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12a1 1 0 0 0-1-1 1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h1M14 12a1 1 0 0 0 1-1 1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-1"/></svg>`,
+  textFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  genericFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`,
+  folder: `<svg class="svg-ic" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="url(#fldGrad)" stroke="#B8860B" stroke-width="1"/></svg>`,
+  deleteAction: `<svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+};
+
+// Initial starter workspace files
+const STARTER_FILES = {
+  "main.py": '# Welcome to JS Python Runner BOOST\n# Edit this file and press Ctrl+Enter to run.\n\ndef greet(name):\n    return f"Hello, {name}!"\n\nname = "Developer"\nprint(greet(name))\n\nfor number in range(1, 6):\n    print(f"Step {number}: Python is ready!")\n'
+};
+const STARTER_FOLDERS = [];
+const STORAGE_KEY = "jsPythonRunnerBoostProjectV1";
+const PREF_KEY = "jsPythonRunnerBoostPrefsV1";
+
+let files = {};
+let folders = [];
+let activeFile = "main.py";
+let openTabs = ["main.py"];
+let pyodide = null;
+let pyodideLoading = null;
+let running = false;
+let waitingForInput = null;
+let runtimeStarted = 0;
+let runtimeInterval = null;
+let currentOutputTab = "output";
+let currentOutputText = "";
+let currentErrors = [];
+let toastTimer = null;
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function loadWorkspace() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (saved && saved.files && typeof saved.files === "object") {
+      files = saved.files;
+      folders = Array.isArray(saved.folders) ? saved.folders : STARTER_FOLDERS.slice();
+      if (!Object.keys(files).length) files = { ...STARTER_FILES };
+      if (!files[activeFile]) activeFile = Object.keys(files)[0];
+    } else {
+      files = { ...STARTER_FILES };
+      folders = STARTER_FOLDERS.slice();
+    }
+  } catch {
+    files = { ...STARTER_FILES };
+    folders = STARTER_FOLDERS.slice();
+  }
+}
+
+function persistWorkspace() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ files, folders }));
+  } catch {
+    toast("Browser storage limit reached. Backup files locally.");
+  }
+}
+
+function loadPrefs() {
+  try {
+    const prefs = JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
+    if (prefs.theme === "light") document.body.classList.add("light");
+  } catch {}
+  updateThemeButton();
+}
+
+function savePrefs() {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify({
+      theme: document.body.classList.contains("light") ? "light" : "dark"
+    }));
+  } catch {}
+}
+
+function updateThemeButton() {
+  const light = document.body.classList.contains("light");
+  $("themeSvg").innerHTML = light ? SVG_ICONS.moon : SVG_ICONS.sun;
+  $("themeBtn").setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+  $("themeBtn").setAttribute("title", light ? "Switch to dark mode" : "Switch to light mode");
+}
+
+function fileMode(name) {
+  if (name.endsWith(".md")) return "markdown";
+  if (name.endsWith(".js") || name.endsWith(".json")) return "javascript";
+  return "python";
+}
+
+function getSvgForFile(name) {
+  if (name.endsWith(".py")) return SVG_ICONS.pythonFile;
+  if (name.endsWith(".md")) return SVG_ICONS.markdownFile;
+  if (name.endsWith(".json")) return SVG_ICONS.jsonFile;
+  if (name.endsWith(".txt")) return SVG_ICONS.textFile;
+  return SVG_ICONS.genericFile;
+}
+
+// Initialize CodeMirror instance
+const editor = CodeMirror.fromTextArea($("code"), {
+  mode: "python",
+  theme: "material-darker",
+  lineNumbers: true,
+  indentUnit: 4,
+  tabSize: 4,
+  indentWithTabs: false,
+  lineWrapping: true,
+  autofocus: false,
+  extraKeys: {
+    "Ctrl-Enter": () => runProgram(),
+    "Cmd-Enter": () => runProgram(),
+    "Ctrl-S": () => downloadActiveFile(),
+    "Cmd-S": () => downloadActiveFile(),
+    "Ctrl-F": cm => cm.execCommand("find"),
+    "Cmd-F": cm => cm.execCommand("find")
+  }
+});
+
+function renderTabs() {
+  const tabsContainer = $("editorTabs");
+  tabsContainer.replaceChildren();
+
+  openTabs.forEach(fileName => {
+    if (!files[fileName]) return;
+    const tabEl = document.createElement("div");
+    tabEl.className = "tab" + (fileName === activeFile ? " active" : "");
+    tabEl.innerHTML = `${getSvgForFile(fileName)} <span>${escapeHTML(fileName)}</span> <span class="tab-close" title="Close tab">${SVG_ICONS.deleteAction}</span>`;
+
+    tabEl.addEventListener("click", e => {
+      if (e.target.closest(".tab-close")) {
+        e.stopPropagation();
+        closeTab(fileName);
+        return;
+      }
+      openFile(fileName);
+    });
+    tabsContainer.appendChild(tabEl);
+  });
+}
+
+function closeTab(fileName) {
+  openTabs = openTabs.filter(f => f !== fileName);
+  if (activeFile === fileName) {
+    if (openTabs.length) {
+      openFile(openTabs[openTabs.length - 1]);
+    } else if (Object.keys(files).length) {
+      openFile(Object.keys(files)[0]);
+    }
+  } else {
+    renderTabs();
+  }
+}
+
+function renderTree(filter = $("searchInput").value.trim().toLowerCase()) {
+  const folderList = $("folderList");
+  const fileList = $("fileList");
+  folderList.replaceChildren();
+  fileList.replaceChildren();
+
+  folders.filter(folder => !filter || folder.toLowerCase().includes(filter)).forEach(folder => {
+    const row = document.createElement("div");
+    row.className = "tree-row";
+    row.draggable = true;
+    row.dataset.folder = folder;
+    row.innerHTML = `${SVG_ICONS.folder}<span class="filename">${escapeHTML(folder)}</span><span class="tree-action" title="Delete folder">${SVG_ICONS.deleteAction}</span>`;
+
+    row.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/x-folder", folder);
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", () => row.classList.remove("dragging"));
+    row.addEventListener("dragover", e => {
+      if (e.dataTransfer.types.includes("Files")) {
+        e.preventDefault();
+        row.classList.add("drop-target");
+      }
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-target"));
+    row.addEventListener("drop", async e => {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      const dropped = [...(e.dataTransfer.files || [])];
+      if (dropped.length) await importFiles(dropped, folder);
+    });
+
+    row.addEventListener("click", e => {
+      if (e.target.closest(".tree-action")) {
+        e.stopPropagation();
+        if (confirm(`Delete folder "${folder}"? Files will remain in workspace root.`)) {
+          folders = folders.filter(f => f !== folder);
+          renderTree();
+          persistWorkspace();
+        }
+      }
+    });
+
+    folderList.appendChild(row);
+  });
+
+  Object.keys(files).filter(name =>
+    !filter || name.toLowerCase().includes(filter) || String(files[name]).toLowerCase().includes(filter)
+  ).forEach(name => {
+    const row = document.createElement("div");
+    row.className = "tree-row" + (name === activeFile ? " active" : "");
+    row.draggable = true;
+    row.dataset.file = name;
+    row.innerHTML = `${getSvgForFile(name)}<span class="filename">${escapeHTML(name)}</span><span class="tree-action" title="Delete file">${SVG_ICONS.deleteAction}</span>`;
+
+    row.addEventListener("click", e => {
+      if (e.target.closest(".tree-action")) {
+        e.stopPropagation();
+        deleteFile(name);
+        return;
+      }
+      openFile(name);
+    });
+    row.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/x-file", name);
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", () => row.classList.remove("dragging"));
+    row.addEventListener("dragover", e => {
+      if (e.dataTransfer.types.includes("Files")) {
+        e.preventDefault();
+        row.classList.add("drop-target");
+      }
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-target"));
+    row.addEventListener("drop", async e => {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      const dropped = [...(e.dataTransfer.files || [])];
+      if (dropped.length) await importFiles(dropped);
+    });
+
+    fileList.appendChild(row);
+  });
+
+  $("fileCount").textContent = `${Object.keys(files).length} files`;
+}
+
+function openFile(name) {
+  if (!(name in files)) return;
+  saveActiveFile();
+  activeFile = name;
+
+  if (!openTabs.includes(name)) openTabs.push(name);
+
+  editor.setOption("mode", fileMode(name));
+  editor.setValue(String(files[name] ?? ""));
+  $("activeFileName").textContent = name;
+  $("editorFilePath").textContent = "my_project / " + name;
+  $("editorLanguage").textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
+
+  renderTabs();
+  renderTree();
+  updateCursor();
+  editor.refresh();
+}
+
+function saveActiveFile() {
+  if (activeFile && files[activeFile] !== undefined) {
+    files[activeFile] = editor.getValue();
+    persistWorkspace();
+  }
+}
+
+function updateCursor() {
+  const cursor = editor.getCursor();
+  $("cursorPosition").textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+}
+
+editor.on("change", () => {
+  if (activeFile && files[activeFile] !== undefined) {
+    files[activeFile] = editor.getValue();
+    persistWorkspace();
+  }
+});
+editor.on("cursorActivity", updateCursor);
+
+function createFile() {
+  const name = prompt("New file name:", "new_file.py");
+  if (!name) return;
+  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "");
+  if (!safe) return toast("Enter a valid file name.");
+  if (files[safe] !== undefined) return toast("File already exists.");
+
+  files[safe] = "";
+  persistWorkspace();
+  openFile(safe);
+  toast("File created.");
+}
+
+function createFolder() {
+  const name = prompt("New folder name:", "new_folder");
+  if (!name) return;
+  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "");
+  if (!safe) return toast("Enter a valid folder name.");
+  if (folders.includes(safe)) return toast("Folder already exists.");
+
+  folders.push(safe);
+  persistWorkspace();
+  renderTree();
+  toast("Folder created.");
+}
+
+function deleteFile(name) {
+  if (!confirm(`Delete "${name}" from workspace?`)) return;
+  delete files[name];
+  openTabs = openTabs.filter(f => f !== name);
+
+  if (!Object.keys(files).length) files["main.py"] = "";
+  if (activeFile === name) {
+    activeFile = openTabs[openTabs.length - 1] || Object.keys(files)[0];
+    openFile(activeFile);
+  } else {
+    renderTabs();
+    renderTree();
+  }
+
+  persistWorkspace();
+  toast("File deleted.");
+}
+
+function downloadBlob(filename, content, mime = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadActiveFile() {
+  saveActiveFile();
+  downloadBlob(activeFile, editor.getValue());
+  toast("File download started.");
+}
+
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(editor.getValue());
+    toast("Code copied to clipboard.");
+  } catch {
+    editor.focus();
+    editor.execCommand("selectAll");
+    toast("Code selected. Copy manually.");
+  }
+}
+
+function formatCode() {
+  const lines = editor.getValue().split("\n").map(line => line.replace(/\t/g, "    "));
+  editor.setValue(lines.join("\n"));
+  toast("Tabs converted to 4 spaces.");
+}
+
+function showOutputTab(tab) {
+  currentOutputTab = tab;
+  document.querySelectorAll(".output-tab").forEach(button => {
+    button.classList.toggle("active", button.dataset.outputTab === tab);
+  });
+
+  if (tab === "console") {
+    $("consoleExtra").classList.add("show");
+    $("output").textContent = currentOutputText || "Console REPL ready. Type an expression below.";
+  } else if (tab === "problems") {
+    $("consoleExtra").classList.remove("show");
+    $("output").textContent = currentErrors.length
+      ? currentErrors.join("\n\n")
+      : "✓ No problems reported in the last run.";
+  } else {
+    $("consoleExtra").classList.remove("show");
+    $("output").textContent = currentOutputText || "✦ Your Python output will appear here...";
+  }
+}
+
+function writeOutput(text, type = "normal") {
+  text = String(text);
+  currentOutputText += text;
+  if (currentOutputTab === "problems") return;
+
+  const output = $("output");
+  if (output.querySelector(".output-placeholder")) output.textContent = "";
+
+  if (type === "error" || type === "success") {
+    const span = document.createElement("span");
+    span.className = type === "error" ? "output-line-error" : "output-line-success";
+    span.textContent = text;
+    output.appendChild(span);
+  } else {
+    output.appendChild(document.createTextNode(text));
+  }
+  output.scrollTop = output.scrollHeight;
+}
+
+function setStatus(message, busy = false) {
+  $("runtimeStatus").textContent = message;
+  $("footerStatus").textContent = message;
+  $("runtimeDot").classList.toggle("busy", busy);
+  $("runtimeDot").classList.toggle("gold-dot", busy);
+}
+
+async function loadPython() {
+  if (pyodide) return pyodide;
+  if (pyodideLoading) return pyodideLoading;
+  setStatus("Loading Python runtime...", true);
+
+  pyodideLoading = (async () => {
+    try {
+      if (typeof loadPyodide !== "function") {
+        throw new Error("Pyodide script failed to load. Check connection.");
+      }
+      pyodide = await loadPyodide();
+      setStatus("Python runtime ready");
+      return pyodide;
+    } catch (error) {
+      setStatus("Runtime loading failed");
+      throw error;
+    } finally {
+      pyodideLoading = null;
+    }
+  })();
+
+  return pyodideLoading;
+}
+
+function startRuntimeClock() {
+  runtimeStarted = performance.now();
+  clearInterval(runtimeInterval);
+  const update = () => {
+    const value = `${((performance.now() - runtimeStarted) / 1000).toFixed(3)}s`;
+    $("runtimeCount").textContent = value;
+    $("loaderTimer").textContent = value;
+  };
+  update();
+  runtimeInterval = setInterval(update, 35);
+}
+
+function stopRuntimeClock() {
+  clearInterval(runtimeInterval);
+  runtimeInterval = null;
+  const value = `${((performance.now() - runtimeStarted) / 1000).toFixed(3)}s`;
+  $("runtimeCount").textContent = value;
+  $("loaderTimer").textContent = value;
+}
+
+function showRunningAnimation() {
+  $("loaderWrap").classList.add("show");
+  $("loaderTitle").textContent = "Executing Python program...";
+  $("loaderSubtitle").textContent = "Runtime active · Waiting for output";
+  $("runBtn").disabled = true;
+  $("runBtn").querySelector("span").textContent = "Running...";
+  setStatus("Program running", true);
+}
+
+function hideRunningAnimation() {
+  $("loaderWrap").classList.remove("show");
+  $("runBtn").disabled = false;
+  $("runBtn").querySelector("span").textContent = "Run Python";
+}
+
+function setWaitingForInput(promptText, resolve) {
+  waitingForInput = resolve;
+  $("inputBar").classList.remove("hidden");
+  $("consoleInput").placeholder = promptText || "Enter input for Python program...";
+  $("consoleInput").focus();
+}
+
+function submitProgramInput() {
+  if (!waitingForInput) {
+    toast("Run a program with input() first.");
+    return;
+  }
+  const value = $("consoleInput").value;
+  const resolve = waitingForInput;
+  waitingForInput = null;
+  $("consoleInput").value = "";
+  writeOutput(value + "\n");
+  resolve(value);
+}
+
+$("consoleInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    submitProgramInput();
+  }
+});
+$("sendInputBtn").addEventListener("click", submitProgramInput);
+
+async function runInPyodide(source) {
+  const runtime = await loadPython();
+
+  runtime.setStdout({ batched: text => writeOutput(text + "\n") });
+  runtime.setStderr({ batched: text => {
+    currentErrors.push(text);
+    writeOutput(text + "\n", "error");
+  }});
+
+  runtime.globals.set("__browser_input", promptText => new Promise(resolve => {
+    writeOutput(String(promptText ?? ""));
+    setWaitingForInput(String(promptText ?? ""), resolve);
+  }));
+
+  const patched = source.replace(
+    /(^|[=,(]\s*)input\s*\(/gm,
+    "$1await __browser_input("
+  );
+
+  const wrapped =
+    "async def __browser_main__():\n" +
+    patched.split("\n").map(line => "    " + line).join("\n") +
+    "\nawait __browser_main__()";
+
+  try {
+    await runtime.runPythonAsync(wrapped);
+  } finally {
+    try { runtime.globals.delete("__browser_input"); } catch {}
+  }
+}
+
+async function runProgram() {
+  if (running) return;
+  saveActiveFile();
+
+  const source = editor.getValue();
+  if (!source.trim()) {
+    toast("Write code before running.");
+    return;
+  }
+
+  running = true;
+  currentOutputText = "";
+  currentErrors = [];
+  waitingForInput = null;
+  $("output").textContent = "";
+  $("consoleExtra").classList.remove("show");
+  showOutputTab("output");
+  showRunningAnimation();
+  startRuntimeClock();
+
+  try {
+    await runInPyodide(source);
+
+    if (!currentOutputText.trim()) writeOutput("✓ Program finished with no output.\n", "success");
+    else writeOutput("\n✓ Execution finished.\n", "success");
+
+    $("loaderTitle").textContent = "Execution finished";
+    $("loaderSubtitle").textContent = "Program completed successfully.";
+    setStatus("Python runtime ready");
+  } catch (error) {
+    const message = String(error && error.message ? error.message : error);
+    currentErrors.push(message);
+    writeOutput("\n" + message + "\n", "error");
+    $("loaderTitle").textContent = "Execution stopped";
+    $("loaderSubtitle").textContent = "Check output for errors.";
+    setStatus("Execution error");
+  } finally {
+    stopRuntimeClock();
+    running = false;
+    hideRunningAnimation();
+    $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
+  }
+}
+
+/* Drag-and-drop & File Importing */
+async function importFiles(fileArray, targetFolder = "") {
+  let count = 0;
+  for (const file of fileArray) {
+    if (!file || file.name.startsWith(".")) continue;
+    const name = file.name.replace(/[\\/:*?"<>|]/g, "");
+    if (!name) continue;
+    try {
+      const content = await file.text();
+      const path = targetFolder ? `${targetFolder}/${name}` : name;
+      files[path] = content;
+      count++;
+    } catch {
+      toast(`Could not read ${name}`);
+    }
+  }
+  if (count) {
+    persistWorkspace();
+    renderTree();
+    toast(`${count} file(s) imported.`);
+  }
+}
+
+const dropZone = $("dropZone");
+["dragenter", "dragover"].forEach(type => {
+  dropZone.addEventListener(type, e => {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+  });
+});
+["dragleave", "dragend"].forEach(type => {
+  dropZone.addEventListener(type, () => dropZone.classList.remove("drag-over"));
+});
+dropZone.addEventListener("drop", async e => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  await importFiles([...(e.dataTransfer.files || [])]);
+});
+
+document.addEventListener("dragover", e => {
+  if (e.dataTransfer && e.dataTransfer.types.includes("Files")) e.preventDefault();
+});
+document.addEventListener("drop", e => {
+  if (e.target.closest("#dropZone,#fileTree") || !e.dataTransfer.types.includes("Files")) return;
+  e.preventDefault();
+  importFiles([...(e.dataTransfer.files || [])]);
+});
+
+$("uploadBtn").addEventListener("click", () => $("uploadFiles").click());
+$("importFolderBtn").addEventListener("click", () => $("uploadFolder").click());
+$("uploadFiles").addEventListener("change", async e => {
+  await importFiles([...(e.target.files || [])]);
+  e.target.value = "";
+});
+$("uploadFolder").addEventListener("change", async e => {
+  const list = [...(e.target.files || [])];
+  for (const file of list) {
+    const relative = file.webkitRelativePath || file.name;
+    const parts = relative.split("/");
+    if (parts.length > 1 && !folders.includes(parts[0])) folders.push(parts[0]);
+    try { files[relative] = await file.text(); } catch {}
+  }
+  persistWorkspace();
+  renderTree();
+  toast(`${list.length} files imported.`);
+  e.target.value = "";
+});
+
+/* Sidebar / Explorer Controls */
+$("searchInput").addEventListener("input", () => renderTree());
+$("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const first = $("fileList").querySelector("[data-file]");
+    if (first) openFile(first.dataset.file);
+  }
+});
+$("refreshBtn").addEventListener("click", () => {
+  saveActiveFile();
+  renderTree();
+  toast("Workspace refreshed.");
+});
+$("newFileBtn").addEventListener("click", createFile);
+$("newFileSmall").addEventListener("click", createFile);
+$("newFolderBtn").addEventListener("click", createFolder);
+$("newFolderSmall").addEventListener("click", createFolder);
+
+$("explorerToggle").addEventListener("click", () => {
+  const explorer = document.querySelector(".explorer");
+  const collapsed = explorer.classList.toggle("is-collapsed");
+  $("explorerToggle").title = collapsed ? "Expand explorer" : "Collapse explorer";
+  $("explorerToggle").setAttribute("aria-expanded", String(!collapsed));
+});
+
+/* Editor Action Toolbar */
+$("runBtn").addEventListener("click", runProgram);
+$("copyBtn").addEventListener("click", copyCode);
+$("downloadBtn").addEventListener("click", downloadActiveFile);
+$("formatBtn").addEventListener("click", formatCode);
+$("findBtn").addEventListener("click", () => editor.execCommand("find"));
+
+$("clearOutputBtn").addEventListener("click", () => {
+  currentOutputText = "";
+  currentErrors = [];
+  $("output").textContent = "";
+  toast("Output cleared.");
+});
+
+$("consoleBtn").addEventListener("click", () => {
+  $("consoleExtra").classList.toggle("show");
+  showOutputTab($("consoleExtra").classList.contains("show") ? "console" : "output");
+});
+document.querySelectorAll(".output-tab").forEach(button => {
+  button.addEventListener("click", () => showOutputTab(button.dataset.outputTab));
+});
+
+/* Interactive REPL Commands */
+$("consoleCommandBtn").addEventListener("click", async () => {
+  const command = $("consoleCommand").value.trim();
+  if (!command) return;
+  $("consoleCommand").value = "";
+
+  try {
+    const runtime = await loadPython();
+    runtime.setStdout({ batched: text => writeOutput(text + "\n") });
+    runtime.setStderr({ batched: text => writeOutput(text + "\n", "error") });
+    const res = await runtime.runPythonAsync(command);
+    if (res !== undefined) writeOutput(String(res) + "\n", "info");
+    $("consoleNote").textContent = "Command executed.";
+  } catch (error) {
+    writeOutput(String(error) + "\n", "error");
+    $("consoleNote").textContent = "Command execution error.";
+  }
+});
+$("consoleCommand").addEventListener("keydown", e => {
+  if (e.key === "Enter") $("consoleCommandBtn").click();
+});
+
+/* Theme Switcher */
+$("themeBtn").addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  updateThemeButton();
+  savePrefs();
+  toast(document.body.classList.contains("light") ? "Light mode enabled." : "Dark mode enabled.");
+});
+
+/* Keyboard Shortcuts */
+document.addEventListener("keydown", e => {
+  const modifier = e.ctrlKey || e.metaKey;
+  if (modifier && e.key.toLowerCase() === "p") {
+    e.preventDefault();
+    $("searchInput").focus();
+    $("searchInput").select();
+  }
+  if (modifier && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    downloadActiveFile();
+  }
+});
+
+/* App Startup */
+loadWorkspace();
+loadPrefs();
+renderTree();
+openFile(activeFile);
+loadPython().catch(() => {
+  writeOutput("Python runtime startup failed. Verify internet connection.\n", "error");
+});
+</script>
+
+<script>
+/* VS Code/GitHub-like workspace enhancements */
+(function(){
+  const $ = id => document.getElementById(id);
+  const originalCreateFile = window.createFile;
+  const originalCreateFolder = window.createFolder;
+  let menuTarget = null;
+  let collapsed = false;
+  const collapsedFolders = new Set();
+  let wordMarks = [];
+  const editorEl = document.querySelector('.editor-toolbar .editor-tools');
+  if (editorEl && !$('replaceBtn')) {
+    const b=document.createElement('button'); b.className='btn'; b.id='replaceBtn'; b.textContent='Replace'; b.title='Find and replace (Ctrl+H)'; editorEl.insertBefore(b, $('findBtn').nextSibling);
+    b.addEventListener('click', replaceInEditor);
+  }
+  // Logo references consistently use logo.jpeg where an image logo is shown.
+  document.querySelectorAll('.logo-wrap').forEach(w=>{ if(!w.querySelector('img')) w.innerHTML='<img src="logo.jpeg" alt="Logo" style="width:34px;height:34px;object-fit:contain">'; });
+  // Keep the starter workspace focused: only main.py for a fresh browser profile.
+  function normalizePath(v){ return String(v||'').replace(/\\/g,'/').replace(/^\/+|\/+$/g,'').replace(/\/+/g,'/'); }
+  function allFolderPaths(){
+    const set=new Set((window.folders||[]).map(normalizePath).filter(Boolean));
+    Object.keys(window.files||{}).forEach(p=>{const parts=normalizePath(p).split('/'); for(let i=1;i<parts.length;i++) set.add(parts.slice(0,i).join('/'));});
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }
+  function ensureFolder(path){ path=normalizePath(path); if(!path)return; const parts=path.split('/'); for(let i=1;i<=parts.length;i++){const p=parts.slice(0,i).join('/'); if(!folders.includes(p)) folders.push(p);} }
+  function closeMenus(){ document.querySelectorAll('.context-menu,.choice-menu').forEach(n=>n.remove()); }
+  function showMenu(x,y,items,klass='context-menu'){
+    closeMenus(); const m=document.createElement('div');m.className=klass;m.style.left=Math.min(x,innerWidth-220)+'px';m.style.top=Math.min(y,innerHeight-300)+'px';
+    items.forEach(it=>{if(it.sep){const s=document.createElement('div');s.className='menu-sep';m.appendChild(s);return;}const b=document.createElement('button');b.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';if(it.danger)b.classList.add('danger');b.addEventListener('click',()=>{closeMenus();it.run();});m.appendChild(b);});document.body.appendChild(m);return m;
+  }
+  function promptName(label,placeholder){const v=prompt(label,placeholder||'');return v===null?'':v.trim();}
+  function createFileIn(folder=''){
+    const n=promptName('New file name (example: main.py):','new_file.py'); if(!n)return;
+    const path=normalizePath(folder?folder+'/'+n:n); if(files[path]!==undefined)return toast('That file already exists.');
+    ensureFolder(path.split('/').slice(0,-1).join('/')); files[path]=''; persistWorkspace(); renderTree(); openFile(path); toast('File created.');
+  }
+  function createFolderIn(parent=''){
+    const n=promptName('New folder name:','new_folder'); if(!n)return;
+    const path=normalizePath(parent?parent+'/'+n:n); if(allFolderPaths().includes(path))return toast('Folder already exists.');
+    ensureFolder(path); persistWorkspace(); renderTree(); toast('Folder created.');
+  }
+  function uploadInto(folder=''){ $('uploadFiles').dataset.targetFolder=folder; $('uploadFiles').click(); }
+  function downloadFile(name){ if(files[name]===undefined)return; downloadBlob(name.split('/').pop(),files[name]); }
+  function renameFile(old){ const n=promptName('Rename file:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(files[next]!==undefined)return toast('Name already exists.');files[next]=files[old];delete files[old];openTabs=openTabs.map(x=>x===old?next:x);if(activeFile===old)activeFile=next;persistWorkspace();renderTree();openFile(next);toast('File renamed.'); }
+  function renameFolder(old){ const n=promptName('Rename folder:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(allFolderPaths().includes(next))return toast('Folder already exists.');
+    const moved={};Object.keys(files).forEach(k=>{if(k===old||k.startsWith(old+'/')){moved[next+k.slice(old.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);ensureFolder(next);if(activeFile===old||activeFile.startsWith(old+'/'))activeFile=next+activeFile.slice(old.length);openTabs=openTabs.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Folder renamed.'); }
+  function copyFile(name){let base=name,ext='';const slash=base.lastIndexOf('/');const dir=slash>=0?base.slice(0,slash+1):'';let leaf=slash>=0?base.slice(slash+1):base;const dot=leaf.lastIndexOf('.');if(dot>0){ext=leaf.slice(dot);leaf=leaf.slice(0,dot);}let next=dir+leaf+'_copy'+ext,i=2;while(files[next]!==undefined)next=dir+leaf+'_copy'+i+++ext;files[next]=files[name];persistWorkspace();renderTree();openFile(next);toast('File copied.');}
+  function deleteFolder(path){if(!confirm('Delete folder "'+path+'" and all files inside it?'))return;Object.keys(files).forEach(k=>{if(k===path||k.startsWith(path+'/')){delete files[k];openTabs=openTabs.filter(t=>t!==k);}});folders=folders.filter(f=>f!==path&&!f.startsWith(path+'/'));if(!Object.keys(files).length)files['main.py']='# Start coding here\nprint("Hello, world!")\n';if(!files[activeFile])activeFile=Object.keys(files)[0];persistWorkspace();renderTree();openFile(activeFile);toast('Folder deleted.');}
+  function movePath(src,dest){src=normalizePath(src);dest=normalizePath(dest);if(!src||!dest||src===dest||dest.startsWith(src+'/'))return; if(files[src]!==undefined){const next=dest+'/'+src.split('/').pop();if(files[next]!==undefined)return toast('Destination already contains this file.');files[next]=files[src];delete files[src];if(activeFile===src)activeFile=next;openTabs=openTabs.map(t=>t===src?next:t);}else if(allFolderPaths().includes(src)){const next=dest+'/'+src.split('/').pop();if(allFolderPaths().includes(next))return toast('Destination already contains this folder.');const moved={};Object.keys(files).forEach(k=>{if(k.startsWith(src+'/')){moved[next+k.slice(src.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===src||f.startsWith(src+'/')?next+f.slice(src.length):f);if(activeFile===src||activeFile.startsWith(src+'/'))activeFile=next+activeFile.slice(src.length);openTabs=openTabs.map(t=>t===src||t.startsWith(src+'/')?next+t.slice(src.length):t);}ensureFolder(dest);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Moved successfully.');}
+  window.renderTree=function(filter=($('searchInput')?.value||'').trim().toLowerCase()){
+    const tree=$('fileTree');if(!tree)return;tree.replaceChildren();const title=document.createElement('div');title.className='tree-label';title.innerHTML='<span>WORKSPACE</span><span>'+Object.keys(files).length+' files</span>';tree.appendChild(title);
+    const foldersAll=allFolderPaths();const visibleFiles=Object.keys(files).filter(n=>!filter||n.toLowerCase().includes(filter)||String(files[n]).toLowerCase().includes(filter));
+    const visibleFolders=foldersAll.filter(f=>!filter||f.toLowerCase().includes(filter)||visibleFiles.some(n=>n.startsWith(f+'/')));
+    const entries=[...visibleFolders.map(path=>({path,folder:true})),...visibleFiles.map(path=>({path,folder:false}))].sort((a,b)=>{const da=a.path.split('/').length,db=b.path.split('/').length; if(da!==db)return da-db;return a.path.localeCompare(b.path);});
+    const seen=new Set();
+    entries.forEach(item=>{const path=item.path;const parent=path.includes('/')?path.slice(0,path.lastIndexOf('/')):'';if(parent&&!seen.has(parent)&&!filter)return;const ancestors=path.split('/').slice(0,-1);if(ancestors.some((_,i)=>collapsedFolders.has(ancestors.slice(0,i+1).join('/')))&&!filter)return;const row=document.createElement('div');row.className='tree-row'+(!item.folder&&path===activeFile?' active':'');row.dataset[item.folder?'folder':'file']=path;row.style.setProperty('--depth',Math.max(0,path.split('/').length-1));row.draggable=true;row.title=path;
+      const icon=item.folder?SVG_ICONS.folder:getSvgForFile(path);row.innerHTML=icon+'<span class="filename">'+escapeHTML(path.split('/').pop())+'</span>'+(item.folder?'<span style="color:var(--muted);font-size:10px">▸</span>':'');
+      row.addEventListener('click',()=>{if(item.folder){if(collapsedFolders.has(path))collapsedFolders.delete(path);else collapsedFolders.add(path);renderTree();}else openFile(path);});
+      row.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();menuTarget={path,folder:item.folder};const p=item.folder?[
+        {label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Add File Name',icon:'✎',run:()=>createFileIn(path)},{label:'Upload',icon:'⇧',run:()=>uploadInto(path)},{sep:true},{label:'Rename',icon:'✎',run:()=>renameFolder(path)},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFolder(path)}
+      ]:[{label:'Open',icon:'↗',run:()=>openFile(path)},{label:'Copy',icon:'▣',run:()=>copyFile(path)},{label:'Rename',icon:'✎',run:()=>renameFile(path)},{label:'Download',icon:'⇩',run:()=>downloadFile(path)},{sep:true},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFile(path)}];showMenu(e.clientX,e.clientY,p);});
+      row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/x-workspace-path',path);e.dataTransfer.setData(item.folder?'text/x-folder':'text/x-file',path);e.dataTransfer.effectAllowed='move';row.classList.add('dragging');});row.addEventListener('dragend',()=>row.classList.remove('dragging'));
+      row.addEventListener('dragover',e=>{if(item.folder||e.dataTransfer.types.includes('Files')){e.preventDefault();row.classList.add('drop-target');}});row.addEventListener('dragleave',()=>row.classList.remove('drop-target'));
+      row.addEventListener('drop',async e=>{e.preventDefault();e.stopPropagation();row.classList.remove('drop-target');const incoming=[...(e.dataTransfer.files||[])];if(incoming.length){await importFiles(incoming,item.folder?path:'');return;}const src=e.dataTransfer.getData('text/x-workspace-path')||e.dataTransfer.getData('text/x-file')||e.dataTransfer.getData('text/x-folder');if(src&&item.folder)movePath(src,path);});tree.appendChild(row);seen.add(path);
+    });
+    if(!entries.length){const empty=document.createElement('div');empty.style.cssText='padding:18px 10px;color:var(--muted);font-size:12px';empty.textContent=filter?'No matching files':'Workspace is empty';tree.appendChild(empty);}
+    $('fileCount').textContent=Object.keys(files).length+' files';
+  };
+  function treeContextOnce(e){if(e.target.closest('.tree-row'))return;e.preventDefault();showMenu(e.clientX,e.clientY,[{label:'New File',icon:'＋',run:()=>chooseCreate('file')},{label:'New Folder',icon:'▰',run:()=>chooseCreate('folder')},{label:'Upload Files',icon:'⇧',run:()=>uploadInto('')},{label:'Upload Folder',icon:'⇧',run:()=>$('uploadFolder').click()}]);}
+  $('fileTree').addEventListener('contextmenu',treeContextOnce);
+  function chooseCreate(type){showMenu(innerWidth/2-95,innerHeight/2-45,[{label:'Create',icon:'＋',run:()=>type==='file'?createFileIn(''):createFolderIn('')},{label:'Upload',icon:'⇧',run:()=>type==='file'?uploadInto(''):$('uploadFolder').click()}],'choice-menu');}
+  // Make all add/create controls offer Create or Upload.
+  ['newFileBtn','newFileSmall'].forEach(id=>{const el=$(id);if(el)el.addEventListener('click',e=>{e.stopImmediatePropagation();chooseCreate('file');},true);});
+  ['newFolderBtn','newFolderSmall'].forEach(id=>{const el=$(id);if(el)el.addEventListener('click',e=>{e.stopImmediatePropagation();chooseCreate('folder');},true);});
+  const uploadFiles=$('uploadFiles');uploadFiles.addEventListener('change',async e=>{const target=uploadFiles.dataset.targetFolder||'';await importFiles([...(e.target.files||[])],target);uploadFiles.dataset.targetFolder='';e.target.value='';});
+  // Folder drag-and-drop and arbitrary workspace drop targets.
+  $('fileTree').addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('Files'))e.preventDefault();});
+  $('fileTree').addEventListener('drop',async e=>{if(e.target.closest('.tree-row'))return;if(e.dataTransfer.files?.length){e.preventDefault();await importFiles([...e.dataTransfer.files]);return;}const src=e.dataTransfer.getData('text/x-workspace-path');if(src){e.preventDefault();const parent=src.includes('/')?src.slice(0,src.lastIndexOf('/')):'';if(files[src]!==undefined){const next=src.split('/').pop();const dest=parent?parent+'/'+next:next; if(dest!==src)movePath(src,parent||'workspace');}}});
+  // Whole-word occurrence highlighting under cursor, similar to GitHub/VS Code.
+  function clearWordMarks(){wordMarks.forEach(m=>m.clear());wordMarks=[];}
+  function highlightWord(){if(!window.editor)return;clearWordMarks();const cur=editor.getCursor(),line=editor.getLine(cur.line)||'',match=line.slice(0,cur.ch).match(/[A-Za-z_$][\w$]*/);let word=match?match[0]:null;if(!word){const after=line.slice(cur.ch).match(/^[A-Za-z_$][\w$]*/);word=after?after[0]:null;}if(!word||word.length<2)return;const escaped=word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp('\\b'+escaped+'\\b','g');for(let i=0;i<editor.lineCount();i++){const txt=editor.getLine(i);let m;while((m=re.exec(txt))!==null)wordMarks.push(editor.markText({line:i,ch:m.index},{line:i,ch:m.index+m[0].length},{className:'cm-word-highlight'}));}}
+  if(window.editor){editor.on('cursorActivity',highlightWord);editor.on('change',highlightWord);}
+  function replaceInEditor(){const find=prompt('Find text in current file:');if(find===null||!find)return;const replace=prompt('Replace with:','');if(replace===null)return;const text=editor.getValue();let count=0;const next=text.replace(new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),()=>{count++;return replace;});editor.setValue(next);toast('Replaced '+count+' occurrence(s).');}
+  // Shortcuts: Ctrl/Cmd+H replace, Ctrl/Cmd+Shift+F workspace search, Ctrl/Cmd+B explorer toggle.
+  document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(!mod)return;const k=e.key.toLowerCase();if(k==='h'){e.preventDefault();replaceInEditor();}if(k==='b'){e.preventDefault();$('explorerToggle').click();}if(e.shiftKey&&k==='f'){e.preventDefault();$('searchInput').focus();$('searchInput').select();}});
+  $('explorerToggle').addEventListener('click',()=>{collapsed=!collapsed;document.querySelector('.explorer').classList.toggle('is-collapsed',collapsed);$('explorerToggle').title=collapsed?'Show explorer':'Hide explorer';setTimeout(()=>editor.refresh(),60);});
+  // Search across filenames and file contents; Enter opens the first match.
+  $('searchInput').placeholder='Search files and code…';$('searchInput').addEventListener('input',()=>renderTree());
+  // Make external file drops work over the complete explorer and editor/output workspace.
+  ['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{if(e.dataTransfer&&e.dataTransfer.types.includes('Files'))e.preventDefault();}));
+  // Initial clean VS Code tree; don't change an existing saved workspace.
+  renderTree();renderTabs();setTimeout(()=>{if(window.editor){editor.refresh();highlightWord();}},100);
+})();
+</script>
+
+
+<script>
+/* Header projects/account controls, native SVG action icons, and touch long-press menus */
+(function(){
+ const $=id=>document.getElementById(id);
+ const PROJECTS_KEY='jsPythonRunnerBoostProjectsV1';
+ const ACCOUNT_KEY='jsPythonRunnerBoostAccountLabelV1';
+ const svg=(name)=>{
+  const paths={
+   file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+   folder:'<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/>',
+   plus:'<path d="M12 5v14M5 12h14"/>', upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/>',
+   rename:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L9 17l-4 1 1-4Z"/>',
+   copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+   download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>',
+   trash:'<path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/>',
+   more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
+   project:'<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/>'
+  };
+  return '<svg class="svg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>';
+ };
+ // Replace text glyphs in existing context menus with consistent file-style SVG icons.
+ const iconMap={'＋':'plus','✎':'rename','⇧':'upload','⌫':'trash','▣':'copy','⇩':'download','▰':'folder','↗':'file'};
+ const oldShow=window.showMenu;
+ // Enhancement script's menu is closure-scoped, so normalize each newly created menu via observer.
+ const iconObserver=new MutationObserver(()=>document.querySelectorAll('.context-menu button,.choice-menu button').forEach(b=>{const first=b.firstChild;if(first&&first.nodeType===3){const glyph=first.textContent.trim();if(iconMap[glyph]){first.textContent='';b.insertAdjacentHTML('afterbegin',svg(iconMap[glyph]));}}}));
+ iconObserver.observe(document.body,{childList:true,subtree:true});
+ function readProjects(){try{return JSON.parse(localStorage.getItem(PROJECTS_KEY)||'[]')}catch(e){return []}}
+ function saveProjects(list){try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(list))}catch(e){}}
+ function rememberCurrent(){let list=readProjects();const name=localStorage.getItem('jsPythonRunnerBoostCurrentProjectName')||'My Python Project';const item={name,updated:Date.now(),files:Object.keys(files||{}).length,snapshot:{files:JSON.parse(JSON.stringify(files||{})),folders:[...(folders||[])],activeFile:activeFile||'main.py',openTabs:[...(openTabs||['main.py'])]}};list=list.filter(p=>p.name!==name);list.unshift(item);saveProjects(list.slice(0,20));}
+ function renderProjects(){const pop=$('projectsPopover');if(!pop)return;rememberCurrent();const list=readProjects();pop.innerHTML='<strong>Recent projects</strong><div class="popover-divider"></div>'+list.map((p,i)=>'<button class="project-item" data-project-index="'+i+'">'+svg('project')+'<span><strong>'+String(p.name).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><small>'+p.files+' file(s) · '+new Date(p.updated).toLocaleDateString()+'</small></span></button>').join('')+'<div class="popover-divider"></div><button class="project-item" id="newProjectAction">'+svg('plus')+'<span><strong>New project</strong><small>Create a clean Python workspace</small></span></button>';
+  pop.querySelectorAll('[data-project-index]').forEach(b=>b.addEventListener('click',()=>{const p=list[Number(b.dataset.projectIndex)];closePopovers();if(p){rememberCurrent();const chosen=readProjects().find(x=>x.name===p.name)||p;localStorage.setItem('jsPythonRunnerBoostCurrentProjectName',p.name);if(chosen.snapshot){files=chosen.snapshot.files||{'main.py':'print(\"Hello, world!\")\n'};folders=chosen.snapshot.folders||[];activeFile=chosen.snapshot.activeFile||Object.keys(files)[0]||'main.py';openTabs=chosen.snapshot.openTabs||[activeFile];if(typeof persistWorkspace==='function')persistWorkspace();if(typeof renderTree==='function')renderTree();if(typeof openFile==='function')openFile(activeFile);}if(typeof toast==='function')toast('Project opened: '+p.name);}}));
+  const n=$('newProjectAction');if(n)n.addEventListener('click',()=>{const name=prompt('Project name:','My Python Project '+(list.length+1));if(!name||!name.trim())return;rememberCurrent();localStorage.setItem('jsPythonRunnerBoostCurrentProjectName',name.trim());files={'main.py':'# '+name.trim()+'\nprint("Hello, world!")\n'};folders=[];activeFile='main.py';openTabs=['main.py'];if(typeof persistWorkspace==='function')persistWorkspace();if(typeof renderTree==='function')renderTree();if(typeof openFile==='function')openFile('main.py');closePopovers();renderProjects();if(typeof toast==='function')toast('New project created.');});
+ }
+ function closePopovers(){['projectsPopover','accountPopover','mobileActionsPopover'].forEach(id=>{const el=$(id);if(el)el.hidden=true});['projectsBtn','accountBtn','mobileMoreBtn'].forEach(id=>{const el=$(id);if(el)el.setAttribute('aria-expanded','false')});}
+ function togglePopover(id,btn){const el=$(id),was=el.hidden;closePopovers();el.hidden=!was;if(btn)btn.setAttribute('aria-expanded',String(was));if(id==='projectsPopover'&&was)renderProjects();}
+ $('projectsBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('projectsPopover',$('projectsBtn'));});
+ $('accountBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('accountPopover',$('accountBtn'));});
+ const savedLabel=localStorage.getItem(ACCOUNT_KEY);if(savedLabel){$('accountLabel').textContent=savedLabel;$('accountSubLabel').textContent='Local display profile';}
+ $('setAccountLabelBtn')?.addEventListener('click',()=>{const name=prompt('Display name for the account button (Google OAuth is not configured on this page):',$('accountLabel').textContent==='Google Account'?'':$('accountLabel').textContent);if(name===null)return;if(name.trim()){localStorage.setItem(ACCOUNT_KEY,name.trim());$('accountLabel').textContent=name.trim();$('accountSubLabel').textContent='Local display profile';}closePopovers();});
+ $('mobileMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();const pop=$('mobileActionsPopover');if(pop.innerHTML.trim()===''){
+  const actions=[['Run Python','runBtn','file'],['Toggle theme','themeBtn','more'],['New file','newFileBtn','plus'],['New folder','newFolderBtn','folder'],['Find','findBtn','file'],['Replace','replaceBtn','rename'],['Save file','downloadBtn','download'],['Hide / show Explorer','explorerToggle','folder']];
+  pop.innerHTML=actions.map(([label,id,ic])=>'<button data-action="'+id+'">'+svg(ic)+'<span>'+label+'</span></button>').join('');pop.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.action);closePopovers();if(target)target.click();}));
+ }togglePopover('mobileActionsPopover',$('mobileMoreBtn'));});
+ document.addEventListener('click',e=>{if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn'))closePopovers();});
+ // Close any open context/choice menu on an outside click or tap.
+ document.addEventListener('pointerdown',e=>{
+   if(e.target.closest('.context-menu,.choice-menu')) return;
+   if(document.querySelector('.context-menu,.choice-menu')) closeMenus();
+   if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn')) closePopovers();
+ },true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopovers();});
+ // Long-press on touch devices opens the same context menu as desktop right-click.
+ let pressTimer=null,pressStart=null,longPressed=false;
+ document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;const row=e.target.closest('.tree-row');if(!row)return;longPressed=false;pressStart={x:e.clientX,y:e.clientY,row};pressTimer=setTimeout(()=>{longPressed=true;const r=pressStart.row;const path=r.dataset.file||r.dataset.folder;const folder=!!r.dataset.folder;const menu=document.createEvent('MouseEvents');menu.initMouseEvent('contextmenu',true,true,window,1,e.screenX,e.screenY,e.clientX,e.clientY,false,false,false,false,2,null);r.dispatchEvent(menu);},520);},{passive:true});
+ document.addEventListener('pointermove',e=>{if(!pressStart)return;if(Math.hypot(e.clientX-pressStart.x,e.clientY-pressStart.y)>12){clearTimeout(pressTimer);pressTimer=null;}},{passive:true});
+ ['pointerup','pointercancel'].forEach(type=>document.addEventListener(type,()=>{clearTimeout(pressTimer);pressTimer=null;pressStart=null;} ,{passive:true}));
+ document.addEventListener('click',e=>{if(longPressed&&e.target.closest('.tree-row')){e.preventDefault();e.stopPropagation();longPressed=false;}},true);
+ // Let the Projects control remain the left-side workspace switcher; account stays at far right.
+ renderProjects();
+})();
+</script>
+
+</body>
+</html>
