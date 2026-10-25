@@ -9,17 +9,21 @@ function initFirebaseAdmin() {
   const serviceAccountText =
     process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 
+  const databaseURL = process.env.FIREBASE_DATABASE_URL;
+
   if (!serviceAccountText) {
-    throw new Error(
-      "FIREBASE_SERVICE_ACCOUNT_JSON is not configured"
-    );
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON is not configured");
+  }
+
+  if (!databaseURL) {
+    throw new Error("FIREBASE_DATABASE_URL is not configured");
   }
 
   const serviceAccount = JSON.parse(serviceAccountText);
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    databaseURL,
   });
 
   return admin;
@@ -30,7 +34,7 @@ function getBearerToken(req) {
 
   if (!header.startsWith("Bearer ")) return null;
 
-  return header.slice(7);
+  return header.slice(7).trim();
 }
 
 function safeEqual(a, b) {
@@ -47,16 +51,20 @@ function safeEqual(a, b) {
   );
 }
 
+function sendError(res, status, message) {
+  return res.status(status).json({
+    verified: false,
+    error: message,
+  });
+}
+
 module.exports = async function handler(req, res) {
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-
-    return res.status(405).json({
-      verified: false,
-      error: "Method not allowed",
-    });
+    return sendError(res, 405, "Method not allowed");
   }
 
   try {
@@ -64,33 +72,25 @@ module.exports = async function handler(req, res) {
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
-      return res.status(500).json({
-        verified: false,
-        error: "Razorpay environment variables are not configured",
-      });
+      console.error("Razorpay credentials are not configured");
+      return sendError(res, 500, "Payment service is not configured");
     }
 
     const token = getBearerToken(req);
 
     if (!token) {
-      return res.status(401).json({
-        verified: false,
-        error: "Please sign in first",
-      });
+      return sendError(res, 401, "Please sign in first");
     }
 
     const firebase = initFirebaseAdmin();
+
+    // Verify the signed-in Firebase user.
     const decoded = await firebase.auth().verifyIdToken(token);
 
     const body = req.body || {};
 
-    // Accept both frontend and Razorpay field names.
-    const orderId =
-      body.razorpay_order_id || body.orderId;
-
-    const paymentId =
-      body.razorpay_payment_id || body.paymentId;
-
+    const orderId = body.razorpay_order_id || body.orderId;
+    const paymentId = body.razorpay_payment_id || body.paymentId;
     const signature =
       body.razorpay_signature || body.signature;
 
@@ -102,10 +102,11 @@ module.exports = async function handler(req, res) {
       !paymentId ||
       !signature
     ) {
-      return res.status(400).json({
-        verified: false,
-        error: "Missing payment verification fields",
-      });
+      return sendError(
+        res,
+        400,
+        "Missing payment verification fields"
+      );
     }
 
     const razorpay = new Razorpay({
@@ -113,65 +114,140 @@ module.exports = async function handler(req, res) {
       key_secret: keySecret,
     });
 
-    // Confirm the order belongs to the signed-in user.
-    const order = await razorpay.orders.fetch(orderId);
-
-    if (
-      order.amount !== 200 ||
-      order.currency !== "INR" ||
-      order.notes?.firebaseUid !== decoded.uid ||
-      order.notes?.purpose !== "download_share_24h"
-    ) {
-      return res.status(400).json({
-        verified: false,
-        error: "Payment order is invalid",
-      });
-    }
-
-    // Verify Razorpay's payment signature.
+    // Verify Razorpay checkout signature.
     const expectedSignature = crypto
       .createHmac("sha256", keySecret)
       .update(`${orderId}|${paymentId}`)
       .digest("hex");
 
     if (!safeEqual(signature, expectedSignature)) {
-      return res.status(400).json({
-        verified: false,
-        error: "Payment signature is invalid",
+      console.error("Razorpay signature verification failed", {
+        orderId,
+        uid: decoded.uid,
       });
+
+      return sendError(
+        res,
+        400,
+        "Payment signature is invalid"
+      );
     }
 
-    // Verify payment status directly with Razorpay.
+    // Fetch the order from Razorpay; never trust client-supplied amounts.
+    const order = await razorpay.orders.fetch(orderId);
+
+    if (
+      order.id !== orderId ||
+      Number(order.amount) !== 200 ||
+      order.currency !== "INR" ||
+      !order.notes ||
+      order.notes.firebaseUid !== decoded.uid ||
+      order.notes.purpose !== "download_share_24h"
+    ) {
+      console.error("Razorpay order validation failed", {
+        orderId,
+        uid: decoded.uid,
+      });
+
+      return sendError(res, 400, "Payment order is invalid");
+    }
+
+    // Verify the payment directly with Razorpay.
     const payment = await razorpay.payments.fetch(paymentId);
 
     if (
+      payment.id !== paymentId ||
       payment.order_id !== orderId ||
-      payment.amount !== 200 ||
-      payment.currency !== "INR" ||
-      payment.status !== "captured"
+      Number(payment.amount) !== 200 ||
+      payment.currency !== "INR"
     ) {
-      return res.status(402).json({
-        verified: false,
-        error: "Payment has not been captured",
+      console.error("Razorpay payment details mismatch", {
+        orderId,
+        paymentId,
+        uid: decoded.uid,
+      });
+
+      return sendError(res, 400, "Payment details do not match");
+    }
+
+    if (payment.status !== "captured") {
+      console.error("Razorpay payment is not captured", {
+        orderId,
+        paymentId,
+        paymentStatus: payment.status,
+      });
+
+      return sendError(
+        res,
+        402,
+        `Payment is not captured yet. Current status: ${payment.status}`
+      );
+    }
+
+    // Grant 24-hour access to both Download and Share.
+    const entitlementRef = firebase
+      .database()
+      .ref(`payment_entitlements/${decoded.uid}/download_share`);
+
+    const snapshot = await entitlementRef.once("value");
+    const existing = snapshot.val();
+
+    // Idempotency: retrying the same successful payment must not
+    // extend the entitlement repeatedly.
+    if (
+      existing &&
+      existing.active === true &&
+      existing.orderId === orderId &&
+      existing.paymentId === paymentId &&
+      Number(existing.expiresAt) > Date.now()
+    ) {
+      return res.status(200).json({
+        verified: true,
+        expiresAt: Number(existing.expiresAt),
+        message: "Payment already verified",
       });
     }
 
-    // Grant or renew access for 24 hours.
     const now = Date.now();
-    const expiresAt = now + 24 * 60 * 60 * 1000;
 
-    await firebase
-      .database()
-      .ref(
-        `payment_entitlements/${decoded.uid}/download_share`
-      )
-      .set({
-        active: true,
-        expiresAt,
-        orderId,
-        paymentId,
-        updatedAt: now,
-      });
+    // A new payment extends any still-active access instead of
+    // accidentally shortening it.
+    const previousExpiry =
+      existing && existing.active === true
+        ? Number(existing.expiresAt) || 0
+        : 0;
+
+    const expiresAt =
+      Math.max(now, previousExpiry) + 24 * 60 * 60 * 1000;
+
+    await entitlementRef.set({
+      active: true,
+      expiresAt,
+      orderId,
+      paymentId,
+      updatedAt: now,
+    });
+
+    // Confirm the entitlement was actually written.
+    const savedSnapshot = await entitlementRef.once("value");
+    const saved = savedSnapshot.val();
+
+    if (
+      !saved ||
+      saved.active !== true ||
+      saved.orderId !== orderId ||
+      saved.paymentId !== paymentId ||
+      Number(saved.expiresAt) !== expiresAt
+    ) {
+      throw new Error("Entitlement write could not be confirmed");
+    }
+
+    console.log("Payment verified and entitlement saved", {
+      uid: decoded.uid,
+      orderId,
+      paymentId,
+      expiresAt,
+    });
 
     return res.status(200).json({
       verified: true,
@@ -179,12 +255,16 @@ module.exports = async function handler(req, res) {
       message: "Payment verified successfully",
     });
   } catch (error) {
-    // Keep detailed errors in server logs, not in the public response.
-    console.error("Verify payment failed:", error.message);
-
-    return res.status(500).json({
-      verified: false,
-      error: "Could not verify payment",
+    // Detailed errors stay in server logs; never log secrets or tokens.
+    console.error("Verify payment failed:", {
+      message: error.message,
+      code: error.code || null,
     });
+
+    return sendError(
+      res,
+      500,
+      "Could not verify payment. Do not pay again; contact support if money was deducted."
+    );
   }
 };
