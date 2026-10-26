@@ -1364,14 +1364,33 @@ function showBoostNotice(stdout='', detail='', runtimeUnavailable=false){
   const goBtn=$('boostWarningGo');
   if(closeBtn) closeBtn.onclick=closeWarning;
   if(changeBtn) changeBtn.onclick=()=>{closeWarning(); editor.focus();};
-  if(goBtn) goBtn.onclick=()=>notify('JS Python Runner Boost will be available here soon.');
+  if(goBtn) goBtn.onclick=()=>{ window.location.href='py_boost_animation.html'; };
   if(overlay) overlay.onclick=(event)=>{if(event.target===overlay)closeWarning();};
   const btn=$('boostPlaceholderBtn');
-  if(btn) btn.addEventListener('click',()=>notify('JS Python Runner Boost will be available here soon.'));
+  if(btn) btn.addEventListener('click',()=>{ window.location.href='py_boost_animation.html'; });
+}
+
+function needsBoostRuntime(source){
+  // Detect APIs that require a real operating system, native GUI, or raw
+  // network sockets before executing them in browser-based Pyodide.
+  const patterns=[
+    /^\s*(?:import|from)\s+(?:socket|socketserver|http\.server|pygame|tkinter|turtle|pyautogui|pyaudio|cv2|winreg|win32api|win32com|subprocess|multiprocessing|ctypes|fcntl|pty|termios|resource)\b/m,
+    /^\s*(?:import|from)\s+(?:kivy|PyQt5|PyQt6|PySide2|PySide6|wx|sounddevice|RPi)\b/m,
+    /\b(?:os\.system|subprocess\.(?:run|Popen|call)|pyautogui\.|winreg\.|socket\.(?:socket|create_server|create_connection)|\.setsockopt\s*\(|\.bind\s*\(|\.listen\s*\(|\.accept\s*\()/m
+  ];
+  return patterns.some(pattern=>pattern.test(source));
 }
 
 async function runPython(){
   if(running)return;
+
+  const sourceCode=editor.getValue();
+  if(needsBoostRuntime(sourceCode)){
+    $('output').textContent='';
+    showBoostNotice('', 'This code uses a desktop, operating-system, or native Python feature that is not supported by the browser runner.');
+    status('Python Runner Boost recommended');
+    return;
+  }
 
   running=true;
   const startedAt=performance.now();
@@ -1397,7 +1416,7 @@ async function runPython(){
     });
 
     try{
-      await runtime.runPythonAsync(editor.getValue());
+      await runtime.runPythonAsync(sourceCode);
 
       $('output').textContent=
         (stdout+stderr).trim()||
@@ -1407,7 +1426,7 @@ async function runPython(){
       status('Execution finished');
     }catch(error){
       const message=String(error);
-      const advancedRuntimeError=/ModuleNotFoundError|ImportError|NotImplementedError|PermissionError|FileNotFoundError|OSError|NotSupportedError|unsupported|not supported|not available in this environment|No module named|failed to fetch|networkerror/i.test(message);
+      const advancedRuntimeError=/ModuleNotFoundError|ImportError|NotImplementedError|PermissionError|FileNotFoundError|OSError|NotSupportedError|unsupported|not supported|not available in this environment|No module named|failed to fetch|networkerror|requires a browser|not implemented|cannot load package|AttributeError:.*(?:socket|SO_REUSEADDR|setsockopt|create_server|create_connection)|(?:socket|SO_REUSEADDR|setsockopt).*(?:has no attribute|not available|not supported|unsupported)|RuntimeError:.*(?:thread|signal|event loop).*(?:not supported|not available|unsupported)|Operation not permitted|Function not implemented/i.test(message);
       if(advancedRuntimeError){
         showBoostNotice(stdout, message);
         status('Advanced Python environment recommended');
