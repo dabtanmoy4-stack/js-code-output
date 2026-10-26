@@ -7,7 +7,7 @@
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9870552994374147"
        crossorigin="anonymous"></script>
-  <title>JS CODE OUTPUT — Projects</title>
+  <title>JS CODE OUTPUT — HTML Projects</title>
 
   <link rel="icon" href="logo.jpeg" type="image/jpeg">
 
@@ -2352,6 +2352,34 @@ html:not(.dark) .project-owner-email{color:#776f64}
     let projectActionTarget = null;
     let projectActionName = "";
     let projectActionIsCloud = false;
+    const PROJECT_PAGE_TYPE = "html";
+
+    function detectProjectType(project, id, isCloud = false){
+      const declared =
+        String(project?.projectType || project?.language || project?.runnerType || "")
+          .toLowerCase();
+
+      if(["python","py"].includes(declared)) return "python";
+      if(["html","web","javascript","js"].includes(declared)) return "html";
+
+      let files = project?.files || {};
+
+      if(!isCloud && id){
+        try{
+          files = JSON.parse(
+            localStorage.getItem("js_files_" + id) || "{}"
+          );
+        }catch(_){
+          files = {};
+        }
+      }
+
+      const fileNames = Object.keys(files || {}).map(name => name.toLowerCase());
+      if(fileNames.some(name => name.endsWith(".py"))) return "python";
+
+      // Legacy projects without a language marker are treated as HTML projects.
+      return "html";
+    }
 
 
     /* --------------------------------
@@ -2557,6 +2585,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
               ownerEmail:user.email || "",
               ownerPhotoURL:user.photoURL || "",
               files:{},
+              projectType: PROJECT_PAGE_TYPE,
               createdAt:
                 window.firebaseServerTimestamp(),
               updatedAt:
@@ -2628,6 +2657,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
       localProjects.push({
         id:id,
         name:name,
+        projectType:PROJECT_PAGE_TYPE,
         updatedAt:Date.now()
       });
 
@@ -2859,6 +2889,9 @@ html:not(.dark) .project-owner-email{color:#776f64}
 
       localProjects.forEach(project => {
 
+        const type = project.projectType || "html";
+        if(type !== PROJECT_PAGE_TYPE) return;
+
         hasProjects = true;
 
         list.appendChild(
@@ -2931,6 +2964,10 @@ html:not(.dark) .project-owner-email{color:#776f64}
               const data =
                 projectDoc.data();
 
+              const projectType = data.projectType || "html";
+              if(projectType !== PROJECT_PAGE_TYPE){
+                continue;
+              }
 
               const account = {
                 displayName:
@@ -4310,6 +4347,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
       localProjects.push({
         id:projectId,
         name:projectName,
+        projectType:PROJECT_PAGE_TYPE,
         updatedAt:Date.now()
       });
 
