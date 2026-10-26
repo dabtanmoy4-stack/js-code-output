@@ -4227,7 +4227,7 @@ function setStartAuthBusy(busy,message,error){
 }
 function startAuthDestination(){
   const pendingTemplate=!!(localStorage.getItem("jsco_pending_template_v2")||sessionStorage.getItem("jsco_pending_template"));
-  window.location.href=pendingTemplate?"workspace.html":"projects.html";
+  window.location.href=pendingTemplate?"workspace.html":"js_runners.html";
 }
 async function startAuthGoogleSignIn(){
   setStartAuthBusy(true,"Opening Google sign-in…");
@@ -4275,7 +4275,7 @@ async function startBuilding(){
   ]);
   if(user){
     // Already signed in — never show the Google sign-in screen again.
-    window.location.href = "projects.html";
+    window.location.href = "js_runners.html";
     return;
   }
   // Guest access is available only from Get Started / Start Building.
@@ -4346,7 +4346,7 @@ async function continueAsGuest(){
     setAuthBusy(true, guestUser
       ? "Guest sign-in successful. Opening…"
       : "Opening…");
-    window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
+    window.location.href = pendingTemplate ? "workspace.html" : "js_runners.html";
   }catch(error){
     console.error("Anonymous guest sign-in error:", error);
     const status = document.getElementById("authStatus");
@@ -4435,8 +4435,8 @@ async function signInWithGoogle(){
     );
     setAuthBusy(true, pendingTemplate
       ? "Signed in successfully. Opening template…"
-      : "Signed in successfully. Opening projects…");
-    window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
+      : "Signed in successfully. Opening JS Runners…");
+    window.location.href = pendingTemplate ? "workspace.html" : "js_runners.html";
   }catch(error){
     console.error("Google sign-in error:", error);
 
@@ -4485,8 +4485,8 @@ auth.getRedirectResult()
       );
       setAuthBusy(true, pendingTemplate
         ? "Signed in successfully. Opening template…"
-        : "Signed in successfully. Opening projects…");
-      window.location.href = pendingTemplate ? "workspace.html" : "projects.html";
+        : "Signed in successfully. Opening JS Runners…");
+      window.location.href = pendingTemplate ? "workspace.html" : "js_runners.html";
     }
   })
   .catch(function(error){
