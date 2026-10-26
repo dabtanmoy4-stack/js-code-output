@@ -1714,12 +1714,6 @@ html.dark .thumbnail-card {
 #startAuthOverlay .start-auth-google svg{width:20px;height:20px;flex:none}
 #startAuthOverlay .start-auth-guest{margin-top:10px;background:transparent;color:var(--sa-text);border:1px dashed #9aa1b0}
 #startAuthOverlay .start-auth-guest:hover{background:var(--sa-hover)}
-#startAuthOverlay .start-auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--sa-muted);font-size:13px}
-#startAuthOverlay .start-auth-divider:before,#startAuthOverlay .start-auth-divider:after{content:"";flex:1;height:1px;background:var(--sa-line)}
-#startAuthOverlay .start-auth-email{width:100%;border:1px solid var(--sa-line);background:transparent;color:var(--sa-text);border-radius:10px;padding:12px 14px;font-size:15px;margin-bottom:10px}
-#startAuthOverlay .start-auth-email:focus{outline:2px solid var(--sa-brand);border-color:transparent}
-#startAuthOverlay .start-auth-primary{width:100%;background:var(--sa-brand);color:#fff;border:0;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer}
-#startAuthOverlay .start-auth-primary:hover{background:#1557b0}
 #startAuthOverlay .start-auth-secure{display:flex;align-items:center;justify-content:center;gap:6px;margin:16px 0 0;font-size:12.5px;color:var(--sa-muted)}
 #startAuthOverlay .start-auth-terms{margin:20px 0 0;font-size:12.5px;color:var(--sa-muted);line-height:1.8}
 #startAuthOverlay .start-auth-link{color:var(--sa-gold);text-decoration:none;font-weight:600}
@@ -4145,9 +4139,6 @@ play();setInterval(play,total);
         <span>Continue with Google</span>
       </button>
       <button class="start-auth-guest" id="startAuthGuest" type="button" onclick="startAuthContinueAsGuest()">Continue as Guest</button>
-      <div class="start-auth-divider">or</div>
-      <input class="start-auth-email" id="startAuthEmail" type="email" placeholder="Email address" autocomplete="email" aria-label="Email address">
-      <button class="start-auth-primary" id="startAuthEmailBtn" type="button">Continue with email</button>
       <div class="start-auth-status" id="startAuthStatus" aria-live="polite"></div>
       <p class="start-auth-secure">&#128274; Secure sign-in. We never see your Google password.</p>
       <p class="start-auth-terms">By continuing, you agree to our <a class="start-auth-link" href="terms.html">Terms</a> and <a class="start-auth-link" href="privacy.html">Privacy Policy</a>.</p>
@@ -4226,10 +4217,8 @@ function closeStartAuthModal(){
 function setStartAuthBusy(busy,message,error){
   const googleBtn=document.getElementById("startAuthGoogle");
   const guestBtn=document.getElementById("startAuthGuest");
-  const emailBtn=document.getElementById("startAuthEmailBtn");
   if(googleBtn) googleBtn.disabled=busy;
   if(guestBtn) guestBtn.disabled=busy;
-  if(emailBtn) emailBtn.disabled=busy;
   const status=document.getElementById("startAuthStatus");
   if(status){
     status.className="start-auth-status"+(error?" error":"");
@@ -4277,13 +4266,6 @@ async function startAuthContinueAsGuest(){
 document.getElementById("startAuthClose").addEventListener("click",closeStartAuthModal);
 document.getElementById("startAuthOverlay").addEventListener("click",function(event){if(event.target===this)closeStartAuthModal();});
 document.addEventListener("keydown",function(event){const overlay=document.getElementById("startAuthOverlay");if(event.key==="Escape"&&overlay&&overlay.classList.contains("show"))closeStartAuthModal();});
-document.getElementById("startAuthEmailBtn").addEventListener("click",function(){
-  const input=document.getElementById("startAuthEmail");
-  const value=input.value.trim();
-  setStartAuthBusy(false,/^\S+@\S+\.\S+$/.test(value)?"Email sign-in is not connected yet. Please use Continue with Google or Continue as Guest.":"Enter a valid email address.",!/^\S+@\S+\.\S+$/.test(value));
-});
-document.getElementById("startAuthEmail").addEventListener("keydown",function(event){if(event.key==="Enter")document.getElementById("startAuthEmailBtn").click();});
-
 async function startBuilding(){
   // Wait briefly for Firebase to restore the previous session.
   // Never let Get Started become unresponsive if auth/network restoration is slow.
