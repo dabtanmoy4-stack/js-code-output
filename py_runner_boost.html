@@ -2213,9 +2213,22 @@ async function executeProgram(boostMode = "ig") {
       body: JSON.stringify(requestBody)
     });
 
-    let result;
-    try { result = await response.json(); }
-    catch { throw new Error("The run API returned an invalid response."); }
+    // Read the response as text first so Vercel HTML errors and empty responses
+    // are visible instead of being hidden behind a generic JSON parsing error.
+    const responseText = await response.text();
+    let result = null;
+    try { result = responseText ? JSON.parse(responseText) : null; } catch {}
+
+    if (!result || typeof result !== "object" || Array.isArray(result)) {
+      const preview = (responseText || "(empty response)")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 500);
+      throw new Error(
+        `Run API returned a non-JSON or invalid response (HTTP ${response.status}). ${preview}`
+      );
+    }
 
     if (!response.ok) {
       throw new Error(result.error || result.message || `Run API failed (${response.status}).`);
