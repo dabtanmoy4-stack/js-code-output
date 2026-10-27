@@ -1,0 +1,9 @@
+{
+  "dependency_to_add": "@e2b/code-interpreter",
+  "note": "Merge this dependency into your existing package.json; do not replace your project's existing package.json.",
+  "example": {
+    "dependencies": {
+      "@e2b/code-interpreter": "latest"
+    }
+  }
+}
