@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "firebase-admin": "^13.0.0",
-    "razorpay": "^2.9.5"
+    "razorpay": "^2.9.5",
+    "@e2b/code-interpreter": "^2.2.0"
   }
 }
