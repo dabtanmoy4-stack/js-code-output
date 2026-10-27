@@ -1223,6 +1223,33 @@ body.light li.CodeMirror-hint-active { background: #fff0c8; color: #7a4e00; }
 body.light .find-replace-panel{background:#fff;border-color:#d0d7de;color:#1f2328;box-shadow:0 14px 36px rgba(31,35,40,.2)}body.light .find-replace-tab{color:#656d76}body.light .find-replace-tab.active{background:#eaeef2;color:#1f2328}body.light .find-replace-close{color:#656d76}body.light .fr-input-wrap{background:#f6f8fa;border-color:#d0d7de}body.light .fr-input-wrap input{color:#1f2328}body.light .fr-mini,body.light .fr-action{background:#f6f8fa;border-color:#d0d7de;color:#24292f}body.light .fr-mini:hover,body.light .fr-action:hover{background:#eaeef2}body.light .fr-mini.active{background:#fff8c5;color:#7d4e00;border-color:#d4a72c}body.light .cm-fr-current{color:#1f2328!important}
 @media(max-width:600px){.find-replace-panel{position:fixed!important;z-index:2147483000!important;top:72px;left:8px;right:8px;width:auto;max-height:calc(100vh - 84px);padding:8px}.fr-input-row{gap:4px}.fr-action{padding:7px 7px;font-size:11px}.fr-count{min-width:40px}}
 
+
+
+/* Boost mode picker: shown whenever the user presses Run */
+.boost-picker-backdrop{position:fixed;inset:0;z-index:40000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,5,9,.76);backdrop-filter:blur(8px)}
+.boost-picker-backdrop.open{display:flex;animation:menuIn .16s ease-out}
+.boost-picker{width:min(720px,100%);padding:22px;border:1px solid rgba(214,173,85,.55);border-radius:18px;background:linear-gradient(145deg,#191b20,#0c0e12);color:#f8fafc;box-shadow:0 25px 90px #000a,0 0 32px rgba(214,173,85,.10)}
+.boost-picker-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+.boost-picker-head h2{margin:0 0 6px;font-size:20px;font-weight:850;letter-spacing:-.4px}
+.boost-picker-head p{margin:0;color:#aab0bd;font-size:12px;line-height:1.6}
+.boost-picker-close{border:1px solid #424650;background:#242730;color:#e8eaf0;border-radius:9px;width:34px;height:34px;box-shadow:none;font-size:18px}
+.boost-picker-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.boost-mode-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:220px;padding:18px;border:1px solid #424650;border-radius:14px;background:linear-gradient(155deg,#20232a,#111319);color:#f8fafc;text-align:left;box-shadow:0 7px 18px #0004;white-space:normal}
+.boost-mode-card:hover{border-color:#d6ad55;transform:translateY(-2px);box-shadow:0 12px 28px #0006,0 0 0 1px #d6ad5533}
+.boost-mode-card.og{border-color:#b58b3d;background:linear-gradient(155deg,#282317,#121318)}
+.boost-mode-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:13px;border-radius:12px;background:rgba(214,173,85,.13);border:1px solid rgba(214,173,85,.38);color:#f1d58c;font-size:19px}
+.boost-mode-name{font-size:17px;font-weight:850;margin-bottom:7px}
+.boost-mode-tag{font-size:9px;font-weight:850;letter-spacing:1px;text-transform:uppercase;color:#e8c875;margin-bottom:9px}
+.boost-mode-desc{font-size:12px;line-height:1.65;color:#c2c6cf;margin-bottom:15px}
+.boost-mode-cta{margin-top:auto;display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;color:#f1d58c}
+.boost-picker-note{margin-top:14px;font-size:10px;line-height:1.6;color:#9299a7}
+body.light .boost-picker{background:linear-gradient(145deg,#fff,#f3f4f7);color:#111827}
+body.light .boost-picker-head p,body.light .boost-mode-desc,body.light .boost-picker-note{color:#596273}
+body.light .boost-mode-card{background:linear-gradient(155deg,#fff,#f3f5f8);color:#111827;border-color:#d1d5db}
+body.light .boost-mode-card.og{background:linear-gradient(155deg,#fff9e9,#f3f4f7);border-color:#c4a15a}
+body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cbd5e1}
+@media(max-width:560px){.boost-picker{padding:16px}.boost-picker-head h2{font-size:17px}.boost-picker-cards{grid-template-columns:1fr}.boost-mode-card{min-height:0;padding:15px}.boost-mode-icon{width:36px;height:36px;margin-bottom:9px}.boost-mode-desc{margin-bottom:12px}}
+
 </style>
 </head>
 
@@ -2138,7 +2165,7 @@ async function runInPyodide(source) {
   }
 }
 
-async function runProgram() {
+async function executeProgram(boostMode = "ig") {
   if (running) return;
   saveActiveFile();
 
@@ -2158,6 +2185,11 @@ async function runProgram() {
     return;
   }
 
+  if (boostMode === "og" && !fileName.endsWith(".py")) {
+    toast("Boost OG currently supports Python (.py) files only.");
+    return;
+  }
+
   running = true;
   currentOutputText = "";
   currentErrors = [];
@@ -2170,14 +2202,15 @@ async function runProgram() {
   setStatus("Online compiler running");
 
   try {
-    const response = await fetch("/api/run-code", {
+    const runEndpoint = boostMode === "og" ? "/api/e2b-run" : "/api/run-code";
+    const requestBody = boostMode === "og"
+      ? { code: source, input: $("consoleInput").value || "" }
+      : { compiler, code: source, input: $("consoleInput").value || "" };
+
+    const response = await fetch(runEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        compiler,
-        code: source,
-        input: $("consoleInput").value || ""
-      })
+      body: JSON.stringify(requestBody)
     });
 
     let result;
@@ -2227,6 +2260,36 @@ async function runProgram() {
     $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
   }
 }
+
+
+/* Runtime choice: Run button and Ctrl/Cmd+Enter both open this picker. */
+function openBoostPicker() {
+  if (running) return;
+  $("boostPickerBackdrop").classList.add("open");
+  $("boostPickerBackdrop").setAttribute("aria-hidden", "false");
+}
+function closeBoostPicker() {
+  $("boostPickerBackdrop").classList.remove("open");
+  $("boostPickerBackdrop").setAttribute("aria-hidden", "true");
+}
+function runProgram() {
+  openBoostPicker();
+}
+$("boostPickerClose").addEventListener("click", closeBoostPicker);
+$("boostPickerBackdrop").addEventListener("click", event => {
+  if (event.target === $("boostPickerBackdrop")) closeBoostPicker();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeBoostPicker();
+});
+$("boostIGBtn").addEventListener("click", () => {
+  closeBoostPicker();
+  executeProgram("ig");
+});
+$("boostOGBtn").addEventListener("click", () => {
+  closeBoostPicker();
+  executeProgram("og");
+});
 
 /* Drag-and-drop & File Importing */
 async function importFiles(fileArray, targetFolder = "") {
@@ -2630,6 +2693,36 @@ loadPython().catch(() => {
 document.querySelectorAll('[data-fullscreen]').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.querySelector('.'+btn.dataset.fullscreen);if(!panel)return;panel.classList.toggle('is-fullscreen');setTimeout(()=>{if(window.editor&&panel.classList.contains('editor-panel'))editor.refresh();},80);}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.panel.is-fullscreen').forEach(p=>p.classList.remove('is-fullscreen'));});
 </script>
+
+
+<div class="boost-picker-backdrop" id="boostPickerBackdrop" role="dialog" aria-modal="true" aria-labelledby="boostPickerTitle">
+  <div class="boost-picker">
+    <div class="boost-picker-head">
+      <div>
+        <h2 id="boostPickerTitle">Choose your Python runtime</h2>
+        <p>Select how you want to run this code. Your current editor and project files will stay unchanged.</p>
+      </div>
+      <button class="boost-picker-close" id="boostPickerClose" type="button" aria-label="Close runtime selection">×</button>
+    </div>
+    <div class="boost-picker-cards">
+      <button class="boost-mode-card ig" id="boostIGBtn" type="button">
+        <span class="boost-mode-icon"><i class="fa-solid fa-code"></i></span>
+        <span class="boost-mode-tag">Standard runtime</span>
+        <span class="boost-mode-name">Run with Boost IG</span>
+        <span class="boost-mode-desc">Uses the existing run API. Best for regular code, logic, scripts and supported lightweight animations. It keeps the current runner behavior.</span>
+        <span class="boost-mode-cta">Run with IG <i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+      <button class="boost-mode-card og" id="boostOGBtn" type="button">
+        <span class="boost-mode-icon"><i class="fa-solid fa-cubes"></i></span>
+        <span class="boost-mode-tag">E2B cloud runtime</span>
+        <span class="boost-mode-name">Run with Boost OG</span>
+        <span class="boost-mode-desc">Uses your new E2B API integration for Python execution and supported packages, data work, charts and image outputs. Native GUI and real-time 3D animations are not guaranteed.</span>
+        <span class="boost-mode-cta">Run with OG <i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+    </div>
+    <div class="boost-picker-note">OG requires the server-side <code>E2B_API_KEY</code> environment variable and the <code>/api/e2b-run</code> endpoint. The secret key is never sent to the browser.</div>
+  </div>
+</div>
 
 </body>
 </html>
