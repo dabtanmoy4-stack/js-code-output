@@ -1832,14 +1832,14 @@ async function openSharedProjectViewer(){
   body> *:not(#sharedProjectView){display:none!important}
   #sharedProjectView{position:fixed;inset:0;z-index:999999;overflow:hidden;display:flex;flex-direction:column;background:#f8f5ed;color:#111;font-family:Inter,Arial,sans-serif}
   #sharedProjectView *{box-sizing:border-box}
-  .sv-welcome{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;background:linear-gradient(145deg,#fffdf7,#f3efe5);color:#111;animation:svFade 1.8s ease forwards;pointer-events:none}
+  .sv-welcome{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;background:linear-gradient(145deg,#fffdf7,#f3efe5);color:#111;animation:svFade 1s ease forwards;pointer-events:none}
   .sv-welcome img{width:76px;height:76px;object-fit:contain;border-radius:18px;filter:drop-shadow(0 8px 18px #0002)}
   .sv-welcome .sv-logo-fallback{width:76px;height:76px;border:2px solid #111;border-radius:20px;display:grid;place-items:center;font-weight:900;font-size:25px;letter-spacing:-2px;background:#fff}
   .sv-welcome h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(26px,5vw,48px);font-weight:500;text-align:center;margin:0;letter-spacing:.02em}
   .sv-welcome p{margin:0;color:#555;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
-  @keyframes svFade{0%,65%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+  @keyframes svFade{0%,90%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
   .sv-top{height:64px;display:flex;align-items:center;gap:12px;padding:10px 18px;background:#fffdf7;border-bottom:1px solid #d8d2c6;position:sticky;top:0;z-index:2}
-  .sv-top img{width:36px;height:36px;object-fit:contain}.sv-brand{font-weight:850;letter-spacing:.02em}.sv-brand span{font-family:Georgia,serif;font-weight:500}.sv-sub{margin-left:auto;color:#666;font-size:12px}
+  .sv-top img{width:36px;height:36px;object-fit:contain}.sv-brand{font-weight:850;letter-spacing:.02em}.sv-brand span{font-family:Georgia,serif;font-weight:500}.sv-sub{margin-left:auto;color:#666;font-size:12px}.sv-own-project{margin-left:auto;flex:0 0 auto;border:1px solid #b98a25;border-radius:8px;padding:9px 13px;background:linear-gradient(120deg,#c18a16,#ffe99a,#f5bd31);color:#211704;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}.sv-own-project:hover{filter:brightness(1.05);transform:translateY(-1px)}
   .sv-tabs{display:none;gap:8px;padding:10px;background:#fffdf7;border-bottom:1px solid #d8d2c6}.sv-tabs button{flex:1;border:1px solid #111;border-radius:9px;background:#fffdf7;padding:11px;font-weight:750;color:#111}.sv-tabs button.active{background:#111;color:#fffdf7}
   .sv-workspace{flex:1;min-height:0;height:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;background:#fffdf7}
   .sv-pane{display:flex;flex-direction:column;min-width:0;min-height:0;border-right:1px solid #d8d2c6}.sv-pane:last-child{border-right:0}
@@ -1850,10 +1850,10 @@ async function openSharedProjectViewer(){
   .sv-run{border:1px solid #111;background:#111;color:#fffdf7;padding:7px 12px;border-radius:7px;font-size:11px;font-weight:750;cursor:pointer}
   .sv-filebar{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;background:#faf8f2;border-bottom:1px solid #e2ddd3}.sv-filebar button{border:1px solid #d5cfc3;background:#fffdf7;color:#111;border-radius:6px;padding:6px 9px;font-size:11px;cursor:pointer}.sv-filebar button.active{background:#111;color:#fff}
   .sv-error{color:#a31818}
-  @media(max-width:700px){.sv-top{height:58px;flex:0 0 58px;padding:8px 12px}.sv-top img{width:30px;height:30px}.sv-sub{font-size:10px}.sv-tabs{display:flex;flex:0 0 auto}.sv-workspace{flex:1;min-height:0;height:auto;display:block}.sv-pane{height:100%;border:0}.sv-pane.sv-hidden{display:none}.sv-code,.sv-output{padding:14px;font-size:12px}.sv-title{padding:11px 12px}}
+  @media(max-width:700px){.sv-top{height:58px;flex:0 0 58px;padding:8px 12px;gap:7px}.sv-top img{width:30px;height:30px}.sv-own-project{margin-left:auto;padding:7px 8px;font-size:10px}.sv-sub{display:none;font-size:10px}.sv-tabs{display:flex;flex:0 0 auto}.sv-workspace{flex:1;min-height:0;height:auto;display:block}.sv-pane{height:100%;border:0}.sv-pane.sv-hidden{display:none}.sv-code,.sv-output{padding:14px;font-size:12px}.sv-title{padding:11px 12px}}
   </style>
   <div class="sv-welcome"><img src="logo.jpeg" alt="JS Code Output logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="sv-logo-fallback" style="display:none">JS</div><h1>Welcome to JS Code Output</h1><p>Write · Run · Create</p></div>
-  <header class="sv-top"><img src="logo.jpeg" alt="JS Code Output logo" onerror="this.style.display='none'"><div class="sv-brand">JS <span>CODE OUTPUT</span></div><div class="sv-sub">Shared Python project</div></header>
+  <header class="sv-top"><img src="logo.jpeg" alt="JS Code Output logo" onerror="this.style.display='none'"><div class="sv-brand">JS <span>CODE OUTPUT</span></div><a class="sv-own-project" href="index.html.html">Make your own projects ↗</a><div class="sv-sub">Shared Python project</div></header>
   <nav class="sv-tabs"><button type="button" class="active" data-tab="code">Code</button><button type="button" data-tab="output">Output</button></nav>
   <div class="sv-filebar" id="svFilebar"></div>
   <main class="sv-workspace"><section class="sv-pane" id="svCodePane"><div class="sv-title"><span>Python Code</span><small id="svFileName">main.py</small></div><pre class="sv-code" id="svCode">Loading shared project…</pre></section><section class="sv-pane" id="svOutputPane"><div class="sv-title"><span>Output</span><button class="sv-run" id="svRun" type="button">▶ Run Python</button></div><pre class="sv-output" id="svOutput">Preparing Python runtime…</pre></section></main>`;
