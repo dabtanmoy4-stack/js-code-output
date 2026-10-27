@@ -1453,6 +1453,49 @@ $('eraseCodeBtn').addEventListener('click',()=>{
   notify('Current editor code erased.');
 });
 
+/* Download the complete project (all files and folders) as a ZIP. */
+async function downloadProjectZip(){
+  saveEditor();
+  persist();
+  const button=$('downloadBtn');
+  const oldText=button.textContent;
+  button.disabled=true;
+  button.textContent='Preparing ZIP…';
+  status('Building project ZIP…');
+  try{
+    if(typeof JSZip!=='function') throw new Error('ZIP library unavailable. Check your internet connection.');
+    const zip=new JSZip();
+    folders.forEach(folder=>{
+      const path=buildFolderPath(folder.id);
+      if(path)zip.folder(path);
+    });
+    files.forEach(file=>{
+      const parent=buildFolderPath(file.folderId);
+      const path=parent?parent+'/'+file.name:file.name;
+      zip.file(path,file.content||'');
+    });
+    zip.file('README.txt','JS Code Output project export\nContains all files and folders currently listed in Explorer.\nPython execution uses Pyodide in the browser.\n');
+    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='js-code-output-project.zip';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),2000);
+    status('Project ZIP downloaded');
+    notify('Complete project ZIP downloaded.');
+  }catch(error){
+    console.error(error);
+    status('ZIP export failed');
+    notify('Could not create ZIP: '+String(error.message||error));
+  }finally{
+    button.disabled=false;
+    button.textContent=oldText;
+  }
+}
+
 /* Free project download and shareable project link. */
 $('downloadBtn').addEventListener('click',downloadProjectZip);
 
