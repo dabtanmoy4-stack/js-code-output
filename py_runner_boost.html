@@ -2275,20 +2275,38 @@ function closeBoostPicker() {
 function runProgram() {
   openBoostPicker();
 }
-$("boostPickerClose").addEventListener("click", closeBoostPicker);
-$("boostPickerBackdrop").addEventListener("click", event => {
-  if (event.target === $("boostPickerBackdrop")) closeBoostPicker();
-});
+// The picker markup is near the end of the document, after this script.
+// Wait until parsing finishes before querying its buttons, so this setup
+// cannot throw and prevent the rest of the editor listeners from attaching.
+function setupBoostPickerEvents() {
+  const closeButton = $("boostPickerClose");
+  const backdrop = $("boostPickerBackdrop");
+  const igButton = $("boostIGBtn");
+  const ogButton = $("boostOGBtn");
+  if (!closeButton || !backdrop || !igButton || !ogButton) {
+    console.error("Boost picker markup is missing; runtime selection is unavailable.");
+    return;
+  }
+  closeButton.addEventListener("click", closeBoostPicker);
+  backdrop.addEventListener("click", event => {
+    if (event.target === backdrop) closeBoostPicker();
+  });
+  igButton.addEventListener("click", () => {
+    closeBoostPicker();
+    executeProgram("ig");
+  });
+  ogButton.addEventListener("click", () => {
+    closeBoostPicker();
+    executeProgram("og");
+  });
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupBoostPickerEvents, { once: true });
+} else {
+  setupBoostPickerEvents();
+}
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") closeBoostPicker();
-});
-$("boostIGBtn").addEventListener("click", () => {
-  closeBoostPicker();
-  executeProgram("ig");
-});
-$("boostOGBtn").addEventListener("click", () => {
-  closeBoostPicker();
-  executeProgram("og");
 });
 
 /* Drag-and-drop & File Importing */
