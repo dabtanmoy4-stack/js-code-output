@@ -1827,6 +1827,200 @@ html:not(.dark) .project-owner-email{color:#776f64}
 }
 </style>
 
+
+
+<style id="py-icons-light-red">
+/* ---------- animated icons (kept) ---------- */
+.py-kicker-icon{display:inline-block;margin-right:4px;font-size:13px;animation:pyIconSwing 3.2s ease-in-out infinite;transform-origin:50% 60%}
+.py-btn-icon{display:inline-block;margin-right:4px;animation:pyIconSpinPlus 4s ease-in-out infinite}
+.project-card > div:first-child > i.fa-solid{display:inline-block;animation:pyIconFloat 3s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.project-card > div:first-child > i.fa-cloud{animation:pyIconFloat 3.4s ease-in-out infinite,pyIconGlow 2.6s ease-in-out infinite}
+.project-card:hover > div:first-child > i.fa-solid{animation:pyIconBounce .7s ease infinite}
+.project-more i{display:inline-block;animation:pyIconPulse 2.2s ease-in-out infinite}
+.project-more:hover i{animation:pyIconSpin 1s linear infinite}
+.upload-project-btn i{display:inline-block;animation:pyIconUpload 1.8s ease-in-out infinite}
+.account-menu-item-icon i{display:inline-block;animation:pyIconPulse 2.4s ease-in-out infinite}
+.account-menu-item:hover .account-menu-item-icon i{animation:pyIconBounce .7s ease infinite}
+.empty-projects-icon{display:inline-block;animation:pyIconFloat 3s ease-in-out infinite}
+.toast i{display:inline-block;animation:pyIconPop 1.4s ease-in-out infinite}
+.modal-btn:hover i{animation:pyIconBounce .6s ease infinite}
+#themeToggle:hover .theme-icon{animation:pyIconSpin 2.5s linear infinite}
+.loading-projects i{animation:fa-spin 1s linear infinite}
+@keyframes pyIconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pyIconBounce{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-6px) scale(1.12)}70%{transform:translateY(0) scale(.95)}}
+@keyframes pyIconPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.18);opacity:1}}
+@keyframes pyIconSpin{to{transform:rotate(360deg)}}
+@keyframes pyIconSwing{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+@keyframes pyIconSpinPlus{0%,70%,100%{transform:rotate(0)}85%{transform:rotate(180deg)}}
+@keyframes pyIconUpload{0%,100%{transform:translateY(2px)}50%{transform:translateY(-4px)}}
+@keyframes pyIconPop{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes pyIconGlow{0%,100%{filter:drop-shadow(0 0 2px rgba(255,120,120,.3))}50%{filter:drop-shadow(0 0 10px rgba(255,120,120,.85))}}
+
+/* ---------- remove the running background / card animations ---------- */
+.ambient-orb,.ambient-grid,body::before,body::after,
+.project-card,.section-card,
+html.dark .project-card,html.dark .ambient-grid,
+html.dark .project-card::before{animation:none!important}
+.ambient-orb{display:none!important}
+
+/* ---------- blue -> light red ---------- */
+.text-blue-500,.projects-heading .text-blue-500,html.dark .projects-heading .text-blue-500{color:#ff8a8a!important;text-shadow:0 0 10px rgba(255,138,138,.35)}
+.project-card i.text-blue-500,.project-card i.fa-cloud,.project-card i.fa-folder{color:#ff8a8a!important}
+.open-project-text,html.dark .open-project-text{color:#ff9a9a!important;text-shadow:0 0 8px rgba(255,138,138,.35)}
+.projects-heading .primary-btn,
+html.dark .projects-heading .primary-btn,
+html:not(.dark) .projects-heading .primary-btn{
+  background:linear-gradient(135deg,#c94f4f 0%,#e06a6a 48%,#ff9090 100%)!important;
+  color:#fff8e8!important;
+  box-shadow:0 8px 26px rgba(255,120,120,.30),0 0 14px rgba(212,170,82,.25),inset 0 1px 0 rgba(255,255,255,.30)!important;
+}
+html.dark .projects-heading .primary-btn:hover{
+  box-shadow:0 14px 36px rgba(255,120,120,.42),0 0 24px rgba(255,210,77,.30),inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
+html.dark .projects-heading .primary-btn::before{
+  background:linear-gradient(115deg,transparent 15%,rgba(255,255,255,.12) 32%,rgba(255,224,132,.14) 46%,rgba(255,255,255,.16) 52%,transparent 68%)!important;
+  background-size:220% 100%!important;
+}
+</style>
+
+
+
+<style id="btn-runcode-gold-3d">
+/* Buttons styled like the "Run Code" button: gold, raised 3D, dark text */
+.projects-heading .primary-btn,
+html.dark .projects-heading .primary-btn,
+html:not(.dark) .projects-heading .primary-btn,
+.empty-projects .primary-btn{
+  background:linear-gradient(180deg,#f6e3a6 0%,#e6c46f 45%,#c9a14a 100%)!important;
+  color:#3b2a0b!important;
+  font-weight:800!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+  border:1px solid #b88a2c!important;
+  border-bottom:3px solid #8f6a1c!important;
+  border-radius:12px!important;
+  box-shadow:
+    0 6px 14px rgba(120,84,20,.28),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -2px 4px rgba(120,84,20,.18)!important;
+  animation:none!important;
+  position:relative;
+  transform:translateY(0);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-bottom-width .18s ease!important;
+}
+.projects-heading .primary-btn::before,
+.projects-heading .primary-btn::after,
+html.dark .projects-heading .primary-btn::before,
+html.dark .projects-heading .primary-btn::after{display:none!important;animation:none!important}
+.projects-heading .primary-btn i,.empty-projects .primary-btn i{color:#3b2a0b!important}
+
+/* 3D raise on hover, press-down on click */
+.projects-heading .primary-btn:hover,
+html.dark .projects-heading .primary-btn:hover,
+html:not(.dark) .projects-heading .primary-btn:hover,
+.empty-projects .primary-btn:hover{
+  transform:translateY(-3px)!important;
+  filter:brightness(1.05);
+  box-shadow:
+    0 12px 22px rgba(120,84,20,.36),
+    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 -2px 4px rgba(120,84,20,.2)!important;
+}
+.projects-heading .primary-btn:active,
+.empty-projects .primary-btn:active{
+  transform:translateY(1px)!important;
+  border-bottom-width:1px!important;
+  box-shadow:0 2px 6px rgba(120,84,20,.3),inset 0 2px 5px rgba(120,84,20,.3)!important;
+}
+/* gentle 3D idle "breathing" tilt */
+.projects-heading .primary-btn{animation:btn3dIdle 4s ease-in-out infinite!important}
+@keyframes btn3dIdle{
+  0%,100%{transform:perspective(500px) rotateX(0deg) translateY(0)}
+  50%{transform:perspective(500px) rotateX(6deg) translateY(-2px)}
+}
+.projects-heading .primary-btn:hover{animation:none!important}
+@media(prefers-reduced-motion:reduce){.projects-heading .primary-btn{animation:none!important}}
+</style>
+
+
+<style id="requested-python-workspace-and-button-finish">
+/* Requested heading: larger glossy red with a gentle animation */
+.projects-heading > div:first-child > .text-xs.font-bold.uppercase {
+  display: inline-block;
+  font-size: 18px !important;
+  letter-spacing: .075em !important;
+  font-weight: 900 !important;
+  color: #d92f3b !important;
+  background: linear-gradient(180deg, #ff9a9f 0%, #e84a55 42%, #b91527 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 3px rgba(185,21,39,.20));
+  animation: pythonWorkspaceGloss 3s ease-in-out infinite;
+}
+@keyframes pythonWorkspaceGloss {
+  0%,100% { filter: drop-shadow(0 2px 3px rgba(185,21,39,.18)); transform: translateY(0); }
+  50% { filter: drop-shadow(0 3px 8px rgba(232,74,85,.38)); transform: translateY(-1px); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .projects-heading > div:first-child > .text-xs.font-bold.uppercase { animation:none!important; }
+}
+
+/* Match the two header controls to the existing bottom action-button finish,
+   while preserving their original sizing and account/theme functionality. */
+#projectsUserAccount,
+#themeToggle {
+  background: linear-gradient(180deg,#f6e3a6 0%,#e6c46f 45%,#c9a14a 100%) !important;
+  color: #3b2a0b !important;
+  border: 1px solid #b88a2c !important;
+  border-bottom: 3px solid #8f6a1c !important;
+  box-shadow: 0 6px 14px rgba(120,84,20,.24),
+              inset 0 1px 0 rgba(255,255,255,.72),
+              inset 0 -2px 4px rgba(120,84,20,.16) !important;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
+}
+#projectsUserAccount:hover,
+#themeToggle:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.04);
+  box-shadow: 0 10px 20px rgba(120,84,20,.30),
+              inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+#projectsUserAccount:active,
+#themeToggle:active {
+  transform: translateY(1px) !important;
+  border-bottom-width: 1px !important;
+}
+#themeToggle .theme-icon { stroke:#3b2a0b !important; }
+
+/* Light mode: soften the overall gold tint to a pale, restrained champagne */
+html:not(.dark) {
+  --bg:#f8f5ec !important;
+  --surface:#fffdf8 !important;
+  --surface2:#f3eee2 !important;
+  --line:#e5ddcd !important;
+}
+html:not(.dark) body { background:#f8f5ec !important; }
+html:not(.dark) .projects-page,
+html:not(.dark) .projects-header {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(218,190,125,.075), transparent 32%),
+    radial-gradient(circle at 86% 82%, rgba(190,160,100,.055), transparent 30%),
+    linear-gradient(135deg,#fbf9f2 0%,#f4efdf 52%,#fcfaf4 100%) !important;
+}
+html:not(.dark) .ambient-background {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(218,190,125,.09), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(167,139,85,.06), transparent 32%),
+    linear-gradient(135deg,#fbf9f2,#f3eedf 55%,#fcfaf5) !important;
+}
+html:not(.dark) .ambient-grid {
+  opacity:.10 !important;
+  background-image:
+    linear-gradient(rgba(154,128,75,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(154,128,75,.045) 1px,transparent 1px) !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -1860,7 +2054,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
           </strong>
 
           <span class="text-[10px] text-gray-500">
-            Dashboard & Projects
+            Python Dashboard & Projects
           </span>
         </div>
 
@@ -1976,18 +2170,17 @@ html:not(.dark) .project-owner-email{color:#776f64}
           <div
             class="text-xs font-bold uppercase tracking-wider text-blue-500"
           >
-            Workspace
+            <i class="fa-brands fa-python py-kicker-icon"></i> Python Workspace
           </div>
 
           <h2
             class="text-3xl font-extrabold tracking-tight mt-1"
           >
-            Select a Project
+            Select a Python Project
           </h2>
 
           <p class="text-xs text-gray-500 mt-1">
-            Every project contains its own separate HTML, CSS,
-            JavaScript, and asset files.
+            Every project contains its own separate Python (.py) files, modules, and asset files.
           </p>
 
         </div>
@@ -1997,7 +2190,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
             class="primary-btn"
             onclick="showCreateProject()"
           >
-            + New Project
+            <i class="fa-solid fa-plus py-btn-icon"></i> New Project
           </button>
 
           <button
@@ -2010,9 +2203,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
         </div>
 
       </div>
-
-
-      <div
+<div
         id="projectsList"
         class="projects-grid"
       ></div>
@@ -2037,18 +2228,18 @@ html:not(.dark) .project-owner-email{color:#776f64}
         </div>
 
         <h3 class="text-lg font-bold">
-          No Projects Found
+          No Python Projects Found
         </h3>
 
         <p class="text-xs text-gray-500 mb-4">
-          Create your first isolated project workspace.
+          Create your first isolated Python project workspace.
         </p>
 
         <button
           class="primary-btn"
           onclick="showCreateProject()"
         >
-          + Create Project
+          <i class="fa-solid fa-plus py-btn-icon"></i> Create Project
         </button>
 
         <button
@@ -2083,7 +2274,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
       </div>
 
       <p>
-        Add a project from files or an entire folder without changing your existing projects.
+        Add a Python project from .py files or an entire folder without changing your existing projects.
       </p>
 
       <div class="modal-actions" style="margin-top:16px;">
@@ -2144,12 +2335,12 @@ html:not(.dark) .project-owner-email{color:#776f64}
       </div>
 
       <p>
-        Give your new project a distinctive name.
+        Give your new Python project a clear name.
       </p>
 
       <input
         id="newProjectName"
-        placeholder="e.g. Portfolio Website, Canvas Game"
+        placeholder="e.g. Calculator App, Web Scraper, Data Analysis"
         autocomplete="off"
       >
 
@@ -2613,7 +2804,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
           closeCreateProject();
 
           showToast(
-            "Cloud Project created."
+            "Cloud Python project created."
           );
 
 
@@ -2627,7 +2818,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
           console.error(error);
 
           alert(
-            "Could not create cloud project."
+            "Could not create cloud Python project."
           );
 
         }
@@ -2676,7 +2867,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
       closeCreateProject();
 
       showToast(
-        "Local Project created."
+        "Local Python project created."
       );
 
 
@@ -2756,7 +2947,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
           </h3>
 
           <p class="project-card-type">
-            ${isCloud ? "Cloud Workspace" : "Local Workspace"}
+            ${isCloud ? "Python · Cloud Workspace" : "Python · Local Workspace"}
           </p>
 
           ${isCloud ? `
@@ -4312,18 +4503,18 @@ html:not(.dark) .project-owner-email{color:#776f64}
 
   function getUploadedProjectName(fileList){
     const arr = Array.from(fileList || []);
-    if(!arr.length) return "Uploaded Project";
+    if(!arr.length) return "Uploaded Python Project";
 
     const first = arr[0];
     if(first.webkitRelativePath){
-      return first.webkitRelativePath.split("/")[0] || "Uploaded Project";
+      return first.webkitRelativePath.split("/")[0] || "Uploaded Python Project";
     }
 
     if(arr.length === 1){
-      return first.name.replace(/\.[^/.]+$/, "") || "Uploaded Project";
+      return first.name.replace(/\.[^/.]+$/, "") || "Uploaded Python Project";
     }
 
-    return "Uploaded Project";
+    return "Uploaded Python Project";
   }
 
   window.importUploadedProject = async function(fileList){
@@ -4372,7 +4563,7 @@ html:not(.dark) .project-owner-email{color:#776f64}
       closeUploadProject();
 
       if(typeof showToast === "function"){
-        showToast("Project uploaded successfully.");
+        showToast("Python project uploaded successfully.");
       }
 
       if(typeof loadProjects === "function"){
