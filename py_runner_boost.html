@@ -2201,36 +2201,44 @@ function buildTurtlePreview(source) {
   const js = [];
   const stack = [];
   const indentOf = line => (line.match(/^\s*/) || [""])[0].replace(/\t/g, "    ").length;
+  const pyExpr = value => {
+    let x = value.trim();
+    x = x.replace(/\blen\((\w+)\)/g, '$1.length');
+    x = x.replace(/\bTrue\b/g, 'true').replace(/\bFalse\b/g, 'false').replace(/\bNone\b/g, 'null');
+    return x;
+  };
   const closeBlocks = indent => {
-    while (stack.length && indent <= stack[stack.length - 1]) {
-      js.push("}");
-      stack.pop();
-    }
+    while (stack.length && indent <= stack[stack.length - 1]) { js.push("}"); stack.pop(); }
   };
   for (const raw of lines) {
     const line = raw.trim();
-    if (!line || line.startsWith("#") || /^(import\s+turtle|from\s+turtle\s+import)/.test(line)) continue;
-    const indent = indentOf(raw);
-    closeBlocks(indent);
+    if (!line || line.startsWith("#") || /^(import\s+turtle|from\s+turtle\s+import)\b/.test(line)) continue;
+    const indent = indentOf(raw); closeBlocks(indent);
     let m;
     if ((m = line.match(/^for\s+(\w+)\s+in\s+range\((\d+)\)\s*:/))) {
-      js.push(`for (let ${m[1]}=0; ${m[1]}<${Number(m[2])}; ${m[1]}++){`);
-      stack.push(indent); continue;
+      js.push(`for (let ${m[1]}=0; ${m[1]}<${Number(m[2])}; ${m[1]}++){`); stack.push(indent); continue;
     }
+    if ((m = line.match(/^(\w+)\s*=\s*\[([^\]]*)\]\s*$/))) { js.push(`let ${m[1]}=[${m[2]}];`); continue; }
     if ((m = line.match(/^(\w+)\s*=\s*turtle\.Turtle\(\)/))) { js.push(`let ${m[1]} = T;`); continue; }
-    if (/^(turtle\.)?(forward|fd)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.forward(${Number(m[1])||0});`); continue; }
-    if (/^(turtle\.)?(backward|back|bk)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.forward(-(${Number(m[1])||0}));`); continue; }
-    if (/^(turtle\.)?(left|lt)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.turn(-(${Number(m[1])||0}));`); continue; }
-    if (/^(turtle\.)?(right|rt)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.turn(${Number(m[1])||0});`); continue; }
-    if (/^(turtle\.)?(penup|pu)\(/.test(line)) { js.push("T.down=false;"); continue; }
-    if (/^(turtle\.)?(pendown|pd)\(/.test(line)) { js.push("T.down=true;"); continue; }
-    if (/^(turtle\.)?(color|pencolor)\(/.test(line)) { m=line.match(/\((.*)\)/); if(m) js.push(`T.color=${JSON.stringify(m[1].replace(/^['"]|['"]$/g,""))};`); continue; }
-    if (/^(turtle\.)?(pensize|width)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.width=${Math.max(1,Number(m[1])||1)};`); continue; }
-    if (/^(turtle\.)?(goto|setpos|setposition)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) {const a=m[1].split(",");js.push(`T.goto(${Number(a[0])||0},${Number(a[1])||0});`);} continue; }
-    if (/^(turtle\.)?circle\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.circle(${Number(m[1])||0});`); continue; }
-    if (/^(turtle\.)?(speed|shape|hideturtle|showturtle|tracer|done|mainloop|exitonclick)\(/.test(line)) continue;
-    if (/^(turtle\.)?bgcolor\(/.test(line)) { m=line.match(/\((.*)\)/); if(m) js.push(`bg=${JSON.stringify(m[1].replace(/^['"]|['"]$/g,""))};`); continue; }
-    if (/^(turtle\.)?clear\(/.test(line)) { js.push("paths=[];"); continue; }
+    if (/^(screen|wn)\s*=\s*turtle\.Screen\(\)/.test(line)) { js.push('let screen = { update(){draw();}, tracer(){}, title(){}, setup(){}, bgcolor(c){bg=String(c);draw();} };'); continue; }
+    if (/^(\w+)\.(speed|shape|hideturtle|showturtle|update|tracer|title|setup|done|mainloop|exitonclick)\(/.test(line)) continue;
+    if ((m = line.match(/^(\w+)\.(forward|fd|backward|back|bk|left|lt|right|rt|penup|pu|pendown|pd|color|pencolor|pensize|width|goto|setpos|setposition|circle|bgcolor|clear)\((.*)\)\s*$/))) {
+      const method=m[2], arg=pyExpr(m[3]);
+      if (['penup','pu'].includes(method)) js.push('T.down=false;');
+      else if (['pendown','pd'].includes(method)) js.push('T.down=true;');
+      else if (['forward','fd'].includes(method)) js.push(`T.forward(${arg});`);
+      else if (['backward','back','bk'].includes(method)) js.push(`T.forward(-(${arg}));`);
+      else if (['left','lt'].includes(method)) js.push(`T.turn(-(${arg}));`);
+      else if (['right','rt'].includes(method)) js.push(`T.turn(${arg});`);
+      else if (['color','pencolor'].includes(method)) js.push(`T.color=${arg};`);
+      else if (['pensize','width'].includes(method)) js.push(`T.width=Number(${arg})||1;`);
+      else if (['goto','setpos','setposition'].includes(method)) { const parts=m[3].split(','); js.push(`T.goto(${pyExpr(parts[0]||'0')},${pyExpr(parts[1]||'0')});`); }
+      else if (method==='circle') js.push(`T.circle(${arg});`);
+      else if (method==='bgcolor') js.push(`bg=${arg};draw();`);
+      else if (method==='clear') js.push('paths=[];draw();');
+      continue;
+    }
+    if ((m=line.match(/^(\w+)\s*=\s*(.+)$/))) { js.push(`let ${m[1]}=${pyExpr(m[2])};`); continue; }
   }
   while (stack.length) { js.push("}"); stack.pop(); }
   return js.join("\n");
@@ -2255,7 +2263,7 @@ function makeTurtleHTML(source) {
    goto(x,y){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x,y2:y,color:this.color,width:this.width});this.x=x;this.y=y;draw();},
    circle(r){const n=48,step=360/n,old=this.a;for(let i=0;i<n;i++){this.forward(2*Math.PI*r/n);this.turn(step);}this.a=old;}
   };
-  try{${commands}\n draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
+  try{size();${commands}\n draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
   addEventListener('resize',size);size();
   <\/script></body></html>`;
 }
