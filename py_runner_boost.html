@@ -1159,6 +1159,29 @@ body.light .name-dialog{background:linear-gradient(145deg,#fff,#f7f8fb);color:#1
 .panel.is-fullscreen { position:fixed !important; inset:8px !important; z-index:20000 !important; width:auto !important; height:auto !important; min-height:0 !important; max-height:none !important; margin:0 !important; overflow:auto !important; background:var(--panel); }
 .panel.is-fullscreen .CodeMirror { height:calc(100vh - 150px) !important; }
 .panel.is-fullscreen .output { max-height:none !important; height:calc(100vh - 180px) !important; }
+
+/* Fullscreen controls, editor clear action, and first-run tour */
+.panel.is-fullscreen { overflow:hidden !important; display:flex !important; flex-direction:column !important; }
+.panel.is-fullscreen .editor-body { flex:1 1 auto; min-height:0; }
+.panel.is-fullscreen .panel-head { flex:0 0 auto; }
+.panel.is-fullscreen .editor-toolbar, .panel.is-fullscreen .editor-foot { flex:0 0 auto; }
+.panel.is-fullscreen .CodeMirror { height:100% !important; min-height:0 !important; }
+.fullscreen-exit { position:fixed !important; top:14px !important; right:16px !important; z-index:30001 !important; min-width:42px !important; height:42px !important; padding:0 13px !important; display:flex !important; align-items:center !important; justify-content:center !important; gap:8px !important; border-radius:999px !important; background:#111 !important; color:#fff !important; border:1px solid rgba(255,255,255,.25) !important; box-shadow:0 3px 18px #0008 !important; cursor:pointer !important; }
+/* On desktop, keep the exit control below the app topbar so it is never covered or clipped. */
+@media (min-width:761px){ .fullscreen-exit { top:76px !important; right:24px !important; } }
+@media (max-width:760px){ .fullscreen-exit { top:14px !important; right:12px !important; } }
+.tour-backdrop { position:fixed; inset:0; z-index:50000; background:rgba(2,4,8,.72); pointer-events:none; }
+.tour-spotlight { position:relative !important; z-index:50001 !important; outline:3px solid var(--gold) !important; outline-offset:4px !important; box-shadow:0 0 0 9999px rgba(2,4,8,.76),0 0 24px 6px rgba(230,190,90,.75) !important; border-radius:8px !important; }
+.tour-card { position:fixed; z-index:50003; left:50%; top:50%; transform:none; pointer-events:auto; }
+.tour-card button { cursor:pointer; }
+@media(max-width:600px){.tour-card{width:calc(100vw - 28px);padding:16px;max-width:440px;}}
+.tour-card { width:min(440px,100%); background:var(--surface); color:var(--text); border:1px solid var(--gold); border-radius:16px; padding:22px; box-shadow:0 20px 70px #0009,0 0 25px #d6ad5520; }
+.tour-card h3 { margin:0 0 8px; font-size:18px; color:var(--gold); }
+.tour-card p { margin:0; line-height:1.7; color:var(--muted); }
+.tour-actions { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:20px; }
+.tour-step { font-size:11px; color:var(--muted); }
+@media(max-width:760px) { .editor-tools { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
 @media(max-width:760px){ .top-actions { display:flex !important; gap:4px; margin-left:0; } .premium-pill { display:none !important; } .top-actions .theme-toggle { width:34px; min-width:34px; height:34px; } .account-area { margin-left:auto; } .output-actions { flex-wrap:wrap; } .output-actions .fullscreen-btn span { display:none; } }
 
 
@@ -1421,7 +1444,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
       <section class="panel editor-panel">
         <div class="panel-head">
           <span class="panel-title">CODE EDITOR</span>
-          <span style="display:flex;align-items:center;gap:6px"><span class="panel-sub" id="editorLanguage">Python 3</span><button class="small-btn fullscreen-btn" data-fullscreen="editor-panel" title="Fullscreen editor" aria-label="Fullscreen editor"><svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg></button></span>
+          <span style="display:flex;align-items:center;gap:6px"><span class="panel-sub" id="editorLanguage">Python 3</span><button class="small-btn fullscreen-btn" data-fullscreen="editor-panel" title="Fullscreen editor" aria-label="Fullscreen editor"><span class="fs-label" style="display:none">Exit</span><svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg></button></span>
         </div>
 
         <div class="editor-toolbar">
@@ -1429,6 +1452,9 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
             <div class="tab active" id="activeTab"><span id="activeFileIcon"></span><span id="activeFileName">main.py</span></div>
           </div>
           <div class="editor-tools">
+            <button class="btn" id="clearCodeBtn" title="Clear code in the currently selected file" style="border-color:#8e4b43;color:#ffaaa0">
+              <i class="fa-solid fa-eraser"></i> Clear
+            </button>
             <button class="btn" id="formatBtn" title="Basic indentation helper">
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
               Format
@@ -2642,7 +2668,7 @@ loadPython().catch(() => {
     const moved={};Object.keys(files).forEach(k=>{if(k===old||k.startsWith(old+'/')){moved[next+k.slice(old.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);ensureFolder(next);if(activeFile===old||activeFile.startsWith(old+'/'))activeFile=next+activeFile.slice(old.length);openTabs=openTabs.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Folder renamed.'); }
   function copyFile(name){let base=name,ext='';const slash=base.lastIndexOf('/');const dir=slash>=0?base.slice(0,slash+1):'';let leaf=slash>=0?base.slice(slash+1):base;const dot=leaf.lastIndexOf('.');if(dot>0){ext=leaf.slice(dot);leaf=leaf.slice(0,dot);}let next=dir+leaf+'_copy'+ext,i=2;while(files[next]!==undefined)next=dir+leaf+'_copy'+i+++ext;files[next]=files[name];persistWorkspace();renderTree();openFile(next);toast('File copied.');}
   function deleteFolder(path){if(!confirm('Delete folder "'+path+'" and all files inside it?'))return;Object.keys(files).forEach(k=>{if(k===path||k.startsWith(path+'/')){delete files[k];openTabs=openTabs.filter(t=>t!==k);}});folders=folders.filter(f=>f!==path&&!f.startsWith(path+'/'));if(!Object.keys(files).length)files['main.py']='# Start coding here\nprint("Hello, world!")\n';if(!files[activeFile])activeFile=Object.keys(files)[0];persistWorkspace();renderTree();openFile(activeFile);toast('Folder deleted.');}
-  function movePath(src,dest){src=normalizePath(src);dest=normalizePath(dest);if(!src||!dest||src===dest||dest.startsWith(src+'/'))return; if(files[src]!==undefined){const next=dest+'/'+src.split('/').pop();if(files[next]!==undefined)return toast('Destination already contains this file.');files[next]=files[src];delete files[src];if(activeFile===src)activeFile=next;openTabs=openTabs.map(t=>t===src?next:t);}else if(allFolderPaths().includes(src)){const next=dest+'/'+src.split('/').pop();if(allFolderPaths().includes(next))return toast('Destination already contains this folder.');const moved={};Object.keys(files).forEach(k=>{if(k.startsWith(src+'/')){moved[next+k.slice(src.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===src||f.startsWith(src+'/')?next+f.slice(src.length):f);if(activeFile===src||activeFile.startsWith(src+'/'))activeFile=next+activeFile.slice(src.length);openTabs=openTabs.map(t=>t===src||t.startsWith(src+'/')?next+t.slice(src.length):t);}ensureFolder(dest);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Moved successfully.');}
+  function movePath(src,dest){src=normalizePath(src);dest=normalizePath(dest);if(!src||src===dest||(dest&&dest.startsWith(src+'/')))return; if(files[src]!==undefined){const next=dest?dest+'/'+src.split('/').pop():src.split('/').pop();if(files[next]!==undefined)return toast('Destination already contains this file.');files[next]=files[src];delete files[src];if(activeFile===src)activeFile=next;openTabs=openTabs.map(t=>t===src?next:t);}else if(allFolderPaths().includes(src)){const next=dest?dest+'/'+src.split('/').pop():src.split('/').pop();if(allFolderPaths().includes(next))return toast('Destination already contains this folder.');const moved={};Object.keys(files).forEach(k=>{if(k.startsWith(src+'/')){moved[next+k.slice(src.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===src||f.startsWith(src+'/')?next+f.slice(src.length):f);if(activeFile===src||activeFile.startsWith(src+'/'))activeFile=next+activeFile.slice(src.length);openTabs=openTabs.map(t=>t===src||t.startsWith(src+'/')?next+t.slice(src.length):t);}ensureFolder(dest);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Moved successfully.');}
   window.renderTree=function(filter=($('searchInput')?.value||'').trim().toLowerCase()){
     const tree=$('fileTree');if(!tree)return;tree.replaceChildren();const title=document.createElement('div');title.className='tree-label';title.innerHTML='<span>WORKSPACE</span><span>'+Object.keys(files).length+' files</span>';tree.appendChild(title);
     const foldersAll=allFolderPaths();const visibleFiles=Object.keys(files).filter(n=>!filter||n.toLowerCase().includes(filter)||String(files[n]).toLowerCase().includes(filter));
@@ -2678,7 +2704,7 @@ loadPython().catch(() => {
   const uploadFiles=$('uploadFiles');uploadFiles.addEventListener('change',async e=>{const target=uploadFiles.dataset.targetFolder||'';await importFiles([...(e.target.files||[])],target);uploadFiles.dataset.targetFolder='';e.target.value='';});
   // Folder drag-and-drop and arbitrary workspace drop targets.
   $('fileTree').addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('Files'))e.preventDefault();});
-  $('fileTree').addEventListener('drop',async e=>{if(e.target.closest('.tree-row'))return;if(e.dataTransfer.files?.length){e.preventDefault();await importFiles([...e.dataTransfer.files]);return;}const src=e.dataTransfer.getData('text/x-workspace-path');if(src){e.preventDefault();const parent=src.includes('/')?src.slice(0,src.lastIndexOf('/')):'';if(files[src]!==undefined){const next=src.split('/').pop();const dest=parent?parent+'/'+next:next; if(dest!==src)movePath(src,parent||'workspace');}}});
+  $('fileTree').addEventListener('drop',async e=>{if(e.target.closest('.tree-row'))return;if(e.dataTransfer.files?.length){e.preventDefault();await importFiles([...e.dataTransfer.files]);return;}const src=e.dataTransfer.getData('text/x-workspace-path')||e.dataTransfer.getData('text/x-file')||e.dataTransfer.getData('text/x-folder');if(src){e.preventDefault();movePath(src,'');}});
   // Whole-word occurrence highlighting under cursor, similar to GitHub/VS Code.
   function clearWordMarks(){wordMarks.forEach(m=>m.clear());wordMarks=[];}
   function highlightWord(){if(!window.editor)return;clearWordMarks();const cur=editor.getCursor(),line=editor.getLine(cur.line)||'',match=line.slice(0,cur.ch).match(/[A-Za-z_$][\w$]*/);let word=match?match[0]:null;if(!word){const after=line.slice(cur.ch).match(/^[A-Za-z_$][\w$]*/);word=after?after[0]:null;}if(!word||word.length<2)return;const escaped=word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp('\\b'+escaped+'\\b','g');for(let i=0;i<editor.lineCount();i++){const txt=editor.getLine(i);let m;while((m=re.exec(txt))!==null)wordMarks.push(editor.markText({line:i,ch:m.index},{line:i,ch:m.index+m[0].length},{className:'cm-word-highlight'}));}}
@@ -2823,9 +2849,103 @@ loadPython().catch(() => {
 })();
 </script>
 <script>
-// Fullscreen toggles for editor and output panels; Escape exits fullscreen panel mode.
-document.querySelectorAll('[data-fullscreen]').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.querySelector('.'+btn.dataset.fullscreen);if(!panel)return;panel.classList.toggle('is-fullscreen');setTimeout(()=>{if(window.editor&&panel.classList.contains('editor-panel'))editor.refresh();},80);}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.panel.is-fullscreen').forEach(p=>p.classList.remove('is-fullscreen'));});
+// Fullscreen controls for both editor and output; every fullscreen view has a visible exit control.
+(function(){
+ const buttons=[...document.querySelectorAll('[data-fullscreen]')];
+ function setFullscreen(panel,on){
+   panel.classList.toggle('is-fullscreen',on);
+   const kind=panel.classList.contains('editor-panel')?'editor-panel':'output-panel';
+   const btn=buttons.find(b=>b.dataset.fullscreen===kind);
+   if(btn){btn.title=on?'Exit fullscreen':'Fullscreen '+(kind==='editor-panel'?'editor':'output');btn.setAttribute('aria-label',btn.title);const label=btn.querySelector('.fs-label');if(label)label.style.display=on?'inline':'none';}
+   if(on){
+     panel.dataset.fullscreenActive='1';
+     if(!panel.querySelector('.fullscreen-exit')){const b=document.createElement('button');b.className='btn gold fullscreen-exit';b.type='button';b.title='Exit full screen';b.setAttribute('aria-label','Exit full screen');b.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v5H3M16 3v5h5M3 16h5v5M21 16h-5v5"/></svg><span>Exit full screen</span>';b.addEventListener('click',()=>setFullscreen(panel,false));panel.appendChild(b);}
+   } else {delete panel.dataset.fullscreenActive;panel.querySelector('.fullscreen-exit')?.remove();}
+   setTimeout(()=>{if(typeof editor!=='undefined'&&panel.classList.contains('editor-panel'))editor.refresh();},100);
+ }
+ buttons.forEach(btn=>btn.addEventListener('click',()=>{const panel=document.querySelector('.'+btn.dataset.fullscreen);if(panel)setFullscreen(panel,!panel.classList.contains('is-fullscreen'));}));
+ // Exit control is created inside setFullscreen and removed when returning to normal view.
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.panel.is-fullscreen').forEach(p=>setFullscreen(p,false));});
+ // Clear only the currently selected file, with confirmation before destructive action.
+ const clearBtn=document.getElementById('clearCodeBtn');
+ if(clearBtn)clearBtn.addEventListener('click',()=>{
+   const name=document.getElementById('activeFileName')?.textContent||'selected file';
+   if(!confirm('Clear all code in "'+name+'"? This cannot be undone.'))return;
+   editor.operation(()=>editor.setValue(''));
+   editor.focus();
+   if(typeof persistWorkspace==='function')persistWorkspace();
+   if(typeof toast==='function')toast('Code cleared for '+name+'.');
+ });
+ // Leave-page warning. Browsers display their own standard wording for beforeunload.
+ let allowLeave=false;
+ window.addEventListener('beforeunload',e=>{if(allowLeave)return;e.preventDefault();e.returnValue='Do you want to leave this page?';return e.returnValue;});
+ // Mobile/browser back-button warning: add a history guard and ask before allowing navigation.
+ try{
+   history.pushState({leaveGuard:true},'',location.href);
+   window.addEventListener('popstate',()=>{
+     if(allowLeave)return;
+     if(confirm('Do you want to leave this page?')){
+       allowLeave=true;history.back();
+     }else{history.pushState({leaveGuard:true},'',location.href);}
+   });
+ }catch(_){}
+ // First-visit guided tour: highlight each visible feature button one at a time.
+ const tourKey='jsPythonRunnerBoost_onboarding_v2';
+ if(!localStorage.getItem(tourKey)){
+   const backdrop=document.createElement('div');backdrop.className='tour-backdrop';backdrop.setAttribute('aria-hidden','true');
+   backdrop.innerHTML='<section class="tour-card" role="dialog" aria-modal="false" aria-labelledby="tourTitle"><h3 id="tourTitle"></h3><p id="tourCopy"></p><div class="tour-actions"><span class="tour-step" id="tourStep"></span><div style="display:flex;gap:8px"><button class="btn" id="tourSkip">Skip tour</button><button class="btn gold" id="tourNext">Next</button></div></div></section>';
+   document.body.appendChild(backdrop);
+   const card=backdrop.querySelector('.tour-card');
+   const title=backdrop.querySelector('#tourTitle'),copy=backdrop.querySelector('#tourCopy'),counter=backdrop.querySelector('#tourStep'),next=backdrop.querySelector('#tourNext');
+   const visible=el=>{const r=el.getBoundingClientRect(),st=getComputedStyle(el);return r.width>0&&r.height>0&&st.display!=='none'&&st.visibility!=='hidden'&&!el.closest('.tour-card')&&!el.disabled;};
+   const labelOf=el=>(el.getAttribute('aria-label')||el.getAttribute('title')||el.innerText||el.textContent||'Feature').replace(/\s+/g,' ').trim().slice(0,90)||'Feature button';
+   const explain=label=>{const t=label.toLowerCase();
+     if(/run|execute|play/.test(t))return 'Run the code in your selected file and check the result in the Output panel.';
+     if(/clear.*(code|editor)|clear code/.test(t))return 'Clear the code in the currently selected file. A confirmation appears before the code is removed.';
+     if(/clear/.test(t))return 'Clear the related output or content. Check the button label to see which area it affects.';
+     if(/full.?screen|fullscreen|exit full/.test(t))return 'Expand this panel to use more screen space. Use the exit-fullscreen control or press Escape to return.';
+     if(/theme|dark|light/.test(t))return 'Switch the interface appearance between the available theme modes.';
+     if(/new file|create file|add file/.test(t))return 'Create a new file in your workspace so you can write code separately.';
+     if(/folder/.test(t))return 'Create, open, or manage folders to organize your project files.';
+     if(/save|download|export/.test(t))return 'Save or export your work using this control. Review its label for the exact action.';
+     if(/format|beautif/.test(t))return 'Format the code to make its indentation and layout easier to read.';
+     if(/find|search/.test(t))return 'Search for text or code in the editor or workspace.';
+     if(/copy|paste/.test(t))return 'Use this control to copy or insert the relevant content.';
+     if(/console|terminal|input/.test(t))return 'Open or use the related console/input area to inspect or interact with code execution.';
+     if(/project|explorer|file/.test(t))return 'Use this workspace control to open or manage your project and files.';
+     if(/setting|config|api/.test(t))return 'Open the related settings and adjust the available options.';
+     if(/help|tour|guide/.test(t))return 'Open help or guidance for using the runner.';
+     return 'This button controls “'+label+'”. Try it when you need this feature; the label indicates its action.';
+   };
+   const buttons=[...document.querySelectorAll('button,[role="button"]')].filter(visible).filter(el=>!el.matches('#tourNext,#tourSkip'));
+   const steps=[{el:null,title:'Welcome to JS Python Runner BOOST',body:'This guided tour will move through the visible buttons one by one. Each step highlights a button and explains what it does.'},...buttons.map(el=>({el,title:labelOf(el),body:explain(labelOf(el))})),{el:null,title:'You’re ready!',body:'You have reached the end of the button tour. You can now explore the runner and use the highlighted controls whenever you need them.'}];
+   let idx=0,active=null;
+   const cleanup=()=>{if(active){active.classList.remove('tour-spotlight');active=null;}}
+   const placeCard=()=>{
+     const margin=14, gap=18, vw=window.innerWidth, vh=window.innerHeight;
+     card.style.transform='none';
+     if(!active || !active.isConnected){card.style.left=Math.max(margin,(vw-card.offsetWidth)/2)+'px';card.style.top=Math.max(margin,(vh-card.offsetHeight)/2)+'px';return;}
+     const r=active.getBoundingClientRect(), cw=card.offsetWidth, ch=card.offsetHeight;
+     let left,top;
+     if(vw-r.right>=cw+gap){left=r.right+gap;top=r.top+(r.height-ch)/2;}
+     else if(r.left>=cw+gap){left=r.left-cw-gap;top=r.top+(r.height-ch)/2;}
+     else if(vh-r.bottom>=ch+gap){left=r.left+(r.width-cw)/2;top=r.bottom+gap;}
+     else {left=r.left+(r.width-cw)/2;top=r.top-ch-gap;}
+     left=Math.max(margin,Math.min(left,vw-cw-margin));top=Math.max(margin,Math.min(top,vh-ch-margin));
+     card.style.left=left+'px';card.style.top=top+'px';
+   };
+   const finish=()=>{cleanup();localStorage.setItem(tourKey,'done');backdrop.remove();window.removeEventListener('resize',placeCard);window.removeEventListener('scroll',placeCard,true);};
+   const render=()=>{
+     cleanup();const step=steps[idx];title.textContent=step.title;copy.textContent=step.body;counter.textContent='Step '+(idx+1)+' of '+steps.length;next.textContent=idx===steps.length-1?'Finish':'Next';
+     if(step.el&&step.el.isConnected&&visible(step.el)){active=step.el;active.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});active.classList.add('tour-spotlight');}
+     placeCard();requestAnimationFrame(placeCard);setTimeout(placeCard,250);
+   };
+   window.addEventListener('resize',placeCard);window.addEventListener('scroll',placeCard,true);
+   next.addEventListener('click',()=>{if(idx===steps.length-1){finish();return;}idx++;render();});
+   backdrop.querySelector('#tourSkip').addEventListener('click',finish);
+   render();
+ }
+})();
 </script>
 
 
