@@ -2191,25 +2191,71 @@ async function runInPyodide(source) {
   }
 }
 
-function showCompilerVisualPreview(html) {
+function getCompilerVisualPreview() {
   const output = $("output");
-  if (!output) return;
+  if (!output) return null;
   let preview = document.getElementById("compilerVisualPreview");
   if (!preview) {
     preview = document.createElement("div");
     preview.id = "compilerVisualPreview";
-    preview.style.cssText = "display:none;position:relative;width:100%;height:100%;min-height:240px;background:#fff;border-radius:8px;overflow:hidden";
+    preview.style.cssText = "display:none;position:relative;flex:1 1 auto;width:100%;min-height:320px;max-height:60vh;background:#fff;border-radius:8px;overflow:auto";
     output.parentElement.insertBefore(preview, output);
   }
+  return preview;
+}
+function showCompilerVisualPreview(html) {
+  const output = $("output");
+  const preview = getCompilerVisualPreview();
+  if (!output || !preview) return;
   preview.innerHTML = "";
+  preview.style.cssText += ";height:100%;min-height:320px;max-height:none;overflow:hidden";
   const frame = document.createElement("iframe");
   frame.title = "Python visual output";
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
-  frame.style.cssText = "display:block;width:100%;height:100%;min-height:240px;border:0;background:#fff";
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;border:0;background:#fff";
   preview.appendChild(frame);
   frame.srcdoc = html;
   preview.style.display = "block";
   output.style.display = "none";
+}
+// OnlineCompiler returns Matplotlib figures as files (usually PNG), not as
+// animation_html. Render those files instead of leaving the visual area blank.
+function showCompilerFilesPreview(files) {
+  const output = $("output");
+  const preview = getCompilerVisualPreview();
+  if (!output || !preview || !Array.isArray(files)) return false;
+  const visualFiles = files.filter(file => {
+    const mime = String(file && file.mime || "").toLowerCase();
+    const name = String(file && file.name || "").toLowerCase();
+    return (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/.test(name)) &&
+      (typeof file.content_base64 === "string" || typeof file.url === "string");
+  });
+  if (!visualFiles.length) return false;
+  preview.innerHTML = "";
+  preview.style.cssText = "display:flex;flex-direction:column;gap:12px;flex:0 0 auto;width:100%;min-height:180px;max-height:55vh;padding:12px;background:#fff;border-radius:8px;overflow:auto";
+  for (const file of visualFiles) {
+    const mime = String(file.mime || (String(file.name).toLowerCase().endsWith(".svg") ? "image/svg+xml" : "image/png"));
+    const figure = document.createElement("figure");
+    figure.style.cssText = "margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0";
+    const img = document.createElement("img");
+    img.alt = String(file.name || "Python visual output");
+    img.style.cssText = "display:block;max-width:100%;height:auto;object-fit:contain;background:#fff";
+    if (typeof file.content_base64 === "string" && file.content_base64) {
+      img.src = `data:${mime};base64,${file.content_base64}`;
+    } else {
+      img.src = file.url;
+    }
+    figure.appendChild(img);
+    const caption = document.createElement("figcaption");
+    caption.textContent = String(file.name || "Visual output");
+    caption.style.cssText = "font:11px Inter,sans-serif;color:#475569;overflow-wrap:anywhere;text-align:center";
+    figure.appendChild(caption);
+    preview.appendChild(figure);
+  }
+  preview.style.display = "flex";
+  // Keep terminal text visible below the chart/figure.
+  output.style.display = "";
+  return true;
 }
 function hideCompilerVisualPreview() {
   const preview = document.getElementById("compilerVisualPreview");
@@ -2406,6 +2452,8 @@ async function executeProgram() {
       showCompilerVisualPreview(previewHTML);
     } else if (previewURL && typeof previewURL === "string") {
       showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/\"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
+    } else if (Array.isArray(result.files)) {
+      showCompilerFilesPreview(result.files);
     }
     if (outputText) writeOutput(outputText);
     if (errorText) {
