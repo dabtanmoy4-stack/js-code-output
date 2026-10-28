@@ -2177,7 +2177,7 @@ html.dark .thumbnail-card {
     <section class="premium-hero">
       <div class="premium-copy">
         
-        <h1 class="premium-title">Code it.<br><span class="gradient live-word" aria-label="See it live."><span class="live-letter" style="--i:0" data-letter="S">S</span><span class="live-letter" style="--i:1" data-letter="e">e</span><span class="live-letter" style="--i:2" data-letter="e">e</span><span class="live-space">&nbsp;</span><span class="live-letter" style="--i:3" data-letter="i">i</span><span class="live-letter" style="--i:4" data-letter="t">t</span><span class="live-space">&nbsp;</span><span class="live-letter" style="--i:5" data-letter="l">l</span><span class="live-letter" style="--i:6" data-letter="i">i</span><span class="live-letter" style="--i:7" data-letter="v">v</span><span class="live-letter" style="--i:8" data-letter="e">e</span><span class="live-letter" style="--i:9" data-letter=".">.</span></span><br>Ship it.</h1>
+        <h1 class="premium-title" aria-label="Code it. See it live. Ship it."><span class="t3d" aria-hidden="true"><span class="gl" style="--k:0" data-letter="C">C</span><span class="gl" style="--k:1" data-letter="o">o</span><span class="gl" style="--k:2" data-letter="d">d</span><span class="gl" style="--k:3" data-letter="e">e</span><span class="gs"></span><span class="gl" style="--k:4" data-letter="i">i</span><span class="gl" style="--k:5" data-letter="t">t</span><span class="gl" style="--k:6" data-letter=".">.</span></span><br><span class="gradient live-word t3d-live" aria-hidden="true"><span class="live-letter" style="--i:0;--k:7" data-letter="S">S</span><span class="live-letter" style="--i:1;--k:8" data-letter="e">e</span><span class="live-letter" style="--i:2;--k:9" data-letter="e">e</span><span class="gs"></span><span class="live-letter" style="--i:3;--k:10" data-letter="i">i</span><span class="live-letter" style="--i:4;--k:11" data-letter="t">t</span><span class="gs"></span><span class="live-letter" style="--i:5;--k:12" data-letter="l">l</span><span class="live-letter" style="--i:6;--k:13" data-letter="i">i</span><span class="live-letter" style="--i:7;--k:14" data-letter="v">v</span><span class="live-letter" style="--i:8;--k:15" data-letter="e">e</span><span class="live-letter" style="--i:9;--k:16" data-letter=".">.</span></span><br><span class="t3d" aria-hidden="true"><span class="gl" style="--k:17" data-letter="S">S</span><span class="gl" style="--k:18" data-letter="h">h</span><span class="gl" style="--k:19" data-letter="i">i</span><span class="gl" style="--k:20" data-letter="p">p</span><span class="gs"></span><span class="gl" style="--k:21" data-letter="i">i</span><span class="gl" style="--k:22" data-letter="t">t</span><span class="gl" style="--k:23" data-letter=".">.</span></span></h1>
         <p>JS CODE OUTPUT is a browser-based coding workspace for building websites with HTML, CSS, and JavaScript. Write your code, run it, and instantly see the result in the live preview. Organize projects, save your work, and publish or present projects through JS mini.Browser.
         <div class="premium-actions">
           <button type="button" class="primary-btn premium-primary start-building-btn" onclick="startBuilding(event)">🚀 Get Started Free <i class="fa-solid fa-arrow-right ml-2"></i></button>
@@ -4888,5 +4888,264 @@ document.addEventListener("DOMContentLoaded", function(){
 }
 </style>
 
+<style id="title-3d-glossy-v3">
+/* ===== 3D GLOSSY TITLE v3 — original colours, per-letter 3D motion ===== */
+#landingPage .premium-title{
+  position:relative;width:fit-content;max-width:100%;text-shadow:none;
+  transform:perspective(1100px);will-change:transform;
+}
+/* pulsing halo behind the whole title (opacity/scale only) */
+#landingPage .premium-title::before{
+  content:"";position:absolute;left:-10%;right:-10%;top:-12%;bottom:-12%;z-index:-3;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(217,182,111,.30),rgba(124,58,237,.10) 45%,transparent 70%);
+  animation:tHalo 3.6s ease-in-out infinite;
+}
+@keyframes tHalo{0%,100%{opacity:.55;scale:.95}50%{opacity:1;scale:1.06}}
+
+#landingPage .premium-title .t3d{display:inline-block;white-space:nowrap;perspective:1100px}
+#landingPage .premium-title .live-word{background:none!important;-webkit-text-fill-color:transparent;text-shadow:none!important}
+#landingPage .premium-title .gs{display:inline-block;width:.27em}
+
+/* shared letter base */
+#landingPage .premium-title .gl,#landingPage .premium-title .live-letter{
+  position:relative;display:inline-block;
+  font-family:inherit;font-weight:950;letter-spacing:-.075em;line-height:.94;
+  background:none!important;color:transparent;-webkit-text-fill-color:transparent;
+  -webkit-text-stroke:0;text-shadow:none!important;filter:none;
+  transform-style:flat;will-change:transform;backface-visibility:visible;
+  --glow:rgba(217,182,111,.30);
+}
+#landingPage .premium-title .gl::before,#landingPage .premium-title .gl::after,
+#landingPage .premium-title .live-letter::before,#landingPage .premium-title .live-letter::after{
+  content:attr(data-letter);position:absolute;left:-.02em;top:-.08em;
+  padding:.08em .12em .12em .02em;white-space:nowrap;pointer-events:none;
+  font:inherit;letter-spacing:inherit;line-height:inherit;
+}
+/* depth / extrusion layer */
+#landingPage .premium-title .gl::before,#landingPage .premium-title .live-letter::before{
+  z-index:-1;text-shadow:var(--ext);
+}
+/* polished face layer */
+#landingPage .premium-title .gl::after,#landingPage .premium-title .live-letter::after{
+  z-index:2;color:transparent;-webkit-text-fill-color:transparent;
+  background-repeat:no-repeat;background-size:100% 100%,100% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  animation:lGlint 4.2s linear infinite;animation-delay:calc(var(--k) * .1s + 2.4s);
+}
+
+/* ---- gold lines : original gold ---- */
+#landingPage .premium-title .gl{--ext:0.0085em 0.0085em 0 #c9a257,0.0170em 0.0170em 0 #be9951,0.0255em 0.0255em 0 #b3904c,0.0340em 0.0340em 0 #a88746,0.0425em 0.0425em 0 #9d7e41,0.0510em 0.0510em 0 #92753b,0.0595em 0.0595em 0 #876c36,0.0680em 0.0680em 0 #7d6230,0.0765em 0.0765em 0 #72592b,0.0850em 0.0850em 0 #675025,0.0935em 0.0935em 0 #5c4720,0.1020em 0.1020em 0 #513e1a,0.1105em 0.1105em 0 #463515,0.1190em 0.1190em 0 #3b2c0f,0.139em 0.169em .12em rgba(0,0,0,.6),0.239em 0.339em .30em rgba(0,0,0,.45),0 0 .2em var(--glow)}
+#landingPage .premium-title .gl::before{color:#c9a257;-webkit-text-fill-color:#c9a257}
+#landingPage .premium-title .gl::after{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 34%,rgba(255,255,255,0) 50%),
+                   linear-gradient(180deg,#f8e3a8 0%,#ecc97e 28%,#d9b66f 52%,#c29a4a 78%,#a07a2e 100%);
+}
+/* ---- "See it live." : original steel/chrome + coloured glows ---- */
+#landingPage .premium-title .live-letter{--ext:0.0085em 0.0085em 0 #8a867f,0.0170em 0.0170em 0 #827e77,0.0255em 0.0255em 0 #79766f,0.0340em 0.0340em 0 #716e68,0.0425em 0.0425em 0 #686560,0.0510em 0.0510em 0 #605d58,0.0595em 0.0595em 0 #585550,0.0680em 0.0680em 0 #4f4d49,0.0765em 0.0765em 0 #474541,0.0850em 0.0850em 0 #3f3d39,0.0935em 0.0935em 0 #363431,0.1020em 0.1020em 0 #2e2c2a,0.1105em 0.1105em 0 #252422,0.1190em 0.1190em 0 #1d1c1a,0.139em 0.169em .12em rgba(0,0,0,.6),0.239em 0.339em .30em rgba(0,0,0,.45),0 0 .2em var(--glow);--glow:rgba(0,0,0,0)}
+#landingPage .premium-title .live-letter::before{color:#77736c;-webkit-text-fill-color:#77736c}
+#landingPage .premium-title .live-letter::after{
+  background-image:linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.10) 34%,rgba(255,255,255,0) 50%),
+                   linear-gradient(180deg,#aaa59c 0%,#77736d 24%,#4a4845 52%,#2f2e2c 78%,#171717 100%);
+  -webkit-text-stroke:.017em #181817;
+}
+#landingPage .premium-title .live-word>:nth-child(-n+3){--glow:rgba(138,106,63,.85)}
+#landingPage .premium-title .live-word>:nth-child(5),#landingPage .premium-title .live-word>:nth-child(6){--glow:rgba(95,112,136,.85)}
+#landingPage .premium-title .live-word>:nth-child(n+8):nth-child(-n+11){--glow:rgba(124,58,237,.85)}
+
+/* ---- MOTION ---- */
+#landingPage .premium-title .gl,#landingPage .premium-title .live-letter{
+  animation:
+    lIn 1.15s cubic-bezier(.2,.9,.25,1.15) backwards,
+    lWave 3.8s ease-in-out infinite;
+  animation-delay:calc(var(--k) * .075s), calc(var(--k) * .075s + 1.3s);
+}
+#landingPage .premium-title .gl{
+  animation:
+    lIn 1.15s cubic-bezier(.2,.9,.25,1.15) backwards,
+    lWave 3.8s ease-in-out infinite,
+    gFlip 7s ease-in-out infinite;
+  animation-delay:calc(var(--k) * .075s), calc(var(--k) * .075s + 1.3s), calc(var(--k) * .09s + 3.4s);
+}
+#landingPage .premium-title .live-letter{
+  animation:
+    lIn 1.15s cubic-bezier(.2,.9,.25,1.15) backwards,
+    lWave 3.8s ease-in-out infinite,
+    liveFlip 8s linear infinite;
+  animation-delay:calc(var(--k) * .075s), calc(var(--k) * .075s + 1.3s), calc(var(--i) * .8s + 2s);
+}
+/* entrance: letters crash in from deep space, tilt, then settle */
+@keyframes lIn{
+  0%{opacity:0;translate:0 -.55em -700px;rotate:1 0 0 -100deg;scale:.35}
+  55%{opacity:1;translate:0 .07em 90px;rotate:1 0 0 14deg;scale:1.1}
+  78%{translate:0 -.02em 20px;rotate:1 0 0 -4deg;scale:.98}
+  100%{opacity:1;translate:0 0 0;rotate:1 0 0 0deg;scale:1}
+}
+/* idle: rolling 3D wave through every letter */
+@keyframes lWave{
+  0%,100%{translate:0 0 0;rotate:1 0 0 0deg}
+  50%{translate:0 -.035em 24px;rotate:1 0 0 -9deg}
+}
+/* gold lines: fast chain-flip, left to right */
+@keyframes gFlip{0%{transform:rotateY(0)}14%{transform:rotateY(360deg)}100%{transform:rotateY(360deg)}}
+/* chrome line: original flip */
+@keyframes liveFlip{
+  0%,2%{transform:rotateY(0)}
+  7%{transform:rotateY(180deg) scale(1.03)}
+  13%,100%{transform:rotateY(360deg)}
+}
+/* light-flash racing across all three lines (filter => GPU) */
+@keyframes lGlint{
+  0%,60%{filter:brightness(1) saturate(1)}
+  72%{filter:brightness(2.1) saturate(.55)}
+  86%,100%{filter:brightness(1) saturate(1)}
+}
+
+@media(max-width:700px){
+  #landingPage .premium-title .gl{--ext:0.0170em 0.0170em 0 #c9a257,0.0340em 0.0340em 0 #b18e4b,0.0510em 0.0510em 0 #9a7b3f,0.0680em 0.0680em 0 #826733,0.0850em 0.0850em 0 #6a5327,0.1020em 0.1020em 0 #53401b,0.1190em 0.1190em 0 #3b2c0f,0.139em 0.169em .12em rgba(0,0,0,.6),0.239em 0.339em .30em rgba(0,0,0,.45),0 0 .2em var(--glow);animation:lIn 1.15s cubic-bezier(.2,.9,.25,1.15) backwards,lWave 3.8s ease-in-out infinite;animation-delay:calc(var(--k) * .075s),calc(var(--k) * .075s + 1.3s)}
+  #landingPage .premium-title .live-letter{--ext:0.0170em 0.0170em 0 #8a867f,0.0340em 0.0340em 0 #78746e,0.0510em 0.0510em 0 #66635d,0.0680em 0.0680em 0 #54514c,0.0850em 0.0850em 0 #413f3c,0.1020em 0.1020em 0 #2f2e2b,0.1190em 0.1190em 0 #1d1c1a,0.139em 0.169em .12em rgba(0,0,0,.6),0.239em 0.339em .30em rgba(0,0,0,.45),0 0 .2em var(--glow)}
+}
+@media(prefers-reduced-motion:reduce){
+  #landingPage .premium-title::before,#landingPage .premium-title .gl,#landingPage .premium-title .live-letter,
+  #landingPage .premium-title .gl::after,#landingPage .premium-title .live-letter::after{animation:none!important}
+}
+</style>
+<script>
+/* subtle mouse-driven 3D tilt of the whole title (desktop only, rAF, no layout work) */
+(function(){
+  var h=document.querySelector('#landingPage .premium-title');
+  if(!h||!window.matchMedia||!matchMedia('(pointer:fine)').matches)return;
+  var rx=0,ry=0,tx=0,ty=0,raf=0;
+  function loop(){
+    rx+=(tx-rx)*.08;ry+=(ty-ry)*.08;
+    h.style.transform='perspective(1100px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+    raf=(Math.abs(tx-rx)>.01||Math.abs(ty-ry)>.01)?requestAnimationFrame(loop):0;
+  }
+  addEventListener('pointermove',function(e){
+    tx=-((e.clientY/innerHeight)-.5)*12;ty=((e.clientX/innerWidth)-.5)*16;
+    if(!raf)raf=requestAnimationFrame(loop);
+  },{passive:true});
+})();
+</script>
+<style id="gold-buttons-and-live-jump">
+/* ===== "See it live." : new motion — rolling jump with squash & tilt (replaces the flip) ===== */
+#landingPage .premium-title .live-letter{
+  animation:
+    lIn 1.15s cubic-bezier(.2,.9,.25,1.15) backwards,
+    lWave 3.8s ease-in-out infinite,
+    liveJump 5.2s cubic-bezier(.3,.7,.4,1) infinite;
+  animation-delay:calc(var(--k) * .075s), calc(var(--k) * .075s + 1.3s), calc(var(--i) * .11s + 2.2s);
+  transform-origin:50% 90%;
+}
+@keyframes liveJump{
+  0%,26%,100%{transform:translateY(0) scale(1,1) rotate(0deg)}
+  3%{transform:translateY(.05em) scale(1.14,.82) rotate(0deg)}
+  10%{transform:translateY(-.36em) scale(.92,1.14) rotate(-9deg)}
+  16%{transform:translateY(-.1em) scale(1.02,.98) rotate(6deg)}
+  20%{transform:translateY(.04em) scale(1.12,.88) rotate(-2deg)}
+  24%{transform:translateY(-.03em) scale(.98,1.03) rotate(1deg)}
+}
+</style>
+<style id="unified-buttons-3d">
+/* 3D glossy + gentle float for every button. Colours are NOT touched: each button keeps its own original colour. */
+#landingPage .premium-actions{perspective:900px;gap:16px;padding-bottom:8px}
+#landingPage .premium-primary,
+#landingPage .premium-mini,
+#landingPage .site-nav .nav-actions .nav-login,
+#landingPage .site-nav .nav-actions .theme-toggle,
+#landingPage .primary-btn,
+#landingPage .secondary-btn,
+#landingPage .premium-template-gallery-cta,
+#landingPage .start-ad-link{
+  position:relative!important;overflow:hidden!important;isolation:isolate;border-radius:14px!important;
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -3px 4px rgba(0,0,0,.28),0 1px 0 rgba(0,0,0,.30),0 2px 0 rgba(0,0,0,.30),0 3px 0 rgba(0,0,0,.30),0 4px 0 rgba(0,0,0,.30),0 5px 0 rgba(0,0,0,.28),0 12px 20px rgba(0,0,0,.32),0 0 18px rgba(217,182,111,.25)!important;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1),box-shadow .22s ease,filter .22s ease;
+  will-change:translate,transform;animation:btnFloat 5s ease-in-out infinite;
+}
+#landingPage .site-nav .nav-actions .nav-login,#landingPage .site-nav .nav-actions .theme-toggle,#landingPage .start-ad-link{border-radius:12px!important;box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -2px 3px rgba(0,0,0,.28),0 1px 0 rgba(0,0,0,.30),0 2px 0 rgba(0,0,0,.30),0 3px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.3),0 0 14px rgba(217,182,111,.22)!important}
+#landingPage .premium-template-gallery-cta{border-radius:20px!important}
+#landingPage .premium-mini{animation-delay:-1.8s}
+#landingPage .site-nav .nav-actions .theme-toggle{animation-delay:-2.5s}
+#landingPage .start-ad-link{animation-delay:-1.2s}
+#landingPage .premium-template-gallery-cta{animation-delay:-3s}
+/* glass highlight */
+#landingPage .premium-primary::after,
+#landingPage .premium-mini::after,
+#landingPage .site-nav .nav-actions .nav-login::after,
+#landingPage .site-nav .nav-actions .theme-toggle::after,
+#landingPage .primary-btn::after,
+#landingPage .secondary-btn::after,
+#landingPage .premium-template-gallery-cta::after,
+#landingPage .start-ad-link::after{
+  content:"";position:absolute!important;left:3px!important;right:3px!important;top:2px!important;bottom:auto!important;
+  height:48%;z-index:-1;pointer-events:none;border:0!important;
+  border-radius:12px 12px 40% 40%/12px 12px 18px 18px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.04))!important;transform:none;animation:none;
+}
+/* light sweep */
+#landingPage .premium-primary::before,
+#landingPage .premium-mini::before,
+#landingPage .site-nav .nav-actions .nav-login::before,
+#landingPage .site-nav .nav-actions .theme-toggle::before,
+#landingPage .primary-btn::before,
+#landingPage .secondary-btn::before,
+#landingPage .premium-template-gallery-cta::before,
+#landingPage .start-ad-link::before{
+  content:"";position:absolute!important;inset:0!important;width:auto!important;z-index:-1;pointer-events:none;
+  background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%)!important;
+  transform:translateX(-120%)!important;animation:btnSweep 3.4s ease-in-out infinite!important;
+}
+#landingPage .premium-template-gallery-cta::after{border-radius:18px 18px 40% 40%/18px 18px 26px 26px!important}
+#landingPage .premium-primary:hover,
+#landingPage .premium-mini:hover,
+#landingPage .site-nav .nav-actions .nav-login:hover,
+#landingPage .site-nav .nav-actions .theme-toggle:hover,
+#landingPage .primary-btn:hover,
+#landingPage .secondary-btn:hover,
+#landingPage .premium-template-gallery-cta:hover,
+#landingPage .start-ad-link:hover{transform:translateY(-2px) scale(1.02)!important;filter:brightness(1.07) saturate(1.08)}
+#landingPage .premium-primary:active,
+#landingPage .premium-mini:active,
+#landingPage .site-nav .nav-actions .nav-login:active,
+#landingPage .site-nav .nav-actions .theme-toggle:active,
+#landingPage .primary-btn:active,
+#landingPage .secondary-btn:active,
+#landingPage .premium-template-gallery-cta:active,
+#landingPage .start-ad-link:active{transform:translateY(4px) scale(.985)!important}
+
+/* floating dark/light toggle (bottom right) */
+.floating-theme{box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -2px 3px rgba(0,0,0,.28),0 1px 0 rgba(0,0,0,.30),0 2px 0 rgba(0,0,0,.30),0 3px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.3),0 0 14px rgba(217,182,111,.22)!important;overflow:visible!important;isolation:isolate;
+  animation:btnFloat 5s ease-in-out infinite;will-change:translate,transform;
+  transition:transform .22s cubic-bezier(.2,.8,.3,1),filter .22s ease}
+.floating-theme::after{content:"";position:absolute;left:5px;right:5px;top:3px;height:48%;z-index:-1;pointer-events:none;
+  border-radius:50% 50% 40% 40%/60% 60% 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.04))}
+.floating-theme:hover{transform:translateY(-2px) scale(1.06);filter:brightness(1.07)}
+.floating-theme:active{transform:translateY(3px) scale(.96)}
+
+@keyframes btnFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes btnSweep{0%,35%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
+@media(max-width:700px){#landingPage .premium-primary,
+#landingPage .premium-mini,
+#landingPage .site-nav .nav-actions .nav-login,
+#landingPage .site-nav .nav-actions .theme-toggle,
+#landingPage .primary-btn,
+#landingPage .secondary-btn,
+#landingPage .premium-template-gallery-cta,
+#landingPage .start-ad-link{box-shadow:inset 0 2px 1px rgba(255,255,255,.45),inset 0 -2px 3px rgba(0,0,0,.28),0 1px 0 rgba(0,0,0,.30),0 2px 0 rgba(0,0,0,.30),0 3px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.3),0 0 14px rgba(217,182,111,.22)!important}}
+@media(prefers-reduced-motion:reduce){#landingPage .premium-primary,
+#landingPage .premium-mini,
+#landingPage .site-nav .nav-actions .nav-login,
+#landingPage .site-nav .nav-actions .theme-toggle,
+#landingPage .primary-btn,
+#landingPage .secondary-btn,
+#landingPage .premium-template-gallery-cta,
+#landingPage .start-ad-link,#landingPage .premium-primary::before,
+#landingPage .premium-mini::before,
+#landingPage .site-nav .nav-actions .nav-login::before,
+#landingPage .site-nav .nav-actions .theme-toggle::before,
+#landingPage .primary-btn::before,
+#landingPage .secondary-btn::before,
+#landingPage .premium-template-gallery-cta::before,
+#landingPage .start-ad-link::before,.floating-theme{animation:none!important}}
+</style>
 </body>
 </html>
