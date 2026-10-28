@@ -1,11 +1,12 @@
 
-import { E2B } from "@e2b/code-interpreter";
+import { Sandbox } from "@e2b/code-interpreter";
 
 const MAX_CODE_CHARS = 100_000;
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
+
     return res.status(405).json({
       status: "error",
       error: "Method not allowed"
@@ -17,36 +18,41 @@ export default async function handler(req, res) {
   if (!apiKey) {
     return res.status(500).json({
       status: "error",
-      error: "E2B_API_KEY is not configured in the server environment."
+      error: "E2B_API_KEY is not configured in Vercel Environment Variables."
     });
   }
 
   const body = req.body || {};
   const code = typeof body.code === "string" ? body.code : "";
+  const input = typeof body.input === "string" ? body.input : "";
 
   if (!code.trim()) {
     return res.status(400).json({
       status: "error",
-      error: "Python code is required."
+      error: "Python code is required.",
+      output: "",
+      images: []
     });
   }
 
   if (code.length > MAX_CODE_CHARS) {
     return res.status(413).json({
       status: "error",
-      error: "Code exceeds the 100,000 character limit."
+      error: "Code exceeds the 100,000 character limit.",
+      output: "",
+      images: []
     });
   }
 
   let sandbox;
+  const started = Date.now();
 
   try {
-    const started = Date.now();
+    sandbox = await Sandbox.create({ apiKey });
 
-    const client = new E2B({ apiKey });
-    sandbox = await client.Sandbox.create();
-
-    const execution = await sandbox.runCode(code);
+    const execution = await sandbox.runCode(code, {
+      stdin: input || undefined
+    });
 
     const stdout = Array.isArray(execution?.logs?.stdout)
       ? execution.logs.stdout.join("\n")
@@ -72,6 +78,7 @@ export default async function handler(req, res) {
     }
 
     const runtimeError = execution?.error;
+
     const errorMessage = runtimeError
       ? String(
           runtimeError.value ||
@@ -94,7 +101,11 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       status: "error",
-      error: String(error?.message || "E2B execution failed")
+      error: String(error?.message || "E2B execution failed"),
+      output: "",
+      images: [],
+      time: ((Date.now() - started) / 1000).toFixed(2),
+      exit_code: 1
     });
   } finally {
     if (sandbox) {
