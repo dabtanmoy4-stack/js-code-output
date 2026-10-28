@@ -2165,7 +2165,108 @@ async function runInPyodide(source) {
   }
 }
 
-async function executeProgram(boostMode = "ig") {
+function showCompilerVisualPreview(html) {
+  const output = $("output");
+  if (!output) return;
+  let preview = document.getElementById("compilerVisualPreview");
+  if (!preview) {
+    preview = document.createElement("div");
+    preview.id = "compilerVisualPreview";
+    preview.style.cssText = "display:none;position:relative;width:100%;height:100%;min-height:240px;background:#fff;border-radius:8px;overflow:hidden";
+    output.parentElement.insertBefore(preview, output);
+  }
+  preview.innerHTML = "";
+  const frame = document.createElement("iframe");
+  frame.title = "Python visual output";
+  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:240px;border:0;background:#fff";
+  preview.appendChild(frame);
+  frame.srcdoc = html;
+  preview.style.display = "block";
+  output.style.display = "none";
+}
+function hideCompilerVisualPreview() {
+  const preview = document.getElementById("compilerVisualPreview");
+  const output = $("output");
+  if (preview) preview.style.display = "none";
+  if (output) output.style.display = "";
+}
+
+
+// Browser Turtle renderer: supports common turtle drawing commands without
+// requiring desktop Tkinter. Unsupported Python/Turtle features still need a
+// full Python graphics runtime.
+function buildTurtlePreview(source) {
+  const lines = source.split(/\r?\n/);
+  const js = [];
+  const stack = [];
+  const indentOf = line => (line.match(/^\s*/) || [""])[0].replace(/\t/g, "    ").length;
+  const closeBlocks = indent => {
+    while (stack.length && indent <= stack[stack.length - 1]) {
+      js.push("}");
+      stack.pop();
+    }
+  };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#") || /^(import\s+turtle|from\s+turtle\s+import)/.test(line)) continue;
+    const indent = indentOf(raw);
+    closeBlocks(indent);
+    let m;
+    if ((m = line.match(/^for\s+(\w+)\s+in\s+range\((\d+)\)\s*:/))) {
+      js.push(`for (let ${m[1]}=0; ${m[1]}<${Number(m[2])}; ${m[1]}++){`);
+      stack.push(indent); continue;
+    }
+    if ((m = line.match(/^(\w+)\s*=\s*turtle\.Turtle\(\)/))) { js.push(`let ${m[1]} = T;`); continue; }
+    if (/^(turtle\.)?(forward|fd)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.forward(${Number(m[1])||0});`); continue; }
+    if (/^(turtle\.)?(backward|back|bk)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.forward(-(${Number(m[1])||0}));`); continue; }
+    if (/^(turtle\.)?(left|lt)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.turn(-(${Number(m[1])||0}));`); continue; }
+    if (/^(turtle\.)?(right|rt)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.turn(${Number(m[1])||0});`); continue; }
+    if (/^(turtle\.)?(penup|pu)\(/.test(line)) { js.push("T.down=false;"); continue; }
+    if (/^(turtle\.)?(pendown|pd)\(/.test(line)) { js.push("T.down=true;"); continue; }
+    if (/^(turtle\.)?(color|pencolor)\(/.test(line)) { m=line.match(/\((.*)\)/); if(m) js.push(`T.color=${JSON.stringify(m[1].replace(/^['"]|['"]$/g,""))};`); continue; }
+    if (/^(turtle\.)?(pensize|width)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.width=${Math.max(1,Number(m[1])||1)};`); continue; }
+    if (/^(turtle\.)?(goto|setpos|setposition)\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) {const a=m[1].split(",");js.push(`T.goto(${Number(a[0])||0},${Number(a[1])||0});`);} continue; }
+    if (/^(turtle\.)?circle\(/.test(line)) { m=line.match(/\(([^)]*)\)/); if(m) js.push(`T.circle(${Number(m[1])||0});`); continue; }
+    if (/^(turtle\.)?(speed|shape|hideturtle|showturtle|tracer|done|mainloop|exitonclick)\(/.test(line)) continue;
+    if (/^(turtle\.)?bgcolor\(/.test(line)) { m=line.match(/\((.*)\)/); if(m) js.push(`bg=${JSON.stringify(m[1].replace(/^['"]|['"]$/g,""))};`); continue; }
+    if (/^(turtle\.)?clear\(/.test(line)) { js.push("paths=[];"); continue; }
+  }
+  while (stack.length) { js.push("}"); stack.pop(); }
+  return js.join("\n");
+}
+function makeTurtleHTML(source) {
+  const commands = buildTurtlePreview(source);
+  return `<!doctype html><html><head><meta charset="utf-8"><style>
+  *{box-sizing:border-box}body{margin:0;background:#f8fafc;font:13px system-ui;color:#111827}
+  header{height:38px;padding:10px 14px;background:#111827;color:#f9fafb;display:flex;justify-content:space-between}
+  canvas{display:block;width:100%;height:calc(100vh - 38px);background:#fff}
+  </style></head><body><header><b>Python Turtle · Browser Preview</b><span>Canvas renderer</span></header><canvas id="c"></canvas>
+  <script>
+  const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');let paths=[],bg='#ffffff';
+  function size(){canvas.width=Math.max(320,innerWidth*devicePixelRatio);canvas.height=Math.max(240,(innerHeight-38)*devicePixelRatio);ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);draw();}
+  let W=()=>canvas.width/devicePixelRatio,H=()=>canvas.height/devicePixelRatio;
+  function draw(){ctx.fillStyle=bg;ctx.fillRect(0,0,W(),H());for(const p of paths){ctx.strokeStyle=p.color;ctx.lineWidth=p.width;ctx.beginPath();ctx.moveTo(p.x1+W()/2,H()/2-p.y1);ctx.lineTo(p.x2+W()/2,H()/2-p.y2);ctx.stroke();}}
+  const T={x:0,y:0,a:0,down:true,color:'#16a34a',width:2,
+   forward(n){const x2=this.x+Math.cos(this.a*Math.PI/180)*n,y2=this.y+Math.sin(this.a*Math.PI/180)*n;
+    if(this.down)paths.push({x1:this.x,y1:this.y,x2,y2,color:this.color,width:this.width});
+    this.x=x2;this.y=y2;draw();},
+   turn(n){this.a=(this.a+n)%360;},
+   goto(x,y){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x,y2:y,color:this.color,width:this.width});this.x=x;this.y=y;draw();},
+   circle(r){const n=48,step=360/n,old=this.a;for(let i=0;i<n;i++){this.forward(2*Math.PI*r/n);this.turn(step);}this.a=old;}
+  };
+  try{${commands}\n draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
+  addEventListener('resize',size);size();
+  <\/script></body></html>`;
+}
+function runTurtlePreview(source) {
+  const html = makeTurtleHTML(source);
+  showCompilerVisualPreview(html);
+  $("output").textContent = "Turtle code is running in the browser Canvas renderer. Supported: forward/backward, left/right, penup/pendown, color, pensize, goto, circle, bgcolor and simple range() loops. This is a compatibility renderer, not the complete Python turtle module.";
+  setStatus("Turtle preview ready");
+}
+
+async function executeProgram() {
   if (running) return;
   saveActiveFile();
 
@@ -2176,6 +2277,37 @@ async function executeProgram(boostMode = "ig") {
   }
 
   const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
+
+  // Turtle drawings are rendered locally in a browser Canvas; ordinary Python
+  // remains on OnlineCompiler. Keep all other editor and console features intact.
+  if (fileName.endsWith(".py") && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
+    running = true;
+    currentOutputText = "";
+    currentErrors = [];
+    waitingForInput = null;
+    $("output").textContent = "";
+    $("consoleExtra").classList.remove("show");
+    showOutputTab("output");
+    showRunningAnimation();
+    startRuntimeClock();
+    try {
+      runTurtlePreview(source);
+      $("loaderTitle").textContent = "Preview ready";
+      $("loaderSubtitle").textContent = "Turtle animation rendered in the browser.";
+    } catch (error) {
+      writeOutput(String(error.message || error) + "\\n", "error");
+      setStatus("Preview error");
+    } finally {
+      stopRuntimeClock();
+      running = false;
+      hideRunningAnimation();
+      $("runBtn").disabled = false;
+      $("runBtn").querySelector("span").textContent = "Run Code";
+      $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
+    }
+    return;
+  }
+
   let compiler;
   if (fileName.endsWith(".py")) compiler = "python-3.14";
   else if (fileName.endsWith(".js")) compiler = "nodejs-24";
@@ -2185,15 +2317,11 @@ async function executeProgram(boostMode = "ig") {
     return;
   }
 
-  if (boostMode === "og" && !fileName.endsWith(".py")) {
-    toast("Boost OG currently supports Python (.py) files only.");
-    return;
-  }
-
   running = true;
   currentOutputText = "";
   currentErrors = [];
   waitingForInput = null;
+  hideCompilerVisualPreview();
   $("output").textContent = "";
   $("consoleExtra").classList.remove("show");
   showOutputTab("output");
@@ -2202,10 +2330,9 @@ async function executeProgram(boostMode = "ig") {
   setStatus("Online compiler running");
 
   try {
-    const runEndpoint = boostMode === "og" ? "/api/e2b-run" : "/api/run-code";
-    const requestBody = boostMode === "og"
-      ? { code: source, input: $("consoleInput").value || "" }
-      : { compiler, code: source, input: $("consoleInput").value || "" };
+    // All runs use the existing online compiler API. E2B is no longer used.
+    const runEndpoint = "/api/run-code";
+    const requestBody = { compiler, code: source, input: $("consoleInput").value || "" };
 
     const response = await fetch(runEndpoint, {
       method: "POST",
@@ -2236,6 +2363,16 @@ async function executeProgram(boostMode = "ig") {
 
     const outputText = String(result.output || "");
     const errorText = String(result.error || "");
+
+    // The run-code API may return a browser-renderable preview for supported
+    // visual programs. Keep the normal console output behavior unchanged.
+    const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
+    const previewURL = result.preview_url || result.animation_url || "";
+    if (previewHTML && typeof previewHTML === "string") {
+      showCompilerVisualPreview(previewHTML);
+    } else if (previewURL && typeof previewURL === "string") {
+      showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/\"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
+    }
     if (outputText) writeOutput(outputText);
     if (errorText) {
       currentErrors.push(errorText);
@@ -2275,52 +2412,10 @@ async function executeProgram(boostMode = "ig") {
 }
 
 
-/* Runtime choice: Run button and Ctrl/Cmd+Enter both open this picker. */
-function openBoostPicker() {
-  if (running) return;
-  $("boostPickerBackdrop").classList.add("open");
-  $("boostPickerBackdrop").setAttribute("aria-hidden", "false");
-}
-function closeBoostPicker() {
-  $("boostPickerBackdrop").classList.remove("open");
-  $("boostPickerBackdrop").setAttribute("aria-hidden", "true");
-}
+/* Run button and Ctrl/Cmd+Enter run immediately through /api/run-code. */
 function runProgram() {
-  openBoostPicker();
+  executeProgram();
 }
-// The picker markup is near the end of the document, after this script.
-// Wait until parsing finishes before querying its buttons, so this setup
-// cannot throw and prevent the rest of the editor listeners from attaching.
-function setupBoostPickerEvents() {
-  const closeButton = $("boostPickerClose");
-  const backdrop = $("boostPickerBackdrop");
-  const igButton = $("boostIGBtn");
-  const ogButton = $("boostOGBtn");
-  if (!closeButton || !backdrop || !igButton || !ogButton) {
-    console.error("Boost picker markup is missing; runtime selection is unavailable.");
-    return;
-  }
-  closeButton.addEventListener("click", closeBoostPicker);
-  backdrop.addEventListener("click", event => {
-    if (event.target === backdrop) closeBoostPicker();
-  });
-  igButton.addEventListener("click", () => {
-    closeBoostPicker();
-    executeProgram("ig");
-  });
-  ogButton.addEventListener("click", () => {
-    closeBoostPicker();
-    executeProgram("og");
-  });
-}
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", setupBoostPickerEvents, { once: true });
-} else {
-  setupBoostPickerEvents();
-}
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeBoostPicker();
-});
 
 /* Drag-and-drop & File Importing */
 async function importFiles(fileArray, targetFolder = "") {
@@ -2726,34 +2821,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 </script>
 
 
-<div class="boost-picker-backdrop" id="boostPickerBackdrop" role="dialog" aria-modal="true" aria-labelledby="boostPickerTitle">
-  <div class="boost-picker">
-    <div class="boost-picker-head">
-      <div>
-        <h2 id="boostPickerTitle">Choose your Python runtime</h2>
-        <p>Select how you want to run this code. Your current editor and project files will stay unchanged.</p>
-      </div>
-      <button class="boost-picker-close" id="boostPickerClose" type="button" aria-label="Close runtime selection">×</button>
-    </div>
-    <div class="boost-picker-cards">
-      <button class="boost-mode-card ig" id="boostIGBtn" type="button">
-        <span class="boost-mode-icon"><i class="fa-solid fa-code"></i></span>
-        <span class="boost-mode-tag">Standard runtime</span>
-        <span class="boost-mode-name">Run with Boost IG</span>
-        <span class="boost-mode-desc">Uses the existing run API. Best for regular code, logic, scripts and supported lightweight animations. It keeps the current runner behavior.</span>
-        <span class="boost-mode-cta">Run with IG <i class="fa-solid fa-arrow-right"></i></span>
-      </button>
-      <button class="boost-mode-card og" id="boostOGBtn" type="button">
-        <span class="boost-mode-icon"><i class="fa-solid fa-cubes"></i></span>
-        <span class="boost-mode-tag">E2B cloud runtime</span>
-        <span class="boost-mode-name">Run with Boost OG</span>
-        <span class="boost-mode-desc">Uses your new E2B API integration for Python execution and supported packages, data work, charts and image outputs. Native GUI and real-time 3D animations are not guaranteed.</span>
-        <span class="boost-mode-cta">Run with OG <i class="fa-solid fa-arrow-right"></i></span>
-      </button>
-    </div>
-    <div class="boost-picker-note">OG requires the server-side <code>E2B_API_KEY</code> environment variable and the <code>/api/e2b-run</code> endpoint. The secret key is never sent to the browser.</div>
-  </div>
-</div>
 
 </body>
 </html>
