@@ -2258,9 +2258,9 @@ function makeTurtleHTML(source) {
   const T={x:0,y:0,a:0,down:true,color:'#16a34a',width:2,
    forward(n){const x2=this.x+Math.cos(this.a*Math.PI/180)*n,y2=this.y+Math.sin(this.a*Math.PI/180)*n;
     if(this.down)paths.push({x1:this.x,y1:this.y,x2,y2,color:this.color,width:this.width});
-    this.x=x2;this.y=y2;draw();},
+    this.x=x2;this.y=y2;},
    turn(n){this.a=(this.a+n)%360;},
-   goto(x,y){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x,y2:y,color:this.color,width:this.width});this.x=x;this.y=y;draw();},
+   goto(x,y){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x,y2:y,color:this.color,width:this.width});this.x=x;this.y=y;},
    circle(r){const n=48,step=360/n,old=this.a;for(let i=0;i<n;i++){this.forward(2*Math.PI*r/n);this.turn(step);}this.a=old;}
   };
   try{size();${commands}\n draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
@@ -2270,7 +2270,7 @@ function makeTurtleHTML(source) {
 function runTurtlePreview(source) {
   const html = makeTurtleHTML(source);
   showCompilerVisualPreview(html);
-  $("output").textContent = "Turtle code is running in the browser Canvas renderer. Supported: forward/backward, left/right, penup/pendown, color, pensize, goto, circle, bgcolor and simple range() loops. This is a compatibility renderer, not the complete Python turtle module.";
+  $("output").textContent = "Turtle drawing is rendered in one optimized Canvas pass. Supported: forward/backward, left/right, penup/pendown, color, pensize, goto, circle, bgcolor and simple range() loops. This is a compatibility renderer, not the complete Python turtle module.";
   setStatus("Turtle preview ready");
 }
 
