@@ -79,40 +79,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index
 <canvas id="fx"></canvas>
 <div class="vig"></div>
 <div class="tag"><span>Powered by JS Code Output</span><b id="val"></b></div>
-<a class="start-boost" id="startBoost" href="#">START BOOSTING</a>
+<a class="start-boost" id="startBoost" href="py_runner_boost.html">START BOOSTING</a>
 
-<div class="modal-backdrop" id="securityModal" aria-hidden="true">
-  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-orb"><i class="fa-solid fa-shield-halved" id="modalIcon"></i></div>
-    <div class="modal-eyebrow" id="modalEyebrow">SAFETY CHECK</div>
-    <h2 id="modalTitle">Sign in to continue</h2>
-    <p id="modalMessage">For your safety, please sign in with Google before continuing to the Python Runner.</p>
-    <div class="modal-error" id="modalError" role="alert"></div>
-    <button class="modal-primary" id="googleSignIn"><i class="fa-brands fa-google"></i><span>Continue with Google</span></button>
-    <button class="modal-secondary" id="modalClose" type="button">Cancel</button>
-  </section>
-</div>
 
-<style>
-.modal-backdrop{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(2,4,8,.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility .28s ease}
-.modal-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
-.modal-card{position:relative;width:min(100%,420px);padding:32px 27px 25px;text-align:center;overflow:hidden;border:1px solid rgba(216,187,122,.45);border-radius:26px;background:radial-gradient(120% 80% at 50% 0,rgba(216,187,122,.13),transparent 65%),linear-gradient(145deg,#111722,#07090e 75%);box-shadow:0 25px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);transform:translateY(16px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-.modal-backdrop.open .modal-card{transform:translateY(0) scale(1)}
-.modal-card:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#f5dfaa,transparent);box-shadow:0 0 18px rgba(216,187,122,.55)}
-.modal-orb{width:62px;height:62px;margin:0 auto 17px;display:grid;place-items:center;border:1px solid rgba(216,187,122,.42);border-radius:50%;color:#f2d99c;font-size:25px;background:radial-gradient(circle,rgba(216,187,122,.18),rgba(216,187,122,.025));box-shadow:0 0 32px rgba(216,187,122,.12);animation:orbPulse 2.6s ease-in-out infinite}
-@keyframes orbPulse{50%{box-shadow:0 0 42px rgba(216,187,122,.24);transform:translateY(-2px)}}
-.modal-eyebrow{font:700 10px/1.4 Arial,sans-serif;letter-spacing:.24em;color:#d8bb7a;margin-bottom:9px}
-.modal-card h2{font-family:var(--disp);font-size:clamp(20px,5vw,26px);line-height:1.25;color:#fff5dc;margin:0 0 12px}
-.modal-card p{max-width:330px;margin:0 auto 22px;color:#b8b7b0;font:14px/1.7 Arial,sans-serif}
-.modal-primary,.modal-secondary{width:100%;min-height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:11px;font:700 13px Arial,sans-serif;letter-spacing:.02em;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
-.modal-primary{border:1px solid #f3dfac;color:#171107;background:linear-gradient(120deg,#fff0c6,#d8bb7a 48%,#a98542);box-shadow:0 7px 22px rgba(216,187,122,.16)}
-.modal-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(216,187,122,.28)}
-.modal-primary:disabled{opacity:.65;cursor:wait;transform:none}
-.modal-secondary{margin-top:10px;border:1px solid rgba(255,255,255,.1);color:#a9a9a5;background:rgba(255,255,255,.035)}
-.modal-secondary:hover{background:rgba(255,255,255,.075);color:#fff}
-.modal-error{display:none;margin:-8px 0 15px;color:#ffaaa0;font:12px/1.5 Arial,sans-serif}.modal-error.show{display:block}
-@media(max-width:420px){.modal-card{padding:28px 21px 21px;border-radius:22px}.modal-card p{font-size:13px}}
-</style>
 
 <script>
 "use strict";
@@ -523,79 +492,12 @@ const go = () => { if (!pieces.length) start(); };
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => setTimeout(go, 150)); setTimeout(go, 1800); }
 else setTimeout(go, 300);
 
-// Google sign-in is required before showing the service status notice.
-const firebaseConfig = {
-  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
-  authDomain: "js-code-output.firebaseapp.com",
-  databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
-  projectId: "js-code-output",
-  storageBucket: "js-code-output.firebasestorage.app",
-  messagingSenderId: "600350018167",
-  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
-  measurementId: "G-L47M0E9V96"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const securityModal = $("securityModal");
-const modalTitle = $("modalTitle"), modalMessage = $("modalMessage");
-const modalEyebrow = $("modalEyebrow"), modalIcon = $("modalIcon");
-const googleSignIn = $("googleSignIn"), modalClose = $("modalClose"), modalError = $("modalError");
-let maintenanceView = false;
-function openModal(){ securityModal.classList.add("open"); securityModal.setAttribute("aria-hidden","false"); }
-function closeModal(){ securityModal.classList.remove("open"); securityModal.setAttribute("aria-hidden","true"); }
-function showSafetyPrompt(){
-  maintenanceView = false;
-  modalEyebrow.textContent = "SAFETY CHECK";
-  modalIcon.className = "fa-solid fa-shield-halved";
-  modalTitle.textContent = "Sign in to continue";
-  modalMessage.textContent = "For your safety, please sign in with Google before continuing to the Python Runner.";
-  googleSignIn.style.display = "flex"; googleSignIn.disabled = false;
-  googleSignIn.innerHTML = '<i class="fa-brands fa-google"></i><span>Continue with Google</span>';
-  modalClose.style.display = "flex"; modalClose.textContent = "Cancel";
-  modalError.classList.remove("show"); modalError.textContent = "";
-  openModal();
-}
-function showMaintenanceNotice(){
-  maintenanceView = true;
-  modalEyebrow.textContent = "TEMPORARILY UNAVAILABLE";
-  modalIcon.className = "fa-solid fa-screwdriver-wrench";
-  modalTitle.textContent = "Boost Is Temporarily Unavailable";
-  modalMessage.textContent = "Due to a payment-related issue, our Boost service is temporarily unavailable. Our team is working on a recovery, and we expect to restore the service as soon as possible. Thank you for your patience.";
-  googleSignIn.style.display = "none";
-  modalClose.style.display = "flex"; modalClose.textContent = "Got it";
-  modalError.classList.remove("show"); modalError.textContent = "";
-  openModal();
-}
-$("startBoost").addEventListener("click", async event => {
+// Start Boosting opens the Python Runner Boost page directly.
+$("startBoost").href = "py_runner_boost.html";
+$("startBoost").addEventListener("click", event => {
   event.preventDefault();
-  try {
-    if (auth.currentUser) showMaintenanceNotice();
-    else showSafetyPrompt();
-  } catch (_) { showSafetyPrompt(); }
+  window.location.href = "py_runner_boost.html";
 });
-googleSignIn.addEventListener("click", async () => {
-  modalError.classList.remove("show");
-  googleSignIn.disabled = true;
-  googleSignIn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i><span>Signing in...</span>';
-  try {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
-    await auth.signInWithPopup(provider);
-    showMaintenanceNotice();
-  } catch (error) {
-    modalError.textContent = error && error.code === "auth/popup-closed-by-user"
-      ? "Sign-in was cancelled. Please sign in with Google to continue."
-      : "Google sign-in could not be completed. Please try again.";
-    modalError.classList.add("show");
-    googleSignIn.disabled = false;
-    googleSignIn.innerHTML = '<i class="fa-brands fa-google"></i><span>Continue with Google</span>';
-  }
-});
-modalClose.addEventListener("click", () => {
-  if (maintenanceView) window.location.href = "js_python_runner.html";
-  else closeModal();
-});
-securityModal.addEventListener("click", event => { if (event.target === securityModal && !maintenanceView) closeModal(); });
 </script>
 </body>
 </html>
