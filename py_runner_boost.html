@@ -638,7 +638,7 @@ body.light .CodeMirror-linenumber { color: #9994a3; }
 
 .editor-foot span { display: inline-flex; align-items: center; gap: 6px; }
 
-/* Output & Terminal Panel */
+/* Program Output and Three.js Preview Panel */
 .output-panel { min-width: 0; display: flex; flex-direction: column; }
 .output-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .output-tabs { display: flex; align-items: center; gap: 5px; }
@@ -1275,13 +1275,6 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
 
 </style>
 
-<style id="python-terminal-responsive-styles">
-.python-terminal{min-height:230px;flex:1;display:flex;flex-direction:column;background:#0b0d12;color:#e5e7eb;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden;border-top:1px solid #272b35}
-.python-terminal[hidden]{display:none!important}.terminal-toolbar{display:flex;align-items:center;gap:7px;min-height:40px;padding:7px 10px;background:#151820;border-bottom:1px solid #292d37;flex-shrink:0}.terminal-toolbar strong{font:600 12px system-ui,sans-serif;margin-left:4px}.terminal-light{width:9px;height:9px;border-radius:50%;display:inline-block}.terminal-light.red{background:#ff625a}.terminal-light.yellow{background:#ffc044}.terminal-light.green{background:#36c96b}.terminal-runtime{color:#8f98a8;font:11px system-ui,sans-serif;margin-left:auto}.terminal-clear{background:transparent;border:1px solid #3a3f4b;color:#cbd5e1;border-radius:6px;padding:5px 9px;font-size:11px;min-height:30px}.terminal-log{flex:1;min-height:145px;max-height:42vh;overflow:auto;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin}.term-line{margin:0 0 5px}.term-command{color:#f4c96b}.term-ok{color:#9de5ad}.term-error{color:#ff9898}.term-muted{color:#9aa3b2}.terminal-input-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-top:1px solid #282d37;background:#11141b;flex-shrink:0}.terminal-prompt{color:#e9c36b;white-space:nowrap;font-size:11px}.terminal-input-row input{min-width:0;flex:1;background:transparent;color:#f8fafc;border:0;outline:0;font:inherit;font-size:13px;padding:7px 2px}.terminal-run-btn{min-height:38px;padding:7px 15px}.terminal-help{color:#8d96a6;padding:0 10px 10px;font:11px/1.45 system-ui,sans-serif}.terminal-help code{color:#d8c17c;background:#1c2029;border-radius:4px;padding:2px 4px}
-.output-panel.terminal-active #output,.output-panel.terminal-active #inputBar,.output-panel.terminal-active #consoleExtra{display:none!important}.output-panel.terminal-active #pythonTerminal{display:flex!important}.output-panel.terminal-active .loader-wrap{display:none!important}
-@media(max-width:760px){.python-terminal{min-height:300px;max-height:none}.terminal-log{min-height:190px;max-height:none;font-size:12px;padding:10px}.terminal-toolbar{min-height:42px}.terminal-input-row{gap:6px;padding:8px;flex-wrap:wrap}.terminal-prompt{font-size:10px}.terminal-input-row input{font-size:16px;min-height:40px;flex-basis:55%;}.terminal-run-btn{min-height:42px}.terminal-help{font-size:11px;padding:0 9px 10px}.output-panel.terminal-active{height:auto!important;min-height:360px!important}}
-@media(max-width:390px){.terminal-runtime{display:none}.terminal-prompt{font-size:9px}.terminal-input-row{gap:5px}.terminal-input-row input{flex-basis:48%;}}
-</style>
 
 </head>
 
@@ -1291,7 +1284,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   <!-- Header -->
   <header class="topbar">
     <div class="brand">
-      <div class="logo-wrap" title="Python 3 Masterclass Engine">
+      <div class="logo-wrap" title="JS CODE OUTPUT Python + Three.js">
         <!-- Masterclass Metallic 3D Python Emblem SVG -->
         <svg class="svg-ic" width="34" height="34" viewBox="0 0 128 128" fill="none">
           <defs>
@@ -1369,7 +1362,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   <div class="status-strip">
     <div class="status-left">
       <span class="status-item"><i class="dot" id="runtimeDot"></i><span id="runtimeStatus">Initializing Python...</span></span>
-      <span class="status-item"><i class="dot gold-dot"></i> Python 3 · Browser Runtime</span>
+      <span class="status-item"><i class="dot gold-dot"></i> Python 3 · Online Compiler</span>
     </div>
     <div class="status-right">
       <span class="status-item">⏱ Runtime: <strong id="runtimeCount">0.000s</strong></span>
@@ -1490,7 +1483,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
         </div>
       </section>
 
-      <!-- Output / Terminal Panel -->
+      <!-- Program Output and Three.js Preview Panel -->
       <section class="panel output-panel" id="outputPanel">
         <div class="panel-head output-head">
           <div class="output-tabs">
@@ -1506,14 +1499,15 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               Problems
             </button>
-            <button class="output-tab" data-output-tab="terminal" aria-label="Open Python terminal">
-              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-              Terminal
+            <button class="output-tab" data-output-tab="3dpreview" aria-label="Open Three.js 3D preview">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7 12 12 3 7 12 2Z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
+              3D Preview
             </button>
-          </div>
+</div>
           <div class="output-actions">
             <button class="btn fullscreen-btn" data-fullscreen="output-panel" title="Fullscreen output" aria-label="Fullscreen output"><svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg><span>Full screen</span></button>
             <!-- Masterclass Play Button SVG -->
+                  <button class="btn" id="threeStarterBtn" title="Load a ready-to-run Three.js scene">Three.js Starter</button>
                   <button class="btn gold run" id="runBtn">
                     <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
                       <defs>
@@ -1568,29 +1562,13 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
           </div>
           <div class="console-note" id="consoleNote">Console REPL ready. Run a program or execute expressions directly.</div>
         </div>
-
-        <!-- Responsive Python runner terminal (commands are safely allow-listed; not a raw system shell). -->
-        <section id="pythonTerminal" class="python-terminal" aria-label="Python terminal" hidden>
-          <div class="terminal-toolbar">
-            <span class="terminal-light red"></span><span class="terminal-light yellow"></span><span class="terminal-light green"></span>
-            <strong>Python Terminal</strong><span class="terminal-runtime">E2B Cloud Runtime</span>
-            <button type="button" class="terminal-clear" id="terminalClearBtn">Clear</button>
-          </div>
-          <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"><div class="term-muted">JS Python Runner Terminal · type <b>help</b> to see supported commands.</div></div>
-          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
-            <label for="terminalCommandInput" class="terminal-prompt">user@js-python:~$</label>
-            <input id="terminalCommandInput" name="command" placeholder="python main.py" autocapitalize="off" spellcheck="false" aria-label="Terminal command" />
-            <button class="btn gold terminal-run-btn" id="terminalRunBtn" type="submit">Run</button>
-          </form>
-          <div class="terminal-help">Supported commands: <code>help</code>, <code>clear</code>, <code>python main.py</code>, <code>pip install package</code>. This is a secure Python-runner terminal, not an unrestricted Linux shell.</div>
-        </section>
-      </section>
+</section>
     </main>
   </div>
 
   <footer class="footer">
-    <span><strong>♛ JS Python Runner BOOST</strong> · Premium IDE</span>
-    <span>Browser Python · <span id="footerStatus">Starting runtime...</span></span>
+    <span><strong>♛ JS CODE OUTPUT</strong> · Python + Three.js</span>
+    <span>Online Compiler API · <span id="footerStatus">Ready</span></span>
     <span>Made for developers ✦</span>
   </footer>
 </div>
@@ -2061,27 +2039,28 @@ function showOutputTab(tab) {
   document.querySelectorAll(".output-tab").forEach(button => {
     button.classList.toggle("active", button.dataset.outputTab === tab);
   });
-
+  const output = $("output");
+  const preview = document.getElementById("compilerVisualPreview");
   const outputPanel = $("outputPanel");
-  outputPanel.classList.toggle("terminal-active", tab === "terminal");
-  if (tab === "terminal") {
-    $("consoleExtra").classList.remove("show");
-    $("pythonTerminal").hidden = false;
-    setTimeout(() => { const input = $("terminalCommandInput"); if (input && window.matchMedia("(min-width: 761px)").matches) input.focus(); }, 0);
-  } else if (tab === "console") {
-    $("pythonTerminal").hidden = true;
+  
+  if (preview) preview.style.display = tab === "3dpreview" ? "block" : "none";
+  if (output) output.style.display = tab === "3dpreview" ? "none" : "";
+  if (tab === "console") {
     $("consoleExtra").classList.add("show");
-    $("output").textContent = currentOutputText || "Console REPL ready. Type an expression below.";
+    output.textContent = currentOutputText || "Console REPL ready. Type an expression below.";
   } else if (tab === "problems") {
-    $("pythonTerminal").hidden = true;
     $("consoleExtra").classList.remove("show");
-    $("output").textContent = currentErrors.length
-      ? currentErrors.join("\n\n")
-      : "✓ No problems reported in the last run.";
+    output.textContent = currentErrors.length ? currentErrors.join("\n\n") : "✓ No problems reported in the last run.";
+  } else if (tab === "3dpreview") {
+    $("consoleExtra").classList.remove("show");
+    if (!preview || !preview.childElementCount) {
+      output.style.display = "";
+      if (preview) preview.style.display = "none";
+      output.textContent = "Three.js 3D Preview is ready. Click Three.js Starter, then Run Code to render a scene.";
+    }
   } else {
-    $("pythonTerminal").hidden = true;
     $("consoleExtra").classList.remove("show");
-    $("output").textContent = currentOutputText || "✦ Your program output will appear here...";
+    output.textContent = currentOutputText || "✦ Your program output will appear here...";
   }
 }
 
@@ -2291,11 +2270,11 @@ function showCompilerFilesPreview(files) {
     preview.appendChild(figure);
   }
   preview.style.display = "flex";
-  // Keep terminal text visible below the chart/figure.
+  // Keep program output visible below the chart/figure.
   output.style.display = "";
   return true;
 }
-function showE2BResultsPreview(results) {
+function showOnlineCompilerResultsPreview(results) {
   if (!Array.isArray(results) || !results.length) return false;
   const visualItems = results.filter(item => item && (
     (typeof item.html === "string" && item.html.trim()) ||
@@ -2318,7 +2297,7 @@ function showE2BResultsPreview(results) {
       (typeof item.chart === "string" ? item.chart : "");
     if (html) {
       const frame = document.createElement("iframe");
-      frame.title = "E2B Python visual output";
+      frame.title = "Online Compiler Python visual output";
       frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
       frame.style.cssText = "display:block;width:100%;height:420px;min-height:320px;flex:1 0 320px;border:0;background:#fff;border-radius:6px";
       frame.srcdoc = html;
@@ -2329,7 +2308,7 @@ function showE2BResultsPreview(results) {
     const imageData = typeof item.png === "string" ? item.png : (typeof item.jpeg === "string" ? item.jpeg : item.svg);
     if (imageData) {
       const img = document.createElement("img");
-      img.alt = "E2B Python visual output";
+      img.alt = "Online Compiler Python visual output";
       img.style.cssText = "display:block;max-width:100%;max-height:70vh;height:auto;object-fit:contain;align-self:center;background:#fff";
       if (imageData.trim().startsWith("<svg")) {
         img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(imageData);
@@ -2447,7 +2426,7 @@ async function executeProgram() {
   const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
 
   // Basic Turtle drawings are rendered locally in a browser Canvas. Other Python
-  // code runs through the E2B-backed Vercel API route.
+  // code runs through the OnlineCompiler-backed Vercel API route.
   if (fileName.endsWith(".py") && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
     running = true;
     currentOutputText = "";
@@ -2491,12 +2470,13 @@ async function executeProgram() {
     try {
       let browserHTML = source;
       if (/\.js$/.test(fileName)) {
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Three.js Preview</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101827}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
       showCompilerVisualPreview(browserHTML);
-      $("output").textContent = "Browser preview ready. HTML/CSS/client-side JavaScript run in a sandboxed iframe. External libraries such as Three.js require an internet connection.";
+      $("output").textContent = "Browser preview ready. Three.js scene, camera, animation and drag/zoom controls run in the 3D Preview panel. External libraries require internet access.";
+      showOutputTab("3dpreview");
       $("loaderTitle").textContent = "Preview ready";
       $("loaderSubtitle").textContent = "Browser file rendered in the output panel.";
       setStatus("Browser preview ready");
@@ -2517,7 +2497,7 @@ async function executeProgram() {
   let compiler;
   if (fileName.endsWith(".py")) compiler = "python";
   else {
-    toast("This file type has no execution engine in this runner. Use .py for E2B Python or .html/.css/.js for browser preview.");
+    toast("This file type has no execution engine in this runner. Use .py for OnlineCompiler Python or .html/.css/.js for browser preview.");
     return;
   }
 
@@ -2531,14 +2511,13 @@ async function executeProgram() {
   showOutputTab("output");
   showRunningAnimation();
   startRuntimeClock();
-  setStatus("E2B Sandbox running");
+  setStatus("Online Compiler running");
 
   try {
-    // Python execution uses the Vercel API route backed by E2B.
-    const runEndpoint = "/api/run-code";
+    // Python execution uses the existing OnlineCompiler API through /api/run-code.
     const requestBody = { compiler, code: source, input: $("consoleInput").value || "" };
 
-    const response = await fetch(runEndpoint, {
+    const response = await fetch("/api/run-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody)
@@ -2568,7 +2547,7 @@ async function executeProgram() {
     const resultText = Array.isArray(result.results)
       ? result.results.map(item => item && typeof item.text === "string" ? item.text : "").filter(Boolean).join("\\n")
       : "";
-    const outputText = String(result.output || result.stdout || resultText || "");
+    let outputText = String(result.output || result.stdout || resultText || "");
     const errorText = String(result.error || result.stderr || "");
     if (Array.isArray(result.installedPackages) && result.installedPackages.length) {
       writeOutput("Auto-installed packages for this run: " + result.installedPackages.join(", ") + "\n", "success");
@@ -2577,14 +2556,14 @@ async function executeProgram() {
       writeOutput(String(result.packageInstallNote) + "\n");
     }
 
-    // Render browser-safe HTML/images returned by E2B while keeping text in the console.
+    // Render browser-safe HTML/images returned by the OnlineCompiler API while keeping text in the console.
     const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
     const previewURL = result.preview_url || result.animation_url || "";
     if (previewHTML && typeof previewHTML === "string") {
       showCompilerVisualPreview(previewHTML);
     } else if (previewURL && typeof previewURL === "string") {
       showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
-    } else if (!showE2BResultsPreview(result.results) && Array.isArray(result.files)) {
+    } else if (!showOnlineCompilerResultsPreview(result.results) && Array.isArray(result.files)) {
       showCompilerFilesPreview(result.files);
     }
     if (outputText) writeOutput(outputText);
@@ -2603,7 +2582,7 @@ async function executeProgram() {
       writeOutput("\\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\\n", "success");
       $("loaderTitle").textContent = "Execution finished";
       $("loaderSubtitle").textContent = "Program completed successfully.";
-      setStatus("E2B Sandbox ready");
+      setStatus("Online Compiler ready");
     } else {
       if (!errorText && result.exit_code !== undefined) writeOutput(`\nExit code: ${result.exit_code}\n`, "error");
       $("loaderTitle").textContent = "Execution stopped";
@@ -2628,105 +2607,88 @@ async function executeProgram() {
 }
 
 
-/* Safe, mobile-friendly Python terminal. It intentionally does not expose arbitrary OS shell commands. */
-const terminalHistory = [];
-let terminalHistoryIndex = 0;
-function terminalWrite(text, kind = "normal") {
-  const log = $("terminalLog");
-  if (!log) return;
-  const line = document.createElement("div");
-  line.className = "term-line" + (kind === "command" ? " term-command" : kind === "error" ? " term-error" : kind === "success" ? " term-ok" : kind === "muted" ? " term-muted" : "");
-  line.textContent = String(text ?? "");
-  log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
-}
-function terminalClear() { $("terminalLog").replaceChildren(); }
-function terminalHelp() {
-  terminalWrite("Supported commands:", "success");
-  terminalWrite("  help                 Show this help");
-  terminalWrite("  clear                Clear terminal output");
-  terminalWrite("  python main.py       Run the active Python file in E2B");
-  terminalWrite("  python <file.py>     Run active editor code if the named file is active");
-  terminalWrite("  pip install <name>   Add a package hint to the active Python file and run it");
-  terminalWrite("Notes: each execution uses a temporary E2B sandbox; pip packages are not cached between runs.", "muted");
-  terminalWrite("This secure terminal does not expose arbitrary Linux/Windows shell commands.", "muted");
-}
-async function handleTerminalCommand(raw) {
-  const command = String(raw || "").trim();
-  if (!command) return;
-  terminalWrite("user@js-python:~$ " + command, "command");
-  terminalHistory.push(command); terminalHistoryIndex = terminalHistory.length;
-  const normalized = command.replace(/\s+/g, " ");
-  if (/^help$/i.test(normalized)) { terminalHelp(); return; }
-  if (/^clear$/i.test(normalized)) { terminalClear(); return; }
-  if (/^exit$/i.test(normalized)) { terminalWrite("Terminal remains open. Use the tabs to return to Program Output.", "muted"); return; }
-  const pipMatch = normalized.match(/^pip\s+install\s+([a-zA-Z0-9][a-zA-Z0-9._-]{0,79})$/i);
-  const pythonMatch = normalized.match(/^python(?:3)?(?:\s+([\w./-]+))?$/i);
-  if (!pipMatch && !pythonMatch) {
-    terminalWrite("Command not supported. Type help to see the safe commands available in this runner.", "error"); return;
-  }
-  if (!activeFile || !activeFile.toLowerCase().endsWith(".py")) {
-    terminalWrite("Open or select a .py file first, then run the command again.", "error"); return;
-  }
-  if (pipMatch) {
-    const packageName = pipMatch[1];
-    let source = editor.getValue();
-    const lines = source.split("\n");
-    const headerIndex = lines.findIndex((line, i) => i < 12 && /^\s*#\s*(?:pip|requirements)\s*:/i.test(line));
-    if (headerIndex >= 0) {
-      const match = lines[headerIndex].match(/^\s*#\s*(?:pip|requirements)\s*:\s*(.*)$/i);
-      const packages = (match ? match[1].split(/[\s,;]+/) : []).filter(Boolean);
-      if (!packages.some(p => p.toLowerCase() === packageName.toLowerCase())) packages.push(packageName);
-      if (packages.length > 8) { terminalWrite("Maximum 8 declared packages. Remove a package from the header first.", "error"); return; }
-      lines[headerIndex] = "# pip: " + packages.join(", ");
-    } else {
-      lines.unshift("# pip: " + packageName);
-    }
-    editor.setValue(lines.join("\n")); saveActiveFile();
-    terminalWrite("Added package hint: " + packageName + ". Checking installation by running the active file…", "muted");
-  } else {
-    const requested = (pythonMatch[1] || activeFile).split("/").pop();
-    if (requested && requested.toLowerCase() !== activeFile.split("/").pop().toLowerCase()) {
-      terminalWrite("The selected file is " + activeFile + ". Select that file in Explorer before running it; this command does not execute other files yet.", "error"); return;
-    }
-  }
-  const runButton = $("runBtn");
-  if (running || runButton.disabled) { terminalWrite("A program is already running. Wait for it to finish.", "error"); return; }
-  terminalWrite("Starting Python execution in a temporary E2B sandbox…", "muted");
-  try {
-    await executeProgram();
-    const result = String(currentOutputText || "").trim();
-    if (result) terminalWrite(result);
-    else terminalWrite("Program finished without text output.", "success");
-    if (currentErrors.length) terminalWrite(currentErrors.join("\n"), "error");
-    terminalWrite("Process finished. Package installs are temporary and may be repeated next run.", "muted");
-  } catch (error) {
-    terminalWrite(error && error.message ? error.message : String(error), "error");
-  } finally {
-    showOutputTab("terminal");
-    $("terminalCommandInput").focus({ preventScroll: true });
-  }
-}
-$("terminalForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const input = $("terminalCommandInput");
-  const command = input.value;
-  input.value = "";
-  const runButton = $("terminalRunBtn");
-  runButton.disabled = true;
-  try { await handleTerminalCommand(command); }
-  finally { runButton.disabled = false; }
-});
-$("terminalCommandInput").addEventListener("keydown", event => {
-  if (event.key === "ArrowUp" && terminalHistory.length) { event.preventDefault(); terminalHistoryIndex = Math.max(0, terminalHistoryIndex - 1); event.currentTarget.value = terminalHistory[terminalHistoryIndex] || ""; }
-  if (event.key === "ArrowDown" && terminalHistory.length) { event.preventDefault(); terminalHistoryIndex = Math.min(terminalHistory.length, terminalHistoryIndex + 1); event.currentTarget.value = terminalHistory[terminalHistoryIndex] || ""; }
-});
-$("terminalClearBtn").addEventListener("click", terminalClear);
-
 /* Run button and Ctrl/Cmd+Enter run immediately through /api/run-code. */
 function runProgram() {
   executeProgram();
 }
+
+const THREEJS_STARTER = `// JS CODE OUTPUT — Three.js starter
+// Scene + camera + renderer + animation + mouse orbit/zoom controls.
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101827);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(4, 3, 6);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.style.margin = "0";
+document.body.style.overflow = "hidden";
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x334155, 2));
+const light = new THREE.DirectionalLight(0xffffff, 2.5);
+light.position.set(5, 8, 6);
+scene.add(light);
+
+const geometry = new THREE.TorusKnotGeometry(1, 0.28, 140, 18);
+const material = new THREE.MeshStandardMaterial({ color: 0xf5bd45, metalness: 0.35, roughness: 0.25 });
+const object = new THREE.Mesh(geometry, material);
+scene.add(object);
+
+const grid = new THREE.GridHelper(14, 14, 0x64748b, 0x273449);
+grid.position.y = -1.8;
+scene.add(grid);
+
+let dragging = false, lastX = 0, lastY = 0;
+let orbitX = 0.45, orbitY = 0.6, distance = 7;
+renderer.domElement.style.touchAction = "none";
+renderer.domElement.addEventListener("pointerdown", e => { dragging = true; lastX = e.clientX; lastY = e.clientY; renderer.domElement.setPointerCapture(e.pointerId); });
+renderer.domElement.addEventListener("pointerup", () => dragging = false);
+renderer.domElement.addEventListener("pointercancel", () => dragging = false);
+renderer.domElement.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  orbitY -= (e.clientX - lastX) * 0.008;
+  orbitX = Math.max(-1.35, Math.min(1.35, orbitX + (e.clientY - lastY) * 0.008));
+  lastX = e.clientX; lastY = e.clientY;
+});
+renderer.domElement.addEventListener("wheel", e => {
+  distance = Math.max(2.5, Math.min(24, distance + e.deltaY * 0.012));
+  e.preventDefault();
+}, { passive: false });
+
+function animate(time) {
+  requestAnimationFrame(animate);
+  object.rotation.x = time * 0.00025;
+  object.rotation.z = time * 0.00018;
+  camera.position.set(
+    Math.sin(orbitY) * Math.cos(orbitX) * distance,
+    Math.sin(orbitX) * distance,
+    Math.cos(orbitY) * Math.cos(orbitX) * distance
+  );
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+`;
+const threeStarterButton = document.getElementById("threeStarterBtn");
+if (threeStarterButton) threeStarterButton.addEventListener("click", () => {
+  const name = "scene.js";
+  files[name] = THREEJS_STARTER;
+  if (!openTabs.includes(name)) openTabs.push(name);
+  activeFile = name;
+  persistWorkspace();
+  renderTree();
+  openFile(name);
+  showOutputTab("3dpreview");
+  toast("Three.js starter loaded. Press Run Code to see the 3D scene.");
+});
 
 /* Drag-and-drop & File Importing */
 async function importFiles(fileArray, targetFolder = "") {
@@ -3188,7 +3150,7 @@ loadPython().catch(() => {
      if(/format|beautif/.test(t))return 'Format the code to make its indentation and layout easier to read.';
      if(/find|search/.test(t))return 'Search for text or code in the editor or workspace.';
      if(/copy|paste/.test(t))return 'Use this control to copy or insert the relevant content.';
-     if(/console|terminal|input/.test(t))return 'Open or use the related console/input area to inspect or interact with code execution.';
+     if(/console|input/.test(t))return 'Open or use the related console/input area to inspect or interact with code execution.';
      if(/project|explorer|file/.test(t))return 'Use this workspace control to open or manage your project and files.';
      if(/setting|config|api/.test(t))return 'Open the related settings and adjust the available options.';
      if(/help|tour|guide/.test(t))return 'Open help or guidance for using the runner.';
