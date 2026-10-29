@@ -1,20 +1,12 @@
 {
-  "name": "js-code-output-universal-runner",
+  "name": "js-code-output-onlinecompiler-threejs",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
     "node": "24.x"
   },
-  "dependencies": {
-    "@e2b/code-interpreter": "^2.9.0",
-    "firebase-admin": "^13.0.0",
-    "razorpay": "^2.9.5"
-  },
-  "overrides": {
-    "chalk": "4.1.2"
-  },
   "scripts": {
-    "check": "node --check api/run-code.js && node --check api/ursina-runtime.js"
+    "check": "node --check api/run-code.js"
   }
 }
