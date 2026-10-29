@@ -1,0 +1,18 @@
+FINAL PACKAGE CHECKLIST
+
+[Included] py_runner_boost.html at project root (not inside public/)
+[Included] api/run-code.js E2B-backed Python execution endpoint
+[Included] package.json and vercel.json
+[Included] .env.example
+[Included] examples/ sample files
+[Included] README.md and DEPLOY-CHECKLIST.txt
+[Included] PUBLISHING-SYSTEM-SPEC.md (architecture/specification document)
+
+Before deployment:
+1. Configure E2B_API_KEY in Vercel Project Settings > Environment Variables.
+2. Deploy to Vercel and test a simple Python program.
+3. Test input(), charts, package installation, and browser-compatible HTML/3D examples.
+4. Add authentication, quotas/rate limits, and spending protection before public launch.
+
+Note: PUBLISHING-SYSTEM-SPEC.md is a specification, not the complete implementation of
+all publishing/deployment services described in it. API integration was not live-tested here.
