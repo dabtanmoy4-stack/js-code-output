@@ -1,33 +1,63 @@
-# JS CODE OUTPUT — Universal Runner Bundle
+# JS CODE OUTPUT — Universal Python + Browser 3D Runtime bundle
 
-This bundle combines:
-- **Python execution in an E2B cloud sandbox** via `/api/run-code`.
-- **HTML/CSS/browser JavaScript preview** inside a sandboxed iframe. Browser-based WebGL/Three.js examples can run there when the browser has internet access.
-- E2B result rendering for supported text, HTML, PNG/JPEG, SVG, and chart outputs.
-- Line-based `input()` values from the existing Input panel. Provide one answer per line.
-- Best-effort Python dependency support: common missing imports may be installed automatically and code retried (up to 2 auto-install attempts).
-- Optional package header, near the top of the file: `# pip: numpy, scipy, pillow` (up to 3 package names per run).
+This is a best-effort universal runner bundle for your Vercel project. Files are at the repository root (no `public/` folder).
 
-## Deploy to Vercel
+## Included
+- `py_runner_boost.html` — existing runner UI.
+- `api/run-code.js` — E2B Python endpoint with import-to-PyPI mapping, explicit package hints, expanded import-to-PyPI mapping, explicit package hints, up to five missing-package retries, and `input()` support.
+- `examples/` — sample Python and browser 3D demos.
+- `package.json` — Node.js dependencies for the API only.
+- `vercel.json`, `.env.example`, and deployment notes.
 
-1. Upload the contents of this folder to your GitHub repository (the `public/py_runner_boost.html` file may need to be moved/renamed to match your existing route).
-2. Keep `api/run-code.js` at the repository root's `api/` directory so the endpoint is `/api/run-code`.
-3. In Vercel → Project → Settings → Environment Variables, add `E2B_API_KEY` with your E2B secret. Add it for the environments you deploy, then redeploy. Never put the key in HTML or GitHub.
-4. Ensure the Vercel project uses Node.js 24 and install dependencies from `package.json`.
-5. Open the deployed runner and test `print("Hello")`, a Matplotlib plot, and the `examples/threejs-demo.html` browser demo.
+## Deploy
+1. Extract this ZIP and upload **the contents** to your GitHub repository root.
+2. In Vercel, add the server-side environment variable `E2B_API_KEY`. Never place the key in HTML or commit it to GitHub.
+3. Deploy with Node.js 24 and ensure the route `/api/run-code` is present.
+4. Open `py_runner_boost.html` and test `print('Hello')`, NumPy/Matplotlib, then the browser 3D example.
+5. Run `npm run check` locally to syntax-check the API file.
 
-## What is supported
+## Python packages
+The backend tries to install some missing imports during a run (best effort). You may declare up to five packages in the first lines of a Python file, for example:
 
-- `.py`: runs on E2B's Python code-interpreter runtime. It can return text and supported rich outputs (such as HTML or images). The backend can install declared packages and make a limited best-effort attempt to install a missing import.
-- `.html`, `.css`, `.js`: runs as browser preview in an iframe. JavaScript here means browser-side JavaScript, not arbitrary Node.js projects. External libraries such as Three.js need network access or locally bundled assets.
-- Common `turtle` commands covered by the original local compatibility renderer continue to use that renderer. It is a limited subset, not the full `turtle` package.
+```python
+# pip: numpy, scipy, matplotlib, plotly, pillow
+import numpy as np
+import matplotlib.pyplot as plt
+print(np.arange(5))
+```
 
-## Important limitations
+Package installs happen inside a temporary E2B sandbox and **do not persist** into the next run. Heavy packages can take a long time, fail to build, need system libraries, or exceed the execution provider's limits. Installing a package is not the same as supporting its GUI/window system.
 
-No single runner can execute literally every programming language, every system package, every desktop GUI, Blender, every GPU feature, and every interactive 3D engine. Python packages requiring system libraries, a real display, a GPU, long-running processes, or unsupported native dependencies may not work in the standard E2B code-interpreter image. HTML/JS 3D rendering is usually the best browser route for interactive 3D. Python can generate HTML/JS or image output, but that does not make all Python GUI applications browser-compatible.
+## What can and cannot run
+- Standard Python and many pure-Python/data packages: usually supported, subject to E2B's runtime and limits.
+- NumPy, SciPy, Matplotlib, Pillow, pandas, SymPy, Plotly, and similar: may work after installation; first run can be slower.
+- Ursina/Panda3D/Pygame/Arcade/Manim/OpenCV/Torch/TensorFlow: best effort only. These may require OS libraries, display servers, GPU access, long install time, or more RAM than a temporary cloud sandbox provides. A successful import does **not** mean a desktop window or real-time game will appear in the browser.
+- `tkinter`, `bpy`/Blender, arbitrary desktop GUI apps, OS-level commands, GPU-specific code, and every possible third-party package cannot be guaranteed in this cloud runner.
+- For interactive 3D in the browser, use HTML + JavaScript + WebGL/Three.js in the browser preview. Python can generate HTML/JS or static images, but that does not turn a desktop Python GUI into browser content.
 
-This bundle has not been deployed to your Vercel project from here. You must add the environment variable and deploy it in your account. E2B usage is subject to its current plan, quotas, and billing.
+## Important: no ZIP can make literally everything work
+A Node `package.json` installs JavaScript dependencies; it cannot preinstall Python packages into E2B. Persistent preinstalled Python libraries require a custom E2B template/image built separately and configured in the API. This bundle does not create that cloud template or change your E2B/Vercel account settings.
 
-## Public-launch security note
+## Before public launch
+The API route does not by itself enforce Firebase sign-in or durable per-user usage quotas. Add authentication, rate limiting, and spend controls before opening it to public users. Keep `E2B_API_KEY` only in Vercel server-side environment variables.
 
-The included API route validates request sizes but does not yet verify a signed-in Firebase user or enforce a persistent per-user quota. Do not treat it as production-cost-protected for a public launch: add Firebase ID-token verification and persistent rate limiting/usage limits before sharing it widely, otherwise visitors may consume your E2B quota. Keep `E2B_API_KEY` only in Vercel server-side environment variables.
+
+## Important limits and what you must add for broader support
+
+This bundle improves package auto-install, but cannot guarantee literally every Python program. To get closer to broad compatibility:
+
+1. Keep the E2B API key in Vercel Environment Variables.
+2. Test on your actual Vercel plan: the function currently has a 60-second cap, so slow installs can time out. Do not increase it unless your Vercel plan supports the higher duration.
+3. For frequently used heavy libraries, build an E2B custom template with those dependencies preinstalled and configure the API to use its template ID; this requires an E2B template build and account setup outside this ZIP.
+4. For desktop GUI, GPU/CUDA, Blender, native system tools, or game windows, provision a separate container/VM with OS-level dependencies. These cannot be enabled by `package.json` alone.
+5. For 3D that must appear in the browser preview, use HTML/JS/WebGL (Three.js).
+6. Add authentication, per-user quotas, rate limiting, and spending limits before public launch.
+
+`npm run check` validates JavaScript syntax only; it does not test a live E2B sandbox or install every Python library.
+
+## Responsive Python Terminal (added)
+- The runner now includes a Terminal tab styled for desktop and mobile, with command history, clear, `help`, `python main.py`, and `pip install <package>`.
+- `python main.py` runs the currently selected Python editor file through the existing `/api/run-code` E2B endpoint.
+- `pip install <package>` adds/updates a `# pip:` dependency hint at the top of the active Python file and executes it so the backend installs that dependency in the same temporary sandbox.
+- This is a safe Python-runner terminal, **not an unrestricted Linux shell**. Commands such as `ls`, `cd`, arbitrary shell scripts, persistent shell sessions, and real-time interactive stdin are not implemented by this UI/API contract. The existing Input panel remains the supported way to provide `input()` data.
+- Packages are installed in a temporary sandbox per execution; they do not persist across runs. A successful import does not guarantee desktop GUI, GPU, or native window support.
