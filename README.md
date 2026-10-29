@@ -5,7 +5,9 @@ This is a best-effort universal runner bundle for your Vercel project. Files are
 ## Included
 - `py_runner_boost.html` — existing runner UI.
 - `api/run-code.js` — E2B Python endpoint with import-to-PyPI mapping, explicit package hints, expanded import-to-PyPI mapping, explicit package hints, up to five missing-package retries, and `input()` support.
-- `examples/` — sample Python and browser 3D demos.
+- `examples/` — sample Python, browser 3D bridge, and desktop-only Ursina code.
+- `api/ursina-runtime.js` — optional authenticated proxy to a separately deployed graphics-enabled Ursina service.
+- `HYBRID-3D-ARCHITECTURE.md` — setup, boundaries, security requirements, and test plan.
 - `package.json` — Node.js dependencies for the API only.
 - `vercel.json`, `.env.example`, and deployment notes.
 
@@ -13,8 +15,9 @@ This is a best-effort universal runner bundle for your Vercel project. Files are
 1. Extract this ZIP and upload **the contents** to your GitHub repository root.
 2. In Vercel, add the server-side environment variable `E2B_API_KEY`. Never place the key in HTML or commit it to GitHub.
 3. Deploy with Node.js 24 and ensure the route `/api/run-code` is present.
-4. Open `py_runner_boost.html` and test `print('Hello')`, NumPy/Matplotlib, then the browser 3D example.
-5. Run `npm run check` locally to syntax-check the API file.
+4. Open `py_runner_boost.html` and test `print('Hello')`, NumPy/Matplotlib, then `examples/jsco3d_animation.py` for browser-rendered 3D.
+5. Run `npm run check` locally to syntax-check the API files.
+6. Ursina code is routed to `/api/ursina-runtime`. It will clearly report that the service is not configured until you deploy a separate trusted graphics-enabled runtime and set `URSINA_RUNTIME_URL` (and optionally `URSINA_RUNTIME_TOKEN`) in Vercel.
 
 ## Python packages
 The backend tries to install some missing imports during a run (best effort). You may declare up to five packages in the first lines of a Python file, for example:
@@ -33,7 +36,8 @@ Package installs happen inside a temporary E2B sandbox and **do not persist** in
 - NumPy, SciPy, Matplotlib, Pillow, pandas, SymPy, Plotly, and similar: may work after installation; first run can be slower.
 - Ursina/Panda3D/Pygame/Arcade/Manim/OpenCV/Torch/TensorFlow: best effort only. These may require OS libraries, display servers, GPU access, long install time, or more RAM than a temporary cloud sandbox provides. A successful import does **not** mean a desktop window or real-time game will appear in the browser.
 - `tkinter`, `bpy`/Blender, arbitrary desktop GUI apps, OS-level commands, GPU-specific code, and every possible third-party package cannot be guaranteed in this cloud runner.
-- For interactive 3D in the browser, use HTML + JavaScript + WebGL/Three.js in the browser preview. Python can generate HTML/JS or static images, but that does not turn a desktop Python GUI into browser content.
+- For browser-rendered 3D from Python, this bundle includes a small `jsco3d` bridge (`from jsco3d import Scene`) for cubes, spheres, toruses, cones, cylinders and planes. It renders in the Output panel with Three.js. It is not full Ursina/Panda3D API compatibility.
+- For actual Ursina/Panda3D code, the new proxy route expects a separately deployed graphics-enabled service. This ZIP does not itself provision that external runtime; see `HYBRID-3D-ARCHITECTURE.md` before configuring it.
 
 ## Important: no ZIP can make literally everything work
 A Node `package.json` installs JavaScript dependencies; it cannot preinstall Python packages into E2B. Persistent preinstalled Python libraries require a custom E2B template/image built separately and configured in the API. This bundle does not create that cloud template or change your E2B/Vercel account settings.
