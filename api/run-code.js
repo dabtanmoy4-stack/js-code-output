@@ -1,185 +1,11 @@
-import { Sandbox } from "@e2b/code-interpreter";
-
-const MAX_CODE_CHARS = 80000;
+const ONLINE_COMPILER_URL = "https://api.onlinecompiler.io/api/run-code-sync/";
+const MAX_CODE_CHARS = 50000;
 const MAX_INPUT_CHARS = 10000;
-const MAX_DECLARED_PACKAGES = 8;
-const MAX_AUTO_INSTALLS = 5;
 
-// Import names and PyPI package names are not always the same.
-const PACKAGE_MAP = {
-  // Scientific computing / data science
-  PIL: "pillow", cv2: "opencv-python-headless", sklearn: "scikit-learn",
-  yaml: "pyyaml", bs4: "beautifulsoup4", dateutil: "python-dateutil",
-  Crypto: "pycryptodome", fitz: "pymupdf", skimage: "scikit-image",
-  numpy: "numpy", scipy: "scipy", pandas: "pandas", polars: "polars",
-  sympy: "sympy", mpmath: "mpmath", numba: "numba", dask: "dask",
-  modin: "modin", vaex: "vaex", cudf: "cudf", cupy: "cupy",
-  seaborn: "seaborn", plotly: "plotly", bokeh: "bokeh", altair: "altair",
-  statsmodels: "statsmodels", pingouin: "pingouin", patsy: "patsy",
-  xgboost: "xgboost", lightgbm: "lightgbm", catboost: "catboost",
-  // Web, HTTP, parsing and APIs
-  requests: "requests", httpx: "httpx", aiohttp: "aiohttp", websockets: "websockets",
-  flask: "flask", fastapi: "fastapi", starlette: "starlette", uvicorn: "uvicorn",
-  pydantic: "pydantic", lxml: "lxml", bs4: "beautifulsoup4", yaml: "pyyaml",
-  dotenv: "python-dotenv", rich: "rich", colorama: "colorama", typer: "typer",
-  click: "click", scrapy: "scrapy", selenium: "selenium", playwright: "playwright",
-  beautifulsoup4: "beautifulsoup4", cloudscraper: "cloudscraper",
-  // Mathematics, graphs, simulations and 3D
-  networkx: "networkx", igraph: "igraph", symengine: "symengine",
-  trimesh: "trimesh", vpython: "vpython", manim: "manim", pygame: "pygame",
-  arcade: "arcade", ursina: "ursina", panda3d: "panda3d", moderngl: "moderngl",
-  pyglet: "pyglet", pyvista: "pyvista", vtk: "vtk", open3d: "open3d",
-  shapely: "shapely", cadquery: "cadquery", vedo: "vedo", mujoco: "mujoco",
-  // Images, audio, video and computer vision
-  imageio: "imageio", imageio_ffmpeg: "imageio-ffmpeg", moviepy: "moviepy",
-  skvideo: "scikit-video", soundfile: "soundfile", librosa: "librosa",
-  pydub: "pydub", cv2: "opencv-python-headless", face_recognition: "face-recognition",
-  mediapipe: "mediapipe", easyocr: "easyocr", pytesseract: "pytesseract",
-  // Documents, spreadsheets, archives, reports
-  openpyxl: "openpyxl", docx: "python-docx", reportlab: "reportlab",
-  qrcode: "qrcode", pypdf: "pypdf", pdfplumber: "pdfplumber",
-  xlsxwriter: "xlsxwriter", pptx: "python-pptx", odf: "odfpy",
-  ebooklib: "EbookLib", markdown: "markdown", bs4: "beautifulsoup4",
-  // AI / ML (large packages may exceed provider limits)
-  torch: "torch", tensorflow: "tensorflow", keras: "keras",
-  transformers: "transformers", ultralytics: "ultralytics",
-  sentence_transformers: "sentence-transformers", diffusers: "diffusers",
-  sklearn: "scikit-learn", xgboost: "xgboost", lightgbm: "lightgbm",
-  nltk: "nltk", spacy: "spacy", gensim: "gensim", onnxruntime: "onnxruntime",
-  // Utility libraries
-  dateutil: "python-dateutil", pytz: "pytz", pendulum: "pendulum",
-  faker: "faker", tabulate: "tabulate", humanize: "humanize", tqdm: "tqdm",
-  toml: "toml", tomllib: "", json: "", re: "", math: "", random: "",
-  // OS / GUI / system-dependent modules cannot be fixed by pip alone
-  turtle: "", tkinter: "", _tkinter: "", bpy: "", wx: "wxPython", serial: "pyserial",
-  win32api: "pywin32", win32com: "pywin32", fcntl: "", pwd: "", grp: ""
-}
-
-function collectText(value) {
-  if (Array.isArray(value)) return value.filter((x) => typeof x === "string").join("");
-  return typeof value === "string" ? value : "";
-}
-
-function normalizeError(error) {
-  if (!error) return "";
-  if (typeof error === "string") return error;
-  const name = error.name || "ExecutionError";
-  const value = error.value || error.message || "Python execution failed";
-  const traceback = Array.isArray(error.traceback) ? error.traceback.join("\n") : "";
-  return `${name}: ${value}${traceback ? `\n${traceback}` : ""}`;
-}
-
-const JSCO3D_PYTHON_BRIDGE = String.raw`
-import json as _jsco3d_json
-import types as _jsco3d_types
-class Scene:
-    """Small browser-rendered 3D scene bridge; not a replacement for Ursina."""
-    def __init__(self, background="#101827", camera=(5, 4, 7), title="JS CODE OUTPUT 3D"):
-        self.background = str(background)
-        self.camera = list(camera)
-        self.title = str(title)
-        self.objects = []
-        self.rotation = True
-    def _add(self, kind, position=(0,0,0), color="#f5b942", **extra):
-        self.objects.append({"type":kind,"position":list(position),"color":str(color),**extra})
-        return self
-    def add_cube(self, position=(0,0,0), color="#f5b942", size=1): return self._add("cube", position, color, size=float(size))
-    def add_sphere(self, position=(0,0,0), color="#38bdf8", radius=0.5): return self._add("sphere", position, color, radius=float(radius))
-    def add_torus(self, position=(0,0,0), color="#c084fc", radius=0.7, tube=0.18): return self._add("torus", position, color, radius=float(radius), tube=float(tube))
-    def add_cone(self, position=(0,0,0), color="#fb7185", radius=0.5, height=1): return self._add("cone", position, color, radius=float(radius), height=float(height))
-    def add_cylinder(self, position=(0,0,0), color="#34d399", radius=0.5, height=1): return self._add("cylinder", position, color, radius=float(radius), height=float(height))
-    def add_plane(self, position=(0,-1,0), color="#263449", size=12): return self._add("plane", position, color, size=float(size))
-    def animate(self, enabled=True): self.rotation = bool(enabled); return self
-    def show(self):
-        payload = {"title":self.title,"background":self.background,"camera":self.camera,"rotation":self.rotation,"objects":self.objects}
-        print("JSCO3D_SCENE:" + _jsco3d_json.dumps(payload, separators=(",",":")))
-
-def __jsco3d_show(scene):
-    if not isinstance(scene, Scene): raise TypeError("show() expects a jsco3d.Scene")
-    scene.show()
-jsco3d = _jsco3d_types.SimpleNamespace(Scene=Scene)
-`;
-
-function withInputSupport(code, input) {
-  const lines = input.split(/\r?\n/);
-  const encodedLines = JSON.stringify(lines);
-  const wantsBrowser3D = /^\s*(?:from\s+jsco3d\s+import\s+.+|import\s+jsco3d)\s*$/m.test(code);
-  const runnableCode = wantsBrowser3D
-    ? code.replace(/^\s*(?:from\s+jsco3d\s+import\s+.+|import\s+jsco3d)\s*$/gm, "# jsco3d browser bridge provided by JS CODE OUTPUT")
-    : code;
-  return [
-    "import builtins as __jsco_builtins",
-    `__jsco_input_lines = iter(${encodedLines})`,
-    "def __jsco_input(prompt=''):",
-    "    if prompt:",
-    "        print(prompt, end='')",
-    "    try:",
-    "        return next(__jsco_input_lines)",
-    "    except StopIteration:",
-    "        raise EOFError('No more input lines were provided in the Input panel')",
-    "__jsco_builtins.input = __jsco_input",
-    ...(wantsBrowser3D ? [JSCO3D_PYTHON_BRIDGE] : []),
-    "",
-    runnableCode,
-  ].join("\n");
-}
-
-function declaredPackages(code) {
-  // Optional first-line syntax: # pip: numpy, scipy, pillow
-  // Also accepts: # requirements: numpy scipy pillow
-  const found = new Set();
-  for (const line of code.split(/\r?\n/).slice(0, 12)) {
-    const match = line.match(/^\s*#\s*(?:pip|requirements)\s*:\s*(.*?)\s*$/i);
-    if (!match) continue;
-    for (const raw of match[1].split(/[\s,;]+/)) {
-      const name = raw.trim().toLowerCase();
-      if (/^[a-z0-9][a-z0-9._-]{0,63}$/.test(name)) found.add(name);
-    }
-  }
-  if (found.size > MAX_DECLARED_PACKAGES) {
-    throw new Error(`At most ${MAX_DECLARED_PACKAGES} packages can be declared in the code header. Remove extra packages and run again.`);
-  }
-  return [...found];
-}
-
-function missingModule(errorText) {
-  const match = String(errorText || "").match(/No module named ['"]([^'"]+)['"]|ModuleNotFoundError:\s*([^\s]+)/);
-  if (!match) return "";
-  return (match[1] || match[2] || "").split(".")[0].replace(/[^A-Za-z0-9_]/g, "");
-}
-
-function packageForModule(moduleName) {
-  if (!moduleName) return "";
-  if (Object.prototype.hasOwnProperty.call(PACKAGE_MAP, moduleName)) return PACKAGE_MAP[moduleName];
-  // Only infer simple package names; special/native modules are intentionally excluded.
-  if (/^[a-z][a-z0-9_]{1,39}$/.test(moduleName)) return moduleName.replace(/_/g, "-");
+function asText(value) {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.filter(v => typeof v === "string").join("\n");
   return "";
-}
-
-async function installPackage(sandbox, packageName) {
-  // packageName is validated before reaching the shell; no user-supplied shell syntax.
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,79}$/.test(packageName)) {
-    throw new Error("Invalid Python package name.");
-  }
-  // Native 3D engines such as Ursina/Panda3D can take longer to resolve and install.
-  const installTimeoutMs = ["ursina", "panda3d", "opencv-python-headless", "scikit-image", "torch", "tensorflow", "manim", "pyvista", "ultralytics", "transformers", "mediapipe", "open3d", "vtk", "cadquery", "spacy", "playwright", "face-recognition"].includes(packageName.toLowerCase()) ? 120000 : 60000;
-  const result = await sandbox.commands.run(`python -m pip install --disable-pip-version-check --no-input ${packageName}`, { timeoutMs: installTimeoutMs });
-  if (result && typeof result.exitCode === "number" && result.exitCode !== 0) {
-    const detail = String(result.stderr || result.stdout || "").slice(-1800);
-    throw new Error(`Could not install Python package '${packageName}'. ${detail}`.trim());
-  }
-}
-
-function serializeResults(execution) {
-  return Array.isArray(execution.results) ? execution.results.map((item) => ({
-    text: item && typeof item.text === "string" ? item.text : "",
-    html: item && typeof item.html === "string" ? item.html : "",
-    png: item && typeof item.png === "string" ? item.png : "",
-    jpeg: item && typeof item.jpeg === "string" ? item.jpeg : "",
-    svg: item && typeof item.svg === "string" ? item.svg : "",
-    chart: item && typeof item.chart === "string" ? item.chart : "",
-    markdown: item && typeof item.markdown === "string" ? item.markdown : ""
-  })) : [];
 }
 
 export default async function handler(req, res) {
@@ -188,101 +14,79 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: "Method not allowed" });
   }
   res.setHeader("Cache-Control", "no-store");
-
-  if (!process.env.E2B_API_KEY) {
-    return res.status(500).json({ success: false, error: "E2B_API_KEY is not configured in Vercel Environment Variables" });
+  const apiKey = process.env.ONLINECOMPILER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({
+      success: false,
+      status: "configuration_error",
+      error: "ONLINECOMPILER_API_KEY is not configured in Vercel Environment Variables."
+    });
   }
 
   const body = req.body && typeof req.body === "object" ? req.body : {};
+  const compiler = typeof body.compiler === "string" ? body.compiler : "python";
   const code = body.code;
   const input = body.input === undefined ? "" : body.input;
-  const compiler = body.compiler || "python";
-  if (compiler !== "python") {
-    return res.status(400).json({ success: false, error: "This endpoint currently runs Python only. Use browser preview for HTML, CSS, and client-side JavaScript." });
-  }
-  if (typeof code !== "string" || !code.trim()) {
-    return res.status(400).json({ success: false, error: "Python code is required" });
-  }
-  if (/^\s*(?:from\s+ursina\s+import|import\s+ursina|from\s+panda3d\.core\s+import)/m.test(code)) {
-    return res.status(422).json({
-      success: false,
-      status: "runtime_required",
-      runtime: "ursina",
-      error: "This code uses Ursina/Panda3D, which needs a graphics-enabled desktop runtime. E2B's standard sandbox has no monitor, so installing ursina alone cannot open its game window. Configure URSINA_RUNTIME_URL for a separate Ursina runtime, or use the jsco3d browser bridge for supported browser-rendered 3D primitives."
-    });
-  }
-  if (code.length > MAX_CODE_CHARS) {
-    return res.status(413).json({ success: false, error: `Code is too large. Maximum is ${MAX_CODE_CHARS} characters.` });
-  }
-  if (typeof input !== "string") {
-    return res.status(400).json({ success: false, error: "Input must be a string" });
-  }
-  if (input.length > MAX_INPUT_CHARS) {
-    return res.status(413).json({ success: false, error: `Input is too large. Maximum is ${MAX_INPUT_CHARS} characters.` });
-  }
+  if (typeof code !== "string" || !code.trim()) return res.status(400).json({ success: false, error: "Code is required." });
+  if (code.length > MAX_CODE_CHARS) return res.status(413).json({ success: false, error: `Code exceeds ${MAX_CODE_CHARS} characters.` });
+  if (typeof input !== "string") return res.status(400).json({ success: false, error: "Input must be a string." });
+  if (input.length > MAX_INPUT_CHARS) return res.status(413).json({ success: false, error: `Input exceeds ${MAX_INPUT_CHARS} characters.` });
+  if (!/^[a-zA-Z0-9_+.-]{1,40}$/.test(compiler)) return res.status(400).json({ success: false, error: "Invalid compiler name." });
 
-  let packagesToInstall;
-  try { packagesToInstall = declaredPackages(code); }
-  catch (error) { return res.status(400).json({ success: false, error: error.message }); }
-
-  let sandbox;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 55000);
+  const started = Date.now();
   try {
-    sandbox = await Sandbox.create();
-    const started = Date.now();
-    const installedPackages = [];
-    const attemptedPackages = new Set();
+    const upstream = await fetch(ONLINE_COMPILER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `apiKey ${apiKey}`
+      },
+      body: JSON.stringify({ compiler, code, input }),
+      signal: controller.signal
+    });
+    const raw = await upstream.text();
+    let data;
+    try { data = raw ? JSON.parse(raw) : {}; }
+    catch { data = { output: raw }; }
 
-    // Optional explicit dependencies are installed first. Runtime installs are per sandbox/run.
-    for (const packageName of packagesToInstall) {
-      await installPackage(sandbox, packageName);
-      installedPackages.push(packageName);
-      attemptedPackages.add(packageName.toLowerCase());
+    if (!upstream.ok) {
+      const detail = asText(data.error || data.message || data.stderr || data.output) || `OnlineCompiler returned HTTP ${upstream.status}.`;
+      return res.status(upstream.status >= 400 && upstream.status < 500 ? upstream.status : 502).json({ success: false, status: "error", error: detail, compiler });
     }
 
-    let execution;
-    for (let attempt = 0; attempt <= MAX_AUTO_INSTALLS; attempt++) {
-      execution = await sandbox.runCode(withInputSupport(code, input));
-      const firstError = normalizeError(execution.error) || collectText(execution.logs && execution.logs.stderr);
-      if (!firstError) break;
-      if (attempt === MAX_AUTO_INSTALLS) break;
-      const moduleName = missingModule(firstError);
-      const packageName = packageForModule(moduleName);
-      if (!packageName || attemptedPackages.has(packageName.toLowerCase())) break;
-      // Avoid repeatedly installing packages that are not available or cannot build here.
-      attemptedPackages.add(packageName.toLowerCase());
-      await installPackage(sandbox, packageName);
-      installedPackages.push(packageName);
-    }
-
-    const logs = execution.logs || {};
-    const output = [collectText(logs.stdout), execution.text || ""].filter(Boolean).join("\n");
-    const stderr = collectText(logs.stderr);
-    const error = normalizeError(execution.error) || stderr;
-    const results = serializeResults(execution);
-    const success = !execution.error;
+    // Normalize common OnlineCompiler response shapes for the existing UI.
+    const nested = data.result && typeof data.result === "object" ? data.result : data.data && typeof data.data === "object" ? data.data : data;
+    const output = asText(nested.output ?? nested.stdout ?? nested.console ?? nested.result ?? data.output ?? data.stdout);
+    const stderr = asText(nested.stderr ?? nested.error_output ?? data.stderr);
+    const error = asText(nested.error ?? data.error ?? (data.success === false ? data.message : ""));
+    const exitCodeValue = nested.exit_code ?? nested.exitCode ?? nested.return_code ?? nested.returnCode ?? data.exit_code ?? data.exitCode;
+    const exitCode = Number.isFinite(Number(exitCodeValue)) ? Number(exitCodeValue) : (error || stderr ? 1 : 0);
+    const success = data.success === false || nested.success === false ? false : (exitCode === 0 && !error && !stderr);
     return res.status(200).json({
       success,
       status: success ? "success" : "error",
-      compiler: "python",
+      compiler,
       output,
       stdout: output,
       stderr,
-      error,
-      results,
-      installedPackages,
-      packageInstallNote: installedPackages.length ? "Some missing Python packages were installed in this temporary sandbox. They are not cached for the next run." : "",
-      time: Number(((Date.now() - started) / 1000).toFixed(2))
+      error: error || stderr,
+      exit_code: exitCode,
+      time: Number(((Date.now() - started) / 1000).toFixed(2)),
+      raw: undefined
     });
   } catch (err) {
-    console.error("E2B Python execution failed:", err);
-    return res.status(502).json({
+    const timedOut = err && err.name === "AbortError";
+    console.error("OnlineCompiler API request failed:", err);
+    return res.status(timedOut ? 504 : 502).json({
       success: false,
       status: "error",
-      error: err && err.message ? err.message : "Python execution request failed"
+      error: timedOut ? "OnlineCompiler request timed out after 55 seconds." : "Could not reach OnlineCompiler. Check the API service and ONLINECOMPILER_API_KEY.",
+      compiler
     });
   } finally {
-    if (sandbox && typeof sandbox.kill === "function") {
-      try { await sandbox.kill(); } catch (cleanupError) { console.warn("E2B sandbox cleanup failed:", cleanupError); }
-    }
+    clearTimeout(timeout);
   }
 }
