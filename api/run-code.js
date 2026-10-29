@@ -8,20 +8,18 @@ export default async function handler(req, res) {
     });
   }
 
-  const apiKey = process.env.ONLINECOMPILER_API_KEY;
+  const apiKey = process.env.E2B_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({
       success: false,
-      error: "ONLINECOMPILER_API_KEY is not configured"
+      error: "E2B_API_KEY is not configured"
     });
   }
 
   try {
     const body = req.body || {};
     const { code, input = "" } = body;
-
-    // Python default; frontend may still specify other compilers.
     const compiler = body.compiler || "python";
 
     if (typeof code !== "string" || !code.trim()) {
@@ -38,68 +36,48 @@ export default async function handler(req, res) {
       });
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-
-    let response;
-
-    try {
-      response = await fetch(
-        "https://api.onlinecompiler.io/api/run-code-sync/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": apiKey
-          },
-          body: JSON.stringify({
-            compiler,
-            code,
-            input
-          }),
-          signal: controller.signal
-        }
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    const raw = await response.text();
-
-    let result;
-    try {
-      result = JSON.parse(raw);
-    } catch {
-      result = { output: raw };
-    }
-
-    if (!response.ok) {
-      return res.status(response.status).json({
+    if (compiler.toLowerCase() !== "python") {
+      return res.status(400).json({
         success: false,
-        error:
-          result.error ||
-          result.message ||
-          `OnlineCompiler returned HTTP ${response.status}`,
-        details: result
+        error: "This E2B handler currently supports Python only"
       });
     }
 
-    // Preserve the provider's original result fields, including
-    // any preview/HTML fields it may support.
-    return res.status(200).json({
-      success: true,
-      ...result
+    const { Sandbox } = await import("@e2b/code-interpreter");
+
+    const sandbox = await Sandbox.create({
+      apiKey
     });
+
+    try {
+      const execution = await sandbox.runCode(code, {
+        stdin: input
+      });
+
+      const results = (execution.results || []).map((item) => ({
+        text: item.text || "",
+        html: item.html || undefined,
+        png: item.png || undefined,
+        chart: item.chart || undefined
+      }));
+
+      return res.status(200).json({
+        success: true,
+        output: (execution.logs?.stdout || []).join("\n"),
+        error: (execution.logs?.stderr || []).join("\n"),
+        results,
+        executionCount: execution.executionCount
+      });
+    } finally {
+      await sandbox.kill();
+    }
   } catch (error) {
-    console.error("OnlineCompiler API error:", error);
+    console.error("E2B API error:", error);
 
-    const timedOut = error.name === "AbortError";
-
-    return res.status(timedOut ? 504 : 502).json({
+    return res.status(502).json({
       success: false,
-      error: timedOut
-        ? "OnlineCompiler request timed out"
-        : "Code execution request failed"
+      error: "Code execution request failed",
+      details: error?.message || "Unknown E2B error"
     });
   }
 }
