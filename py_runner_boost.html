@@ -1922,9 +1922,12 @@ function openFile(name) {
 
   editor.setOption("mode", fileMode(name));
   editor.setValue(String(files[name] ?? ""));
-  $("activeFileName").textContent = name;
-  $("editorFilePath").textContent = "my_project / " + name;
-  $("editorLanguage").textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
+  const activeFileNameEl = $("activeFileName");
+  if (activeFileNameEl) activeFileNameEl.textContent = name;
+  const editorFilePathEl = $("editorFilePath");
+  if (editorFilePathEl) editorFilePathEl.textContent = "my_project / " + name;
+  const editorLanguageEl = $("editorLanguage");
+  if (editorLanguageEl) editorLanguageEl.textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
 
   renderTabs();
   renderTree();
