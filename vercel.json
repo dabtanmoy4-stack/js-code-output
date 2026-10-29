@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/run-code.js": {
+      "maxDuration": 60
+    }
+  }
+}
