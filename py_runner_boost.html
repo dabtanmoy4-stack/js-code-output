@@ -1274,6 +1274,15 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
 @media(max-width:560px){.boost-picker{padding:16px}.boost-picker-head h2{font-size:17px}.boost-picker-cards{grid-template-columns:1fr}.boost-mode-card{min-height:0;padding:15px}.boost-mode-icon{width:36px;height:36px;margin-bottom:9px}.boost-mode-desc{margin-bottom:12px}}
 
 </style>
+
+<style id="python-terminal-responsive-styles">
+.python-terminal{min-height:230px;flex:1;display:flex;flex-direction:column;background:#0b0d12;color:#e5e7eb;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden;border-top:1px solid #272b35}
+.python-terminal[hidden]{display:none!important}.terminal-toolbar{display:flex;align-items:center;gap:7px;min-height:40px;padding:7px 10px;background:#151820;border-bottom:1px solid #292d37;flex-shrink:0}.terminal-toolbar strong{font:600 12px system-ui,sans-serif;margin-left:4px}.terminal-light{width:9px;height:9px;border-radius:50%;display:inline-block}.terminal-light.red{background:#ff625a}.terminal-light.yellow{background:#ffc044}.terminal-light.green{background:#36c96b}.terminal-runtime{color:#8f98a8;font:11px system-ui,sans-serif;margin-left:auto}.terminal-clear{background:transparent;border:1px solid #3a3f4b;color:#cbd5e1;border-radius:6px;padding:5px 9px;font-size:11px;min-height:30px}.terminal-log{flex:1;min-height:145px;max-height:42vh;overflow:auto;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin}.term-line{margin:0 0 5px}.term-command{color:#f4c96b}.term-ok{color:#9de5ad}.term-error{color:#ff9898}.term-muted{color:#9aa3b2}.terminal-input-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-top:1px solid #282d37;background:#11141b;flex-shrink:0}.terminal-prompt{color:#e9c36b;white-space:nowrap;font-size:11px}.terminal-input-row input{min-width:0;flex:1;background:transparent;color:#f8fafc;border:0;outline:0;font:inherit;font-size:13px;padding:7px 2px}.terminal-run-btn{min-height:38px;padding:7px 15px}.terminal-help{color:#8d96a6;padding:0 10px 10px;font:11px/1.45 system-ui,sans-serif}.terminal-help code{color:#d8c17c;background:#1c2029;border-radius:4px;padding:2px 4px}
+.output-panel.terminal-active #output,.output-panel.terminal-active #inputBar,.output-panel.terminal-active #consoleExtra{display:none!important}.output-panel.terminal-active #pythonTerminal{display:flex!important}.output-panel.terminal-active .loader-wrap{display:none!important}
+@media(max-width:760px){.python-terminal{min-height:300px;max-height:none}.terminal-log{min-height:190px;max-height:none;font-size:12px;padding:10px}.terminal-toolbar{min-height:42px}.terminal-input-row{gap:6px;padding:8px;flex-wrap:wrap}.terminal-prompt{font-size:10px}.terminal-input-row input{font-size:16px;min-height:40px;flex-basis:55%;}.terminal-run-btn{min-height:42px}.terminal-help{font-size:11px;padding:0 9px 10px}.output-panel.terminal-active{height:auto!important;min-height:360px!important}}
+@media(max-width:390px){.terminal-runtime{display:none}.terminal-prompt{font-size:9px}.terminal-input-row{gap:5px}.terminal-input-row input{flex-basis:48%;}}
+</style>
+
 </head>
 
 <body>
@@ -1497,6 +1506,10 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               Problems
             </button>
+            <button class="output-tab" data-output-tab="terminal" aria-label="Open Python terminal">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Terminal
+            </button>
           </div>
           <div class="output-actions">
             <button class="btn fullscreen-btn" data-fullscreen="output-panel" title="Fullscreen output" aria-label="Fullscreen output"><svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg><span>Full screen</span></button>
@@ -1555,6 +1568,22 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
           </div>
           <div class="console-note" id="consoleNote">Console REPL ready. Run a program or execute expressions directly.</div>
         </div>
+
+        <!-- Responsive Python runner terminal (commands are safely allow-listed; not a raw system shell). -->
+        <section id="pythonTerminal" class="python-terminal" aria-label="Python terminal" hidden>
+          <div class="terminal-toolbar">
+            <span class="terminal-light red"></span><span class="terminal-light yellow"></span><span class="terminal-light green"></span>
+            <strong>Python Terminal</strong><span class="terminal-runtime">E2B Cloud Runtime</span>
+            <button type="button" class="terminal-clear" id="terminalClearBtn">Clear</button>
+          </div>
+          <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"><div class="term-muted">JS Python Runner Terminal · type <b>help</b> to see supported commands.</div></div>
+          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
+            <label for="terminalCommandInput" class="terminal-prompt">user@js-python:~$</label>
+            <input id="terminalCommandInput" name="command" placeholder="python main.py" autocapitalize="off" spellcheck="false" aria-label="Terminal command" />
+            <button class="btn gold terminal-run-btn" id="terminalRunBtn" type="submit">Run</button>
+          </form>
+          <div class="terminal-help">Supported commands: <code>help</code>, <code>clear</code>, <code>python main.py</code>, <code>pip install package</code>. This is a secure Python-runner terminal, not an unrestricted Linux shell.</div>
+        </section>
       </section>
     </main>
   </div>
@@ -2033,15 +2062,24 @@ function showOutputTab(tab) {
     button.classList.toggle("active", button.dataset.outputTab === tab);
   });
 
-  if (tab === "console") {
+  const outputPanel = $("outputPanel");
+  outputPanel.classList.toggle("terminal-active", tab === "terminal");
+  if (tab === "terminal") {
+    $("consoleExtra").classList.remove("show");
+    $("pythonTerminal").hidden = false;
+    setTimeout(() => { const input = $("terminalCommandInput"); if (input && window.matchMedia("(min-width: 761px)").matches) input.focus(); }, 0);
+  } else if (tab === "console") {
+    $("pythonTerminal").hidden = true;
     $("consoleExtra").classList.add("show");
     $("output").textContent = currentOutputText || "Console REPL ready. Type an expression below.";
   } else if (tab === "problems") {
+    $("pythonTerminal").hidden = true;
     $("consoleExtra").classList.remove("show");
     $("output").textContent = currentErrors.length
       ? currentErrors.join("\n\n")
       : "✓ No problems reported in the last run.";
   } else {
+    $("pythonTerminal").hidden = true;
     $("consoleExtra").classList.remove("show");
     $("output").textContent = currentOutputText || "✦ Your program output will appear here...";
   }
@@ -2589,6 +2627,101 @@ async function executeProgram() {
   }
 }
 
+
+/* Safe, mobile-friendly Python terminal. It intentionally does not expose arbitrary OS shell commands. */
+const terminalHistory = [];
+let terminalHistoryIndex = 0;
+function terminalWrite(text, kind = "normal") {
+  const log = $("terminalLog");
+  if (!log) return;
+  const line = document.createElement("div");
+  line.className = "term-line" + (kind === "command" ? " term-command" : kind === "error" ? " term-error" : kind === "success" ? " term-ok" : kind === "muted" ? " term-muted" : "");
+  line.textContent = String(text ?? "");
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+function terminalClear() { $("terminalLog").replaceChildren(); }
+function terminalHelp() {
+  terminalWrite("Supported commands:", "success");
+  terminalWrite("  help                 Show this help");
+  terminalWrite("  clear                Clear terminal output");
+  terminalWrite("  python main.py       Run the active Python file in E2B");
+  terminalWrite("  python <file.py>     Run active editor code if the named file is active");
+  terminalWrite("  pip install <name>   Add a package hint to the active Python file and run it");
+  terminalWrite("Notes: each execution uses a temporary E2B sandbox; pip packages are not cached between runs.", "muted");
+  terminalWrite("This secure terminal does not expose arbitrary Linux/Windows shell commands.", "muted");
+}
+async function handleTerminalCommand(raw) {
+  const command = String(raw || "").trim();
+  if (!command) return;
+  terminalWrite("user@js-python:~$ " + command, "command");
+  terminalHistory.push(command); terminalHistoryIndex = terminalHistory.length;
+  const normalized = command.replace(/\s+/g, " ");
+  if (/^help$/i.test(normalized)) { terminalHelp(); return; }
+  if (/^clear$/i.test(normalized)) { terminalClear(); return; }
+  if (/^exit$/i.test(normalized)) { terminalWrite("Terminal remains open. Use the tabs to return to Program Output.", "muted"); return; }
+  const pipMatch = normalized.match(/^pip\s+install\s+([a-zA-Z0-9][a-zA-Z0-9._-]{0,79})$/i);
+  const pythonMatch = normalized.match(/^python(?:3)?(?:\s+([\w./-]+))?$/i);
+  if (!pipMatch && !pythonMatch) {
+    terminalWrite("Command not supported. Type help to see the safe commands available in this runner.", "error"); return;
+  }
+  if (!activeFile || !activeFile.toLowerCase().endsWith(".py")) {
+    terminalWrite("Open or select a .py file first, then run the command again.", "error"); return;
+  }
+  if (pipMatch) {
+    const packageName = pipMatch[1];
+    let source = editor.getValue();
+    const lines = source.split("\n");
+    const headerIndex = lines.findIndex((line, i) => i < 12 && /^\s*#\s*(?:pip|requirements)\s*:/i.test(line));
+    if (headerIndex >= 0) {
+      const match = lines[headerIndex].match(/^\s*#\s*(?:pip|requirements)\s*:\s*(.*)$/i);
+      const packages = (match ? match[1].split(/[\s,;]+/) : []).filter(Boolean);
+      if (!packages.some(p => p.toLowerCase() === packageName.toLowerCase())) packages.push(packageName);
+      if (packages.length > 8) { terminalWrite("Maximum 8 declared packages. Remove a package from the header first.", "error"); return; }
+      lines[headerIndex] = "# pip: " + packages.join(", ");
+    } else {
+      lines.unshift("# pip: " + packageName);
+    }
+    editor.setValue(lines.join("\n")); saveActiveFile();
+    terminalWrite("Added package hint: " + packageName + ". Checking installation by running the active file…", "muted");
+  } else {
+    const requested = (pythonMatch[1] || activeFile).split("/").pop();
+    if (requested && requested.toLowerCase() !== activeFile.split("/").pop().toLowerCase()) {
+      terminalWrite("The selected file is " + activeFile + ". Select that file in Explorer before running it; this command does not execute other files yet.", "error"); return;
+    }
+  }
+  const runButton = $("runBtn");
+  if (running || runButton.disabled) { terminalWrite("A program is already running. Wait for it to finish.", "error"); return; }
+  terminalWrite("Starting Python execution in a temporary E2B sandbox…", "muted");
+  try {
+    await executeProgram();
+    const result = String(currentOutputText || "").trim();
+    if (result) terminalWrite(result);
+    else terminalWrite("Program finished without text output.", "success");
+    if (currentErrors.length) terminalWrite(currentErrors.join("\n"), "error");
+    terminalWrite("Process finished. Package installs are temporary and may be repeated next run.", "muted");
+  } catch (error) {
+    terminalWrite(error && error.message ? error.message : String(error), "error");
+  } finally {
+    showOutputTab("terminal");
+    $("terminalCommandInput").focus({ preventScroll: true });
+  }
+}
+$("terminalForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const input = $("terminalCommandInput");
+  const command = input.value;
+  input.value = "";
+  const runButton = $("terminalRunBtn");
+  runButton.disabled = true;
+  try { await handleTerminalCommand(command); }
+  finally { runButton.disabled = false; }
+});
+$("terminalCommandInput").addEventListener("keydown", event => {
+  if (event.key === "ArrowUp" && terminalHistory.length) { event.preventDefault(); terminalHistoryIndex = Math.max(0, terminalHistoryIndex - 1); event.currentTarget.value = terminalHistory[terminalHistoryIndex] || ""; }
+  if (event.key === "ArrowDown" && terminalHistory.length) { event.preventDefault(); terminalHistoryIndex = Math.min(terminalHistory.length, terminalHistoryIndex + 1); event.currentTarget.value = terminalHistory[terminalHistoryIndex] || ""; }
+});
+$("terminalClearBtn").addEventListener("click", terminalClear);
 
 /* Run button and Ctrl/Cmd+Enter run immediately through /api/run-code. */
 function runProgram() {
