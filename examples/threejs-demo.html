@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Three.js 3D Demo</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b18;color:white;font:14px system-ui}#label{position:fixed;top:14px;left:14px;background:#111a2bcc;padding:10px 13px;border:1px solid #4c6797;border-radius:10px;z-index:2}</style></head>
+<body><div id="label">Interactive 3D · drag to rotate · scroll to zoom</div><script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/controls/OrbitControls.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x070b18);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,100);camera.position.set(3,2.5,5);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,1.5));const light=new THREE.PointLight(0x55ccff,40);light.position.set(3,4,4);scene.add(light);
+const geo=new THREE.TorusKnotGeometry(1,.3,160,24);const mat=new THREE.MeshStandardMaterial({color:0x57d8ff,metalness:.65,roughness:.2,emissive:0x142b68});const knot=new THREE.Mesh(geo,mat);scene.add(knot);
+const floor=new THREE.GridHelper(20,40,0x29436d,0x182642);floor.position.y=-1.7;scene.add(floor);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+function animate(){requestAnimationFrame(animate);knot.rotation.x+=.004;knot.rotation.y+=.007;controls.update();renderer.render(scene,camera)}animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script></body></html>
