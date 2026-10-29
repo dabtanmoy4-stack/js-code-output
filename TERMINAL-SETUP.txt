@@ -1,9 +1,0 @@
-PYTHON TERMINAL NOTES
-
-1. The new Terminal tab is included in py_runner_boost.html.
-2. It uses the existing /api/run-code route and E2B_API_KEY; no new API key is required for this implementation.
-3. Commands currently supported: help, clear, python main.py (or the active .py filename), pip install <package>.
-4. The pip command writes a # pip: dependency hint into the active Python file and runs it. Package installation happens inside the temporary E2B sandbox and does not persist between runs.
-5. This is intentionally not a general-purpose shell. It does not run arbitrary Linux commands or provide a persistent shell process.
-6. Deploy the ZIP contents to the repository root. Keep E2B_API_KEY in Vercel Environment Variables; never put it in the HTML file.
-7. Test on a staging deployment first. The terminal UI itself is browser-side; execution still depends on a valid E2B key and the /api/run-code route.
