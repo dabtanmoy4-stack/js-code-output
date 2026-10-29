@@ -24,7 +24,10 @@ export default async function handler(req, res) {
   }
 
   const body = req.body && typeof req.body === "object" ? req.body : {};
-  const compiler = typeof body.compiler === "string" ? body.compiler : "python";
+  const requestedCompiler = typeof body.compiler === "string" ? body.compiler : "python";
+  // OnlineCompiler expects versioned compiler IDs, not generic labels.
+  const compilerAliases = { python: "python-3.14", javascript: "node-24", node: "node-24" };
+  const compiler = compilerAliases[requestedCompiler.toLowerCase()] || requestedCompiler;
   const code = body.code;
   const input = body.input === undefined ? "" : body.input;
   if (typeof code !== "string" || !code.trim()) return res.status(400).json({ success: false, error: "Code is required." });
@@ -42,7 +45,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization": `apiKey ${apiKey}`
+        "Authorization": apiKey
       },
       body: JSON.stringify({ compiler, code, input }),
       signal: controller.signal
