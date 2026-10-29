@@ -1922,12 +1922,9 @@ function openFile(name) {
 
   editor.setOption("mode", fileMode(name));
   editor.setValue(String(files[name] ?? ""));
-  const activeFileNameEl = $("activeFileName");
-  if (activeFileNameEl) activeFileNameEl.textContent = name;
-  const editorFilePathEl = $("editorFilePath");
-  if (editorFilePathEl) editorFilePathEl.textContent = "my_project / " + name;
-  const editorLanguageEl = $("editorLanguage");
-  if (editorLanguageEl) editorLanguageEl.textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
+  $("activeFileName").textContent = name;
+  $("editorFilePath").textContent = "my_project / " + name;
+  $("editorLanguage").textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
 
   renderTabs();
   renderTree();
@@ -2498,7 +2495,7 @@ async function executeProgram() {
   }
 
   let compiler;
-  if (fileName.endsWith(".py")) compiler = "python";
+  if (fileName.endsWith(".py")) compiler = "python-3.14";
   else {
     toast("This file type has no execution engine in this runner. Use .py for OnlineCompiler Python or .html/.css/.js for browser preview.");
     return;
