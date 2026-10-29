@@ -2262,6 +2262,7 @@ function showE2BResultsPreview(results) {
   const visualItems = results.filter(item => item && (
     (typeof item.html === "string" && item.html.trim()) ||
     (typeof item.png === "string" && item.png.trim()) ||
+    (typeof item.jpeg === "string" && item.jpeg.trim()) ||
     (typeof item.svg === "string" && item.svg.trim()) ||
     (item.chart && typeof item.chart === "string")
   ));
@@ -2287,7 +2288,7 @@ function showE2BResultsPreview(results) {
       continue;
     }
 
-    const imageData = typeof item.png === "string" ? item.png : item.svg;
+    const imageData = typeof item.png === "string" ? item.png : (typeof item.jpeg === "string" ? item.jpeg : item.svg);
     if (imageData) {
       const img = document.createElement("img");
       img.alt = "E2B Python visual output";
@@ -2295,7 +2296,8 @@ function showE2BResultsPreview(results) {
       if (imageData.trim().startsWith("<svg")) {
         img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(imageData);
       } else {
-        img.src = "data:image/png;base64," + imageData.replace(/^data:image\/png;base64,/, "");
+        const imageMime = typeof item.jpeg === "string" && imageData === item.jpeg ? "image/jpeg" : "image/png";
+        img.src = `data:${imageMime};base64,` + imageData.replace(/^data:image\/(png|jpeg);base64,/, "");
       }
       preview.appendChild(img);
     }
@@ -2436,10 +2438,48 @@ async function executeProgram() {
     return;
   }
 
+  // Browser-native files (HTML/CSS/client-side JS) run locally in a sandboxed iframe.
+  // This enables WebGL/Three.js demos without pretending they are Python programs.
+  if (/\.(html?|css|js)$/.test(fileName)) {
+    running = true;
+    currentOutputText = "";
+    currentErrors = [];
+    waitingForInput = null;
+    $("output").textContent = "";
+    $("consoleExtra").classList.remove("show");
+    showOutputTab("output");
+    showRunningAnimation();
+    startRuntimeClock();
+    try {
+      let browserHTML = source;
+      if (/\.js$/.test(fileName)) {
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+      } else if (/\.css$/.test(fileName)) {
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
+      }
+      showCompilerVisualPreview(browserHTML);
+      $("output").textContent = "Browser preview ready. HTML/CSS/client-side JavaScript run in a sandboxed iframe. External libraries such as Three.js require an internet connection.";
+      $("loaderTitle").textContent = "Preview ready";
+      $("loaderSubtitle").textContent = "Browser file rendered in the output panel.";
+      setStatus("Browser preview ready");
+    } catch (error) {
+      writeOutput(String(error && error.message ? error.message : error) + "\n", "error");
+      setStatus("Preview error");
+    } finally {
+      stopRuntimeClock();
+      running = false;
+      hideRunningAnimation();
+      $("runBtn").disabled = false;
+      $("runBtn").querySelector("span").textContent = "Run Code";
+      $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
+    }
+    return;
+  }
+
   let compiler;
   if (fileName.endsWith(".py")) compiler = "python";
   else {
-    toast("E2B Python Runner currently runs .py files. Use a Python file for this API.");
+    toast("This file type has no execution engine in this runner. Use .py for E2B Python or .html/.css/.js for browser preview.");
     return;
   }
 
@@ -2492,6 +2532,12 @@ async function executeProgram() {
       : "";
     const outputText = String(result.output || result.stdout || resultText || "");
     const errorText = String(result.error || result.stderr || "");
+    if (Array.isArray(result.installedPackages) && result.installedPackages.length) {
+      writeOutput("Auto-installed packages for this run: " + result.installedPackages.join(", ") + "\n", "success");
+    }
+    if (result.packageInstallNote) {
+      writeOutput(String(result.packageInstallNote) + "\n");
+    }
 
     // Render browser-safe HTML/images returned by E2B while keeping text in the console.
     const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
