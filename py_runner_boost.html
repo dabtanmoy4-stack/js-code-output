@@ -2257,13 +2257,61 @@ function showCompilerFilesPreview(files) {
   output.style.display = "";
   return true;
 }
+function showE2BResultsPreview(results) {
+  if (!Array.isArray(results) || !results.length) return false;
+  const visualItems = results.filter(item => item && (
+    (typeof item.html === "string" && item.html.trim()) ||
+    (typeof item.png === "string" && item.png.trim()) ||
+    (typeof item.svg === "string" && item.svg.trim()) ||
+    (item.chart && typeof item.chart === "string")
+  ));
+  if (!visualItems.length) return false;
+
+  const output = $("output");
+  const preview = getCompilerVisualPreview();
+  if (!output || !preview) return false;
+
+  preview.innerHTML = "";
+  preview.style.cssText = "display:flex;flex-direction:column;gap:10px;flex:1 1 auto;width:100%;min-height:320px;max-height:none;padding:10px;background:#fff;border-radius:8px;overflow:auto";
+
+  for (const item of visualItems) {
+    const html = typeof item.html === "string" ? item.html :
+      (typeof item.chart === "string" ? item.chart : "");
+    if (html) {
+      const frame = document.createElement("iframe");
+      frame.title = "E2B Python visual output";
+      frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
+      frame.style.cssText = "display:block;width:100%;height:420px;min-height:320px;flex:1 0 320px;border:0;background:#fff;border-radius:6px";
+      frame.srcdoc = html;
+      preview.appendChild(frame);
+      continue;
+    }
+
+    const imageData = typeof item.png === "string" ? item.png : item.svg;
+    if (imageData) {
+      const img = document.createElement("img");
+      img.alt = "E2B Python visual output";
+      img.style.cssText = "display:block;max-width:100%;max-height:70vh;height:auto;object-fit:contain;align-self:center;background:#fff";
+      if (imageData.trim().startsWith("<svg")) {
+        img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(imageData);
+      } else {
+        img.src = "data:image/png;base64," + imageData.replace(/^data:image\/png;base64,/, "");
+      }
+      preview.appendChild(img);
+    }
+  }
+
+  if (!preview.childElementCount) return false;
+  preview.style.display = "flex";
+  output.style.display = "";
+  return true;
+}
 function hideCompilerVisualPreview() {
   const preview = document.getElementById("compilerVisualPreview");
   const output = $("output");
   if (preview) preview.style.display = "none";
   if (output) output.style.display = "";
 }
-
 
 // Browser Turtle renderer: supports common turtle drawing commands without
 // requiring desktop Tkinter. Unsupported Python/Turtle features still need a
@@ -2358,8 +2406,8 @@ async function executeProgram() {
 
   const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
 
-  // Turtle drawings are rendered locally in a browser Canvas; ordinary Python
-  // remains on OnlineCompiler. Keep all other editor and console features intact.
+  // Basic Turtle drawings are rendered locally in a browser Canvas. Other Python
+  // code runs through the E2B-backed Vercel API route.
   if (fileName.endsWith(".py") && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
     running = true;
     currentOutputText = "";
@@ -2389,11 +2437,9 @@ async function executeProgram() {
   }
 
   let compiler;
-  if (fileName.endsWith(".py")) compiler = "python-3.14";
-  else if (fileName.endsWith(".js")) compiler = "nodejs-24";
-  else if (fileName.endsWith(".ts")) compiler = "typescript-deno";
+  if (fileName.endsWith(".py")) compiler = "python";
   else {
-    toast("Online run supports .py, .js and .ts files currently.");
+    toast("E2B Python Runner currently runs .py files. Use a Python file for this API.");
     return;
   }
 
@@ -2407,10 +2453,10 @@ async function executeProgram() {
   showOutputTab("output");
   showRunningAnimation();
   startRuntimeClock();
-  setStatus("Online compiler running");
+  setStatus("E2B Sandbox running");
 
   try {
-    // All runs use the existing online compiler API. E2B is no longer used.
+    // Python execution uses the Vercel API route backed by E2B.
     const runEndpoint = "/api/run-code";
     const requestBody = { compiler, code: source, input: $("consoleInput").value || "" };
 
@@ -2441,18 +2487,20 @@ async function executeProgram() {
       throw new Error(result.error || result.message || `Run API failed (${response.status}).`);
     }
 
-    const outputText = String(result.output || "");
-    const errorText = String(result.error || "");
+    const resultText = Array.isArray(result.results)
+      ? result.results.map(item => item && typeof item.text === "string" ? item.text : "").filter(Boolean).join("\\n")
+      : "";
+    const outputText = String(result.output || result.stdout || resultText || "");
+    const errorText = String(result.error || result.stderr || "");
 
-    // The run-code API may return a browser-renderable preview for supported
-    // visual programs. Keep the normal console output behavior unchanged.
+    // Render browser-safe HTML/images returned by E2B while keeping text in the console.
     const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
     const previewURL = result.preview_url || result.animation_url || "";
     if (previewHTML && typeof previewHTML === "string") {
       showCompilerVisualPreview(previewHTML);
     } else if (previewURL && typeof previewURL === "string") {
-      showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/\"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
-    } else if (Array.isArray(result.files)) {
+      showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
+    } else if (!showE2BResultsPreview(result.results) && Array.isArray(result.files)) {
       showCompilerFilesPreview(result.files);
     }
     if (outputText) writeOutput(outputText);
@@ -2465,11 +2513,13 @@ async function executeProgram() {
       writeOutput(result.status === "success" ? "✓ Program finished with no output.\n" : "Program finished.\n", "success");
     }
 
-    if (result.status === "success" && Number(result.exit_code ?? 0) === 0) {
-      writeOutput("\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\n", "success");
+    const executionSucceeded = (result.success === true && !errorText.trim()) ||
+      (result.status === "success" && Number(result.exit_code ?? 0) === 0);
+    if (executionSucceeded) {
+      writeOutput("\\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\\n", "success");
       $("loaderTitle").textContent = "Execution finished";
       $("loaderSubtitle").textContent = "Program completed successfully.";
-      setStatus("Online compiler ready");
+      setStatus("E2B Sandbox ready");
     } else {
       if (!errorText && result.exit_code !== undefined) writeOutput(`\nExit code: ${result.exit_code}\n`, "error");
       $("loaderTitle").textContent = "Execution stopped";
