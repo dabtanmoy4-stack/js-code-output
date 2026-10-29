@@ -1,0 +1,9 @@
+JS CODE OUTPUT — OnlineCompiler + Three.js
+
+1. Copy these files into your existing repository root.
+2. In Vercel Environment Variables, add ONLINECOMPILER_API_KEY with your OnlineCompiler API key.
+3. Redeploy.
+4. Open py_runner_boost.html, click Three.js Starter, then Run Code.
+5. The scene should appear in the 3D Preview tab. Three.js CDN requires internet access.
+
+No E2B key, Ursina runtime URL, or Three.js API key is required by this bundle.
