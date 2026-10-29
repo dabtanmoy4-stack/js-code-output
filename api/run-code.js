@@ -69,9 +69,44 @@ function normalizeError(error) {
   return `${name}: ${value}${traceback ? `\n${traceback}` : ""}`;
 }
 
+const JSCO3D_PYTHON_BRIDGE = String.raw`
+import json as _jsco3d_json
+import types as _jsco3d_types
+class Scene:
+    """Small browser-rendered 3D scene bridge; not a replacement for Ursina."""
+    def __init__(self, background="#101827", camera=(5, 4, 7), title="JS CODE OUTPUT 3D"):
+        self.background = str(background)
+        self.camera = list(camera)
+        self.title = str(title)
+        self.objects = []
+        self.rotation = True
+    def _add(self, kind, position=(0,0,0), color="#f5b942", **extra):
+        self.objects.append({"type":kind,"position":list(position),"color":str(color),**extra})
+        return self
+    def add_cube(self, position=(0,0,0), color="#f5b942", size=1): return self._add("cube", position, color, size=float(size))
+    def add_sphere(self, position=(0,0,0), color="#38bdf8", radius=0.5): return self._add("sphere", position, color, radius=float(radius))
+    def add_torus(self, position=(0,0,0), color="#c084fc", radius=0.7, tube=0.18): return self._add("torus", position, color, radius=float(radius), tube=float(tube))
+    def add_cone(self, position=(0,0,0), color="#fb7185", radius=0.5, height=1): return self._add("cone", position, color, radius=float(radius), height=float(height))
+    def add_cylinder(self, position=(0,0,0), color="#34d399", radius=0.5, height=1): return self._add("cylinder", position, color, radius=float(radius), height=float(height))
+    def add_plane(self, position=(0,-1,0), color="#263449", size=12): return self._add("plane", position, color, size=float(size))
+    def animate(self, enabled=True): self.rotation = bool(enabled); return self
+    def show(self):
+        payload = {"title":self.title,"background":self.background,"camera":self.camera,"rotation":self.rotation,"objects":self.objects}
+        print("JSCO3D_SCENE:" + _jsco3d_json.dumps(payload, separators=(",",":")))
+
+def __jsco3d_show(scene):
+    if not isinstance(scene, Scene): raise TypeError("show() expects a jsco3d.Scene")
+    scene.show()
+jsco3d = _jsco3d_types.SimpleNamespace(Scene=Scene)
+`;
+
 function withInputSupport(code, input) {
   const lines = input.split(/\r?\n/);
   const encodedLines = JSON.stringify(lines);
+  const wantsBrowser3D = /^\s*(?:from\s+jsco3d\s+import\s+.+|import\s+jsco3d)\s*$/m.test(code);
+  const runnableCode = wantsBrowser3D
+    ? code.replace(/^\s*(?:from\s+jsco3d\s+import\s+.+|import\s+jsco3d)\s*$/gm, "# jsco3d browser bridge provided by JS CODE OUTPUT")
+    : code;
   return [
     "import builtins as __jsco_builtins",
     `__jsco_input_lines = iter(${encodedLines})`,
@@ -83,8 +118,9 @@ function withInputSupport(code, input) {
     "    except StopIteration:",
     "        raise EOFError('No more input lines were provided in the Input panel')",
     "__jsco_builtins.input = __jsco_input",
+    ...(wantsBrowser3D ? [JSCO3D_PYTHON_BRIDGE] : []),
     "",
-    code,
+    runnableCode,
   ].join("\n");
 }
 
@@ -166,6 +202,14 @@ export default async function handler(req, res) {
   }
   if (typeof code !== "string" || !code.trim()) {
     return res.status(400).json({ success: false, error: "Python code is required" });
+  }
+  if (/^\s*(?:from\s+ursina\s+import|import\s+ursina|from\s+panda3d\.core\s+import)/m.test(code)) {
+    return res.status(422).json({
+      success: false,
+      status: "runtime_required",
+      runtime: "ursina",
+      error: "This code uses Ursina/Panda3D, which needs a graphics-enabled desktop runtime. E2B's standard sandbox has no monitor, so installing ursina alone cannot open its game window. Configure URSINA_RUNTIME_URL for a separate Ursina runtime, or use the jsco3d browser bridge for supported browser-rendered 3D primitives."
+    });
   }
   if (code.length > MAX_CODE_CHARS) {
     return res.status(413).json({ success: false, error: `Code is too large. Maximum is ${MAX_CODE_CHARS} characters.` });
