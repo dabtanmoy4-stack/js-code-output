@@ -15,6 +15,6 @@
     "chalk": "4.1.2"
   },
   "scripts": {
-    "check": "node --check api/run-code.js"
+    "check": "node --check api/run-code.js && node --check api/ursina-runtime.js"
   }
 }
