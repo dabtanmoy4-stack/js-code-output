@@ -1,25 +1,59 @@
 import { Sandbox } from "@e2b/code-interpreter";
 
-const MAX_CODE_CHARS = 50000;
+const MAX_CODE_CHARS = 80000;
 const MAX_INPUT_CHARS = 10000;
-const MAX_DECLARED_PACKAGES = 3;
-const MAX_AUTO_INSTALLS = 2;
+const MAX_DECLARED_PACKAGES = 8;
+const MAX_AUTO_INSTALLS = 5;
 
 // Import names and PyPI package names are not always the same.
 const PACKAGE_MAP = {
+  // Scientific computing / data science
   PIL: "pillow", cv2: "opencv-python-headless", sklearn: "scikit-learn",
   yaml: "pyyaml", bs4: "beautifulsoup4", dateutil: "python-dateutil",
   Crypto: "pycryptodome", fitz: "pymupdf", skimage: "scikit-image",
-  wx: "wxPython", serial: "pyserial", dotenv: "python-dotenv",
-  plotly: "plotly", seaborn: "seaborn", pandas: "pandas", numpy: "numpy",
-  scipy: "scipy", sympy: "sympy", networkx: "networkx", trimesh: "trimesh",
-  vpython: "vpython", manim: "manim", pygame: "pygame", arcade: "arcade",
-  turtle: "", tkinter: "", _tkinter: "", bpy: "", torch: "torch",
-  tensorflow: "tensorflow", transformers: "transformers", ultralytics: "ultralytics",
-  requests: "requests", httpx: "httpx", lxml: "lxml", rich: "rich",
+  numpy: "numpy", scipy: "scipy", pandas: "pandas", polars: "polars",
+  sympy: "sympy", mpmath: "mpmath", numba: "numba", dask: "dask",
+  modin: "modin", vaex: "vaex", cudf: "cudf", cupy: "cupy",
+  seaborn: "seaborn", plotly: "plotly", bokeh: "bokeh", altair: "altair",
+  statsmodels: "statsmodels", pingouin: "pingouin", patsy: "patsy",
+  xgboost: "xgboost", lightgbm: "lightgbm", catboost: "catboost",
+  // Web, HTTP, parsing and APIs
+  requests: "requests", httpx: "httpx", aiohttp: "aiohttp", websockets: "websockets",
+  flask: "flask", fastapi: "fastapi", starlette: "starlette", uvicorn: "uvicorn",
+  pydantic: "pydantic", lxml: "lxml", bs4: "beautifulsoup4", yaml: "pyyaml",
+  dotenv: "python-dotenv", rich: "rich", colorama: "colorama", typer: "typer",
+  click: "click", scrapy: "scrapy", selenium: "selenium", playwright: "playwright",
+  beautifulsoup4: "beautifulsoup4", cloudscraper: "cloudscraper",
+  // Mathematics, graphs, simulations and 3D
+  networkx: "networkx", igraph: "igraph", symengine: "symengine",
+  trimesh: "trimesh", vpython: "vpython", manim: "manim", pygame: "pygame",
+  arcade: "arcade", ursina: "ursina", panda3d: "panda3d", moderngl: "moderngl",
+  pyglet: "pyglet", pyvista: "pyvista", vtk: "vtk", open3d: "open3d",
+  shapely: "shapely", cadquery: "cadquery", vedo: "vedo", mujoco: "mujoco",
+  // Images, audio, video and computer vision
+  imageio: "imageio", imageio_ffmpeg: "imageio-ffmpeg", moviepy: "moviepy",
+  skvideo: "scikit-video", soundfile: "soundfile", librosa: "librosa",
+  pydub: "pydub", cv2: "opencv-python-headless", face_recognition: "face-recognition",
+  mediapipe: "mediapipe", easyocr: "easyocr", pytesseract: "pytesseract",
+  // Documents, spreadsheets, archives, reports
   openpyxl: "openpyxl", docx: "python-docx", reportlab: "reportlab",
-  qrcode: "qrcode", moviepy: "moviepy", imageio: "imageio", imageio_ffmpeg: "imageio-ffmpeg"
-};
+  qrcode: "qrcode", pypdf: "pypdf", pdfplumber: "pdfplumber",
+  xlsxwriter: "xlsxwriter", pptx: "python-pptx", odf: "odfpy",
+  ebooklib: "EbookLib", markdown: "markdown", bs4: "beautifulsoup4",
+  // AI / ML (large packages may exceed provider limits)
+  torch: "torch", tensorflow: "tensorflow", keras: "keras",
+  transformers: "transformers", ultralytics: "ultralytics",
+  sentence_transformers: "sentence-transformers", diffusers: "diffusers",
+  sklearn: "scikit-learn", xgboost: "xgboost", lightgbm: "lightgbm",
+  nltk: "nltk", spacy: "spacy", gensim: "gensim", onnxruntime: "onnxruntime",
+  // Utility libraries
+  dateutil: "python-dateutil", pytz: "pytz", pendulum: "pendulum",
+  faker: "faker", tabulate: "tabulate", humanize: "humanize", tqdm: "tqdm",
+  toml: "toml", tomllib: "", json: "", re: "", math: "", random: "",
+  // OS / GUI / system-dependent modules cannot be fixed by pip alone
+  turtle: "", tkinter: "", _tkinter: "", bpy: "", wx: "wxPython", serial: "pyserial",
+  win32api: "pywin32", win32com: "pywin32", fcntl: "", pwd: "", grp: ""
+}
 
 function collectText(value) {
   if (Array.isArray(value)) return value.filter((x) => typeof x === "string").join("");
@@ -91,7 +125,9 @@ async function installPackage(sandbox, packageName) {
   if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,79}$/.test(packageName)) {
     throw new Error("Invalid Python package name.");
   }
-  const result = await sandbox.commands.run(`python -m pip install --disable-pip-version-check --no-input ${packageName}`, { timeoutMs: 15000 });
+  // Native 3D engines such as Ursina/Panda3D can take longer to resolve and install.
+  const installTimeoutMs = ["ursina", "panda3d", "opencv-python-headless", "scikit-image", "torch", "tensorflow", "manim", "pyvista", "ultralytics", "transformers", "mediapipe", "open3d", "vtk", "cadquery", "spacy", "playwright", "face-recognition"].includes(packageName.toLowerCase()) ? 120000 : 60000;
+  const result = await sandbox.commands.run(`python -m pip install --disable-pip-version-check --no-input ${packageName}`, { timeoutMs: installTimeoutMs });
   if (result && typeof result.exitCode === "number" && result.exitCode !== 0) {
     const detail = String(result.stderr || result.stdout || "").slice(-1800);
     throw new Error(`Could not install Python package '${packageName}'. ${detail}`.trim());
@@ -179,7 +215,7 @@ export default async function handler(req, res) {
     const stderr = collectText(logs.stderr);
     const error = normalizeError(execution.error) || stderr;
     const results = serializeResults(execution);
-    const success = !execution.error && !stderr;
+    const success = !execution.error;
     return res.status(200).json({
       success,
       status: success ? "success" : "error",
