@@ -1,50 +1,41 @@
-# JS CODE OUTPUT – Multi Visual Runtime
+# JS Python Runner BOOST — Pyodide + Three.js
 
-This bundle updates `py_runner_boost.html` and retains the existing Vercel OnlineCompiler API route, project structure, and API key configuration.
+This focused build prioritizes one browser graphics stack: **Pyodide + Three.js**. Other Python graphics engines (Babylon.js, Plotly, VPython, Turtle) are intentionally not enabled in this build.
 
-## Automatic Run behaviour
+## What this build supports
 
-Press **Run Code**; the Runner detects the file type and graphics library.
+- Run Python code in the browser with Pyodide 0.27.7.
+- Use Three.js from Python with `from js import THREE, document, window`.
+- Create 3D scenes, meshes, materials, lights, cameras, textures, particles and animations supported by Three.js/WebGL.
+- Automatically convert Python dictionary literals passed to Three.js `.new({...})` constructors into JavaScript option objects. This is important for material colors and renderer settings.
+- Automatically create the preview `#output` element if it is missing.
+- Resize the renderer and PerspectiveCamera when the preview changes size, including fullscreen.
+- Keep the visual runtime inside an isolated iframe so clearing `document.body` or `#output` does not erase the main IDE.
+- Keep the existing OnlineCompiler API route for ordinary Python files that are not Three.js visual programs.
 
-| Code / library | Execution path | Support level |
-|---|---|---|
-| Ordinary `.py` | Existing `/api/run-code` → OnlineCompiler | Depends on OnlineCompiler's Python compiler and installed packages |
-| Python + Three.js (`from js import THREE`) | Pyodide in an isolated browser preview | Supported for browser-compatible Three.js APIs |
-| Python + Babylon.js (`from js import BABYLON`) | Pyodide in an isolated browser preview | Supported for browser-compatible Babylon.js APIs; use the provided `renderCanvas` element |
-| Python + Plotly (`plotly.express`, `graph_objects`) | Pyodide + `micropip` Plotly install + `fig.show()` bridge | Supported when Plotly and its pure-Python dependencies install successfully |
-| Python VPython (`from vpython import ...`) | Best-effort package install in Pyodide | Experimental only; not full VPython compatibility |
-| Python Turtle | Built-in browser Canvas compatibility renderer | Limited subset only; not the complete Tkinter turtle module |
-| `.js`, `.html`, `.css` | Browser preview; Three.js/Babylon.js/Plotly loaded on demand | Supported subject to browser/CDN/WebGL support |
+## Not enabled in this build
 
-## Visual runtime fixes in this build
+- VPython, Babylon.js, Plotly, Python Turtle and desktop GUI libraries are not part of this focused graphics runtime. The Runner displays a clear unsupported-engine message for these Python graphics imports rather than pretending they are supported.
+- Tkinter, Pygame desktop windows, Ursina and other native desktop graphics frameworks cannot run as desktop apps inside a browser Pyodide iframe.
+- Packages requiring unsupported native binaries, OS libraries or desktop display servers may not install or run in Pyodide.
 
-- The isolated Pyodide visual iframe always contains an `#output` element before user Python runs. Code using `document.getElementById("output").innerHTML = ""` will no longer fail because the element is missing.
-- A `#renderCanvas` canvas is provided for Python Babylon.js projects.
-- Three.js uses the classic global `THREE` build (`0.159.0`) so `from js import THREE` works with this global-script integration.
-- The Three.js renderer and perspective camera are resized as the preview area changes, including output-panel fullscreen changes.
-- Plotly `fig.show()` is bridged to a responsive Plotly.js preview inside the visual output area.
-- Visual code runs in an isolated iframe, so clearing `document.body` or `#output` cannot erase the main Runner interface.
-- Standard output and Python errors are sent back to the Runner console.
+## Files
 
-## Required Vercel environment variable
-
-Set `ONLINECOMPILER_API_KEY` in Vercel Project Settings → Environment Variables for ordinary Python files that use the OnlineCompiler API. Keep the key server-side. Redeploy after changing environment variables.
+- `py_runner_boost.html` — updated Runner page.
+- `api/run-code.js` — existing OnlineCompiler backend route for ordinary Python execution.
+- `package.json`, `vercel.json`, `.env.example` — existing Vercel deployment files.
+- `examples/python-threejs-auto.py` — simple five-color sphere test.
+- `examples/threejs-solar-system.py` — 3D solar-system test.
 
 ## Deploy
 
-1. Copy `py_runner_boost.html` to the website root, replacing the old Runner page after keeping a backup.
-2. Copy `api/run-code.js` into the project's `api/` folder.
-3. Keep `package.json` and `vercel.json` from this bundle.
-4. Confirm `ONLINECOMPILER_API_KEY` is configured in Vercel.
-5. Deploy and test the included Three.js, Babylon.js, and Plotly examples.
+1. Back up the existing Runner page.
+2. Replace it with `py_runner_boost.html` from this folder.
+3. Keep/copy `api/run-code.js`, `package.json` and `vercel.json` into the same Vercel project.
+4. Keep `ONLINECOMPILER_API_KEY` configured for ordinary Python code that uses the existing OnlineCompiler route. No Three.js API key is required.
+5. Redeploy.
+6. Run `examples/python-threejs-auto.py`, then `examples/threejs-solar-system.py`.
 
-## Important limitations
+## Runtime notes
 
-- No browser runner can guarantee that arbitrary user code runs without errors. Syntax errors, missing variables, unsupported APIs, WebGL failures, package installation failures, and CDN/network failures can still produce errors.
-- Pyodide is Python compiled to WebAssembly, not a full desktop Python installation. Packages requiring native extensions, OS libraries, GUI windows, subprocesses, or unsupported wheels may not work.
-- **VPython is not fully supported in this bundle.** The upstream VPython package depends on browser/Jupyter/GlowScript runtime pieces that are not reliably available in Pyodide. Its install is best-effort and a `from vpython import ...` project may fail. Do not treat VPython as production-ready without testing the exact project in the deployed Vercel environment.
-- Python Turtle support is a small compatibility renderer; it does not provide Tkinter or every feature of the desktop `turtle` module.
-- Three.js and Babylon.js require WebGL and a modern browser. Rendering speed depends on the user's GPU/device.
-- Visual libraries are loaded from public CDNs, so internet access and CDN availability are required.
-- Ordinary Python uses OnlineCompiler and therefore requires a valid Vercel `ONLINECOMPILER_API_KEY` and the upstream service to be available.
-- The Runner does not silently rewrite arbitrary user code or hide genuine programming errors.
+Three.js is loaded from jsDelivr and requires internet/CDN access. The browser/device must support WebGL. The runtime fixes the common Pyodide dictionary-to-JavaScript options issue, but it cannot prevent errors in user-written Python/Three.js code or guarantee that every third-party Three.js add-on works.
