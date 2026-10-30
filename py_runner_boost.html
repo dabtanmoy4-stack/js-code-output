@@ -2452,7 +2452,7 @@ function makePythonVisualHTML(source) {
   const wantsThree = /THREE|three\.js|WebGLRenderer/i.test(source);
   const wantsPlotly = /plotly/i.test(source);
   const scripts = [
-    wantsThree ? '<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script>' : '',
+    wantsThree ? '<script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"><\/script>' : '',
     wantsBabylon ? '<script src="https://cdn.babylonjs.com/babylon.js"><\/script>' : '',
     wantsPlotly ? '<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"><\/script>' : ''
   ].join('');
@@ -2461,11 +2461,11 @@ function makePythonVisualHTML(source) {
   <title>JS CODE OUTPUT · Python Visual Preview</title>
   <style>
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#eee;font:13px system-ui}
-    #stage{position:absolute;inset:0;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
+    #stage{position:absolute;inset:0;overflow:hidden}#output{position:absolute;inset:0;width:100%;height:100%;min-height:320px;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
     #error{display:none;position:absolute;inset:12px;overflow:auto;white-space:pre-wrap;color:#ffb4b4;background:#190d18;border:1px solid #8b334a;border-radius:8px;padding:14px;z-index:110}
-    canvas{max-width:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
+    canvas{display:block;max-width:100%;max-height:100%;}#output>canvas{width:100%;height:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
   </style>
-  </head><body><div id="stage"></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
+  </head><body><div id="stage"><div id="output"></div></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
   <script>
   (async()=>{
     const stage=document.getElementById('stage'),status=document.getElementById('status'),err=document.getElementById('error');
@@ -2480,7 +2480,7 @@ function makePythonVisualHTML(source) {
     });
     try{
       // Dynamically load dependencies so a blocked CDN reports an actionable error.
-      if(${wantsThree}) await loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js','Three.js');
+      if(${wantsThree}) await loadScript('https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js','Three.js');
       if(${wantsBabylon}) await loadScript('https://cdn.babylonjs.com/babylon.js','Babylon.js');
       if(${wantsPlotly}) await loadScript('https://cdn.plot.ly/plotly-2.35.2.min.js','Plotly.js');
       await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js','Pyodide engine');
@@ -2631,7 +2631,7 @@ async function executeProgram() {
       if (/\.js$/.test(fileName)) {
         // Plain JavaScript runs directly in the browser preview. Three.js is made
         // available globally for users who choose to use it; it is not required.
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
