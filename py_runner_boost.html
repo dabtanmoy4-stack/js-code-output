@@ -2230,8 +2230,8 @@ function showCompilerVisualPreview(html) {
   preview.style.cssText += ";height:100%;min-height:320px;max-height:none;overflow:hidden";
   const frame = document.createElement("iframe");
   frame.title = "Python visual output";
-  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
-  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;border:0;background:#fff";
+  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-pointer-lock allow-downloads");
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;border:0;background:#080b14";
   preview.appendChild(frame);
   frame.srcdoc = html;
   preview.style.display = "block";
@@ -2416,8 +2416,29 @@ function runTurtlePreview(source) {
 }
 
 
+// Extract browser HTML from either a raw HTML document pasted into main.py or
+// a common Python pattern: html_code = """..."""; display(HTML(html_code)).
+// This fast path avoids booting a second Python runtime just to render browser code.
+function extractBrowserHTML(source) {
+  const raw = String(source || '').trim();
+  if (/^(?:<!doctype\s+html|<html[\s>])/i.test(raw)) return raw;
+
+  const variableDisplay = raw.match(/(?:display\s*\(\s*HTML\s*\(\s*|HTML\s*\(\s*)([A-Za-z_]\w*)\s*\)\s*\)?/);
+  if (variableDisplay) {
+    const name = variableDisplay[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const assignment = new RegExp('(?:^|\\n)\\s*(?:' + name + ')\\s*=\\s*[rRuU]{0,2}([\"\']{3})([\\s\\S]*?)\\1');
+    const found = raw.match(assignment);
+    if (found && /<html[\s>]|<!doctype|<canvas|<svg|<script/i.test(found[2])) return found[2];
+  }
+
+  // Also support HTML(...) with an inline triple-quoted string.
+  const inline = raw.match(/(?:display\s*\(\s*)?HTML\s*\(\s*[rRuU]{0,2}([\"\']{3})([\\s\\S]*?)\1\s*\)\s*\)?/);
+  if (inline && /<html[\s>]|<!doctype|<canvas|<svg|<script/i.test(inline[2])) return inline[2];
+  return null;
+}
+
 // Universal Python ↔ Browser visual bridge. Python runs in Pyodide inside the
-// isolated preview iframe; JavaScript graphics libraries share that same window.
+// preview iframe; browser graphics libraries execute in that same preview.
 function makePythonVisualHTML(source) {
   const safeSource = JSON.stringify(source).replace(/</g, "\\u003c");
   const wantsBabylon = /BABYLON|babylon/i.test(source);
@@ -2469,8 +2490,15 @@ function makePythonVisualHTML(source) {
   <\/script></body></html>`;
 }
 function runPythonVisualPreview(source) {
+  const browserHTML = extractBrowserHTML(source);
+  if (browserHTML) {
+    showCompilerVisualPreview(browserHTML);
+    $("output").textContent = "Browser preview ready. HTML, CSS, JavaScript, Canvas, SVG, WebGL, Three.js and Babylon.js are running directly in the isolated preview frame.";
+    setStatus("Browser visual preview ready");
+    return;
+  }
   showCompilerVisualPreview(makePythonVisualHTML(source));
-  $("output").textContent = "Browser visual bridge started. Python runs in Pyodide; HTML, Canvas, SVG, WebGL, Three.js and Babylon.js output can render in this preview. Some Python packages need compatible Pyodide builds and internet access.";
+  $("output").textContent = "Starting browser-side Python (Pyodide). Python DOM access through `from js import ...` is available in this mode. Package installation and startup require an internet connection.";
   setStatus("Python visual preview loading", true);
 }
 
@@ -2489,6 +2517,7 @@ async function executeProgram() {
   // Python graphics/browser-bridge projects must execute in the same browser
   // window as their WebGL/DOM libraries, not on the remote console compiler.
   if (fileName.endsWith(".py") && (
+      !!extractBrowserHTML(source) ||
       /(^|\n)\s*(import\s+js|from\s+js\s+import|from\s+pyodide\.ffi\s+import)/.test(source) ||
       /BABYLON|THREE|WebGLRenderer|requestAnimationFrame|plotly|IPython\.display|display\(HTML/.test(source)
   )) {
