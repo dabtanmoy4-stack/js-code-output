@@ -2464,14 +2464,28 @@ function makePythonVisualHTML(source) {
     #stage{position:absolute;inset:0;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
     #error{display:none;position:absolute;inset:12px;overflow:auto;white-space:pre-wrap;color:#ffb4b4;background:#190d18;border:1px solid #8b334a;border-radius:8px;padding:14px;z-index:110}
     canvas{max-width:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
-  </style>${scripts}<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"><\/script>
+  </style>
   </head><body><div id="stage"></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
   <script>
   (async()=>{
     const stage=document.getElementById('stage'),status=document.getElementById('status'),err=document.getElementById('error');
     const code=${safeSource};
+    const loadScript=(src,label)=>new Promise((resolve,reject)=>{
+      status.textContent='Loading '+label+'…';
+      const script=document.createElement('script'); script.src=src; script.async=true;
+      const timer=setTimeout(()=>{script.remove();reject(new Error(label+' load timed out after 45 seconds. Check internet/CDN access.'));},45000);
+      script.onload=()=>{clearTimeout(timer);resolve();};
+      script.onerror=()=>{clearTimeout(timer);reject(new Error('Could not load '+label+'. Check internet/CDN access.'));};
+      document.head.appendChild(script);
+    });
     try{
-      if(typeof loadPyodide!=='function') throw new Error('Pyodide failed to load. Check internet/CDN access.');
+      // Dynamically load dependencies so a blocked CDN reports an actionable error.
+      if(${wantsThree}) await loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js','Three.js');
+      if(${wantsBabylon}) await loadScript('https://cdn.babylonjs.com/babylon.js','Babylon.js');
+      if(${wantsPlotly}) await loadScript('https://cdn.plot.ly/plotly-2.35.2.min.js','Plotly.js');
+      await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js','Pyodide engine');
+      if(typeof loadPyodide!=='function') throw new Error('Pyodide loaded but loadPyodide() is unavailable.');
+      status.textContent='Initializing browser Python…';
       // Make graphics globals explicit for Python js module.
       if(window.THREE) window.THREE=THREE;
       if(window.BABYLON) window.BABYLON=BABYLON;
