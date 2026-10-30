@@ -1,9 +1,9 @@
-JS CODE OUTPUT — OnlineCompiler + Three.js
+JS PYTHON RUNNER BOOST — PYODIDE + THREE.JS
 
-1. Copy these files into your existing repository root.
-2. In Vercel Environment Variables, add ONLINECOMPILER_API_KEY with your OnlineCompiler API key.
-3. Redeploy.
-4. Open py_runner_boost.html, click Three.js Starter, then Run Code.
-5. The scene should appear in the 3D Preview tab. Three.js CDN requires internet access.
+1. Replace the old runner page with py_runner_boost.html.
+2. Copy api/run-code.js, package.json and vercel.json into the existing Vercel project.
+3. Keep ONLINECOMPILER_API_KEY in Vercel for ordinary Python API execution.
+4. Redeploy.
+5. Test examples/python-threejs-auto.py (colored spheres), then examples/threejs-solar-system.py.
 
-No E2B key, Ursina runtime URL, or Three.js API key is required by this bundle.
+Graphics support in this focused build: Pyodide + Three.js only. Babylon.js, Plotly, VPython and Turtle are intentionally not enabled.
