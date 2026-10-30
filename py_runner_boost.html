@@ -1507,7 +1507,6 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
           <div class="output-actions">
             <button class="btn fullscreen-btn" data-fullscreen="output-panel" title="Fullscreen output" aria-label="Fullscreen output"><svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg><span>Full screen</span></button>
             <!-- Masterclass Play Button SVG -->
-                  <button class="btn" id="threeStarterBtn" title="Load a ready-to-run Three.js scene">Three.js Starter</button>
                   <button class="btn gold run" id="runBtn">
                     <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
                       <defs>
@@ -1922,9 +1921,12 @@ function openFile(name) {
 
   editor.setOption("mode", fileMode(name));
   editor.setValue(String(files[name] ?? ""));
-  $("activeFileName").textContent = name;
-  $("editorFilePath").textContent = "my_project / " + name;
-  $("editorLanguage").textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
+  const activeFileNameEl = $("activeFileName");
+  if (activeFileNameEl) activeFileNameEl.textContent = name;
+  const editorFilePathEl = $("editorFilePath");
+  if (editorFilePathEl) editorFilePathEl.textContent = "my_project / " + name;
+  const editorLanguageEl = $("editorLanguage");
+  if (editorLanguageEl) editorLanguageEl.textContent = fileMode(name) === "python" ? "Python 3" : fileMode(name);
 
   renderTabs();
   renderTree();
@@ -2056,7 +2058,7 @@ function showOutputTab(tab) {
     if (!preview || !preview.childElementCount) {
       output.style.display = "";
       if (preview) preview.style.display = "none";
-      output.textContent = "Three.js 3D Preview is ready. Click Three.js Starter, then Run Code to render a scene.";
+      output.textContent = "Visual preview is ready. Run an HTML, CSS, JavaScript, Turtle or supported Python visual project to see its animation here.";
     }
   } else {
     $("consoleExtra").classList.remove("show");
@@ -2470,12 +2472,14 @@ async function executeProgram() {
     try {
       let browserHTML = source;
       if (/\.js$/.test(fileName)) {
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Three.js Preview</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101827}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        // Plain JavaScript runs directly in the browser preview. Three.js is made
+        // available globally for users who choose to use it; it is not required.
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
       showCompilerVisualPreview(browserHTML);
-      $("output").textContent = "Browser preview ready. Three.js scene, camera, animation and drag/zoom controls run in the 3D Preview panel. External libraries require internet access.";
+      $("output").textContent = "Browser preview ready. HTML, CSS and JavaScript animations run here. Three.js is available for 3D projects; ordinary JavaScript does not need it. External libraries require internet access.";
       showOutputTab("3dpreview");
       $("loaderTitle").textContent = "Preview ready";
       $("loaderSubtitle").textContent = "Browser file rendered in the output panel.";
@@ -2495,7 +2499,7 @@ async function executeProgram() {
   }
 
   let compiler;
-  if (fileName.endsWith(".py")) compiler = "python-3.14";
+  if (fileName.endsWith(".py")) compiler = "python";
   else {
     toast("This file type has no execution engine in this runner. Use .py for OnlineCompiler Python or .html/.css/.js for browser preview.");
     return;
@@ -2612,83 +2616,7 @@ function runProgram() {
   executeProgram();
 }
 
-const THREEJS_STARTER = `// JS CODE OUTPUT — Three.js starter
-// Scene + camera + renderer + animation + mouse orbit/zoom controls.
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x101827);
-
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(4, 3, 6);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.style.margin = "0";
-document.body.style.overflow = "hidden";
-document.body.appendChild(renderer.domElement);
-
-scene.add(new THREE.HemisphereLight(0xffffff, 0x334155, 2));
-const light = new THREE.DirectionalLight(0xffffff, 2.5);
-light.position.set(5, 8, 6);
-scene.add(light);
-
-const geometry = new THREE.TorusKnotGeometry(1, 0.28, 140, 18);
-const material = new THREE.MeshStandardMaterial({ color: 0xf5bd45, metalness: 0.35, roughness: 0.25 });
-const object = new THREE.Mesh(geometry, material);
-scene.add(object);
-
-const grid = new THREE.GridHelper(14, 14, 0x64748b, 0x273449);
-grid.position.y = -1.8;
-scene.add(grid);
-
-let dragging = false, lastX = 0, lastY = 0;
-let orbitX = 0.45, orbitY = 0.6, distance = 7;
-renderer.domElement.style.touchAction = "none";
-renderer.domElement.addEventListener("pointerdown", e => { dragging = true; lastX = e.clientX; lastY = e.clientY; renderer.domElement.setPointerCapture(e.pointerId); });
-renderer.domElement.addEventListener("pointerup", () => dragging = false);
-renderer.domElement.addEventListener("pointercancel", () => dragging = false);
-renderer.domElement.addEventListener("pointermove", e => {
-  if (!dragging) return;
-  orbitY -= (e.clientX - lastX) * 0.008;
-  orbitX = Math.max(-1.35, Math.min(1.35, orbitX + (e.clientY - lastY) * 0.008));
-  lastX = e.clientX; lastY = e.clientY;
-});
-renderer.domElement.addEventListener("wheel", e => {
-  distance = Math.max(2.5, Math.min(24, distance + e.deltaY * 0.012));
-  e.preventDefault();
-}, { passive: false });
-
-function animate(time) {
-  requestAnimationFrame(animate);
-  object.rotation.x = time * 0.00025;
-  object.rotation.z = time * 0.00018;
-  camera.position.set(
-    Math.sin(orbitY) * Math.cos(orbitX) * distance,
-    Math.sin(orbitX) * distance,
-    Math.cos(orbitY) * Math.cos(orbitX) * distance
-  );
-  camera.lookAt(0, 0, 0);
-  renderer.render(scene, camera);
-}
-requestAnimationFrame(animate);
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-`;
-const threeStarterButton = document.getElementById("threeStarterBtn");
-if (threeStarterButton) threeStarterButton.addEventListener("click", () => {
-  const name = "scene.js";
-  files[name] = THREEJS_STARTER;
-  if (!openTabs.includes(name)) openTabs.push(name);
-  activeFile = name;
-  persistWorkspace();
-  renderTree();
-  openFile(name);
-  showOutputTab("3dpreview");
-  toast("Three.js starter loaded. Press Run Code to see the 3D scene.");
-});
+/* Browser JavaScript preview is automatic: users can write Three.js or ordinary JS directly. */
 
 /* Drag-and-drop & File Importing */
 async function importFiles(fileArray, targetFolder = "") {
