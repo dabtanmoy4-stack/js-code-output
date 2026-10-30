@@ -1,0 +1,15 @@
+FIXES IN THIS VERSION
+1. CRASH FIX (main cause of "no output"): the Pyodide + Three.js iframe script had a JavaScript
+   SyntaxError (a "\n" inside the srcdoc template became a real line break), so the iframe never
+   started and Python/Three.js code showed nothing until a 90 s timeout. Fixed.
+2. Three.js CDN fallback: jsDelivr -> unpkg -> cdnjs (r159). If one CDN is blocked it tries the next.
+3. Helper names in the Python bridge no longer start with a double underscore, so .new({...})
+   works inside user-defined classes too (no more NameError from name mangling). Dicts in any
+   positional argument of .new(...) / .setValues(...) are converted to JS objects.
+4. Detection fixed: the plain word "three" in a program (e.g. print("three")) no longer switches to
+   the 3D runtime. Only real THREE / WebGLRenderer usage does. Files .html/.css/.js/.mjs are never
+   treated as Python.
+5. If a Python program draws no canvas, the Console tab is shown instead of an empty black preview.
+6. Errors thrown later inside animation callbacks are now forwarded to the Console (first 5).
+7. examples/threejs-demo.html used three@0.160.0/build/three.min.js, which does not exist
+   (removed in r160). Now uses r159.
