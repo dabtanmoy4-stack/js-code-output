@@ -1284,7 +1284,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   <!-- Header -->
   <header class="topbar">
     <div class="brand">
-      <div class="logo-wrap" title="JS CODE OUTPUT Python + Three.js">
+      <div class="logo-wrap" title="JS CODE OUTPUT Python + Visual Runtime">
         <!-- Masterclass Metallic 3D Python Emblem SVG -->
         <svg class="svg-ic" width="34" height="34" viewBox="0 0 128 128" fill="none">
           <defs>
@@ -1362,7 +1362,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   <div class="status-strip">
     <div class="status-left">
       <span class="status-item"><i class="dot" id="runtimeDot"></i><span id="runtimeStatus">Initializing Python...</span></span>
-      <span class="status-item"><i class="dot gold-dot"></i> Python 3 · Online Compiler</span>
+      <span class="status-item"><i class="dot gold-dot"></i> Python · Browser Runtime</span>
     </div>
     <div class="status-right">
       <span class="status-item">⏱ Runtime: <strong id="runtimeCount">0.000s</strong></span>
@@ -1499,7 +1499,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               Problems
             </button>
-            <button class="output-tab" data-output-tab="3dpreview" aria-label="Open Three.js 3D preview">
+            <button class="output-tab" data-output-tab="3dpreview" aria-label="Open visual preview">
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7 12 12 3 7 12 2Z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
               3D Preview
             </button>
@@ -1566,8 +1566,8 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   </div>
 
   <footer class="footer">
-    <span><strong>♛ JS CODE OUTPUT</strong> · Python + Three.js</span>
-    <span>Online Compiler API · <span id="footerStatus">Ready</span></span>
+    <span><strong>♛ JS CODE OUTPUT</strong> · Python + Visual Runtime</span>
+    <span>Multi-engine Runtime · <span id="footerStatus">Ready</span></span>
     <span>Made for developers ✦</span>
   </footer>
 </div>
@@ -2148,7 +2148,7 @@ function showRunningAnimation() {
 function hideRunningAnimation() {
   $("loaderWrap").classList.remove("show");
   $("runBtn").disabled = false;
-  $("runBtn").querySelector("span").textContent = "Run Python";
+  $("runBtn").querySelector("span").textContent = "Run Code";
 }
 
 function setWaitingForInput(promptText, resolve) {
@@ -2415,6 +2415,111 @@ function runTurtlePreview(source) {
   setStatus("Turtle preview ready");
 }
 
+// Universal visual runtime: detect common graphics libraries from source and
+// load only the browser-side libraries actually needed for this run.
+const VISUAL_LIBS = {
+  three: { url: "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js", test: () => !!window.THREE },
+  babylon: { url: "https://cdn.babylonjs.com/babylon.js", test: () => !!window.BABYLON },
+  plotly: { url: "https://cdn.plot.ly/plotly-2.35.2.min.js", test: () => !!window.Plotly }
+};
+const visualLibPromises = {};
+function loadVisualLibrary(name) {
+  const item = VISUAL_LIBS[name];
+  if (!item) return Promise.reject(new Error(`Unknown visual library: ${name}`));
+  if (item.test()) return Promise.resolve();
+  if (visualLibPromises[name]) return visualLibPromises[name];
+  visualLibPromises[name] = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = item.url;
+    script.async = true;
+    script.onload = () => item.test() ? resolve() : reject(new Error(`${name} loaded but its global API was not found.`));
+    script.onerror = () => reject(new Error(`Could not load ${name}. Check your internet connection or CDN access.`));
+    document.head.appendChild(script);
+  }).catch(error => { delete visualLibPromises[name]; throw error; });
+  return visualLibPromises[name];
+}
+function detectVisualEngines(source, fileName) {
+  const code = String(source || '');
+  const lower = code.toLowerCase();
+  const engines = new Set();
+  if (/\bthree\b|js\.three|three\.js|webglrenderer/i.test(code)) engines.add('three');
+  if (/\bbabylon\b|babylon\.js|babylonjs|\bnew\s+engine\s*\(/i.test(code)) engines.add('babylon');
+  if (/\bplotly\b|plotly\.express|plotly\.graph_objects/i.test(code)) engines.add('plotly');
+  if (/\bvpython\b|from\s+vpython\s+import|\bcanvas\s*\(/i.test(code)) engines.add('vpython');
+  // Plain visual JS/HTML can use the standard browser renderer without a library.
+  return { engines: [...engines], isPython: /\.py$/.test(fileName) || /^\s*(import\s+|from\s+|print\s*\(|def\s+|class\s+)/m.test(code) };
+}
+async function runPythonInIsolatedFrame(source, libraries) {
+  const preview = getCompilerVisualPreview();
+  const output = $('output');
+  if (!preview || !output) throw new Error('Visual preview panel is unavailable.');
+  preview.innerHTML = '';
+  preview.style.cssText = 'display:block;position:relative;flex:1 1 auto;width:100%;height:100%;min-height:360px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
+  const frame = document.createElement('iframe');
+  frame.title = 'Python visual runtime';
+  frame.setAttribute('sandbox', 'allow-scripts');
+  frame.style.cssText = 'display:block;width:100%;height:100%;min-height:360px;border:0;background:#080b14';
+  preview.appendChild(frame);
+  output.style.display = 'none';
+  const token = 'py-' + Math.random().toString(36).slice(2);
+  const scripts = libraries.filter(name => VISUAL_LIBS[name]).map(name => `<script src="${VISUAL_LIBS[name].url}"><\/script>`).join('');
+  const pyCode = JSON.stringify(source).replace(/</g, '\\u003c');
+  const installPlotly = libraries.includes('plotly');
+  const installVPython = libraries.includes('vpython');
+  frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:auto;background:#080b14;color:#e5e7eb;font:14px system-ui}#runner-status{padding:12px;color:#d8bd7a}</style>${scripts}<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"><\/script></head><body><div id="runner-status">Starting Python visual runtime…</div><script>
+  const RUNNER_TOKEN=${JSON.stringify(token)};
+  const send=(type,payload={})=>parent.postMessage({__jsco_runner:RUNNER_TOKEN,type,...payload},'*');
+  window.addEventListener('message',async event=>{
+    if(event.data?.__jsco_runner!==RUNNER_TOKEN||event.data.type!=='RUN')return;
+    try{
+      const py=await loadPyodide();
+      py.setStdout({batched:t=>send('STDOUT',{text:t})});
+      py.setStderr({batched:t=>send('STDERR',{text:t})});
+      if(${installPlotly}){
+        await py.loadPackage('micropip');
+        await py.runPythonAsync("import micropip\\nawait micropip.install('plotly')");
+        window.__plotly_render=(json)=>{const data=JSON.parse(json);let host=document.getElementById('plotly-output');if(!host){host=document.createElement('div');host.id='plotly-output';host.style.cssText='width:100%;height:100%;min-height:360px';document.body.appendChild(host)};return Plotly.newPlot(host,data.data||[],data.layout||{}, {responsive:true})};
+        await py.runPythonAsync("import plotly.basedatatypes as _pbt, js\\ndef _jsco_show(self, *args, **kwargs):\\n    js.__plotly_render(self.to_json())\\n_pbt.BaseFigure.show = _jsco_show");
+      }
+      if(${installVPython}){
+        await py.loadPackage('micropip');
+        await py.runPythonAsync("import micropip\\nawait micropip.install('vpython')");
+      }
+      await py.runPythonAsync("import builtins, js\\nbuiltins.input = lambda prompt='': js.prompt(str(prompt))");
+      document.getElementById('runner-status')?.remove();
+      await py.runPythonAsync(${pyCode});
+      send('DONE');
+    }catch(error){send('ERROR',{text:String(error?.message||error)});}
+  });
+  (async()=>{try{await new Promise((resolve,reject)=>{if(typeof loadPyodide!=='function')return reject(new Error('Pyodide could not load'));const test=document.createElement('script');test.src='';resolve()});send('READY')}catch(e){send('ERROR',{text:String(e.message||e)})}})();
+  <\/script></body></html>`;
+  return await new Promise((resolve, reject) => {
+    let finished = false;
+    const timeout = setTimeout(() => finish(new Error('Python runtime startup timed out. Check CDN access and internet connection.')), 90000);
+    const finish = error => { if (finished) return; finished = true; clearTimeout(timeout); window.removeEventListener('message', onMessage); if (error) reject(error); else resolve(); };
+    const onMessage = event => {
+      if (event.source !== frame.contentWindow || event.data?.__jsco_runner !== token) return;
+      const data = event.data;
+      if (data.type === 'READY') frame.contentWindow.postMessage({__jsco_runner:token,type:'RUN'}, '*');
+      else if (data.type === 'STDOUT') writeOutput(String(data.text || '') + (String(data.text || '').endsWith('\n') ? '' : '\n'));
+      else if (data.type === 'STDERR') { const t=String(data.text||''); currentErrors.push(t); writeOutput(t+'\n','error'); }
+      else if (data.type === 'ERROR') finish(new Error(data.text || 'Python runtime error'));
+      else if (data.type === 'DONE') finish();
+    };
+    window.addEventListener('message', onMessage);
+  });
+}
+
+function showPythonVisualSurface() {
+  const preview = getCompilerVisualPreview();
+  const output = $('output');
+  if (!preview || !output) return;
+  preview.innerHTML = '';
+  preview.style.cssText = 'display:block;position:relative;flex:1 1 auto;width:100%;height:100%;min-height:360px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
+  output.style.display = '';
+  showOutputTab('3dpreview');
+}
+
 async function executeProgram() {
   if (running) return;
   saveActiveFile();
@@ -2427,74 +2532,71 @@ async function executeProgram() {
 
   const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
 
-  // Basic Turtle drawings are rendered locally in a browser Canvas. Other Python
-  // code runs through the OnlineCompiler-backed Vercel API route.
-  if (fileName.endsWith(".py") && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
-    running = true;
-    currentOutputText = "";
-    currentErrors = [];
-    waitingForInput = null;
-    $("output").textContent = "";
-    $("consoleExtra").classList.remove("show");
-    showOutputTab("output");
-    showRunningAnimation();
-    startRuntimeClock();
+  const detected = detectVisualEngines(source, fileName);
+  const wantsPython = fileName.endsWith('.py') || detected.isPython;
+  const visualEngines = detected.engines;
+
+  // Keep the fast Turtle compatibility renderer for its supported subset.
+  if (wantsPython && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
+    running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
+    $('output').textContent = ''; $('consoleExtra').classList.remove('show'); showOutputTab('output');
+    showRunningAnimation(); startRuntimeClock();
     try {
       runTurtlePreview(source);
-      $("loaderTitle").textContent = "Preview ready";
-      $("loaderSubtitle").textContent = "Turtle animation rendered in the browser.";
-    } catch (error) {
-      writeOutput(String(error.message || error) + "\\n", "error");
-      setStatus("Preview error");
-    } finally {
-      stopRuntimeClock();
-      running = false;
-      hideRunningAnimation();
-      $("runBtn").disabled = false;
-      $("runBtn").querySelector("span").textContent = "Run Code";
-      $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
-    }
+      $('loaderTitle').textContent = 'Preview ready';
+      $('loaderSubtitle').textContent = 'Turtle drawing rendered in the browser.';
+    } catch (error) { writeOutput(String(error.message || error) + "\n", 'error'); setStatus('Preview error'); }
+    finally { stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false; $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent; }
     return;
   }
 
-  // Browser-native files (HTML/CSS/client-side JS) run locally in a sandboxed iframe.
-  // This enables WebGL/Three.js demos without pretending they are Python programs.
-  if (/\.(html?|css|js)$/.test(fileName)) {
-    running = true;
-    currentOutputText = "";
-    currentErrors = [];
-    waitingForInput = null;
-    $("output").textContent = "";
-    $("consoleExtra").classList.remove("show");
-    showOutputTab("output");
-    showRunningAnimation();
-    startRuntimeClock();
+  // Browser-native HTML/CSS/JS always runs locally. Libraries are loaded on demand,
+  // so users do not need to select Three.js, Babylon.js or Plotly themselves.
+  if (!wantsPython && /\.(html?|css|js)$/.test(fileName)) {
+    running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
+    $('output').textContent = ''; $('consoleExtra').classList.remove('show'); showOutputTab('output');
+    showRunningAnimation(); startRuntimeClock();
     try {
+      for (const lib of visualEngines) if (VISUAL_LIBS[lib]) await loadVisualLibrary(lib);
       let browserHTML = source;
       if (/\.js$/.test(fileName)) {
-        // Plain JavaScript runs directly in the browser preview. Three.js is made
-        // available globally for users who choose to use it; it is not required.
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        const scripts = [];
+        for (const lib of visualEngines) if (VISUAL_LIBS[lib]) scripts.push(`<script src="${VISUAL_LIBS[lib].url}"><\/script>`);
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Live Preview</title><style>html,body{margin:0;width:100%;min-height:100%;overflow:auto;background:#080b14}canvas{display:block}</style>${scripts.join('')}</head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${source}</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
       showCompilerVisualPreview(browserHTML);
-      $("output").textContent = "Browser preview ready. HTML, CSS and JavaScript animations run here. Three.js is available for 3D projects; ordinary JavaScript does not need it. External libraries require internet access.";
-      showOutputTab("3dpreview");
-      $("loaderTitle").textContent = "Preview ready";
-      $("loaderSubtitle").textContent = "Browser file rendered in the output panel.";
-      setStatus("Browser preview ready");
+      $('output').textContent = 'Preview ready. Detected: ' + (visualEngines.join(', ') || 'standard browser rendering') + '.';
+      showOutputTab('3dpreview'); $('loaderTitle').textContent = 'Preview ready'; $('loaderSubtitle').textContent = 'Your visual project is running.'; setStatus('Browser preview ready');
     } catch (error) {
-      writeOutput(String(error && error.message ? error.message : error) + "\n", "error");
-      setStatus("Preview error");
-    } finally {
-      stopRuntimeClock();
-      running = false;
-      hideRunningAnimation();
-      $("runBtn").disabled = false;
-      $("runBtn").querySelector("span").textContent = "Run Code";
-      $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
-    }
+      currentErrors.push(String(error.message || error)); writeOutput(String(error.message || error) + '\n', 'error');
+      $('loaderTitle').textContent = 'Preview could not start'; $('loaderSubtitle').textContent = 'Check the library connection or code.'; setStatus('Preview error');
+    } finally { stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false; $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent; }
+    return;
+  }
+
+  // Python uses Pyodide in the browser. If it references a graphics library,
+  // load that library first and expose it through Pyodide's `js` bridge.
+  if (wantsPython && visualEngines.length > 0) {
+    running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
+    hideCompilerVisualPreview(); $('output').textContent = ''; $('consoleExtra').classList.remove('show');
+    showOutputTab('output'); showRunningAnimation(); startRuntimeClock();
+    try {
+      const needsVisualFrame = visualEngines.some(name => ['three','babylon','plotly','vpython'].includes(name));
+      if (needsVisualFrame) {
+        await runPythonInIsolatedFrame(source, visualEngines);
+        showOutputTab('3dpreview');
+      } else {
+        await runInPyodide(source);
+      }
+      $('loaderTitle').textContent = 'Execution finished'; $('loaderSubtitle').textContent = 'Python program completed in the browser.';
+      setStatus('Python runtime ready');
+    } catch (error) {
+      const message = String(error && error.message ? error.message : error);
+      currentErrors.push(message); writeOutput('\n' + message + '\n', 'error');
+      $('loaderTitle').textContent = 'Execution stopped'; $('loaderSubtitle').textContent = 'The runtime reported an error; see the console.'; setStatus('Execution error');
+    } finally { stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false; $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent; }
     return;
   }
 
