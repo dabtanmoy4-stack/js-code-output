@@ -119,6 +119,14 @@
   .app-brand { display:flex;align-items:center;gap:9px;min-width:0; }
   .app-brand h1 { font-size:12px;margin:0;font-weight:950;letter-spacing:.09em; }
   .app-brand p { font-size:8px;margin:2px 0 0;color:var(--muted); }
+  .app-brand { gap:10px; }
+  .app-brand-logo { width:34px;height:34px;flex:0 0 34px;border-radius:10px;object-fit:cover;border:1px solid var(--line);box-shadow:0 3px 10px rgba(5,5,5,.16); }
+  .runner-brand-title { display:flex;align-items:center;gap:5px;font-size:15px!important;line-height:1.1;letter-spacing:-.025em!important;font-weight:900!important;white-space:nowrap; }
+  .runner-brand-js { display:inline-block;background:linear-gradient(90deg,#ff3b30,#ff9f0a,#ffd60a,#34c759,#00c7be,#0a84ff,#bf5af2,#ff3b30);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:runnerJsSpectrum 4s linear infinite; }
+  .runner-brand-rest { color:var(--ink); }
+  .runner-brand-subtitle { font-size:7px!important;letter-spacing:.16em;margin-top:4px!important;font-weight:800; }
+  @keyframes runnerJsSpectrum { 0%{background-position:0% 50%}100%{background-position:300% 50%} }
+  @media(prefers-reduced-motion:reduce){.runner-brand-js{animation:none;background-position:0 50%;}}
   .project-switcher { position:relative; }
   .current-project { max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:6px;font-weight:700;border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px 12px;font-size:11px; }
   .project-menu { position:absolute;left:0;top:40px;width:300px;background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);z-index:500;overflow:hidden; }
@@ -329,6 +337,10 @@
   .context-menu { position: fixed; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 4px; z-index: 10000; display: none; flex-direction: column; min-width: 140px; }
   .context-menu button { text-align: left; padding: 8px 12px; font-size: 11px; border-radius: 4px; border: none; background: transparent; color: var(--ink); display: flex; align-items: center; gap: 8px; }
   .context-menu button:hover { background: var(--surface2); color: var(--brand); }
+  .cm-submenu{display:none;flex-direction:column;padding:3px 0 3px 12px;margin:0 0 3px 8px;border-left:1px solid var(--line)}
+  .cm-submenu.show{display:flex}
+  .cm-submenu button{font-size:10px;padding:8px 10px}
+
   .CodeMirror-lint-marker-error { background:#8a6500!important;border-radius:50%;width:8px;height:8px; }
   .CodeMirror-lint-mark-error { border-bottom:2px wavy #8a6500!important; }
   .CodeMirror-hints { background:#050505!important;border:1px solid #050505!important;border-radius:8px;color:#d4af37!important; font-family:"Fira Code",monospace; font-size:12px; z-index:1000; box-shadow:0 10px 30px rgba(5,5,5,0.8); }
@@ -2124,6 +2136,82 @@ html.dark .CodeMirror-dialog input {
 }
 </style>
 
+<style>
+/* Compact Explorer header project selector */
+.explorer-head{
+  position:relative!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  padding:0 7px!important;
+  overflow:visible!important;
+  z-index:40;
+}
+.explorer-title{
+  flex:0 0 auto;
+  font-size:9px;
+  letter-spacing:.08em;
+}
+.explorer-project-switcher{
+  flex:1 1 auto;
+  min-width:0;
+  margin:0!important;
+}
+.explorer-project-switcher .current-project{
+  width:100%;
+  max-width:100%!important;
+  min-width:0;
+  height:28px!important;
+  padding:4px 6px!important;
+  gap:4px!important;
+  font-size:9px!important;
+}
+.explorer-project-switcher .current-project #currentProjectName{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.explorer-project-switcher .project-menu{
+  top:34px!important;
+  left:0!important;
+  width:260px!important;
+  max-width:min(260px,calc(100vw - 24px))!important;
+  z-index:10000!important;
+}
+.explorer-create-actions{
+  flex:0 0 auto;
+  gap:3px!important;
+}
+.explorer-create-actions .tool-btn{
+  width:25px;
+  height:25px;
+  min-width:25px;
+  padding:0!important;
+}
+.editor-toolbar-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:4px;
+  flex:0 0 auto;
+}
+.editor-toolbar-actions .tool-btn{
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  padding:0!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+@media(max-width:700px){
+  .explorer-head{gap:5px!important;padding:0 6px!important}
+  .explorer-title{font-size:8px}
+  .explorer-project-switcher .current-project{padding:4px!important}
+  .editor-toolbar-actions{gap:3px}
+  .editor-toolbar-actions .tool-btn{width:27px!important;min-width:27px!important;height:27px!important}
+}
+</style>
 </head>
 <body>
 
@@ -2179,34 +2267,12 @@ html.dark .CodeMirror-dialog input {
 <header id="topHeader">
 <div class="header-left">
 <button class="app-btn mobile-explorer-toggle" data-tour="mobile-explorer" onclick="toggleExplorerMenu()" title="Toggle Files"><i class="fa-solid fa-folder-tree"></i></button>
-<div class="app-brand cursor-pointer hidden sm:flex" onclick="toggleProjectSwitcher(event)">
-<img alt="JS CODE OUTPUT Logo" class="w-6 h-6 rounded-md shadow-sm object-cover" src="logo.jpeg"/>
+<div class="app-brand cursor-pointer" onclick="toggleProjectSwitcher(event)" aria-label="JS HTML Runner">
+<img alt="JS HTML Runner Logo" class="app-brand-logo" src="logo.jpeg"/>
 <div>
-<h1>JS CODE OUTPUT</h1>
-<p>LIVE DEVELOPER ENVIRONMENT</p>
+<h1 class="runner-brand-title"><span class="runner-brand-js">JS</span><span class="runner-brand-rest">HTML Runner</span></h1>
+<p class="runner-brand-subtitle">LIVE CODE WORKSPACE</p>
 </div>
-</div>
-<div class="project-switcher ml-1 sm:ml-4">
-<button class="current-project" data-tour="project-switcher" id="currentProjectButton" onclick="toggleProjectSwitcher(event)">
-<i class="fa-solid fa-folder-open text-blue-500"></i>
-<span id="currentProjectName">Untitled Project</span>
-<i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
-</button>
-<div class="project-menu hidden" id="projectSwitcherMenu">
-<div class="project-menu-head">
-<div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
-<div class="text-xs font-extrabold mt-1" id="dropdownCurrentProject">Untitled Project</div>
-</div>
-<div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
-<div class="project-list" id="headerProjectsList"></div>
-<div class="p-2 border-t border-[var(--line)]">
-<button class="app-btn w-full justify-center" onclick="headerAddProject()">+ Add Project</button>
-</div>
-</div>
-</div>
-<div aria-label="Code search tools" class="project-search-actions">
-<button aria-label="Search Code" class="tool-btn" data-tour="search-code" onclick="triggerSearch()" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
-<button aria-label="Find and Replace" class="tool-btn" onclick="triggerReplace()" title="Find &amp; Replace (Ctrl+H)"><i class="fa-solid fa-arrow-right-arrow-left text-xs"></i></button>
 </div>
 </div>
 <div class="header-actions-scroll">
@@ -2273,23 +2339,32 @@ html.dark .CodeMirror-dialog input {
 <div class="hidden absolute inset-0 bg-black/60 z-50 backdrop-blur-sm transition-opacity" id="explorer-overlay" onclick="toggleExplorerMenu()"></div>
 <aside class="explorer" data-tour="explorer">
 <div class="explorer-head">
-<span>EXPLORER</span>
-<div class="flex gap-1">
+<span class="explorer-title">EXPLORER</span>
+<div class="project-switcher explorer-project-switcher">
+<button class="current-project" data-tour="project-switcher" id="currentProjectButton" onclick="toggleProjectSwitcher(event)">
+<i class="fa-solid fa-folder-open text-blue-500"></i>
+<span id="currentProjectName">Untitled Project</span>
+<i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+</button>
+<div class="project-menu hidden" id="projectSwitcherMenu">
+<div class="project-menu-head">
+<div class="text-[9px] uppercase tracking-wider text-gray-400 font-bold">Current Workspace</div>
+<div class="text-xs font-extrabold mt-1" id="dropdownCurrentProject">Untitled Project</div>
+</div>
+<div class="px-3 py-2 text-[9px] uppercase tracking-wider text-gray-400 font-bold">Your Projects</div>
+<div class="project-list" id="headerProjectsList"></div>
+<div class="p-2 border-t border-[var(--line)]">
+<button class="app-btn w-full justify-center" onclick="headerAddProject()">+ Add Project</button>
+</div>
+</div>
+</div>
+
+<div class="flex gap-1 explorer-create-actions">
 <button type="button" class="tool-btn" onclick="createNewFile()" style="padding:2px 6px" title="New File"><i class="fa-solid fa-file-circle-plus"></i></button>
 <button type="button" class="tool-btn" onclick="createNewFolder()" style="padding:2px 6px" title="New Folder"><i class="fa-solid fa-folder-plus"></i></button>
 </div>
 </div>
 <div class="explorer-body" id="fileExplorer"></div>
-<div class="explorer-actions" data-tour="file-actions">
-<div class="action-row">
-<button type="button" onclick="createNewFile()"><i class="fa-solid fa-file-circle-plus"></i> File</button>
-<button type="button" onclick="createNewFolder()"><i class="fa-solid fa-folder-plus"></i> Folder</button>
-</div>
-<div class="action-row">
-<button onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-upload"></i> Files</button>
-<button onclick="document.getElementById('folderUpload').click()"><i class="fa-solid fa-upload"></i> Folder</button>
-</div>
-</div>
 </aside>
 <input accept="*" hidden="" id="fileUpload" multiple="" onchange="handleFileUpload(event)" title="Supported file size: under 900 KB" type="file"/>
 <input accept="*" directory="" hidden="" id="folderUpload" multiple="" onchange="handleFolderUpload(event)" title="Supported file size: under 900 KB per file" type="file" webkitdirectory=""/>
@@ -2297,9 +2372,11 @@ html.dark .CodeMirror-dialog input {
 <section class="editor-panel" data-tour="editor-panel" id="editorPanelContainer">
 <div class="editor-tabs" data-tour="editor-tabs">
 <div class="tabs" id="tabs"></div>
-<div class="flex gap-1">
-<button class="tool-btn" onclick="toggleEditorFullscreen()" style="padding:4px 8px" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
-<button aria-label="All Clear" class="tool-btn" onclick="clearEditors()" style="padding:4px 8px" title="All Clear"><i class="fa-solid fa-eraser"></i></button>
+<div class="editor-toolbar-actions">
+<button aria-label="Search Code" class="tool-btn" data-tour="search-code" onclick="triggerSearch()" title="Search Code (Ctrl+F)"><i class="fa-solid fa-magnifying-glass"></i></button>
+<button aria-label="Find and Replace" class="tool-btn" onclick="triggerReplace()" title="Find &amp; Replace (Ctrl+H)"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+<button class="tool-btn" onclick="toggleEditorFullscreen()" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
+<button aria-label="All Clear" class="tool-btn" onclick="clearEditors()" title="All Clear"><i class="fa-solid fa-eraser"></i></button>
 </div>
 </div>
 <div class="code-search-panel jco-github-search" id="codeSearchPanel" role="search" aria-label="Search and replace">
@@ -2497,8 +2574,16 @@ https://unpkg.com/react@18/umd/react.production.min.js"></textarea>
 <button class="danger" id="projectCtxDelete"><i class="fa-solid fa-trash"></i> Delete Project</button>
 </div>
 <div class="context-menu" id="customContextMenu">
-<button id="cm-add-file" onclick="cmAddFile()"><i class="fa-solid fa-file-circle-plus"></i> Add File</button>
-<button id="cm-add-folder" onclick="cmAddFolder()"><i class="fa-solid fa-folder-plus"></i> Add Folder</button>
+<button id="cm-add-file" type="button" onclick="cmToggleSubmenu('file',event)"><i class="fa-solid fa-file-circle-plus"></i> Add File <i class="fa-solid fa-chevron-right" style="margin-left:auto"></i></button>
+<button id="cm-add-folder" type="button" onclick="cmToggleSubmenu('folder',event)"><i class="fa-solid fa-folder-plus"></i> Add Folder <i class="fa-solid fa-chevron-right" style="margin-left:auto"></i></button>
+<div class="cm-submenu" id="cm-file-submenu">
+<button type="button" onclick="cmUpload('file',event)"><i class="fa-solid fa-upload"></i> Upload File</button>
+<button type="button" onclick="cmCreate('file',event)"><i class="fa-solid fa-file-circle-plus"></i> Create File</button>
+</div>
+<div class="cm-submenu" id="cm-folder-submenu">
+<button type="button" onclick="cmUpload('folder',event)"><i class="fa-solid fa-upload"></i> Upload Folder</button>
+<button type="button" onclick="cmCreate('folder',event)"><i class="fa-solid fa-folder-plus"></i> Create Folder</button>
+</div>
 <button id="cm-rename" onclick="cmRename()"><i class="fa-solid fa-pen"></i> Rename</button>
 <button id="cm-delete" onclick="cmDelete()"><i class="fa-solid fa-trash text-red-500"></i> Delete</button>
 <button id="cm-copy-file" onclick="cmCopyFile()"><i class="fa-solid fa-copy"></i> Copy File</button>
@@ -2699,7 +2784,6 @@ onAuthStateChanged(auth, user => {
   const tour = [
     {key:"project-switcher",title:"Project Switcher",text:"Switch between your projects from here. Your current project is always shown at the top.",label:"PROJECTS",prefer:"bottom"},
     {key:"explorer",mobileKey:"mobile-explorer",title:"File Explorer",text:"Manage your project files and folders here. On mobile, use the folder button to open this panel.",label:"FILES",prefer:"right"},
-    {key:"file-actions",title:"Create & Upload",text:"Create files or folders, or upload existing files and folders into the current project.",label:"FILE TOOLS",prefer:"right"},
     {key:"editor-tabs",title:"Editor Tabs",text:"Your project files appear as tabs here, so you can move between files quickly.",label:"TABS",prefer:"bottom"},
     {key:"search-code",title:"Search & Replace",text:"Find and replace code inside the active file instantly with regex support.",label:"SEARCH",prefer:"bottom"},
     {key:"code-editor",title:"Code Editor",text:"This is your main ultra-black high-contrast coding area with bracket and tag pairing.",label:"EDITOR",prefer:"right"},
@@ -3581,38 +3665,52 @@ showToast("Formatter not available for this file type.");
 }
 }
 
-let cmTarget = null;
-let cmIsDir = false;
-window.showContextMenu = function(e, path, isDir) {
-e.preventDefault();
-e.stopPropagation();
-cmTarget = path;
-cmIsDir = isDir;
-
-const menu = document.getElementById('customContextMenu');
-menu.style.display = 'flex';
-
-const x = e.pageX;
-const y = e.pageY;
-
-menu.style.left = x + 'px';
-menu.style.top = y + 'px';
-
-document.getElementById('cm-add-file').style.display = isDir ? 'flex' : 'none';
-document.getElementById('cm-add-folder').style.display = isDir ? 'flex' : 'none';
-document.getElementById('cm-rename').style.display = 'flex';
-document.getElementById('cm-delete').style.display = 'flex';
- document.getElementById('cm-copy-file').style.display = isDir ? 'none' : 'flex';
- document.getElementById('cm-download-file').style.display = isDir ? 'none' : 'flex';
-
+let cmTarget = "";
+let cmBasePath = "";
+let cmIsDir = true;
+let cmUploadBasePath = "";
+window.showContextMenu = function(e, path = "", isDir = true) {
+ e.preventDefault(); e.stopPropagation();
+ cmTarget = path || "";
+ cmIsDir = !!isDir;
+ cmBasePath = !path ? "" : (isDir ? path : (path.includes("/") ? path.slice(0, path.lastIndexOf("/") + 1) : ""));
+ const menu = document.getElementById('customContextMenu');
+ menu.querySelectorAll('.cm-submenu').forEach(x=>x.classList.remove('show'));
+ menu.style.display = 'flex';
+ const x = e.pageX ?? (e.clientX + window.scrollX) ?? 10;
+ const y = e.pageY ?? (e.clientY + window.scrollY) ?? 10;
+ menu.style.left = Math.max(6, Math.min(x, window.innerWidth - menu.offsetWidth - 8)) + 'px';
+ menu.style.top = Math.max(6, Math.min(y, window.innerHeight - menu.offsetHeight - 8)) + 'px';
+ document.getElementById('cm-add-file').style.display = 'flex';
+ document.getElementById('cm-add-folder').style.display = 'flex';
+ document.getElementById('cm-rename').style.display = path ? 'flex' : 'none';
+ document.getElementById('cm-delete').style.display = path ? 'flex' : 'none';
+ document.getElementById('cm-copy-file').style.display = path && !isDir ? 'flex' : 'none';
+ document.getElementById('cm-download-file').style.display = path && !isDir ? 'flex' : 'none';
 };
-
-window.cmAddFile = function() {
-if(cmTarget) window.createNewFile(cmTarget);
+window.cmToggleSubmenu = function(type,e){
+ if(e){e.preventDefault();e.stopPropagation();}
+ const id = type === 'file' ? 'cm-file-submenu' : 'cm-folder-submenu';
+ const target = document.getElementById(id);
+ document.querySelectorAll('.cm-submenu').forEach(x=>{if(x!==target)x.classList.remove('show');});
+ target.classList.toggle('show');
 };
-window.cmAddFolder = function() {
-if(cmTarget) window.createNewFolder(cmTarget);
+window.cmCreate = function(type,e){
+ if(e){e.preventDefault();e.stopPropagation();}
+ const base = cmBasePath || "";
+ document.getElementById('customContextMenu').style.display='none';
+ if(type==='file') window.createNewFile(base); else window.createNewFolder(base);
 };
+window.cmUpload = function(type,e){
+ if(e){e.preventDefault();e.stopPropagation();}
+ cmUploadBasePath = cmBasePath || "";
+ document.getElementById('customContextMenu').style.display='none';
+ const input = document.getElementById(type==='file'?'fileUpload':'folderUpload');
+ input.value = "";
+ input.click();
+};
+window.cmAddFile = function(){ window.cmToggleSubmenu('file'); };
+window.cmAddFolder = function(){ window.cmToggleSubmenu('folder'); };
 window.cmDelete = function() {
 if(cmTarget) window.deleteItem(cmTarget);
 };
@@ -4212,6 +4310,10 @@ function renderFileExplorer(){
 const el = document.getElementById("fileExplorer");
 if(!el) return;
 el.innerHTML = "";
+el.oncontextmenu = function(e){
+ if(e.target.closest('.tree-item')) return;
+ window.showContextMenu(e, "", true);
+};
 
 const root = Object.create(null);
 Object.keys(files).sort().forEach(path => {
@@ -4237,6 +4339,24 @@ function attachDragDrop(div, path, isDir) {
   div.draggable = true;
   div.dataset.path = path;
   div.dataset.dir = isDir ? "true" : "false";
+
+  let longPressTimer = null, touchMoved = false;
+  div.addEventListener("touchstart", (e) => {
+    if(e.touches.length !== 1) return;
+    touchMoved = false;
+    const touch = e.touches[0];
+    longPressTimer = setTimeout(() => {
+      if(touchMoved) return;
+      const fakeEvent = {
+        preventDefault(){}, stopPropagation(){},
+        pageX: touch.clientX + window.scrollX,
+        pageY: touch.clientY + window.scrollY
+      };
+      window.showContextMenu(fakeEvent, path, isDir);
+    }, 550);
+  }, {passive:true});
+  div.addEventListener("touchmove", () => { touchMoved=true; clearTimeout(longPressTimer); }, {passive:true});
+  ["touchend","touchcancel"].forEach(type=>div.addEventListener(type,()=>clearTimeout(longPressTimer),{passive:true}));
 
   div.addEventListener("dragstart", (e) => {
     e.stopPropagation();
@@ -4885,7 +5005,8 @@ e.target.value = "";
 return;
 }
 
-results.forEach(x => addUploadedFilePath(x.path, x.content));
+results.forEach(x => addUploadedFilePath((cmUploadBasePath || "") + x.path, x.content));
+cmUploadBasePath = "";
 
 window.files = files;
 hasTypedInSession = true;
@@ -4920,7 +5041,8 @@ e.target.value = "";
 return;
 }
 
-results.forEach(x => addUploadedFilePath(x.path, x.content));
+results.forEach(x => addUploadedFilePath((cmUploadBasePath || "") + x.path, x.content));
+cmUploadBasePath = "";
 
 window.files = files;
 hasTypedInSession = true;
