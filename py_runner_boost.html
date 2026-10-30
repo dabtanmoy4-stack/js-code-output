@@ -2327,6 +2327,79 @@ function showOnlineCompilerResultsPreview(results) {
   output.style.display = "";
   return true;
 }
+
+// Extract images printed by Python using IMAGE_BASE64_START / IMAGE_BASE64_END.
+// This works with the existing OnlineCompiler stdout response; no API change is required.
+function extractPrintedBase64Images(text) {
+  const images = [];
+  const cleaned = String(text || "").replace(
+    /IMAGE_BASE64_START\s*([\s\S]*?)\s*IMAGE_BASE64_END/g,
+    (_match, payload) => {
+      let value = String(payload || "").replace(/\s+/g, "");
+      let mime = "image/png";
+      const dataUri = value.match(/^data:(image\/(?:png|jpeg|jpg|webp));base64,/i);
+      if (dataUri) {
+        mime = dataUri[1].toLowerCase().replace("image/jpg", "image/jpeg");
+        value = value.slice(dataUri[0].length);
+      }
+      // Reject malformed or excessively large output rather than breaking the Output panel.
+      if (value.length > 16 * 1024 * 1024 || !/^[A-Za-z0-9+/]*={0,2}$/.test(value) || value.length < 32) {
+        images.push({ error: "An image marker was found, but its Base64 data is invalid or too large." });
+      } else {
+        images.push({ mime, data: value });
+      }
+      return "\n[Image rendered in Preview]\n";
+    }
+  );
+  return { text: cleaned, images };
+}
+
+function showPrintedBase64Images(images) {
+  if (!Array.isArray(images) || !images.length) return false;
+  const preview = getCompilerVisualPreview();
+  const output = $("output");
+  if (!preview || !output) return false;
+
+  preview.replaceChildren();
+  preview.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:12px;flex:0 0 auto;width:100%;min-height:180px;max-height:65vh;padding:12px;background:#fff;border-radius:8px;overflow:auto";
+
+  let rendered = 0;
+  for (const item of images) {
+    if (item.error) {
+      const note = document.createElement("div");
+      note.textContent = item.error;
+      note.style.cssText = "color:#b91c1c;font:12px Inter,sans-serif;padding:10px";
+      preview.appendChild(note);
+      continue;
+    }
+    const figure = document.createElement("figure");
+    figure.style.cssText = "margin:0;width:100%;display:flex;flex-direction:column;align-items:center;gap:7px";
+    const img = document.createElement("img");
+    img.alt = "Python generated image";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.style.cssText = "display:block;max-width:100%;max-height:60vh;width:auto;height:auto;object-fit:contain;background:#fff";
+    img.src = `data:${item.mime};base64,${item.data}`;
+    img.addEventListener("error", () => {
+      img.replaceWith(Object.assign(document.createElement("div"), {
+        textContent: "The returned image data could not be decoded."
+      }));
+    }, { once: true });
+    figure.appendChild(img);
+    const caption = document.createElement("figcaption");
+    caption.textContent = "Python image output";
+    caption.style.cssText = "font:11px Inter,sans-serif;color:#475569;text-align:center";
+    figure.appendChild(caption);
+    preview.appendChild(figure);
+    rendered++;
+  }
+
+  preview.style.display = "flex";
+  output.style.display = "";
+  if (rendered) showOutputTab("3dpreview");
+  return rendered > 0;
+}
+
 function hideCompilerVisualPreview() {
   const preview = document.getElementById("compilerVisualPreview");
   const output = $("output");
@@ -2737,6 +2810,8 @@ async function executeProgram() {
       ? result.results.map(item => item && typeof item.text === "string" ? item.text : "").filter(Boolean).join("\\n")
       : "";
     let outputText = String(result.output || result.stdout || resultText || "");
+    const printedImageResult = extractPrintedBase64Images(outputText);
+    outputText = printedImageResult.text;
     const errorText = String(result.error || result.stderr || "");
     if (Array.isArray(result.installedPackages) && result.installedPackages.length) {
       writeOutput("Auto-installed packages for this run: " + result.installedPackages.join(", ") + "\n", "success");
@@ -2748,7 +2823,9 @@ async function executeProgram() {
     // Render browser-safe HTML/images returned by the OnlineCompiler API while keeping text in the console.
     const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
     const previewURL = result.preview_url || result.animation_url || "";
-    if (previewHTML && typeof previewHTML === "string") {
+    if (printedImageResult.images.length) {
+      showPrintedBase64Images(printedImageResult.images);
+    } else if (previewHTML && typeof previewHTML === "string") {
       showCompilerVisualPreview(previewHTML);
     } else if (previewURL && typeof previewURL === "string") {
       showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
