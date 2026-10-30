@@ -2465,7 +2465,7 @@ function makePythonVisualHTML(source) {
     #error{display:none;position:absolute;inset:12px;overflow:auto;white-space:pre-wrap;color:#ffb4b4;background:#190d18;border:1px solid #8b334a;border-radius:8px;padding:14px;z-index:110}
     canvas{max-width:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
   </style>${scripts}<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"><\/script>
-  </head><body><div id="stage"></div><div id="status">Preparing browser visual bridge…</div><pre id="error"></pre>
+  </head><body><div id="stage"></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
   <script>
   (async()=>{
     const stage=document.getElementById('stage'),status=document.getElementById('status'),err=document.getElementById('error');
@@ -2491,15 +2491,23 @@ function makePythonVisualHTML(source) {
       status.textContent='Preparing Python display support…';
       await py.runPythonAsync("import sys, types\ntry:\n    from IPython.display import HTML as _HTML, display as _display\nexcept Exception:\n    class _HTML:\n        def __init__(self, data): self.data = str(data)\n    def _display(obj):\n        data = getattr(obj, 'data', None)\n        if data is not None: __jsco_render_html(str(data))\n    _ip = types.ModuleType('IPython'); _disp = types.ModuleType('IPython.display')\n    _disp.HTML = _HTML; _disp.display = _display; _ip.display = _disp\n    sys.modules['IPython'] = _ip; sys.modules['IPython.display'] = _disp\n");
       if(/plotly/i.test(code)){
-        status.textContent='Installing Plotly Python package…';
+        status.textContent='Loading Plotly installer…';
         await py.loadPackage('micropip');
-        await py.runPythonAsync("import micropip\nawait micropip.install('plotly')");
-        await py.runPythonAsync("import plotly.io as _pio\nfrom plotly.basedatatypes import BaseFigure as _BaseFigure\ndef _jsco_plotly_show(self, *args, **kwargs):\n    __jsco_render_html(self.to_html(full_html=True, include_plotlyjs='cdn'))\n_BaseFigure.show = _jsco_plotly_show\n_pio.renderers.default = 'json'");
+        status.textContent='Downloading Plotly for Python (first run may take a little while)…';
+        // Pin a known-compatible pure-Python Plotly release instead of allowing
+        // a future release to pull in dependencies unsupported by this runtime.
+        await py.runPythonAsync("import micropip\nawait micropip.install('plotly==5.24.1')");
+        status.textContent='Connecting Plotly figures to the preview…';
+        await py.runPythonAsync("import plotly.io as _pio\nfrom plotly.basedatatypes import BaseFigure as _BaseFigure\ndef _jsco_plotly_show(self, *args, **kwargs):\n    html = self.to_html(full_html=True, include_plotlyjs='cdn')\n    __jsco_render_html(html)\n_BaseFigure.show = _jsco_plotly_show\n_pio.renderers.default = 'json'");
       }
       status.textContent='Running Python visual project…';
       await py.runPythonAsync(code);
       status.textContent='Python visual preview running';
-    }catch(e){status.textContent='Visual preview error';err.style.display='block';err.textContent+=(e&&e.stack?e.stack:String(e));}
+    }catch(e){
+      status.textContent='Python visual preview failed';
+      err.style.display='block';
+      err.textContent='The browser Python runtime could not finish this project.\n\n'+(e&&e.stack?e.stack:String(e));
+    }
   })();
   <\/script></body></html>`;
 }
