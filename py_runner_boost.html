@@ -2217,7 +2217,7 @@ function getCompilerVisualPreview() {
   if (!preview) {
     preview = document.createElement("div");
     preview.id = "compilerVisualPreview";
-    preview.style.cssText = "display:none;position:relative;flex:1 1 0;width:100%;height:100%;min-height:320px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
+    preview.style.cssText = "display:none;position:relative;flex:1 1 0;width:100%;height:100%;min-height:520px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
     output.parentElement.insertBefore(preview, output);
   }
   return preview;
@@ -2227,11 +2227,11 @@ function showCompilerVisualPreview(html) {
   const preview = getCompilerVisualPreview();
   if (!output || !preview) return;
   preview.innerHTML = "";
-  preview.style.cssText = "display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:320px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
+  preview.style.cssText = "display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:520px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
   const frame = document.createElement("iframe");
   frame.title = "Python visual output";
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
-  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;flex:1 1 auto;border:0;background:#080b14";
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:520px;border:0;background:#080b14";
   preview.appendChild(frame);
   frame.srcdoc = html;
   preview.style.display = "block";
@@ -2415,119 +2415,170 @@ function runTurtlePreview(source) {
   setStatus("Turtle preview ready");
 }
 
-// Universal visual runtime: detect common graphics libraries from source and
-// load only the browser-side libraries actually needed for this run.
+// Focused visual runtime: Pyodide + Three.js only.
+// Three.js r159 keeps the classic global THREE API used by Python's js bridge.
 const VISUAL_LIBS = {
-  three: { url: "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js", test: () => !!window.THREE },
-  babylon: { url: "https://cdn.babylonjs.com/babylon.js", test: () => !!window.BABYLON },
-  plotly: { url: "https://cdn.plot.ly/plotly-2.35.2.min.js", test: () => !!window.Plotly }
+  three: { urls: ["https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js", "https://unpkg.com/three@0.159.0/build/three.min.js"], test: () => !!window.THREE }
 };
 const visualLibPromises = {};
 function loadVisualLibrary(name) {
   const item = VISUAL_LIBS[name];
-  if (!item) return Promise.reject(new Error(`Unknown visual library: ${name}`));
+  if (!item) return Promise.reject(new Error(`This Runner currently supports Python graphics with Three.js only. Unsupported engine: ${name}`));
   if (item.test()) return Promise.resolve();
   if (visualLibPromises[name]) return visualLibPromises[name];
   visualLibPromises[name] = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = item.url;
-    script.async = true;
-    script.onload = () => item.test() ? resolve() : reject(new Error(`${name} loaded but its global API was not found.`));
-    script.onerror = () => reject(new Error(`Could not load ${name}. Check your internet connection or CDN access.`));
-    document.head.appendChild(script);
+    const urls = item.urls || [item.url];
+    const attempt = index => {
+      if (index >= urls.length) { reject(new Error('Three.js could not load from any CDN. Check internet, firewall, DNS or content blockers. Tried: ' + urls.join(' | '))); return; }
+      const script = document.createElement('script');
+      script.src = urls[index]; script.async = true;
+      script.onload = () => item.test() ? resolve() : (script.remove(), attempt(index + 1));
+      script.onerror = () => { script.remove(); attempt(index + 1); };
+      document.head.appendChild(script);
+    };
+    attempt(0);
   }).catch(error => { delete visualLibPromises[name]; throw error; });
   return visualLibPromises[name];
 }
 function detectVisualEngines(source, fileName) {
   const code = String(source || '');
-  const lower = code.toLowerCase();
   const engines = new Set();
+  const unsupported = [];
   if (/\bthree\b|js\.three|three\.js|webglrenderer/i.test(code)) engines.add('three');
-  if (/\bbabylon\b|babylon\.js|babylonjs|\bnew\s+engine\s*\(/i.test(code)) engines.add('babylon');
-  if (/\bplotly\b|plotly\.express|plotly\.graph_objects/i.test(code)) engines.add('plotly');
-  if (/\bvpython\b|from\s+vpython\s+import|\bcanvas\s*\(/i.test(code)) engines.add('vpython');
-  // Plain visual JS/HTML can use the standard browser renderer without a library.
-  return { engines: [...engines], isPython: /\.py$/.test(fileName) || /^\s*(import\s+|from\s+|print\s*\(|def\s+|class\s+)/m.test(code) };
+  if (/\bbabylon\b|babylon\.js|babylonjs|\bnew\s+engine\s*\(/i.test(code)) unsupported.push('Babylon.js');
+  if (/\bplotly\b|plotly\.express|plotly\.graph_objects/i.test(code)) unsupported.push('Plotly');
+  if (/\bvpython\b|from\s+vpython\s+import/i.test(code)) unsupported.push('VPython');
+  if (/(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)/i.test(code)) unsupported.push('Python Turtle');
+  return { engines: [...engines], unsupported, isPython: /\.py$/.test(fileName) || /^\s*(import\s+|from\s+|print\s*\(|def\s+|class\s+)/m.test(code) };
 }
 async function runPythonInIsolatedFrame(source, libraries) {
   const preview = getCompilerVisualPreview();
   const output = $('output');
   if (!preview || !output) throw new Error('Visual preview panel is unavailable.');
+  if (!libraries.includes('three')) throw new Error('This visual runtime currently supports Three.js only.');
   preview.innerHTML = '';
-  preview.style.cssText = 'display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:360px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
+  preview.style.cssText = 'display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:520px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
   const frame = document.createElement('iframe');
-  frame.title = 'Python visual runtime';
-  frame.setAttribute('sandbox', 'allow-scripts');
-  frame.style.cssText = 'display:block;width:100%;height:100%;min-height:360px;border:0;background:#080b14';
+  frame.title = 'Pyodide + Three.js visual runtime';
+  frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals');
+  frame.style.cssText = 'display:block;width:100%;height:100%;min-height:520px;border:0;background:#080b14';
   preview.appendChild(frame);
   output.style.display = 'none';
-  const token = 'py-' + Math.random().toString(36).slice(2);
-  const scripts = libraries.filter(name => VISUAL_LIBS[name]).map(name => `<script src="${VISUAL_LIBS[name].url}"><\/script>`).join('');
+  const token = 'py-three-' + Math.random().toString(36).slice(2);
   const pyCode = JSON.stringify(source).replace(/</g, '\\u003c');
-  const installPlotly = libraries.includes('plotly');
-  const installVPython = libraries.includes('vpython');
   frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
-  *{box-sizing:border-box}
-  html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#e5e7eb;font:14px system-ui}
-  #output{position:relative;width:100%;height:100%;min-height:100vh;overflow:hidden;background:#080b14}
-  #renderCanvas{position:absolute;inset:0;display:block;width:100%;height:100%;outline:none;touch-action:none}
-  #runner-status{position:absolute;z-index:10000;left:12px;top:12px;padding:8px 11px;border:1px solid #d8bd7a55;border-radius:8px;background:#101827;color:#d8bd7a;font:12px system-ui;pointer-events:none}
-  #plotly-output{width:100%;height:100%;min-height:360px}
-  canvas{max-width:100%}
-  </style>${scripts}<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"><\/script></head><body><main id="output"><canvas id="renderCanvas" tabindex="0"></canvas><div id="runner-status">Starting Python visual runtime…</div></main><script>
-  // Keep Three.js renderers and perspective cameras fitted to the live preview,
-  // including when the Runner output panel enters/exits fullscreen.
-  (function(){
-    const host=document.getElementById('output');
-    const fit=()=>{window.dispatchEvent(new Event('resize'));};
-    if(window.ResizeObserver&&host){new ResizeObserver(fit).observe(host);}
-    window.addEventListener('resize',fit);
-    const installThreeFit=()=>{
-      if(!window.THREE||!THREE.WebGLRenderer||THREE.WebGLRenderer.prototype.__runnerFitInstalled)return;
-      const proto=THREE.WebGLRenderer.prototype,original=proto.render;
-      proto.render=function(scene,camera){
-        const w=Math.max(1,host.clientWidth||innerWidth),h=Math.max(1,host.clientHeight||innerHeight);
-        if(this.domElement&& (this.domElement.width!==Math.round(w*Math.min(devicePixelRatio||1,2)) || this.domElement.height!==Math.round(h*Math.min(devicePixelRatio||1,2)))){
-          this.setPixelRatio(Math.min(devicePixelRatio||1,2));this.setSize(w,h,false);
-        }
-        if(camera&&camera.isPerspectiveCamera&&camera.aspect!==w/h){camera.aspect=w/h;camera.updateProjectionMatrix();}
-        return original.call(this,scene,camera);
-      };
-      proto.__runnerFitInstalled=true;
-    };
-    installThreeFit();
-    const observer=new MutationObserver(installThreeFit);
-    observer.observe(document.documentElement,{childList:true,subtree:true});
-  })();
+  *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#e5e7eb;font:14px system-ui}
+  #output{position:relative;width:100%;height:100%;min-height:520px;overflow:hidden;background:#080b14}
+  #output canvas{display:block;width:100%;height:100%}
+  #runner-status{padding:12px;color:#d8bd7a}
+  </style></head><body><div id="runner-status">Checking CDN access…</div><div id="output"></div><script>
   const RUNNER_TOKEN=${JSON.stringify(token)};
+  function loadFromAnyCDN(urls, test, label){
+    return new Promise((resolve,reject)=>{
+      let settled=false;
+      const tryNext=i=>{
+        if(settled)return;
+        if(i>=urls.length){settled=true;reject(new Error(label+' could not load from available CDNs. Tried: '+urls.join(' | ')+'. Check internet, DNS, firewall or browser content blocker.'));return;}
+        const status=document.getElementById('runner-status');
+        if(status)status.textContent='Loading '+label+' ('+(i+1)+'/'+urls.length+')…';
+        const script=document.createElement('script');script.src=urls[i];script.async=true;
+        let timer=setTimeout(()=>{script.onload=script.onerror=null;script.remove();tryNext(i+1);},12000);
+        script.onload=()=>{clearTimeout(timer);if(test()){settled=true;resolve(urls[i]);}else{script.remove();tryNext(i+1);}};
+        script.onerror=()=>{clearTimeout(timer);script.remove();tryNext(i+1);};
+        document.head.appendChild(script);
+      };tryNext(0);
+    });
+  }
   const send=(type,payload={})=>parent.postMessage({__jsco_runner:RUNNER_TOKEN,type,...payload},'*');
+  const visualHost=document.getElementById('output');
+  // Resize every Three.js renderer to the actual preview size, including fullscreen transitions.
+  if(window.THREE && THREE.WebGLRenderer){
+    const originalRender=THREE.WebGLRenderer.prototype.render;
+    THREE.WebGLRenderer.prototype.render=function(scene,camera){
+      const host=this.domElement && this.domElement.parentElement;
+      if(host){
+        const rect=host.getBoundingClientRect();
+        const w=Math.max(1,Math.floor(rect.width));
+        const h=Math.max(1,Math.floor(rect.height));
+        const size=this.getSize(new THREE.Vector2());
+        if(size.x!==w || size.y!==h){
+          this.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+          this.setSize(w,h,false);
+          this.domElement.style.width='100%';
+          this.domElement.style.height='100%';
+        }
+        if(camera && camera.isPerspectiveCamera && h>0){
+          const aspect=w/h;
+          if(Math.abs(camera.aspect-aspect)>0.0001){camera.aspect=aspect;camera.updateProjectionMatrix();}
+        }
+      }
+      return originalRender.call(this,scene,camera);
+    };
+  }
+  let pyodideInstance=null;
+  let runnerStarted=false;
   window.addEventListener('message',async event=>{
-    if(event.data?.__jsco_runner!==RUNNER_TOKEN||event.data.type!=='RUN')return;
+    if(event.data?.__jsco_runner!==RUNNER_TOKEN||event.data.type!=='RUN'||runnerStarted)return;
+    runnerStarted=true;
+    if(window.__readyRetry)clearInterval(window.__readyRetry);
     try{
-      const py=await loadPyodide();
-      py.setStdout({batched:t=>send('STDOUT',{text:t})});
-      py.setStderr({batched:t=>send('STDERR',{text:t})});
-      if(${installPlotly}){
-        await py.loadPackage('micropip');
-        await py.runPythonAsync("import micropip\\nawait micropip.install('plotly')");
-        window.__plotly_render=(json)=>{const data=JSON.parse(json);let host=document.getElementById('plotly-output');if(!host){host=document.createElement('div');host.id='plotly-output';host.style.cssText='position:relative;z-index:2;width:100%;height:100%;min-height:360px';document.body.appendChild(host)};return Plotly.newPlot(host,data.data||[],data.layout||{}, {responsive:true})};
-        await py.runPythonAsync("import plotly.basedatatypes as _pbt, js\\ndef _jsco_show(self, *args, **kwargs):\\n    js.__plotly_render(self.to_json())\\n_pbt.BaseFigure.show = _jsco_show");
-      }
-      if(${installVPython}){
-        await py.loadPackage('micropip');
-        await py.runPythonAsync("import micropip\\nawait micropip.install('vpython')");
-      }
-      await py.runPythonAsync("import builtins, js\\nbuiltins.input = lambda prompt='': js.prompt(str(prompt))");
+      if(!window.THREE)throw new Error('Three.js did not load. Check CDN/internet access.');
+      pyodideInstance=await loadPyodide({indexURL:window.__PYODIDE_INDEX_URL__||"https://cdn.jsdelivr.net/pyodide/v0.27.7/full/"});
+      pyodideInstance.setStdout({batched:t=>send('STDOUT',{text:t})});
+      pyodideInstance.setStderr({batched:t=>send('STDERR',{text:t})});
       document.getElementById('runner-status')?.remove();
-      await py.runPythonAsync(${pyCode});
+      const prelude = [
+        "import ast",
+        "import js",
+        "from pyodide.ffi import to_js",
+        "def __three_options(value):",
+        "    return to_js(value, dict_converter=js.Object.fromEntries)",
+        "class __ThreeOptionsTransformer(ast.NodeTransformer):",
+        "    def visit_Call(self, node):",
+        "        self.generic_visit(node)",
+        "        if isinstance(node.func, ast.Attribute) and node.func.attr == 'new' and node.args and isinstance(node.args[0], ast.Dict):",
+        "            node.args[0] = ast.Call(func=ast.Name(id='__three_options', ctx=ast.Load()), args=[node.args[0]], keywords=[])",
+        "        return node",
+        "def __run_three_python(source):",
+        "    tree = ast.parse(source, filename='<pyodide-threejs>')",
+        "    tree = __ThreeOptionsTransformer().visit(tree)",
+        "    ast.fix_missing_locations(tree)",
+        "    exec(compile(tree, '<pyodide-threejs>', 'exec'), globals())"
+      ].join("\n");
+      await pyodideInstance.runPythonAsync(prelude);
+      pyodideInstance.globals.set('__three_source', ${pyCode});
+      await pyodideInstance.runPythonAsync('__run_three_python(__three_source)');
+      pyodideInstance.globals.delete('__three_source');
       send('DONE');
-    }catch(error){send('ERROR',{text:String(error?.message||error)});}
+    }catch(error){send('ERROR',{text:String(error?.stack||error?.message||error)});}
   });
-  (async()=>{try{await new Promise((resolve,reject)=>{if(typeof loadPyodide!=='function')return reject(new Error('Pyodide could not load'));const test=document.createElement('script');test.src='';resolve()});send('READY')}catch(e){send('ERROR',{text:String(e.message||e)})}})();
+  (async()=>{
+    try{
+      const status=document.getElementById('runner-status');
+      if(status)status.textContent='Checking internet and loading Three.js…';
+      await loadFromAnyCDN([
+        'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js',
+        'https://unpkg.com/three@0.159.0/build/three.min.js'
+      ],()=>!!window.THREE,'Three.js');
+      if(status)status.textContent='Three.js ready. Loading Pyodide…';
+      const pyodideScriptUrl=await loadFromAnyCDN([
+        'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js',
+        'https://unpkg.com/pyodide@0.27.7/pyodide.js'
+      ],()=>typeof window.loadPyodide==='function','Pyodide');
+      const pyodideIndexURL=pyodideScriptUrl.includes('unpkg.com')
+        ? 'https://unpkg.com/pyodide@0.27.7/'
+        : 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
+      window.__PYODIDE_INDEX_URL__=pyodideIndexURL;
+      if(status)status.textContent='Pyodide + Three.js ready';
+      send('READY');
+      // Repeat READY briefly so a fast iframe startup cannot lose the first handshake.
+      window.__readyRetry=setInterval(()=>{if(!runnerStarted)send('READY');else clearInterval(window.__readyRetry);},500);
+    }catch(e){const status=document.getElementById('runner-status');if(status)status.textContent='CDN load failed: '+String(e.message||e);send('ERROR',{text:String(e.message||e)});}
+  })();
   <\/script></body></html>`;
   return await new Promise((resolve, reject) => {
     let finished = false;
-    const timeout = setTimeout(() => finish(new Error('Python runtime startup timed out. Check CDN access and internet connection.')), 90000);
+    const timeout = setTimeout(() => finish(new Error('Pyodide + Three.js startup timed out. Check CDN access, internet connection, DNS or firewall settings.')), 90000);
     const finish = error => { if (finished) return; finished = true; clearTimeout(timeout); window.removeEventListener('message', onMessage); if (error) reject(error); else resolve(); };
     const onMessage = event => {
       if (event.source !== frame.contentWindow || event.data?.__jsco_runner !== token) return;
@@ -2535,7 +2586,7 @@ async function runPythonInIsolatedFrame(source, libraries) {
       if (data.type === 'READY') frame.contentWindow.postMessage({__jsco_runner:token,type:'RUN'}, '*');
       else if (data.type === 'STDOUT') writeOutput(String(data.text || '') + (String(data.text || '').endsWith('\n') ? '' : '\n'));
       else if (data.type === 'STDERR') { const t=String(data.text||''); currentErrors.push(t); writeOutput(t+'\n','error'); }
-      else if (data.type === 'ERROR') finish(new Error(data.text || 'Python runtime error'));
+      else if (data.type === 'ERROR') finish(new Error(data.text || 'Python visual runtime error'));
       else if (data.type === 'DONE') finish();
     };
     window.addEventListener('message', onMessage);
@@ -2547,7 +2598,7 @@ function showPythonVisualSurface() {
   const output = $('output');
   if (!preview || !output) return;
   preview.innerHTML = '';
-  preview.style.cssText = 'display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:360px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
+  preview.style.cssText = 'display:block;position:relative;flex:1 1 auto;width:100%;height:100%;min-height:360px;max-height:none;background:#080b14;border-radius:8px;overflow:hidden';
   output.style.display = '';
   showOutputTab('3dpreview');
 }
@@ -2568,17 +2619,12 @@ async function executeProgram() {
   const wantsPython = fileName.endsWith('.py') || detected.isPython;
   const visualEngines = detected.engines;
 
-  // Keep the fast Turtle compatibility renderer for its supported subset.
-  if (wantsPython && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)|turtle\.(forward|backward|left|right|circle|goto|penup|pendown)\s*\(/.test(source)) {
-    running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
-    $('output').textContent = ''; $('consoleExtra').classList.remove('show'); showOutputTab('output');
-    showRunningAnimation(); startRuntimeClock();
-    try {
-      runTurtlePreview(source);
-      $('loaderTitle').textContent = 'Preview ready';
-      $('loaderSubtitle').textContent = 'Turtle drawing rendered in the browser.';
-    } catch (error) { writeOutput(String(error.message || error) + "\n", 'error'); setStatus('Preview error'); }
-    finally { stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false; $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent; }
+  if (wantsPython && detected.unsupported.length) {
+    const message = 'This Runner is currently configured for Pyodide + Three.js only. Not enabled yet: ' + detected.unsupported.join(', ') + '.';
+    currentOutputText = ''; currentErrors = [message];
+    $('output').textContent = message;
+    showOutputTab('console');
+    setStatus('Unsupported graphics library');
     return;
   }
 
@@ -2615,7 +2661,7 @@ async function executeProgram() {
     hideCompilerVisualPreview(); $('output').textContent = ''; $('consoleExtra').classList.remove('show');
     showOutputTab('output'); showRunningAnimation(); startRuntimeClock();
     try {
-      const needsVisualFrame = visualEngines.some(name => ['three','babylon','plotly','vpython'].includes(name));
+      const needsVisualFrame = visualEngines.includes('three');
       if (needsVisualFrame) {
         await runPythonInIsolatedFrame(source, visualEngines);
         showOutputTab('3dpreview');
