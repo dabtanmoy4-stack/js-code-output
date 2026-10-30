@@ -2423,20 +2423,27 @@ function extractBrowserHTML(source) {
   const raw = String(source || '').trim();
   if (/^(?:<!doctype\s+html|<html[\s>])/i.test(raw)) return raw;
 
-  const variableDisplay = raw.match(/(?:display\s*\(\s*HTML\s*\(\s*|HTML\s*\(\s*)([A-Za-z_]\w*)\s*\)\s*\)?/);
-  if (variableDisplay) {
-    const name = variableDisplay[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const assignment = new RegExp('(?:^|\\n)\\s*(?:' + name + ')\\s*=\\s*[rRuU]{0,2}([\"\']{3})([\\s\\S]*?)\\1');
+  // Notebook-style: html_code = """..."""; display(HTML(html_code))
+  // Match the assignment independently from the display call so formatting,
+  // blank lines and optional raw-string prefixes do not prevent extraction.
+  const displayName = raw.match(/(?:display\s*\(\s*HTML\s*\(\s*|HTML\s*\(\s*)([A-Za-z_]\w*)\s*\)\s*\)?/);
+  if (displayName) {
+    const name = displayName[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const assignment = new RegExp('(?:^|\\n)\\s*' + name + '\\s*=\\s*[rRuUbB]{0,2}(["\\\'\\`]{3})([\\s\\S]*?)\\1');
     const found = raw.match(assignment);
     if (found && /<html[\s>]|<!doctype|<canvas|<svg|<script/i.test(found[2])) return found[2];
   }
 
-  // Also support HTML(...) with an inline triple-quoted string.
-  const inline = raw.match(/(?:display\s*\(\s*)?HTML\s*\(\s*[rRuU]{0,2}([\"\']{3})([\\s\\S]*?)\1\s*\)\s*\)?/);
+  // Inline: display(HTML("""...HTML..."""))
+  // IMPORTANT: this is a regex literal, so [\s\S] must have single escapes.
+  const inline = raw.match(/(?:display\s*\(\s*)?HTML\s*\(\s*[rRuUbB]{0,2}(["']{3})([\s\S]*?)\1\s*\)\s*\)?/);
   if (inline && /<html[\s>]|<!doctype|<canvas|<svg|<script/i.test(inline[2])) return inline[2];
+
+  // Also accept a plain triple-quoted HTML variable when users omit display().
+  const plain = raw.match(/(?:^|\n)\s*[A-Za-z_]\w*\s*=\s*[rRuU]{0,2}(["']{3})([\s\S]*?)\1/);
+  if (plain && /<html[\s>]|<!doctype|<canvas|<svg|<script/i.test(plain[2])) return plain[2];
   return null;
 }
-
 // Universal Python ↔ Browser visual bridge. Python runs in Pyodide inside the
 // preview iframe; browser graphics libraries execute in that same preview.
 function makePythonVisualHTML(source) {
