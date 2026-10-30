@@ -1159,30 +1159,6 @@ body.light .name-dialog{background:linear-gradient(145deg,#fff,#f7f8fb);color:#1
 .panel.is-fullscreen { position:fixed !important; inset:8px !important; z-index:20000 !important; width:auto !important; height:auto !important; min-height:0 !important; max-height:none !important; margin:0 !important; overflow:auto !important; background:var(--panel); }
 .panel.is-fullscreen .CodeMirror { height:calc(100vh - 150px) !important; }
 .panel.is-fullscreen .output { max-height:none !important; height:calc(100vh - 180px) !important; }
-.panel.is-fullscreen.output-panel #compilerVisualPreview { height:auto !important; flex:1 1 0 !important; min-height:0 !important; }
-
-/* 3D preview must consume the full output panel, including fullscreen mode. */
-.output-panel #compilerVisualPreview {
-  position:relative !important;
-  flex:1 1 0 !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  max-height:none !important;
-  overflow:hidden !important;
-  border-radius:0 !important;
-}
-.output-panel #compilerVisualPreview > iframe {
-  display:block !important;
-  position:absolute !important;
-  inset:0 !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  border:0 !important;
-}
-.output-panel.is-fullscreen #compilerVisualPreview { flex:1 1 0 !important; min-height:0 !important; }
-.output-panel.is-fullscreen .output-head { flex:0 0 auto !important; }
 
 /* Fullscreen controls, editor clear action, and first-run tour */
 .panel.is-fullscreen { overflow:hidden !important; display:flex !important; flex-direction:column !important; }
@@ -2234,54 +2210,6 @@ async function runInPyodide(source) {
   }
 }
 
-/* Keep browser graphics responsive when the preview panel changes size.
-   The renderer hook updates Three.js canvas dimensions and perspective-camera
-   aspect ratio even when a Python demo only sets its size once at startup. */
-function makeResponsiveVisualHTML(html) {
-  const shim = `<script>
-  (() => {
-    const install = () => {
-      if (!window.THREE || !THREE.WebGLRenderer || THREE.WebGLRenderer.prototype.__jscoResponsive) return;
-      const proto = THREE.WebGLRenderer.prototype;
-      const originalRender = proto.render;
-      proto.render = function(scene, camera) {
-        const canvas = this.domElement;
-        const host = canvas && canvas.parentElement;
-        if (host) {
-          const width = Math.max(1, host.clientWidth || innerWidth);
-          const height = Math.max(1, host.clientHeight || innerHeight);
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          const pixelWidth = Math.round(width * dpr), pixelHeight = Math.round(height * dpr);
-          if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-            this.setPixelRatio(dpr);
-            this.setSize(width, height, false);
-          }
-          if (camera && camera.isPerspectiveCamera) {
-            const aspect = width / height;
-            if (Math.abs(camera.aspect - aspect) > 0.001) {
-              camera.aspect = aspect;
-              camera.updateProjectionMatrix();
-            }
-          }
-        }
-        return originalRender.call(this, scene, camera);
-      };
-      proto.__jscoResponsive = true;
-    };
-    install();
-    const observer = new MutationObserver(install);
-    observer.observe(document.documentElement, {childList:true,subtree:true});
-    addEventListener('resize', () => { install(); }, {passive:true});
-    const style = document.createElement('style');
-    style.textContent = 'html,body{width:100%!important;height:100%!important;min-height:100%!important;margin:0!important;overflow:hidden!important}canvas{display:block;width:100%!important;height:100%!important;max-width:none!important}';
-    (document.head || document.documentElement).appendChild(style);
-  })();
-  <\/script>`;
-  const source = String(html || '');
-  if (/<\/body\s*>/i.test(source)) return source.replace(/<\/body\s*>/i, shim + '</body>');
-  return source + shim;
-}
-
 function getCompilerVisualPreview() {
   const output = $("output");
   if (!output) return null;
@@ -2289,7 +2217,7 @@ function getCompilerVisualPreview() {
   if (!preview) {
     preview = document.createElement("div");
     preview.id = "compilerVisualPreview";
-    preview.style.cssText = "display:none;position:relative;flex:1 1 0;width:100%;height:100%;min-height:0;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
+    preview.style.cssText = "display:none;position:relative;flex:1 1 auto;width:100%;min-height:320px;max-height:60vh;background:#fff;border-radius:8px;overflow:auto";
     output.parentElement.insertBefore(preview, output);
   }
   return preview;
@@ -2299,13 +2227,13 @@ function showCompilerVisualPreview(html) {
   const preview = getCompilerVisualPreview();
   if (!output || !preview) return;
   preview.innerHTML = "";
-  preview.style.cssText = "display:block;position:relative;flex:1 1 0;width:100%;height:100%;min-height:0;max-height:none;background:#080b14;border-radius:8px;overflow:hidden";
+  preview.style.cssText += ";height:100%;min-height:320px;max-height:none;overflow:hidden";
   const frame = document.createElement("iframe");
   frame.title = "Python visual output";
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-pointer-lock allow-downloads");
-  frame.style.cssText = "display:block;position:absolute;inset:0;width:100%;height:100%;min-height:0;border:0;background:#080b14";
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;border:0;background:#080b14";
   preview.appendChild(frame);
-  frame.srcdoc = makeResponsiveVisualHTML(html);
+  frame.srcdoc = html;
   preview.style.display = "block";
   output.style.display = "none";
 }
@@ -2524,7 +2452,7 @@ function makePythonVisualHTML(source) {
   const wantsThree = /THREE|three\.js|WebGLRenderer/i.test(source);
   const wantsPlotly = /plotly/i.test(source);
   const scripts = [
-    wantsThree ? '<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script>' : '',
+    wantsThree ? '<script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"><\/script>' : '',
     wantsBabylon ? '<script src="https://cdn.babylonjs.com/babylon.js"><\/script>' : '',
     wantsPlotly ? '<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"><\/script>' : ''
   ].join('');
@@ -2533,11 +2461,11 @@ function makePythonVisualHTML(source) {
   <title>JS CODE OUTPUT · Python Visual Preview</title>
   <style>
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#eee;font:13px system-ui}
-    #stage{position:absolute;inset:0;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
+    #stage{position:absolute;inset:0;overflow:hidden}#output{position:absolute;inset:0;width:100%;height:100%;min-height:320px;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
     #error{display:none;position:absolute;inset:12px;overflow:auto;white-space:pre-wrap;color:#ffb4b4;background:#190d18;border:1px solid #8b334a;border-radius:8px;padding:14px;z-index:110}
-    canvas{max-width:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
+    canvas{display:block;max-width:100%;max-height:100%;}#output>canvas{width:100%;height:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
   </style>
-  </head><body><div id="stage"></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
+  </head><body><div id="stage"><div id="output"></div></div><div id="status">Starting browser Python runtime…</div><pre id="error"></pre>
   <script>
   (async()=>{
     const stage=document.getElementById('stage'),status=document.getElementById('status'),err=document.getElementById('error');
@@ -2552,7 +2480,7 @@ function makePythonVisualHTML(source) {
     });
     try{
       // Dynamically load dependencies so a blocked CDN reports an actionable error.
-      if(${wantsThree}) await loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js','Three.js');
+      if(${wantsThree}) await loadScript('https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js','Three.js');
       if(${wantsBabylon}) await loadScript('https://cdn.babylonjs.com/babylon.js','Babylon.js');
       if(${wantsPlotly}) await loadScript('https://cdn.plot.ly/plotly-2.35.2.min.js','Plotly.js');
       await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js','Pyodide engine');
@@ -2703,7 +2631,7 @@ async function executeProgram() {
       if (/\.js$/.test(fileName)) {
         // Plain JavaScript runs directly in the browser preview. Three.js is made
         // available globally for users who choose to use it; it is not required.
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
