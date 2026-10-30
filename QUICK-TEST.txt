@@ -1,0 +1,12 @@
+MULTI VISUAL RUNTIME - QUICK TEST
+
+1) Three.js Python: examples/python-threejs-auto.py
+2) Babylon.js Python: examples/python-babylon-auto.py
+3) Plotly Python: examples/python-plotly-auto.py
+4) Browser Three.js: examples/threejs-auto.js
+5) Browser Babylon.js: examples/babylon-auto.js
+6) Turtle subset: examples/matplotlib_plot.py is not a Turtle test; use a short `import turtle` sample.
+
+VPython: experimental only; not guaranteed by Pyodide. See VPYTHON-NOTE.md.
+
+Deploy the complete bundle together. Keep ONLINECOMPILER_API_KEY in Vercel Environment Variables; do not put it in HTML or commit it.
