@@ -7,3 +7,5 @@ JS PYTHON RUNNER BOOST — PYODIDE + THREE.JS
 5. Test examples/python-threejs-auto.py (colored spheres), then examples/threejs-solar-system.py.
 
 Graphics support in this focused build: Pyodide + Three.js only. Babylon.js, Plotly, VPython and Turtle are intentionally not enabled.
+
+See FIXES.txt for the list of bug fixes in this version.
