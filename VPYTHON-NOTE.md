@@ -1,3 +1,7 @@
 # VPython compatibility note
 
-This Runner detects `vpython` imports and attempts to install the `vpython` Python package inside Pyodide. This is experimental, not a guaranteed full VPython implementation: the upstream package may require native/runtime services that are not available in WebAssembly/Pyodide. If installation fails, the Runner surfaces the package/runtime error. Do not describe this build as fully VPython-compatible until a real `from vpython import *` animation has been tested in the deployed environment.
+This Runner detects VPython imports and makes a best-effort attempt to install the upstream `vpython` package with Pyodide's `micropip`.
+
+This is **experimental, not full VPython support**. VPython commonly relies on GlowScript/Jupyter widget services and runtime behaviour that are not guaranteed in Pyodide/WebAssembly. A successful package install does not prove that all VPython scene primitives, animation loops, widgets, or controls will work.
+
+For reliable browser 3D scenes, use the supported Python-to-Three.js bridge (`from js import THREE`) or Python-to-Babylon.js bridge (`from js import BABYLON`). Do not advertise this build as fully VPython-compatible until the exact VPython projects have been tested after deployment.
