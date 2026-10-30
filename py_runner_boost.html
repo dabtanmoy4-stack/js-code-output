@@ -638,7 +638,7 @@ body.light .CodeMirror-linenumber { color: #9994a3; }
 
 .editor-foot span { display: inline-flex; align-items: center; gap: 6px; }
 
-/* Program Output and Visual Preview Panel */
+/* Program Output and Three.js Preview Panel */
 .output-panel { min-width: 0; display: flex; flex-direction: column; }
 .output-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .output-tabs { display: flex; align-items: center; gap: 5px; }
@@ -1284,7 +1284,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   <!-- Header -->
   <header class="topbar">
     <div class="brand">
-      <div class="logo-wrap" title="JS CODE OUTPUT Python Visual Runner">
+      <div class="logo-wrap" title="JS CODE OUTPUT Python + Three.js">
         <!-- Masterclass Metallic 3D Python Emblem SVG -->
         <svg class="svg-ic" width="34" height="34" viewBox="0 0 128 128" fill="none">
           <defs>
@@ -1483,7 +1483,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
         </div>
       </section>
 
-      <!-- Program Output and Visual Preview Panel -->
+      <!-- Program Output and Three.js Preview Panel -->
       <section class="panel output-panel" id="outputPanel">
         <div class="panel-head output-head">
           <div class="output-tabs">
@@ -1499,7 +1499,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               Problems
             </button>
-            <button class="output-tab" data-output-tab="3dpreview" aria-label="Open visual preview">
+            <button class="output-tab" data-output-tab="3dpreview" aria-label="Open Three.js 3D preview">
               <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7 12 12 3 7 12 2Z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
               3D Preview
             </button>
@@ -1541,7 +1541,6 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
         </div>
 
         <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your program output will appear here...</span></div>
-        <div id="visualRuntimeNote" style="padding:7px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)">Visuals: Matplotlib/Plotly/Bokeh charts and returned HTML, SVG, image, GIF, video or audio files can appear in Visual Preview. Browser 3D engines (Three.js/Babylon.js) run in HTML/JS preview; ordinary server-side Python cannot directly control the browser canvas.</div>
 
         <!-- Interactive Input Bar for input() function -->
         <div class="input-bar" id="inputBar">
@@ -1567,7 +1566,7 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
   </div>
 
   <footer class="footer">
-    <span><strong>♛ JS CODE OUTPUT</strong> · Python Visual Runner</span>
+    <span><strong>♛ JS CODE OUTPUT</strong> · Python + Three.js</span>
     <span>Online Compiler API · <span id="footerStatus">Ready</span></span>
     <span>Made for developers ✦</span>
   </footer>
@@ -2059,7 +2058,7 @@ function showOutputTab(tab) {
     if (!preview || !preview.childElementCount) {
       output.style.display = "";
       if (preview) preview.style.display = "none";
-      output.textContent = "Visual preview is ready. Run HTML/CSS/JavaScript, Turtle, or Python code that returns HTML, charts, images, or animation files.";
+      output.textContent = "Visual preview is ready. Run an HTML, CSS, JavaScript, Turtle or supported Python visual project to see its animation here.";
     }
   } else {
     $("consoleExtra").classList.remove("show");
@@ -2218,7 +2217,7 @@ function getCompilerVisualPreview() {
   if (!preview) {
     preview = document.createElement("div");
     preview.id = "compilerVisualPreview";
-    preview.style.cssText = "display:none;position:relative;flex:1 1 auto;width:100%;min-height:320px;max-height:none;background:#090b10;border-radius:8px;overflow:auto";
+    preview.style.cssText = "display:none;position:relative;flex:1 1 auto;width:100%;min-height:320px;max-height:60vh;background:#fff;border-radius:8px;overflow:auto";
     output.parentElement.insertBefore(preview, output);
   }
   return preview;
@@ -2228,12 +2227,11 @@ function showCompilerVisualPreview(html) {
   const preview = getCompilerVisualPreview();
   if (!output || !preview) return;
   preview.innerHTML = "";
-  preview.style.cssText = "display:block;position:relative;flex:1 1 auto;width:100%;height:100%;min-height:320px;max-height:none;background:#090b10;border-radius:8px;overflow:hidden";
+  preview.style.cssText += ";height:100%;min-height:320px;max-height:none;overflow:hidden";
   const frame = document.createElement("iframe");
   frame.title = "Python visual output";
-  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-downloads");
-  frame.setAttribute("allow", "fullscreen; autoplay; clipboard-read; clipboard-write; xr-spatial-tracking");
-  frame.style.cssText = "display:block;width:100%;height:100%;min-height:420px;border:0;background:#090b10";
+  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
+  frame.style.cssText = "display:block;width:100%;height:100%;min-height:320px;border:0;background:#fff";
   preview.appendChild(frame);
   frame.srcdoc = html;
   preview.style.display = "block";
@@ -2245,41 +2243,36 @@ function showCompilerFilesPreview(files) {
   const output = $("output");
   const preview = getCompilerVisualPreview();
   if (!output || !preview || !Array.isArray(files)) return false;
-  const mediaFiles = files.filter(file => {
-    const mime = String(file && file.mime || file && file.mime_type || "").toLowerCase();
+  const visualFiles = files.filter(file => {
+    const mime = String(file && file.mime || "").toLowerCase();
     const name = String(file && file.name || "").toLowerCase();
-    return (/^(image|video|audio)\//.test(mime) ||
-      /\.(png|jpe?g|gif|webp|svg|mp4|webm|ogg|mp3|wav|m4a)$/.test(name)) &&
-      (typeof file.content_base64 === "string" || typeof file.base64 === "string" || typeof file.url === "string");
+    return (mime.startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/.test(name)) &&
+      (typeof file.content_base64 === "string" || typeof file.url === "string");
   });
-  if (!mediaFiles.length) return false;
+  if (!visualFiles.length) return false;
   preview.innerHTML = "";
-  preview.style.cssText = "display:flex;flex-direction:column;gap:12px;flex:1 1 auto;width:100%;min-height:320px;max-height:none;padding:12px;background:#090b10;border-radius:8px;overflow:auto";
-  for (const file of mediaFiles) {
-    const mime = String(file.mime || file.mime_type || "").toLowerCase();
-    const name = String(file.name || "Visual output");
-    const url = file.url || ((file.content_base64 || file.base64) ? `data:${mime || (name.toLowerCase().endsWith('.svg') ? 'image/svg+xml' : 'image/png')};base64,${file.content_base64 || file.base64}` : "");
+  preview.style.cssText = "display:flex;flex-direction:column;gap:12px;flex:0 0 auto;width:100%;min-height:180px;max-height:55vh;padding:12px;background:#fff;border-radius:8px;overflow:auto";
+  for (const file of visualFiles) {
+    const mime = String(file.mime || (String(file.name).toLowerCase().endsWith(".svg") ? "image/svg+xml" : "image/png"));
     const figure = document.createElement("figure");
-    figure.style.cssText = "margin:0;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;width:100%";
-    let media;
-    if (mime.startsWith("video/") || /\.(mp4|webm|ogg)$/.test(name.toLowerCase())) {
-      media = document.createElement("video"); media.controls = true; media.autoplay = false; media.playsInline = true;
-      media.style.cssText = "display:block;max-width:100%;max-height:70vh;width:auto;background:#000";
-    } else if (mime.startsWith("audio/") || /\.(mp3|wav|m4a)$/.test(name.toLowerCase())) {
-      media = document.createElement("audio"); media.controls = true; media.style.cssText = "width:min(100%,650px)";
+    figure.style.cssText = "margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0";
+    const img = document.createElement("img");
+    img.alt = String(file.name || "Python visual output");
+    img.style.cssText = "display:block;max-width:100%;height:auto;object-fit:contain;background:#fff";
+    if (typeof file.content_base64 === "string" && file.content_base64) {
+      img.src = `data:${mime};base64,${file.content_base64}`;
     } else {
-      media = document.createElement("img"); media.alt = name;
-      media.style.cssText = "display:block;max-width:100%;max-height:70vh;height:auto;object-fit:contain;background:#fff";
+      img.src = file.url;
     }
-    media.src = url;
-    figure.appendChild(media);
+    figure.appendChild(img);
     const caption = document.createElement("figcaption");
-    caption.textContent = name;
-    caption.style.cssText = "font:11px Inter,sans-serif;color:#d6d3d1;overflow-wrap:anywhere;text-align:center";
+    caption.textContent = String(file.name || "Visual output");
+    caption.style.cssText = "font:11px Inter,sans-serif;color:#475569;overflow-wrap:anywhere;text-align:center";
     figure.appendChild(caption);
     preview.appendChild(figure);
   }
   preview.style.display = "flex";
+  // Keep program output visible below the chart/figure.
   output.style.display = "";
   return true;
 }
@@ -2290,10 +2283,7 @@ function showOnlineCompilerResultsPreview(results) {
     (typeof item.png === "string" && item.png.trim()) ||
     (typeof item.jpeg === "string" && item.jpeg.trim()) ||
     (typeof item.svg === "string" && item.svg.trim()) ||
-    (item.chart && typeof item.chart === "string") ||
-    (item.animation_html && typeof item.animation_html === "string") ||
-    (item.video_url && typeof item.video_url === "string") ||
-    (item.image_url && typeof item.image_url === "string")
+    (item.chart && typeof item.chart === "string")
   ));
   if (!visualItems.length) return false;
 
@@ -2306,28 +2296,18 @@ function showOnlineCompilerResultsPreview(results) {
 
   for (const item of visualItems) {
     const html = typeof item.html === "string" ? item.html :
-      (typeof item.animation_html === "string" ? item.animation_html :
-      (typeof item.chart === "string" ? item.chart : ""));
+      (typeof item.chart === "string" ? item.chart : "");
     if (html) {
       const frame = document.createElement("iframe");
       frame.title = "Online Compiler Python visual output";
-      frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-downloads");
-      frame.setAttribute("allow", "fullscreen; autoplay; clipboard-read; clipboard-write; xr-spatial-tracking");
-      frame.style.cssText = "display:block;width:100%;height:520px;min-height:320px;flex:1 0 420px;border:0;background:#090b10;border-radius:6px";
+      frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals");
+      frame.style.cssText = "display:block;width:100%;height:420px;min-height:320px;flex:1 0 320px;border:0;background:#fff;border-radius:6px";
       frame.srcdoc = html;
       preview.appendChild(frame);
       continue;
     }
 
-    if (typeof item.video_url === "string") {
-      const video = document.createElement("video"); video.src = item.video_url; video.controls = true; video.playsInline = true;
-      video.style.cssText = "display:block;max-width:100%;max-height:70vh;background:#000;align-self:center"; preview.appendChild(video); continue;
-    }
-    const imageData = typeof item.png === "string" ? item.png : (typeof item.jpeg === "string" ? item.jpeg : (typeof item.svg === "string" ? item.svg : null));
-    if (typeof item.image_url === "string" && !imageData) {
-      const img = document.createElement("img"); img.src = item.image_url; img.alt = "Python visual output";
-      img.style.cssText = "display:block;max-width:100%;max-height:70vh;height:auto;object-fit:contain;align-self:center;background:#fff"; preview.appendChild(img); continue;
-    }
+    const imageData = typeof item.png === "string" ? item.png : (typeof item.jpeg === "string" ? item.jpeg : item.svg);
     if (imageData) {
       const img = document.createElement("img");
       img.alt = "Online Compiler Python visual output";
@@ -2435,6 +2415,65 @@ function runTurtlePreview(source) {
   setStatus("Turtle preview ready");
 }
 
+
+// Universal Python ↔ Browser visual bridge. Python runs in Pyodide inside the
+// isolated preview iframe; JavaScript graphics libraries share that same window.
+function makePythonVisualHTML(source) {
+  const safeSource = JSON.stringify(source).replace(/</g, "\\u003c");
+  const wantsBabylon = /BABYLON|babylon/i.test(source);
+  const wantsThree = /THREE|three\.js|WebGLRenderer/i.test(source);
+  const wantsPlotly = /plotly/i.test(source);
+  const scripts = [
+    wantsThree ? '<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script>' : '',
+    wantsBabylon ? '<script src="https://cdn.babylonjs.com/babylon.js"><\/script>' : '',
+    wantsPlotly ? '<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"><\/script>' : ''
+  ].join('');
+  return `<!doctype html><html><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JS CODE OUTPUT · Python Visual Preview</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#eee;font:13px system-ui}
+    #stage{position:absolute;inset:0;overflow:hidden}#status{position:absolute;left:12px;bottom:10px;padding:7px 10px;border-radius:8px;background:#111c;color:#ddd;z-index:100;pointer-events:none}
+    #error{display:none;position:absolute;inset:12px;overflow:auto;white-space:pre-wrap;color:#ffb4b4;background:#190d18;border:1px solid #8b334a;border-radius:8px;padding:14px;z-index:110}
+    canvas{max-width:100%;}#stage>img,#stage>svg{max-width:100%;max-height:100%}
+  </style>${scripts}<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"><\/script>
+  </head><body><div id="stage"></div><div id="status">Preparing browser visual bridge…</div><pre id="error"></pre>
+  <script>
+  (async()=>{
+    const stage=document.getElementById('stage'),status=document.getElementById('status'),err=document.getElementById('error');
+    const code=${safeSource};
+    try{
+      if(typeof loadPyodide!=='function') throw new Error('Pyodide failed to load. Check internet/CDN access.');
+      // Make graphics globals explicit for Python js module.
+      if(window.THREE) window.THREE=THREE;
+      if(window.BABYLON) window.BABYLON=BABYLON;
+      if(window.Plotly) window.Plotly=Plotly;
+      const py=await loadPyodide({stdout:s=>{if(s)status.textContent=s;},stderr:s=>{if(s){err.style.display='block';err.textContent+=s+'\\n';}}});
+      py.setStdout({batched:s=>{if(s)status.textContent=s;}});
+      py.setStderr({batched:s=>{err.style.display='block';err.textContent+=s+'\\n';}});
+      // Provide a lightweight display(HTML(...)) bridge for notebook-style HTML output.
+      py.globals.set('__jsco_render_html',(html)=>{
+        const frame=document.createElement('iframe');frame.style.cssText='width:100%;height:100%;min-height:360px;border:0;background:#fff';
+        frame.setAttribute('sandbox','allow-scripts allow-forms allow-modals');stage.innerHTML='';stage.appendChild(frame);frame.srcdoc=String(html);
+      });
+      py.globals.set('__jsco_stage_html',(html)=>{
+        const frame=document.createElement('iframe');frame.style.cssText='width:100%;height:100%;min-height:360px;border:0;background:#fff';
+        frame.setAttribute('sandbox','allow-scripts allow-forms allow-modals');stage.innerHTML='';stage.appendChild(frame);frame.srcdoc=String(html);
+      });
+      status.textContent='Running Python visual project…';
+      await py.runPythonAsync("import sys, types\ntry:\n    from IPython.display import HTML as _HTML, display as _display\nexcept Exception:\n    class _HTML:\n        def __init__(self, data): self.data = str(data)\n    def _display(obj):\n        data = getattr(obj, 'data', None)\n        if data is not None: __jsco_render_html(str(data))\n    _ip = types.ModuleType('IPython'); _disp = types.ModuleType('IPython.display')\n    _disp.HTML = _HTML; _disp.display = _display; _ip.display = _disp\n    sys.modules['IPython'] = _ip; sys.modules['IPython.display'] = _disp\n");
+      await py.runPythonAsync(code);
+      status.textContent='Python visual preview running';
+    }catch(e){status.textContent='Visual preview error';err.style.display='block';err.textContent+=(e&&e.stack?e.stack:String(e));}
+  })();
+  <\/script></body></html>`;
+}
+function runPythonVisualPreview(source) {
+  showCompilerVisualPreview(makePythonVisualHTML(source));
+  $("output").textContent = "Browser visual bridge started. Python runs in Pyodide; HTML, Canvas, SVG, WebGL, Three.js and Babylon.js output can render in this preview. Some Python packages need compatible Pyodide builds and internet access.";
+  setStatus("Python visual preview loading", true);
+}
+
 async function executeProgram() {
   if (running) return;
   saveActiveFile();
@@ -2446,6 +2485,39 @@ async function executeProgram() {
   }
 
   const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
+
+  // Python graphics/browser-bridge projects must execute in the same browser
+  // window as their WebGL/DOM libraries, not on the remote console compiler.
+  if (fileName.endsWith(".py") && (
+      /(^|\n)\s*(import\s+js|from\s+js\s+import|from\s+pyodide\.ffi\s+import)/.test(source) ||
+      /BABYLON|THREE|WebGLRenderer|requestAnimationFrame|plotly|IPython\.display|display\(HTML/.test(source)
+  )) {
+    running = true;
+    currentOutputText = "";
+    currentErrors = [];
+    waitingForInput = null;
+    $("output").textContent = "";
+    $("consoleExtra").classList.remove("show");
+    showOutputTab("3dpreview");
+    showRunningAnimation();
+    startRuntimeClock();
+    try {
+      runPythonVisualPreview(source);
+      $("loaderTitle").textContent = "3D preview loading";
+      $("loaderSubtitle").textContent = "Starting browser-side Python visual bridge.";
+    } catch (error) {
+      writeOutput(String(error && error.message ? error.message : error) + "\n", "error");
+      setStatus("3D preview error");
+    } finally {
+      stopRuntimeClock();
+      running = false;
+      hideRunningAnimation();
+      $("runBtn").disabled = false;
+      $("runBtn").querySelector("span").textContent = "Run Code";
+      $("consoleNote").textContent = "Visual preview launched.";
+    }
+    return;
+  }
 
   // Basic Turtle drawings are rendered locally in a browser Canvas. Other Python
   // code runs through the OnlineCompiler-backed Vercel API route.
@@ -2494,7 +2566,7 @@ async function executeProgram() {
       if (/\.js$/.test(fileName)) {
         // Plain JavaScript runs directly in the browser preview. Three.js is made
         // available globally for users who choose to use it; it is not required.
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script><script src="https://cdn.babylonjs.com/babylon.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Preview</title><style>html,body{margin:0;min-height:100%;width:100%;overflow:auto;background:#fff}canvas{display:block}</style><script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script></head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>\n${source}\n</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
@@ -2583,17 +2655,13 @@ async function executeProgram() {
     // Render browser-safe HTML/images returned by the OnlineCompiler API while keeping text in the console.
     const previewHTML = result.animation_html || result.preview_html || result.html_preview || "";
     const previewURL = result.preview_url || result.animation_url || "";
-    let hasVisualPreview = false;
     if (previewHTML && typeof previewHTML === "string") {
-      showCompilerVisualPreview(previewHTML); hasVisualPreview = true;
+      showCompilerVisualPreview(previewHTML);
     } else if (previewURL && typeof previewURL === "string") {
-      showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;min-height:420px;border:0;background:#090b10"></iframe>`); hasVisualPreview = true;
-    } else if (showOnlineCompilerResultsPreview(result.results)) {
-      hasVisualPreview = true;
-    } else if (Array.isArray(result.files) && showCompilerFilesPreview(result.files)) {
-      hasVisualPreview = true;
+      showCompilerVisualPreview(`<iframe src="${previewURL.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}" title="Program visual output" style="width:100%;height:100%;border:0;background:#fff"></iframe>`);
+    } else if (!showOnlineCompilerResultsPreview(result.results) && Array.isArray(result.files)) {
+      showCompilerFilesPreview(result.files);
     }
-    if (hasVisualPreview) showOutputTab("3dpreview");
     if (outputText) writeOutput(outputText);
     if (errorText) {
       currentErrors.push(errorText);
