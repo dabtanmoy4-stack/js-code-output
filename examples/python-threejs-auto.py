@@ -1,30 +1,53 @@
-# Python + Three.js through Pyodide. Select this .py file and press Run.
-import js
+# Pyodide + Three.js starter. Select this file and press Run Code.
+# The Runner automatically converts Three.js .new({...}) option dictionaries to JS objects.
+import math
+from js import THREE, document, window
 from pyodide.ffi import create_proxy
 
-THREE = js.THREE
-scene = THREE.Scene.new()
-scene.background = THREE.Color.new("#10172a")
-camera = THREE.PerspectiveCamera.new(60, js.window.innerWidth/js.window.innerHeight, 0.1, 100)
-camera.position.set(3, 2, 5)
-renderer = THREE.WebGLRenderer.new(js.Object.new(antialias=True))
-output = js.document.getElementById("output")
+output = document.getElementById("output")
 if output is None:
-    output = js.document.createElement("div")
+    output = document.createElement("div")
     output.id = "output"
-    js.document.body.appendChild(output)
+    document.body.appendChild(output)
 output.innerHTML = ""
-output.style.cssText = "width:100%;height:100%;min-height:100vh;overflow:hidden"
-renderer.setSize(output.clientWidth or js.window.innerWidth, output.clientHeight or js.window.innerHeight)
+output.style.width = "100%"
+output.style.height = "100%"
+output.style.minHeight = "520px"
+output.style.position = "relative"
+
+scene = THREE.Scene.new()
+scene.background = THREE.Color.new("#080818")
+camera = THREE.PerspectiveCamera.new(60, output.clientWidth / output.clientHeight, 0.1, 100)
+camera.position.set(0, 2, 13)
+camera.lookAt(0, 0, 0)
+renderer = THREE.WebGLRenderer.new({"antialias": True})
+renderer.setPixelRatio(min(window.devicePixelRatio, 2))
+renderer.setSize(output.clientWidth, output.clientHeight)
 output.appendChild(renderer.domElement)
-scene.add(THREE.HemisphereLight.new("#ffffff", "#334466", 2))
-mesh = THREE.Mesh.new(THREE.TorusKnotGeometry.new(1, .3, 120, 16), THREE.MeshStandardMaterial.new(js.Object.new(color="#ffc857", metalness=.6, roughness=.25)))
-scene.add(mesh)
-def animate():
-    mesh.rotation.x += .006
-    mesh.rotation.y += .009
+scene.add(THREE.AmbientLight.new("#ffffff", 1.8))
+light = THREE.PointLight.new("#ffffff", 90)
+light.position.set(0, 5, 8)
+scene.add(light)
+
+colors = ["#ff3344", "#3388ff", "#22dd99", "#bb55ff", "#ffaa22"]
+balls = []
+for i, color in enumerate(colors):
+    geometry = THREE.SphereGeometry.new(1, 48, 48)
+    material = THREE.MeshStandardMaterial.new({"color": color, "roughness": 0.25, "metalness": 0.2})
+    ball = THREE.Mesh.new(geometry, material)
+    ball.position.set((i - 2) * 2.5, 0, 0)
+    scene.add(ball)
+    balls.append(ball)
+
+clock = THREE.Clock.new()
+def animate(timestamp):
+    t = clock.getElapsedTime()
+    for i, ball in enumerate(balls):
+        ball.rotation.y = t * (0.5 + i * 0.1)
+        ball.position.y = math.sin(t * 2 + i) * 0.45
     renderer.render(scene, camera)
-    js.window.requestAnimationFrame(callback)
-callback = create_proxy(animate)
-js.window.addEventListener("resize", create_proxy(lambda event: (renderer.setSize(output.clientWidth, output.clientHeight), setattr(camera, "aspect", output.clientWidth / max(1, output.clientHeight)), camera.updateProjectionMatrix())))
-animate()
+    window.requestAnimationFrame(animate_proxy)
+
+animate_proxy = create_proxy(animate)
+window.requestAnimationFrame(animate_proxy)
+print("Pyodide + Three.js color test is running")
