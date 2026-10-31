@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080909">
@@ -707,6 +707,53 @@ header, nav, .search-panel {
 }
 
 </style>
+<style id="miod-feature-css">
+.miod-card{flex:0 0 auto;margin:6px 8px 5px;border-radius:10px;overflow:hidden;display:flex;align-items:center;height:84px;cursor:pointer;position:relative;
+  border:1px solid rgba(120,100,200,.25);
+  background:linear-gradient(120deg,#ffe3ee,#fff3cf,#d9f4ff,#e4ffe9,#ece3ff,#ffe3ee);background-size:300% 100%;
+  animation:miodSoftBg 9s linear infinite;transition:transform .2s,box-shadow .2s}
+.miod-card:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(80,60,160,.22)}
+.miod-card iframe{flex:0 0 40%;width:40%;height:100%;border:0;background:transparent;pointer-events:none}
+.miod-label{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 10px 0 2px;color:#1E1033!important;font-size:10px;font-weight:800;line-height:1.25;background:transparent!important}
+.miod-label small{font-size:8px;font-weight:700;opacity:.6}
+@keyframes miodSoftBg{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@media(prefers-reduced-motion:reduce){.miod-card{animation:none}}
+@media(max-height:650px){.miod-card{height:70px}}
+.miod-card::before,#miodSoon span::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;z-index:5;
+  background:linear-gradient(110deg,#8a6500 0%,#d4af37 20%,#fff3b0 35%,#f1cf68 50%,#b8860b 65%,#fff3b0 80%,#8a6500 100%);background-size:250% 100%;animation:miodGoldShine 3s linear infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.miod-card::before{padding:3px}
+.miod-card{box-shadow:0 0 10px rgba(212,175,55,.45)}
+.miod-card:hover{box-shadow:0 0 16px rgba(212,175,55,.8),0 6px 16px rgba(80,60,160,.22)}
+#miodSoon span{display:inline-block;position:relative;padding:.35em 1.1em;border-radius:16px;background:#fff;box-shadow:0 0 22px rgba(212,175,55,.55);animation:miodGoldGlow 2.4s ease-in-out infinite}
+#miodSoon span::before{padding:3px}
+@keyframes miodGoldShine{0%{background-position:0% 50%}100%{background-position:250% 50%}}
+@keyframes miodGoldGlow{50%{box-shadow:0 0 34px rgba(241,207,104,.9)}}
+@media(prefers-reduced-motion:reduce){.miod-card::before,#miodSoon span,#miodSoon span::before{animation:none}}
+#miodFull{position:fixed;inset:0;z-index:2147483000;background:#fff!important;display:none}
+#miodFull.show{display:block}
+#miodFullFrame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff!important;color-scheme:only light}
+#miodClose{position:absolute;top:14px;right:16px;z-index:3;width:42px;height:42px;border-radius:50%;border:2px solid #1E1033;background:#fff!important;color:#1E1033!important;font-size:24px;line-height:1;display:grid;place-items:center;padding:0}
+#miodSoon{position:absolute;left:0;right:0;bottom:6vh;text-align:center;z-index:2;opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s;font:700 clamp(22px,4vw,44px) 'Fredoka',system-ui,sans-serif;color:#1E1033;pointer-events:none}
+#miodSoon.show{opacity:1;transform:none}
+#miodSoon span{background:transparent!important;box-shadow:none!important;animation:none!important;padding:0!important;border-radius:0!important}
+#miodSoon span::before{display:none!important}
+#miodFull::before{content:"";position:absolute;inset:0;z-index:10;pointer-events:none;padding:8px;
+  background:linear-gradient(110deg,#8a6500 0%,#d4af37 20%,#fff3b0 35%,#f1cf68 50%,#b8860b 65%,#fff3b0 80%,#8a6500 100%);background-size:250% 100%;animation:miodGoldShine 3s linear infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+#miodFull::after{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;box-shadow:inset 0 0 40px rgba(212,175,55,.55);animation:miodGoldGlow2 2.4s ease-in-out infinite}
+@keyframes miodGoldGlow2{50%{box-shadow:inset 0 0 70px rgba(241,207,104,.9)}}
+@media(prefers-reduced-motion:reduce){#miodFull::before,#miodFull::after{animation:none}}
+
+.explorer{min-width:0}
+@media(max-width:900px){
+ .miod-card{flex-direction:column;height:auto;margin:6px 5px 5px}
+ .miod-card iframe{flex:0 0 auto;width:100%;height:68px}
+ .miod-label{padding:2px 4px 6px;align-items:center;text-align:center;font-size:9px}
+ .miod-label small{display:none}
+}
+</style>
+<style id="hide-status-bar">footer.status{display:none!important}</style>
 </head>
 
 <body>
@@ -759,6 +806,10 @@ header, nav, .search-panel {
       <div id="filesTree"></div>
       <div class="drop-hint">Drop files here to add to Explorer</div>
     </div>
+<div class="miod-card" id="miodCard" onclick="openMiod()" title="Code with MIOD AI" role="button" tabindex="0">
+<iframe id="miodCardFrame" title="MIOD preview" tabindex="-1" aria-hidden="true"></iframe>
+<div class="miod-label"><span>✨ Code with MIOD AI</span><small>Tap to open →</small></div>
+</div>
   </aside>
 
   <section class="pane editor-pane">
@@ -1897,6 +1948,313 @@ async function openSharedProjectViewer(){
 }
 openSharedProjectViewer();
 
+</script>
+<div id="miodFull" aria-hidden="true">
+<button id="miodClose" type="button" onclick="closeMiod()" aria-label="Close">×</button>
+<iframe id="miodFullFrame" title="MIOD"></iframe>
+<div id="miodSoon"><span>MIOD will be coming soon</span></div>
+</div>
+<script type="text/plain" id="miodSource"><!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<title>MIOD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap">
+<style>
+  :root { box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); background:#fff !important; color-scheme:only light; }
+  html, body { height:100%; margin:0; background:#fff !important; color-scheme:only light; }
+  body::before { content:""; position:fixed; inset:0; background:#fff; z-index:-1; }
+  body { display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .wrap { width:min(96vw, 88vh*1.17, 1000px); }
+  svg { width:100%; height:auto; display:block; overflow:visible; }
+
+  /* 9s cycle: dizzy spin -> squash & settle -> letters hop out of the tail and land
+     with squash-and-stretch -> happy bounce -> hold -> fade */
+
+  #wormWrap { transform-box:fill-box; transform-origin:50% 100%; animation:wobble 9s infinite; }
+  #worm { transform-box:fill-box; transform-origin:50% 50%; animation:spin 9s infinite; }
+
+  .eye { transform-box:fill-box; transform-origin:50% 50%; animation:blink 9s infinite; }
+  .pupils { animation:showPupils 9s infinite, look 9s infinite; }
+  .dizzy { animation:dizzy 9s infinite; }
+
+  .l { transform-box:fill-box; transform-origin:50% 100%; opacity:0; animation-duration:9s;
+       animation-iteration-count:infinite; animation-timing-function:ease-out; }
+  #g-i { --dx:-100px; animation-name:liIn; }
+  #g-o { --dx:-170px; animation-name:loIn; }
+  #g-d { --dx:-290px; animation-name:ldIn; }
+
+  /* cartoon sticker letters: chunky ink outline + hard offset shadow */
+  .ch { font-family:'Fredoka','Baloo 2','Arial Rounded MT Bold','Nunito',system-ui,sans-serif;
+        font-weight:700; font-size:240px; stroke:#1E1033; stroke-width:16px; stroke-linejoin:round;
+        paint-order:stroke fill; transform-box:fill-box; transform-origin:50% 100%; animation:bob 9s infinite; }
+  .sh { fill:#1E1033; }
+  .c-i { fill:#FF5C8A; }
+  .c-o { fill:#FFC233; }
+  .c-d { fill:#4CC9F0; }
+  #s-o, #t-o { animation-delay:.25s; }
+  #s-d, #t-d { animation-delay:.5s; }
+
+  .shade { fill:#1E1033; transform-box:fill-box; transform-origin:50% 50%; opacity:0; animation:shade 9s infinite; }
+
+  .spark { fill:#FFD60A; stroke:#1E1033; stroke-width:4; stroke-linejoin:round;
+           transform-box:fill-box; transform-origin:50% 50%; transform:scale(0); }
+  .spA { animation:spA 9s infinite; }
+  .spB { animation:spB 9s infinite; }
+  .spC { animation:spC 9s infinite; }
+
+  @keyframes spin {
+    0%   { transform:rotate(0deg); animation-timing-function:cubic-bezier(.1,.75,.25,1); }
+    34%  { transform:rotate(1080deg); }
+    100% { transform:rotate(1080deg); }
+  }
+  @keyframes wobble {
+    0%,33%    { transform:none; }
+    36%       { transform:scale(1.09,.9); }
+    39%       { transform:scale(.95,1.06); }
+    42%,64%   { transform:none; }
+    67%       { transform:scale(1.025,.975); }
+    70%,100%  { transform:none; }
+  }
+  @keyframes dizzy {
+    0%,30%   { opacity:1; }
+    34%,100% { opacity:0; }
+  }
+  @keyframes showPupils {
+    0%,32%   { opacity:0; }
+    36%,100% { opacity:1; }
+  }
+  @keyframes look {
+    0%,38%    { transform:translate(0,0); }
+    42%,62%   { transform:translate(-14px,5px); }
+    68%,100%  { transform:translate(0,0); }
+  }
+  @keyframes blink {
+    0%,65%,69%,84%,88%,100% { transform:scaleY(1); }
+    67%,86% { transform:scaleY(.08); }
+  }
+
+  @keyframes liIn {
+    0%,37.7% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    39%      { opacity:1; }
+    43%      { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    47%      { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    49.5%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    51.5%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes loIn {
+    0%,45.5% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    46.8%    { opacity:1; }
+    50.8%    { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    54.8%    { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    57.3%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    59.3%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes ldIn {
+    0%,53.3% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    54.6%    { opacity:1; }
+    58.6%    { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    62.6%    { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    65.1%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    67.1%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes bob {
+    0%,68%   { transform:none; }
+    72%      { transform:translateY(-18px) rotate(-5deg) scale(.98,1.04); }
+    76%      { transform:translateY(0) rotate(0deg) scale(1.06,.94); }
+    79%      { transform:translateY(-6px) scale(.99,1.01); }
+    82%,100% { transform:none; }
+  }
+  @keyframes shade {
+    0%,36%   { opacity:0; transform:scaleX(.3); }
+    47%      { opacity:.28; transform:scaleX(1.08); }
+    50%,90%  { opacity:.28; transform:scaleX(1); }
+    96%,100% { opacity:0; transform:scaleX(1); }
+  }
+  @keyframes spA {
+    0%,46%   { transform:scale(0) rotate(0deg); }
+    50%      { transform:scale(1.25) rotate(60deg); }
+    53%      { transform:scale(.9) rotate(90deg); }
+    57%,100% { transform:scale(0) rotate(180deg); }
+  }
+  @keyframes spB {
+    0%,53%   { transform:scale(0) rotate(0deg); }
+    57%      { transform:scale(1.25) rotate(60deg); }
+    60%      { transform:scale(.9) rotate(90deg); }
+    64%,100% { transform:scale(0) rotate(180deg); }
+  }
+  @keyframes spC {
+    0%,60%   { transform:scale(0) rotate(0deg); }
+    64%      { transform:scale(1.25) rotate(60deg); }
+    67%      { transform:scale(.9) rotate(90deg); }
+    71%,100% { transform:scale(0) rotate(180deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #wormWrap, #worm, .eye, .pupils, .dizzy, .ch, .spark, .shade { animation:none; }
+    #g-i, #g-o, #g-d { animation:none; opacity:1; }
+    .dizzy, .spark { display:none; }
+    .shade { opacity:.28; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg viewBox="100 270 1300 1110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MIOD">
+  <!-- ground shadow: spreads out when the letters land -->
+  <ellipse class="shade" cx="792" cy="1286" rx="250" ry="15"/>
+
+  <!-- letters sit behind the worm so they hop out from under its tail -->
+  <g class="l" id="g-i">
+    <text class="ch sh" id="s-i" x="610" y="1270" dx="11" dy="13">i</text>
+    <text class="ch c-i" id="t-i" x="610" y="1270">i</text>
+  </g>
+  <g class="l" id="g-o">
+    <text class="ch sh" id="s-o" x="650" y="1270" dx="11" dy="13">o</text>
+    <text class="ch c-o" id="t-o" x="650" y="1270">o</text>
+  </g>
+  <g class="l" id="g-d">
+    <text class="ch sh" id="s-d" x="800" y="1270" dx="11" dy="13">d</text>
+    <text class="ch c-d" id="t-d" x="800" y="1270">d</text>
+  </g>
+
+  <!-- sparkles pop on each landing -->
+  <g transform="translate(630 1020)"><path class="spark spA" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+  <g transform="translate(790 995)"><path class="spark spB" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+  <g transform="translate(955 1025)"><path class="spark spC" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+
+  <g id="wormWrap">
+    <g id="worm">
+      <path id="spine" fill="none" d="M540 1230 C400 1080 240 880 250 650 C260 480 420 380 560 420 C650 445 700 520 725 580 C760 520 820 440 950 420 C1150 400 1300 560 1270 760 C1255 860 1190 890 1110 905"/>
+      <g id="outline"></g>
+      <g id="fill"></g>
+      <g fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="22" stroke-linecap="round">
+        <path d="M300 760 C285 650 330 560 400 500"/>
+        <path d="M1000 470 C1100 460 1190 520 1230 600"/>
+      </g>
+      <g>
+        <!-- big eye: white sclera, pupils glance toward the letters and blink -->
+        <g class="eye" id="eyeBig">
+          <ellipse cx="1085" cy="855" rx="56" ry="56" fill="#fff" stroke="#2a1a4a" stroke-width="7"/>
+          <g class="pupils">
+            <circle cx="1088" cy="857" r="34" fill="#0e0620"/>
+            <circle cx="1104" cy="843" r="11" fill="#fff"/>
+          </g>
+          <path class="dizzy" id="dzBig" fill="none" stroke="#2a1a4a" stroke-width="6" stroke-linecap="round"/>
+        </g>
+        <!-- small eye -->
+        <g class="eye" id="eyeSmall">
+          <ellipse cx="1150" cy="985" rx="44" ry="40" fill="#fff" stroke="#2a1a4a" stroke-width="6"/>
+          <g class="pupils">
+            <circle cx="1155" cy="988" r="24" fill="#0e0620"/>
+            <circle cx="1166" cy="978" r="8" fill="#fff"/>
+          </g>
+          <path class="dizzy" id="dzSmall" fill="none" stroke="#2a1a4a" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <path d="M1035 925 q-8 33 28 48" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+        <path d="M1165 795 q24 12 27 38" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>
+</div>
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var spine = document.getElementById('spine');
+  var L = spine.getTotalLength();
+  var ss = function (a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
+  function r(t) { return 22 + 70 * ss(0, 0.32, t) + 38 * ss(0.84, 0.985, t); }
+
+  // body: stacked circles along the spine, with a darker outline ring
+  var N = 380, outs = [], fills = [];
+  var og = document.getElementById('outline'), fg = document.getElementById('fill');
+  for (var i = 0; i <= N; i++) {
+    var t = i / N, p = spine.getPointAtLength(t * L), rr = r(t);
+    var a = document.createElementNS(NS, 'circle');
+    a.setAttribute('cx', p.x.toFixed(1)); a.setAttribute('cy', p.y.toFixed(1)); a.setAttribute('r', (rr + 12).toFixed(1));
+    og.appendChild(a); outs.push(a);
+    var b = document.createElementNS(NS, 'circle');
+    b.setAttribute('cx', p.x.toFixed(1)); b.setAttribute('cy', p.y.toFixed(1)); b.setAttribute('r', rr.toFixed(1));
+    fg.appendChild(b); fills.push(b);
+  }
+
+  // always multi-colour: a rainbow runs along the body and keeps flowing
+  function paint(time) {
+    var shift = time * 0.045; // degrees per ms
+    for (var i = 0; i <= N; i++) {
+      var h = ((i / N) * 300 + shift) % 360;
+      outs[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',70%,36%)');
+      fills[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',85%,62%)');
+    }
+  }
+
+  // dizzy spiral for the eyes shown during the spin
+  function spiral(cx, cy, rMax, turns) {
+    var d = '', steps = 80;
+    for (var k = 0; k <= steps; k++) {
+      var f = k / steps, ang = f * turns * 2 * Math.PI, rad = rMax * f;
+      d += (k ? ' L ' : 'M ') + (cx + rad * Math.cos(ang)).toFixed(1) + ' ' + (cy + rad * Math.sin(ang)).toFixed(1);
+    }
+    return d;
+  }
+  document.getElementById('dzBig').setAttribute('d', spiral(1085, 855, 40, 2.5));
+  document.getElementById('dzSmall').setAttribute('d', spiral(1150, 985, 30, 2.5));
+
+  paint(0);
+  if (!reduced) { var last=0; (function loop(t){ if(t-last>50 && !document.hidden){ paint(t); last=t; } requestAnimationFrame(loop); })(0); }
+
+  // place the letters tightly, and aim each one's start at the tail tip
+  function layout() {
+    var keys = ['i', 'o', 'd'], x = 610, gap = 6;
+    keys.forEach(function (k) {
+      var face = document.getElementById('t-' + k), shadow = document.getElementById('s-' + k);
+      var g = document.getElementById('g-' + k), w = face.getComputedTextLength();
+      face.setAttribute('x', x);
+      shadow.setAttribute('x', x);
+      g.style.setProperty('--dx', (540 - (x + w / 2)).toFixed(0) + 'px');
+      x += w + gap;
+    });
+  }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); } else { layout(); }
+})();
+<\/script>
+</body>
+</html>
+</script>
+<script id="miod-feature-js">
+(function(){
+  function getSrc(){ var el=document.getElementById('miodSource'); return el? el.textContent.split('<\\/script').join('</script'):''; }
+  var timer=null;
+  window.openMiod=function(){
+    var o=document.getElementById('miodFull'),f=document.getElementById('miodFullFrame'),t=document.getElementById('miodSoon');
+    if(!o) return;
+    t.classList.remove('show');
+    f.srcdoc=getSrc();
+    o.classList.add('show');
+    clearTimeout(timer);
+    timer=setTimeout(function(){t.classList.add('show');},6500);
+  };
+  window.closeMiod=function(){
+    clearTimeout(timer);
+    var o=document.getElementById('miodFull'),f=document.getElementById('miodFullFrame');
+    if(o) o.classList.remove('show');
+    if(f) f.srcdoc='';
+  };
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') window.closeMiod();
+    if((e.key==='Enter'||e.key===' ') && document.activeElement && document.activeElement.id==='miodCard'){e.preventDefault();window.openMiod();}
+  });
+  function init(){ var cf=document.getElementById('miodCardFrame'); if(cf) cf.srcdoc=getSrc().replace('</head>','<style>:root,html,body{background:transparent!important}body::before{background:transparent!important;display:none}</style></head>'); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
 </script>
 </body>
 </html>
