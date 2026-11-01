@@ -1,6 +1,10 @@
+// Save as: api/run-code.js  (Vercel serverless function)
 const ONLINE_COMPILER_URL = "https://api.onlinecompiler.io/api/run-code-sync/";
 const MAX_CODE_CHARS = 50000;
 const MAX_INPUT_CHARS = 10000;
+
+// Raise if your Vercel plan allows it (the upstream timeout below is 55s).
+export const config = { maxDuration: 60 };
 
 function asText(value) {
   if (typeof value === "string") return value;
@@ -23,7 +27,11 @@ export default async function handler(req, res) {
     });
   }
 
-  const body = req.body && typeof req.body === "object" ? req.body : {};
+  // Vercel parses JSON bodies, but accept a raw string body too.
+  let body = req.body;
+  if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = {}; } }
+  if (!body || typeof body !== "object") body = {};
+
   const requestedCompiler = typeof body.compiler === "string" ? body.compiler : "python";
   // OnlineCompiler expects versioned compiler IDs, not generic labels.
   const compilerAliases = { python: "python-3.14", javascript: "node-24", node: "node-24" };
@@ -54,6 +62,7 @@ export default async function handler(req, res) {
     let data;
     try { data = raw ? JSON.parse(raw) : {}; }
     catch { data = { output: raw }; }
+    if (!data || typeof data !== "object" || Array.isArray(data)) data = { output: asText(data) };
 
     if (!upstream.ok) {
       const detail = asText(data.error || data.message || data.stderr || data.output) || `OnlineCompiler returned HTTP ${upstream.status}.`;
@@ -62,12 +71,18 @@ export default async function handler(req, res) {
 
     // Normalize common OnlineCompiler response shapes for the existing UI.
     const nested = data.result && typeof data.result === "object" ? data.result : data.data && typeof data.data === "object" ? data.data : data;
+    const pick = key => nested[key] ?? data[key];
     const output = asText(nested.output ?? nested.stdout ?? nested.console ?? nested.result ?? data.output ?? data.stdout);
     const stderr = asText(nested.stderr ?? nested.error_output ?? data.stderr);
     const error = asText(nested.error ?? data.error ?? (data.success === false ? data.message : ""));
     const exitCodeValue = nested.exit_code ?? nested.exitCode ?? nested.return_code ?? nested.returnCode ?? data.exit_code ?? data.exitCode;
-    const exitCode = Number.isFinite(Number(exitCodeValue)) ? Number(exitCodeValue) : (error || stderr ? 1 : 0);
-    const success = data.success === false || nested.success === false ? false : (exitCode === 0 && !error && !stderr);
+    const hasExit = exitCodeValue !== undefined && exitCodeValue !== null && Number.isFinite(Number(exitCodeValue));
+    // If the compiler reports an exit code, trust it: warnings on stderr alone are not a failure.
+    const exitCode = hasExit ? Number(exitCodeValue) : (error || stderr ? 1 : 0);
+    const success = data.success === false || nested.success === false
+      ? false
+      : (hasExit ? exitCode === 0 && !error : exitCode === 0 && !error && !stderr);
+
     return res.status(200).json({
       success,
       status: success ? "success" : "error",
@@ -78,7 +93,16 @@ export default async function handler(req, res) {
       error: error || stderr,
       exit_code: exitCode,
       time: Number(((Date.now() - started) / 1000).toFixed(2)),
-      raw: undefined
+      // Pass through anything the frontend can render (plots, images, html previews, package notes).
+      results: pick("results"),
+      files: pick("files"),
+      animation_html: pick("animation_html"),
+      preview_html: pick("preview_html"),
+      html_preview: pick("html_preview"),
+      preview_url: pick("preview_url"),
+      animation_url: pick("animation_url"),
+      installedPackages: pick("installedPackages"),
+      packageInstallNote: pick("packageInstallNote")
     });
   } catch (err) {
     const timedOut = err && err.name === "AbortError";
