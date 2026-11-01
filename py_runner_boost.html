@@ -2941,22 +2941,67 @@ async function executeProgram() {
 }
 
 
-/* PIL support: Image.show() ke Preview tab-e dekhabe */
+/* Visual/output support: PIL, matplotlib, seaborn, pandas, numpy, sklearn, sympy.
+   Images are printed as IMAGE_BASE64_START...END, which the Run handler already renders in the Preview tab. */
 function withPilSupport(source) {
-  if (!/\b(PIL|pillow)\b/i.test(source)) return { code: source, offset: 0 };
+  const usesPil = /\b(PIL|pillow)\b/i.test(source);
+  const usesPlot = /\b(matplotlib|pyplot|seaborn|sympy|pandas|sklearn|scikit)\b/i.test(source);
+  const usesData = /\b(numpy|pandas)\b/i.test(source);
+  if (!usesPil && !usesPlot && !usesData) return { code: source, offset: 0 };
   const prelude = [
-    "try:",
-    "    import io as _io, base64 as _b64",
-    "    from PIL import Image as _PI",
-    "    def _jsco_show(self, *a, **k):",
-    "        im = self if self.mode in ('RGB','RGBA','L') else self.convert('RGBA')",
-    "        b = _io.BytesIO(); im.save(b, 'PNG')",
-    "        print('IMAGE_BASE64_START' + _b64.b64encode(b.getvalue()).decode() + 'IMAGE_BASE64_END')",
-    "    _PI.Image.show = _jsco_show",
-    "except Exception:",
-    "    pass",
-    ""
+    "import io as _io, base64 as _b64",
+    "def _jsco_emit(_data):",
+    "    print('IMAGE_BASE64_START' + _b64.b64encode(_data).decode() + 'IMAGE_BASE64_END', flush=True)"
   ];
+  if (usesPil) {
+    prelude.push(
+      "try:",
+      "    from PIL import Image as _PI",
+      "    def _jsco_show(self, *a, **k):",
+      "        _im = self if self.mode in ('RGB','RGBA','L') else self.convert('RGBA')",
+      "        _b = _io.BytesIO(); _im.save(_b, 'PNG')",
+      "        _jsco_emit(_b.getvalue())",
+      "    _PI.Image.show = _jsco_show",
+      "except Exception:",
+      "    pass"
+    );
+  }
+  if (usesPlot) {
+    prelude.push(
+      "try:",
+      "    import matplotlib as _mpl",
+      "    _mpl.use('Agg')",
+      "    import matplotlib.pyplot as _plt",
+      "    def _jsco_plt_show(*a, **k):",
+      "        for _n in list(_plt.get_fignums()):",
+      "            _f = _plt.figure(_n)",
+      "            _b = _io.BytesIO()",
+      "            _f.savefig(_b, format='png', dpi=100, bbox_inches='tight')",
+      "            _jsco_emit(_b.getvalue())",
+      "        _plt.close('all')",
+      "    _plt.show = _jsco_plt_show",
+      "    import atexit as _atexit",
+      "    _atexit.register(_jsco_plt_show)",
+      "except Exception:",
+      "    pass"
+    );
+  }
+  if (usesData) {
+    prelude.push(
+      "try:",
+      "    import numpy as _np",
+      "    _np.set_printoptions(linewidth=120)",
+      "except Exception:",
+      "    pass",
+      "try:",
+      "    import pandas as _pd",
+      "    _pd.set_option('display.width', 160)",
+      "    _pd.set_option('display.max_columns', 50)",
+      "except Exception:",
+      "    pass"
+    );
+  }
+  prelude.push("");
   return { code: prelude.join("\n") + source, offset: prelude.length - 1 };
 }
 
