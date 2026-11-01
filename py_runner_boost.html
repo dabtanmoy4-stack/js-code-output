@@ -2473,84 +2473,221 @@ function hideCompilerVisualPreview() {
   if (output) output.style.display = "";
 }
 
-// Browser Turtle renderer: supports common turtle drawing commands without
-// requiring desktop Tkinter. Unsupported Python/Turtle features still need a
-// full Python graphics runtime.
+// Browser Turtle renderer: translates common Python turtle code to JavaScript and draws it on a Canvas.
+// It is a compatibility renderer, not the full Python turtle module.
+function splitTurtleArgs(s) {
+  const out = []; let d = 0, q = "", cur = "";
+  for (const ch of String(s)) {
+    if (q) { cur += ch; if (ch === q) q = ""; continue; }
+    if (ch === '"' || ch === "'") { q = ch; cur += ch; continue; }
+    if ("([{".includes(ch)) d++;
+    if (")]}".includes(ch)) d--;
+    if (ch === "," && d === 0) { out.push(cur); cur = ""; continue; }
+    cur += ch;
+  }
+  if (cur.trim() !== "" || out.length) out.push(cur);
+  return out.map(x => x.trim());
+}
 function buildTurtlePreview(source) {
   const lines = source.split(/\r?\n/);
-  const js = [];
-  const stack = [];
+  const js = [], stack = [], userFns = new Set();
   const indentOf = line => (line.match(/^\s*/) || [""])[0].replace(/\t/g, "    ").length;
   const pyExpr = value => {
-    let x = value.trim();
-    x = x.replace(/\blen\((\w+)\)/g, '$1.length');
-    x = x.replace(/\bTrue\b/g, 'true').replace(/\bFalse\b/g, 'false').replace(/\bNone\b/g, 'null');
+    let x = String(value).trim();
+    x = x.replace(/\blen\(([^()]*)\)/g, "($1).length")
+      .replace(/\bTrue\b/g, "true").replace(/\bFalse\b/g, "false").replace(/\bNone\b/g, "null")
+      .replace(/\band\b/g, "&&").replace(/\bor\b/g, "||").replace(/\bnot\s+/g, "!")
+      .replace(/([\w.\])]+)\s*\/\/\s*([\w.]+)/g, "Math.floor($1/$2)")
+      .replace(/\babs\(/g, "Math.abs(").replace(/\bint\(/g, "Math.trunc(").replace(/\bround\(/g, "Math.round(")
+      .replace(/\bmax\(/g, "Math.max(").replace(/\bmin\(/g, "Math.min(")
+      .replace(/\bfloat\(/g, "Number(").replace(/\bstr\(/g, "String(");
     return x;
   };
-  const closeBlocks = indent => {
-    while (stack.length && indent <= stack[stack.length - 1]) { js.push("}"); stack.pop(); }
+  const closeBlocks = indent => { while (stack.length && indent <= stack[stack.length - 1]) { js.push("}"); stack.pop(); } };
+  const TURTLE = new Set(["forward","fd","backward","back","bk","left","lt","right","rt","penup","pu","up","pendown","pd","down","color","pencolor","fillcolor","pensize","width","goto","setpos","setposition","setx","sety","setheading","seth","home","circle","dot","begin_fill","end_fill","write","bgcolor","clear","clearscreen","reset","hideturtle","ht","showturtle","st","speed","shape","shapesize","update","tracer","title","setup","done","mainloop","exitonclick","delay","colormode","listen","onkey","onscreenclick","ontimer","bye","sleep","seed"]);
+  const turtleCall = (method, raw) => {
+    const a = splitTurtleArgs(raw).map(pyExpr), a0 = a[0] === undefined ? "0" : a[0];
+    switch (method) {
+      case "forward": case "fd": return `T.forward(${a0});`;
+      case "backward": case "back": case "bk": return `T.forward(-(${a0}));`;
+      case "left": case "lt": return `T.turn(${a0});`;
+      case "right": case "rt": return `T.turn(-(${a0}));`;
+      case "penup": case "pu": case "up": return "T.down=false;";
+      case "pendown": case "pd": case "down": return "T.down=true;";
+      case "color": return `T.setColor(${a.join(",")});`;
+      case "pencolor": return `T.color=(${a0});`;
+      case "fillcolor": return `T.fill=(${a0});`;
+      case "pensize": case "width": return `T.width=Number(${a0})||1;`;
+      case "goto": case "setpos": case "setposition": return a.length >= 2 ? `T.goto(${a0},${a[1]});` : `T.goto(...(${a0}));`;
+      case "setx": return `T.goto(${a0},T.y);`;
+      case "sety": return `T.goto(T.x,${a0});`;
+      case "setheading": case "seth": return `T.a=Number(${a0});`;
+      case "home": return "T.goto(0,0);T.a=0;";
+      case "circle": return `T.circle(${a.join(",")});`;
+      case "dot": return `T.dot(${a.join(",")});`;
+      case "begin_fill": return "T.beginFill();";
+      case "end_fill": return "T.endFill();";
+      case "write": return `T.write(${a0});`;
+      case "bgcolor": return `T.setBg(${a0});`;
+      case "speed": return `T.setSpeed(${a0});`;
+      case "tracer": return `T.tracer(${a0});`;
+      case "clear": case "clearscreen": case "reset": return "T.clearAll();";
+      case "hideturtle": case "ht": return "T.hidden=true;";
+      case "showturtle": case "st": return "T.hidden=false;";
+      default: return "";
+    }
   };
   for (const raw of lines) {
     const line = raw.trim();
-    if (!line || line.startsWith("#") || /^(import\s+turtle|from\s+turtle\s+import)\b/.test(line)) continue;
+    if (!line || line.startsWith("#") || /^("""|''')/.test(line)) continue;
+    if (/^(import|from)\s+/.test(line) || /^print\s*\(/.test(line) || /^(pass|global|nonlocal)\b/.test(line)) continue;
     const indent = indentOf(raw); closeBlocks(indent);
     let m;
-    if ((m = line.match(/^for\s+(\w+)\s+in\s+range\((\d+)\)\s*:/))) {
-      js.push(`for (let ${m[1]}=0; ${m[1]}<${Number(m[2])}; ${m[1]}++){`); stack.push(indent); continue;
+    if ((m = line.match(/^def\s+(\w+)\s*\((.*)\)\s*:/))) { userFns.add(m[1]); js.push(`function ${m[1]}(${m[2]}){`); stack.push(indent); continue; }
+    if ((m = line.match(/^return\b\s*(.*)$/))) { js.push(`return ${m[1] ? pyExpr(m[1]) : ""};`); continue; }
+    if (/^(break|continue)$/.test(line)) { js.push(line + ";"); continue; }
+    if ((m = line.match(/^for\s+(\w+)\s+in\s+range\((.*)\)\s*:\s*$/))) {
+      const a = splitTurtleArgs(m[2]).map(pyExpr), v = m[1];
+      if (a.length === 1) js.push(`for (var ${v}=0; ${v}<(${a[0]}); ${v}++){`);
+      else if (a.length === 2) js.push(`for (var ${v}=(${a[0]}); ${v}<(${a[1]}); ${v}++){`);
+      else js.push(`for (var ${v}=(${a[0]}); ((${a[2]})>0 ? ${v}<(${a[1]}) : ${v}>(${a[1]})); ${v}+=(${a[2]})){`);
+      stack.push(indent); continue;
     }
-    if ((m = line.match(/^(\w+)\s*=\s*\[([^\]]*)\]\s*$/))) { js.push(`let ${m[1]}=[${m[2]}];`); continue; }
-    if ((m = line.match(/^(\w+)\s*=\s*turtle\.Turtle\(\)/))) { js.push(`let ${m[1]} = T;`); continue; }
-    if (/^(screen|wn)\s*=\s*turtle\.Screen\(\)/.test(line)) { js.push('let screen = { update(){draw();}, tracer(){}, title(){}, setup(){}, bgcolor(c){bg=String(c);draw();} };'); continue; }
-    if (/^(\w+)\.(speed|shape|hideturtle|showturtle|update|tracer|title|setup|done|mainloop|exitonclick)\(/.test(line)) continue;
-    if ((m = line.match(/^(\w+)\.(forward|fd|backward|back|bk|left|lt|right|rt|penup|pu|pendown|pd|color|pencolor|pensize|width|goto|setpos|setposition|circle|bgcolor|clear)\((.*)\)\s*$/))) {
-      const method=m[2], arg=pyExpr(m[3]);
-      if (['penup','pu'].includes(method)) js.push('T.down=false;');
-      else if (['pendown','pd'].includes(method)) js.push('T.down=true;');
-      else if (['forward','fd'].includes(method)) js.push(`T.forward(${arg});`);
-      else if (['backward','back','bk'].includes(method)) js.push(`T.forward(-(${arg}));`);
-      else if (['left','lt'].includes(method)) js.push(`T.turn(-(${arg}));`);
-      else if (['right','rt'].includes(method)) js.push(`T.turn(${arg});`);
-      else if (['color','pencolor'].includes(method)) js.push(`T.color=${arg};`);
-      else if (['pensize','width'].includes(method)) js.push(`T.width=Number(${arg})||1;`);
-      else if (['goto','setpos','setposition'].includes(method)) { const parts=m[3].split(','); js.push(`T.goto(${pyExpr(parts[0]||'0')},${pyExpr(parts[1]||'0')});`); }
-      else if (method==='circle') js.push(`T.circle(${arg});`);
-      else if (method==='bgcolor') js.push(`bg=${arg};draw();`);
-      else if (method==='clear') js.push('paths=[];draw();');
+    if ((m = line.match(/^for\s+(\w+)\s*,\s*(\w+)\s+in\s+enumerate\((.+)\)\s*:\s*$/))) { js.push(`for (var [${m[1]},${m[2]}] of (${pyExpr(m[3])}).entries()){`); stack.push(indent); continue; }
+    if ((m = line.match(/^for\s+(\w+)\s+in\s+(.+?)\s*:\s*$/))) { js.push(`for (var ${m[1]} of ${pyExpr(m[2])}){`); stack.push(indent); continue; }
+    if ((m = line.match(/^while\s+(.+?)\s*:\s*$/))) { js.push(`for (var _g=0; _g<5000 && (${pyExpr(m[1])}); _g++){`); stack.push(indent); continue; }
+    if ((m = line.match(/^if\s+(.+?)\s*:\s*$/))) { js.push(`if (${pyExpr(m[1])}){`); stack.push(indent); continue; }
+    if ((m = line.match(/^elif\s+(.+?)\s*:\s*$/))) { js.push(`else if (${pyExpr(m[1])}){`); stack.push(indent); continue; }
+    if (/^else\s*:\s*$/.test(line)) { js.push("else {"); stack.push(indent); continue; }
+    if ((m = line.match(/^(\w+)\s*=\s*(turtle\.)?Screen\(\)\s*$/))) { js.push(`var ${m[1]}=screenObj;`); continue; }
+    if ((m = line.match(/^(\w+)\s*=\s*(turtle\.)?(Turtle|RawTurtle|Pen)\(.*\)\s*$/))) { js.push(`var ${m[1]}=T;`); continue; }
+    const norm = line.replace(/^turtle\.Screen\(\)\./, "turtle.");
+    if ((m = norm.match(/^(\w+)\.(\w+)\((.*)\)\s*$/))) {
+      if (m[2] === "append") js.push(`${m[1]}.push(${pyExpr(m[3])});`);
+      else js.push(turtleCall(m[2], m[3]));
       continue;
     }
-    if ((m=line.match(/^(\w+)\s*=\s*(.+)$/))) { js.push(`let ${m[1]}=${pyExpr(m[2])};`); continue; }
+    if ((m = norm.match(/^(\w+)\((.*)\)\s*$/))) {
+      if (userFns.has(m[1])) js.push(`${m[1]}(${splitTurtleArgs(m[2]).map(pyExpr).join(",")});`);
+      else if (TURTLE.has(m[1])) js.push(turtleCall(m[1], m[2]));
+      continue;
+    }
+    if ((m = line.match(/^(\w+)\s*,\s*(\w+)\s*=(?!=)\s*(.+)$/))) { js.push(`var [${m[1]},${m[2]}]=[${pyExpr(m[3])}];`); continue; }
+    if ((m = line.match(/^(\w+)\s*(\/\/|\*\*|[+\-*\/%])?=(?!=)\s*(.+)$/))) {
+      const name = m[1], op = m[2], val = pyExpr(m[3]);
+      if (!op) js.push(`var ${name}=${val};`);
+      else if (op === "//") js.push(`${name}=Math.floor(${name}/(${val}));`);
+      else js.push(`${name}${op}=(${val});`);
+      continue;
+    }
   }
   while (stack.length) { js.push("}"); stack.pop(); }
   return js.join("\n");
 }
 function makeTurtleHTML(source) {
-  const commands = buildTurtlePreview(source);
+  const commands = buildTurtlePreview(source).replace(/<\/script/gi, "<\\/script");
   return `<!doctype html><html><head><meta charset="utf-8"><style>
   *{box-sizing:border-box}body{margin:0;background:#f8fafc;font:13px system-ui;color:#111827}
-  header{height:38px;padding:10px 14px;background:#111827;color:#f9fafb;display:flex;justify-content:space-between}
+  header{height:38px;padding:0 12px;background:#111827;color:#f9fafb;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .ctl{display:flex;align-items:center;gap:6px}
+  .ctl select,.ctl button{height:26px;border:1px solid #4b5563;border-radius:6px;background:#1f2937;color:#f9fafb;font:12px system-ui;padding:0 8px;cursor:pointer}
+  .ctl button:hover,.ctl select:hover{border-color:#e8c875}
   canvas{display:block;width:100%;height:calc(100vh - 38px);background:#fff}
-  </style></head><body><header><b>Python Turtle · Browser Preview</b><span>Canvas renderer</span></header><canvas id="c"></canvas>
+  </style></head><body><header><b>Python Turtle</b><span class="ctl"><select id="spd" title="Drawing speed"><option value="0.4">Slow</option><option value="1" selected>Normal</option><option value="3">Fast</option><option value="10">Very fast</option><option value="inf">Instant</option></select><button id="replay" type="button">&#8635; Replay</button><button id="skip" type="button">Skip &#9197;</button></span></header><canvas id="c"></canvas>
   <script>
-  const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');let paths=[],bg='#ffffff';
+  var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+  var ops=[],cum=[],fills=[],total=0,pos=0,mult=1,raf=0,last=0,bgInit='#ffffff';
+  function addOp(o,d){ops.push(o);total+=d;cum.push(total);}
+  function W(){return canvas.width/devicePixelRatio}
+  function H(){return canvas.height/devicePixelRatio}
   function size(){canvas.width=Math.max(320,innerWidth*devicePixelRatio);canvas.height=Math.max(240,(innerHeight-38)*devicePixelRatio);ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);draw();}
-  let W=()=>canvas.width/devicePixelRatio,H=()=>canvas.height/devicePixelRatio;
-  function draw(){ctx.fillStyle=bg;ctx.fillRect(0,0,W(),H());for(const p of paths){ctx.strokeStyle=p.color;ctx.lineWidth=p.width;ctx.beginPath();ctx.moveTo(p.x1+W()/2,H()/2-p.y1);ctx.lineTo(p.x2+W()/2,H()/2-p.y2);ctx.stroke();}}
-  const T={x:0,y:0,a:0,down:true,color:'#16a34a',width:2,
-   forward(n){const x2=this.x+Math.cos(this.a*Math.PI/180)*n,y2=this.y+Math.sin(this.a*Math.PI/180)*n;
-    if(this.down)paths.push({x1:this.x,y1:this.y,x2,y2,color:this.color,width:this.width});
-    this.x=x2;this.y=y2;},
-   turn(n){this.a=(this.a+n)%360;},
-   goto(x,y){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x,y2:y,color:this.color,width:this.width});this.x=x;this.y=y;},
-   circle(r){const n=48,step=360/n,old=this.a;for(let i=0;i<n;i++){this.forward(2*Math.PI*r/n);this.turn(step);}this.a=old;}
+  function draw(){
+    var w=W(),h=H(),cx=w/2,cy=h/2,n=ops.length,k=0,frac=0,i,o,st;
+    if(pos>=total){k=n;}else{while(k<n&&cum[k]<=pos)k++;if(k<n){st=k?cum[k-1]:0;frac=(pos-st)/(cum[k]-st);}}
+    var bgc=bgInit,start=0;
+    for(i=0;i<k;i++){o=ops[i];if(o.t==='bg')bgc=o.c;else if(o.t==='c')start=i+1;}
+    ctx.fillStyle=bgc;ctx.fillRect(0,0,w,h);
+    ctx.lineCap='round';ctx.lineJoin='round';ctx.font='16px system-ui,sans-serif';
+    var bc=null,bw=0,fp=0;
+    function flush(){if(bc!==null){ctx.stroke();bc=null;}}
+    function drawFills(upTo){
+      while(fp<fills.length&&fills[fp].idx<=upTo){
+        var f=fills[fp++];if(f.idx<start||f.at>k)continue;
+        flush();ctx.fillStyle=f.color;ctx.beginPath();
+        for(var j=0;j<f.pts.length;j++){var q=f.pts[j];if(j)ctx.lineTo(cx+q[0],cy-q[1]);else ctx.moveTo(cx+q[0],cy-q[1]);}
+        ctx.closePath();ctx.fill();
+      }
+    }
+    for(i=start;i<k;i++){
+      drawFills(i);o=ops[i];
+      if(o.t==='m'){
+        if(o.down){
+          if(bc!==o.color||bw!==o.width){flush();ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();bc=o.color;bw=o.width;}
+          ctx.moveTo(cx+o.x1,cy-o.y1);ctx.lineTo(cx+o.x2,cy-o.y2);
+        }
+      }else if(o.t==='d'){flush();ctx.fillStyle=o.color;ctx.beginPath();ctx.arc(cx+o.x,cy-o.y,o.r,0,6.2832);ctx.fill();}
+      else if(o.t==='w'){flush();ctx.fillStyle=o.color;ctx.fillText(o.text,cx+o.x,cy-o.y);}
+    }
+    drawFills(k);flush();
+    var ax=0,ay=0,aa=0,ac='#000000';
+    for(i=0;i<k;i++){o=ops[i];if(o.t==='m'){ax=o.x2;ay=o.y2;aa=o.a;ac=o.color;}}
+    if(k<n){
+      o=ops[k];
+      if(o.t==='m'){
+        ax=o.x1+(o.x2-o.x1)*frac;ay=o.y1+(o.y2-o.y1)*frac;aa=o.a;ac=o.color;
+        if(o.down){ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();ctx.moveTo(cx+o.x1,cy-o.y1);ctx.lineTo(cx+ax,cy-ay);ctx.stroke();}
+      }
+    }else if(n){ax=T.x;ay=T.y;aa=T.a;ac=T.color;}
+    if(!T.hidden){
+      var r=aa*Math.PI/180,c=Math.cos(r),s=Math.sin(r),x=cx+ax,y=cy-ay;
+      ctx.fillStyle=ac;ctx.beginPath();
+      ctx.moveTo(x+c*12,y-s*12);ctx.lineTo(x-c*6+s*6,y+s*6+c*6);ctx.lineTo(x-c*6-s*6,y+s*6-c*6);ctx.closePath();ctx.fill();
+    }
+  }
+  var T={x:0,y:0,a:0,down:true,color:'#000000',fill:'#000000',width:2,hidden:false,fillPts:null,fillIdx:0,spd:3,
+    move:function(x2,y2){var l=Math.sqrt((x2-this.x)*(x2-this.x)+(y2-this.y)*(y2-this.y));
+      addOp({t:'m',x1:this.x,y1:this.y,x2:x2,y2:y2,down:this.down,color:this.color,width:this.width,a:this.a},Math.max(l,3));
+      this.x=x2;this.y=y2;if(this.fillPts)this.fillPts.push([x2,y2]);},
+    forward:function(n){n=Number(n);var r=this.a*Math.PI/180;this.move(this.x+Math.cos(r)*n,this.y+Math.sin(r)*n);},
+    goto:function(x,y){this.move(Number(x),Number(y));},
+    turn:function(n){this.a=(this.a+Number(n))%360;},
+    setColor:function(c,f){this.color=c;this.fill=(f===undefined?c:f);},
+    circle:function(r,extent){r=Number(r);extent=(extent===undefined||extent===null)?360:Number(extent);
+      var n=Math.max(8,Math.round(Math.abs(extent)/6)),sign=r>=0?1:-1,step=Math.abs(extent)/n*sign*(extent<0?-1:1),chord=2*Math.abs(r)*Math.sin(Math.abs(step)*Math.PI/360);
+      this.turn(step/2);for(var i=0;i<n;i++){this.forward(chord);this.turn(step);}this.turn(-step/2);},
+    dot:function(s,c){addOp({t:'d',x:this.x,y:this.y,r:(Number(s)||this.width*2+4)/2,color:c||this.color},10);},
+    beginFill:function(){this.fillPts=[[this.x,this.y]];this.fillIdx=ops.length;},
+    endFill:function(){if(this.fillPts&&this.fillPts.length>2)fills.push({idx:this.fillIdx,at:ops.length,pts:this.fillPts,color:this.fill});this.fillPts=null;},
+    write:function(t){addOp({t:'w',x:this.x,y:this.y,text:String(t),color:this.color},10);},
+    setBg:function(c){if(!ops.length)bgInit=String(c);addOp({t:'bg',c:String(c)},1);},
+    clearAll:function(){addOp({t:'c'},1);},
+    setSpeed:function(v){var map={fastest:0,fast:10,normal:6,slow:3,slowest:1};if(typeof v==='string')v=map[v];v=Number(v);if(isNaN(v))return;this.spd=v;},
+    tracer:function(n){if(Number(n)===0)this.spd=0;}
   };
-  try{size();${commands}\n draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
-  addEventListener('resize',size);size();
+  var screenObj={};
+  var random={randint:function(a,b){return Math.floor(Math.random()*(b-a+1))+a},random:Math.random,uniform:function(a,b){return a+Math.random()*(b-a)},choice:function(l){return l[Math.floor(Math.random()*l.length)]},seed:function(){}};
+  var math={pi:Math.PI,sin:function(x){return Math.sin(x)},cos:function(x){return Math.cos(x)},tan:function(x){return Math.tan(x)},sqrt:Math.sqrt,radians:function(d){return d*Math.PI/180},degrees:function(r){return r*180/Math.PI},floor:Math.floor,ceil:Math.ceil};
+  var time={sleep:function(){}};
+  function rate(){return (T.spd===0?Infinity:Math.max(60*(T.spd||3),total/15))*mult;}
+  function tick(ts){
+    if(!last)last=ts;var dt=(ts-last)/1000;last=ts;pos+=rate()*dt;
+    if(!(pos<total)){pos=total;draw();raf=0;return;}
+    draw();raf=requestAnimationFrame(tick);
+  }
+  function start(){cancelAnimationFrame(raf);raf=0;last=0;pos=0;if(total===0||rate()===Infinity){pos=total;draw();return;}draw();raf=requestAnimationFrame(tick);}
+  document.getElementById('replay').addEventListener('click',start);
+  document.getElementById('skip').addEventListener('click',function(){cancelAnimationFrame(raf);raf=0;pos=total;draw();});
+  document.getElementById('spd').addEventListener('change',function(e){var v=e.target.value;mult=v==='inf'?Infinity:Number(v);if(raf||v==='inf'){if(v==='inf'){cancelAnimationFrame(raf);raf=0;pos=total;draw();}}});
+  try{size();(function(){
+  ${commands}
+  })();fills.sort(function(a,b){return a.idx-b.idx;});start();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
+  addEventListener('resize',size);
   <\/script></body></html>`;
 }
 function runTurtlePreview(source) {
-  const html = makeTurtleHTML(source);
-  showCompilerVisualPreview(html);
-  $("output").textContent = "Turtle drawing is rendered in one optimized Canvas pass. Supported: forward/backward, left/right, penup/pendown, color, pensize, goto, circle, bgcolor and simple range() loops. This is a compatibility renderer, not the complete Python turtle module.";
+  showCompilerVisualPreview(makeTurtleHTML(source));
+  currentOutputText = "Turtle drawing is animated in the browser (Canvas preview). Use the Speed menu, Replay and Skip buttons above the drawing. Supported: forward/back, left/right, penup/pendown, color/pencolor/fillcolor, begin_fill/end_fill, pensize, goto, setheading, circle, dot, write, bgcolor, for/while/if, def functions. print() output is not shown here.";
+  $("output").textContent = currentOutputText;
   setStatus("Turtle preview ready");
 }
 
@@ -2761,6 +2898,15 @@ async function executeProgram() {
   const detected = detectVisualEngines(source, fileName);
   const wantsPython = fileName.endsWith('.py') || detected.isPython;
   const visualEngines = detected.engines;
+
+  // Python Turtle: drawn in the browser Canvas (no backend needed).
+  if (wantsPython && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)\b/.test(source)) {
+    currentOutputText = ''; currentErrors = []; waitingForInput = null;
+    $('consoleExtra').classList.remove('show');
+    runTurtlePreview(source);
+    showOutputTab('3dpreview');
+    return;
+  }
 
   if (wantsPython && detected.unsupported.length) {
     const message = 'This Runner is currently configured for Pyodide + Three.js only. Not enabled yet: ' + detected.unsupported.join(', ') + '.';
