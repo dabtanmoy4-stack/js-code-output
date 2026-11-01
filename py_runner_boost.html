@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#09090b">
@@ -2264,13 +2264,8 @@ async function runInPyodide(source) {
     "$1await __browser_input("
   );
 
-  const wrapped =
-    "async def __browser_main__():\n" +
-    patched.split("\n").map(line => "    " + line).join("\n") +
-    "\nawait __browser_main__()";
-
   try {
-    await runtime.runPythonAsync(wrapped);
+    await runtime.runPythonAsync(patched);
   } finally {
     try { runtime.globals.delete("__browser_input"); } catch {}
   }
@@ -2528,9 +2523,7 @@ function buildTurtlePreview(source) {
       case "begin_fill": return "T.beginFill();";
       case "end_fill": return "T.endFill();";
       case "write": return `T.write(${a0});`;
-      case "bgcolor": return `T.setBg(${a0});`;
-      case "speed": return `T.setSpeed(${a0});`;
-      case "tracer": return `T.tracer(${a0});`;
+      case "bgcolor": return `bg=${a0};`;
       case "clear": case "clearscreen": case "reset": return "T.clearAll();";
       case "hideturtle": case "ht": return "T.hidden=true;";
       case "showturtle": case "st": return "T.hidden=false;";
@@ -2588,66 +2581,30 @@ function makeTurtleHTML(source) {
   const commands = buildTurtlePreview(source).replace(/<\/script/gi, "<\\/script");
   return `<!doctype html><html><head><meta charset="utf-8"><style>
   *{box-sizing:border-box}body{margin:0;background:#f8fafc;font:13px system-ui;color:#111827}
-  header{height:38px;padding:0 12px;background:#111827;color:#f9fafb;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .ctl{display:flex;align-items:center;gap:6px}
-  .ctl select,.ctl button{height:26px;border:1px solid #4b5563;border-radius:6px;background:#1f2937;color:#f9fafb;font:12px system-ui;padding:0 8px;cursor:pointer}
-  .ctl button:hover,.ctl select:hover{border-color:#e8c875}
+  header{height:38px;padding:10px 14px;background:#111827;color:#f9fafb;display:flex;justify-content:space-between}
   canvas{display:block;width:100%;height:calc(100vh - 38px);background:#fff}
-  </style></head><body><header><b>Python Turtle</b><span class="ctl"><select id="spd" title="Drawing speed"><option value="0.4">Slow</option><option value="1" selected>Normal</option><option value="3">Fast</option><option value="10">Very fast</option><option value="inf">Instant</option></select><button id="replay" type="button">&#8635; Replay</button><button id="skip" type="button">Skip &#9197;</button></span></header><canvas id="c"></canvas>
+  </style></head><body><header><b>Python Turtle · Browser Preview</b><span>Canvas renderer</span></header><canvas id="c"></canvas>
   <script>
   var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-  var ops=[],cum=[],fills=[],total=0,pos=0,mult=1,raf=0,last=0,bgInit='#ffffff';
-  function addOp(o,d){ops.push(o);total+=d;cum.push(total);}
+  var paths=[],polys=[],dots=[],texts=[],bg='#ffffff';
   function W(){return canvas.width/devicePixelRatio}
   function H(){return canvas.height/devicePixelRatio}
   function size(){canvas.width=Math.max(320,innerWidth*devicePixelRatio);canvas.height=Math.max(240,(innerHeight-38)*devicePixelRatio);ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);draw();}
   function draw(){
-    var w=W(),h=H(),cx=w/2,cy=h/2,n=ops.length,k=0,frac=0,i,o,st;
-    if(pos>=total){k=n;}else{while(k<n&&cum[k]<=pos)k++;if(k<n){st=k?cum[k-1]:0;frac=(pos-st)/(cum[k]-st);}}
-    var bgc=bgInit,start=0;
-    for(i=0;i<k;i++){o=ops[i];if(o.t==='bg')bgc=o.c;else if(o.t==='c')start=i+1;}
-    ctx.fillStyle=bgc;ctx.fillRect(0,0,w,h);
-    ctx.lineCap='round';ctx.lineJoin='round';ctx.font='16px system-ui,sans-serif';
-    var bc=null,bw=0,fp=0;
-    function flush(){if(bc!==null){ctx.stroke();bc=null;}}
-    function drawFills(upTo){
-      while(fp<fills.length&&fills[fp].idx<=upTo){
-        var f=fills[fp++];if(f.idx<start||f.at>k)continue;
-        flush();ctx.fillStyle=f.color;ctx.beginPath();
-        for(var j=0;j<f.pts.length;j++){var q=f.pts[j];if(j)ctx.lineTo(cx+q[0],cy-q[1]);else ctx.moveTo(cx+q[0],cy-q[1]);}
-        ctx.closePath();ctx.fill();
-      }
-    }
-    for(i=start;i<k;i++){
-      drawFills(i);o=ops[i];
-      if(o.t==='m'){
-        if(o.down){
-          if(bc!==o.color||bw!==o.width){flush();ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();bc=o.color;bw=o.width;}
-          ctx.moveTo(cx+o.x1,cy-o.y1);ctx.lineTo(cx+o.x2,cy-o.y2);
-        }
-      }else if(o.t==='d'){flush();ctx.fillStyle=o.color;ctx.beginPath();ctx.arc(cx+o.x,cy-o.y,o.r,0,6.2832);ctx.fill();}
-      else if(o.t==='w'){flush();ctx.fillStyle=o.color;ctx.fillText(o.text,cx+o.x,cy-o.y);}
-    }
-    drawFills(k);flush();
-    var ax=0,ay=0,aa=0,ac='#000000';
-    for(i=0;i<k;i++){o=ops[i];if(o.t==='m'){ax=o.x2;ay=o.y2;aa=o.a;ac=o.color;}}
-    if(k<n){
-      o=ops[k];
-      if(o.t==='m'){
-        ax=o.x1+(o.x2-o.x1)*frac;ay=o.y1+(o.y2-o.y1)*frac;aa=o.a;ac=o.color;
-        if(o.down){ctx.strokeStyle=o.color;ctx.lineWidth=o.width;ctx.beginPath();ctx.moveTo(cx+o.x1,cy-o.y1);ctx.lineTo(cx+ax,cy-ay);ctx.stroke();}
-      }
-    }else if(n){ax=T.x;ay=T.y;aa=T.a;ac=T.color;}
-    if(!T.hidden){
-      var r=aa*Math.PI/180,c=Math.cos(r),s=Math.sin(r),x=cx+ax,y=cy-ay;
-      ctx.fillStyle=ac;ctx.beginPath();
-      ctx.moveTo(x+c*12,y-s*12);ctx.lineTo(x-c*6+s*6,y+s*6+c*6);ctx.lineTo(x-c*6-s*6,y+s*6-c*6);ctx.closePath();ctx.fill();
-    }
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W(),H());
+    var cx=W()/2,cy=H()/2,i,p;
+    for(i=0;i<polys.length;i++){p=polys[i];ctx.fillStyle=p.color;ctx.beginPath();for(var k=0;k<p.pts.length;k++){var q=p.pts[k];if(k)ctx.lineTo(cx+q[0],cy-q[1]);else ctx.moveTo(cx+q[0],cy-q[1]);}ctx.closePath();ctx.fill();}
+    ctx.lineCap='round';ctx.lineJoin='round';
+    for(i=0;i<paths.length;i++){p=paths[i];ctx.strokeStyle=p.color;ctx.lineWidth=p.width;ctx.beginPath();ctx.moveTo(cx+p.x1,cy-p.y1);ctx.lineTo(cx+p.x2,cy-p.y2);ctx.stroke();}
+    for(i=0;i<dots.length;i++){p=dots[i];ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(cx+p.x,cy-p.y,p.r,0,6.2832);ctx.fill();}
+    ctx.font='16px system-ui,sans-serif';
+    for(i=0;i<texts.length;i++){p=texts[i];ctx.fillStyle=p.color;ctx.fillText(p.text,cx+p.x,cy-p.y);}
+    if(!T.hidden){var r=T.a*Math.PI/180,c=Math.cos(r),s=Math.sin(r),x=cx+T.x,y=cy-T.y;
+      ctx.fillStyle=T.color;ctx.beginPath();
+      ctx.moveTo(x+c*12,y-s*12);ctx.lineTo(x-c*6+s*6,y+s*6+c*6);ctx.lineTo(x-c*6-s*6,y+s*6-c*6);ctx.closePath();ctx.fill();}
   }
-  var T={x:0,y:0,a:0,down:true,color:'#000000',fill:'#000000',width:2,hidden:false,fillPts:null,fillIdx:0,spd:3,
-    move:function(x2,y2){var l=Math.sqrt((x2-this.x)*(x2-this.x)+(y2-this.y)*(y2-this.y));
-      addOp({t:'m',x1:this.x,y1:this.y,x2:x2,y2:y2,down:this.down,color:this.color,width:this.width,a:this.a},Math.max(l,3));
-      this.x=x2;this.y=y2;if(this.fillPts)this.fillPts.push([x2,y2]);},
+  var T={x:0,y:0,a:0,down:true,color:'#000000',fill:'#000000',width:2,hidden:false,fillPts:null,
+    move:function(x2,y2){if(this.down)paths.push({x1:this.x,y1:this.y,x2:x2,y2:y2,color:this.color,width:this.width});this.x=x2;this.y=y2;if(this.fillPts)this.fillPts.push([x2,y2]);},
     forward:function(n){n=Number(n);var r=this.a*Math.PI/180;this.move(this.x+Math.cos(r)*n,this.y+Math.sin(r)*n);},
     goto:function(x,y){this.move(Number(x),Number(y));},
     turn:function(n){this.a=(this.a+Number(n))%360;},
@@ -2655,38 +2612,25 @@ function makeTurtleHTML(source) {
     circle:function(r,extent){r=Number(r);extent=(extent===undefined||extent===null)?360:Number(extent);
       var n=Math.max(8,Math.round(Math.abs(extent)/6)),sign=r>=0?1:-1,step=Math.abs(extent)/n*sign*(extent<0?-1:1),chord=2*Math.abs(r)*Math.sin(Math.abs(step)*Math.PI/360);
       this.turn(step/2);for(var i=0;i<n;i++){this.forward(chord);this.turn(step);}this.turn(-step/2);},
-    dot:function(s,c){addOp({t:'d',x:this.x,y:this.y,r:(Number(s)||this.width*2+4)/2,color:c||this.color},10);},
-    beginFill:function(){this.fillPts=[[this.x,this.y]];this.fillIdx=ops.length;},
-    endFill:function(){if(this.fillPts&&this.fillPts.length>2)fills.push({idx:this.fillIdx,at:ops.length,pts:this.fillPts,color:this.fill});this.fillPts=null;},
-    write:function(t){addOp({t:'w',x:this.x,y:this.y,text:String(t),color:this.color},10);},
-    setBg:function(c){if(!ops.length)bgInit=String(c);addOp({t:'bg',c:String(c)},1);},
-    clearAll:function(){addOp({t:'c'},1);},
-    setSpeed:function(v){var map={fastest:0,fast:10,normal:6,slow:3,slowest:1};if(typeof v==='string')v=map[v];v=Number(v);if(isNaN(v))return;this.spd=v;},
-    tracer:function(n){if(Number(n)===0)this.spd=0;}
+    dot:function(s,c){dots.push({x:this.x,y:this.y,r:(Number(s)||this.width*2+4)/2,color:c||this.color});},
+    beginFill:function(){this.fillPts=[[this.x,this.y]];},
+    endFill:function(){if(this.fillPts&&this.fillPts.length>2)polys.push({pts:this.fillPts,color:this.fill});this.fillPts=null;},
+    write:function(t){texts.push({x:this.x,y:this.y,text:String(t),color:this.color});},
+    clearAll:function(){paths.length=0;polys.length=0;dots.length=0;texts.length=0;}
   };
   var screenObj={};
   var random={randint:function(a,b){return Math.floor(Math.random()*(b-a+1))+a},random:Math.random,uniform:function(a,b){return a+Math.random()*(b-a)},choice:function(l){return l[Math.floor(Math.random()*l.length)]},seed:function(){}};
   var math={pi:Math.PI,sin:function(x){return Math.sin(x)},cos:function(x){return Math.cos(x)},tan:function(x){return Math.tan(x)},sqrt:Math.sqrt,radians:function(d){return d*Math.PI/180},degrees:function(r){return r*180/Math.PI},floor:Math.floor,ceil:Math.ceil};
   var time={sleep:function(){}};
-  function rate(){return (T.spd===0?Infinity:Math.max(60*(T.spd||3),total/15))*mult;}
-  function tick(ts){
-    if(!last)last=ts;var dt=(ts-last)/1000;last=ts;pos+=rate()*dt;
-    if(!(pos<total)){pos=total;draw();raf=0;return;}
-    draw();raf=requestAnimationFrame(tick);
-  }
-  function start(){cancelAnimationFrame(raf);raf=0;last=0;pos=0;if(total===0||rate()===Infinity){pos=total;draw();return;}draw();raf=requestAnimationFrame(tick);}
-  document.getElementById('replay').addEventListener('click',start);
-  document.getElementById('skip').addEventListener('click',function(){cancelAnimationFrame(raf);raf=0;pos=total;draw();});
-  document.getElementById('spd').addEventListener('change',function(e){var v=e.target.value;mult=v==='inf'?Infinity:Number(v);if(raf||v==='inf'){if(v==='inf'){cancelAnimationFrame(raf);raf=0;pos=total;draw();}}});
   try{size();(function(){
   ${commands}
-  })();fills.sort(function(a,b){return a.idx-b.idx;});start();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
+  })();draw();}catch(e){document.body.insertAdjacentHTML('beforeend','<pre style="padding:10px;color:#b91c1c">Preview error: '+String(e.message).replace(/[&<>]/g,'')+'</pre>');}
   addEventListener('resize',size);
   <\/script></body></html>`;
 }
 function runTurtlePreview(source) {
   showCompilerVisualPreview(makeTurtleHTML(source));
-  currentOutputText = "Turtle drawing is animated in the browser (Canvas preview). Use the Speed menu, Replay and Skip buttons above the drawing. Supported: forward/back, left/right, penup/pendown, color/pencolor/fillcolor, begin_fill/end_fill, pensize, goto, setheading, circle, dot, write, bgcolor, for/while/if, def functions. print() output is not shown here.";
+  currentOutputText = "Turtle drawing is rendered in the browser (Canvas preview). Supported: forward/back, left/right, penup/pendown, color/pencolor/fillcolor, begin_fill/end_fill, pensize, goto, setheading, circle, dot, write, bgcolor, for/while/if, def functions. print() output is not shown here.";
   $("output").textContent = currentOutputText;
   setStatus("Turtle preview ready");
 }
@@ -2747,7 +2691,7 @@ async function runPythonInIsolatedFrame(source, libraries) {
   frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
   *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#080b14;color:#e5e7eb;font:14px system-ui}
   #output{position:relative;width:100%;height:100%;min-height:520px;overflow:hidden;background:#080b14}
-  #output canvas{display:block;width:100%;height:100%}
+  #output canvas,body>canvas{display:block;width:100%;height:100%}
   #runner-status{position:absolute;left:0;top:0;z-index:2;padding:12px;color:#d8bd7a}
   </style></head><body><div id="runner-status">Loading Pyodide + Three.js…</div><div id="output"></div><script>
   const RUNNER_TOKEN=${JSON.stringify(token)};
@@ -2812,37 +2756,55 @@ async function runPythonInIsolatedFrame(source, libraries) {
   // NOTE: helper names use ONE leading underscore. Names starting with a double underscore get
   // mangled when user code calls them from inside a class body.
   const PRELUDE=[
-    "import ast",
+    "import ast, inspect",
     "import js",
-    "from pyodide.ffi import to_js",
+    "from pyodide.ffi import to_js, create_proxy, JsProxy",
+    "_jsco_cache = {}",
     "def _jsco_opts(value):",
     "    return to_js(value, dict_converter=js.Object.fromEntries)",
+    "def _jsco_proxy(fn):",
+    "    if not callable(fn) or isinstance(fn, JsProxy):",
+    "        return fn",
+    "    try:",
+    "        p = _jsco_cache.get(fn)",
+    "    except TypeError:",
+    "        return create_proxy(fn)",
+    "    if p is None:",
+    "        p = _jsco_cache[fn] = create_proxy(fn)",
+    "    return p",
     "class _JscoThreeTransformer(ast.NodeTransformer):",
     "    WRAP = ('new', 'setValues')",
+    "    CB = ('requestAnimationFrame', 'setTimeout', 'setInterval', 'addEventListener', 'removeEventListener')",
     "    def visit_Call(self, node):",
     "        self.generic_visit(node)",
     "        f = node.func",
-    "        if isinstance(f, ast.Attribute) and f.attr in self.WRAP:",
+    "        name = f.attr if isinstance(f, ast.Attribute) else (f.id if isinstance(f, ast.Name) else None)",
+    "        if isinstance(f, ast.Attribute) and name in self.WRAP:",
     "            node.args = [ast.Call(func=ast.Name(id='_jsco_opts', ctx=ast.Load()), args=[a], keywords=[]) if isinstance(a, ast.Dict) else a for a in node.args]",
+    "        elif name in self.CB:",
+    "            node.args = [ast.Call(func=ast.Name(id='_jsco_proxy', ctx=ast.Load()), args=[a], keywords=[]) if isinstance(a, (ast.Name, ast.Attribute, ast.Lambda)) else a for a in node.args]",
     "        return node",
-    "def _jsco_run(source):",
+    "async def _jsco_run(source):",
     "    tree = ast.parse(source, filename='<pyodide-threejs>')",
     "    tree = _JscoThreeTransformer().visit(tree)",
     "    ast.fix_missing_locations(tree)",
-    "    exec(compile(tree, '<pyodide-threejs>', 'exec'), globals())"
+    "    code = compile(tree, '<pyodide-threejs>', 'exec', flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)",
+    "    result = eval(code, globals())",
+    "    if inspect.isawaitable(result):",
+    "        await result"
   ].join("\\n");
   let pyodideInstance=null;
   window.addEventListener('message',async event=>{
-    if(!event.data||event.data.__jsco_runner!==RUNNER_TOKEN||event.data.type!=='RUN')return;
+    if(event.source!==parent||!event.data||event.data.__jsco_runner!==RUNNER_TOKEN||event.data.type!=='RUN')return;
     try{
-      pyodideInstance=await loadPyodide();
+      pyodideInstance=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/'});
       pyodideInstance.setStdout({batched:t=>send('STDOUT',{text:t})});
       pyodideInstance.setStderr({batched:t=>send('STDERR',{text:t})});
       const status=document.getElementById('runner-status');
       if(status)status.remove();
       await pyodideInstance.runPythonAsync(PRELUDE);
       pyodideInstance.globals.set('_jsco_source',${pyCode});
-      await pyodideInstance.runPythonAsync('_jsco_run(_jsco_source)');
+      await pyodideInstance.runPythonAsync('await _jsco_run(_jsco_source)');
       pyodideInstance.globals.delete('_jsco_source');
       send('DONE',{hasCanvas:!!document.querySelector('canvas')});
     }catch(error){send('ERROR',{text:String((error&&error.message)||error)});}
@@ -2859,17 +2821,22 @@ async function runPythonInIsolatedFrame(source, libraries) {
   return await new Promise((resolve, reject) => {
     let finished = false;
     const timeout = setTimeout(() => finish(new Error('Pyodide + Three.js startup timed out. Check CDN access and internet connection.')), 90000);
-    const finish = (error, value) => { if (finished) return; finished = true; clearTimeout(timeout); window.removeEventListener('message', onMessage); if (error) reject(error); else resolve(value); };
+    const finish = (error, value) => { if (finished) return; finished = true; clearTimeout(timeout); if (error) reject(error); else resolve(value); };
+    let lateMessages = 0;
     const onMessage = event => {
+      if (!frame.isConnected) { window.removeEventListener('message', onMessage); return; }
       if (event.source !== frame.contentWindow || event.data?.__jsco_runner !== token) return;
       const data = event.data;
+      if (finished && ++lateMessages > 500) return; // stop a runaway animation loop from flooding the console
       if (data.type === 'READY') frame.contentWindow.postMessage({__jsco_runner:token,type:'RUN'}, '*');
       else if (data.type === 'STDOUT') writeOutput(String(data.text || '') + (String(data.text || '').endsWith('\n') ? '' : '\n'));
       else if (data.type === 'STDERR') { const t=String(data.text||''); currentErrors.push(t); writeOutput(t+'\n','error'); }
-      else if (data.type === 'ERROR') finish(new Error(data.text || 'Python visual runtime error'));
+      else if (data.type === 'ERROR') { if (finished) { const t = String(data.text || ''); currentErrors.push(t); writeOutput(t + '\n', 'error'); } else finish(new Error(data.text || 'Python visual runtime error')); }
       else if (data.type === 'DONE') finish(null, data.hasCanvas !== false);
     };
+    if (window.__jscoVisualCleanup) window.__jscoVisualCleanup();
     window.addEventListener('message', onMessage);
+    window.__jscoVisualCleanup = () => window.removeEventListener('message', onMessage);
   });
 }
 
@@ -2893,7 +2860,11 @@ async function executeProgram() {
     return;
   }
 
-  const fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
+  let fileName = (activeFile || "main.py").split("/").pop().toLowerCase();
+  if (fileName.endsWith('.py') && (/^\s*import\s+(\*\s+as\s+\w+|\{[^}]*\})\s+from\s+['"]/m.test(source) || /\bnew\s+THREE\.\w+/.test(source))) {
+    fileName = 'main.mjs';
+    toast('JavaScript detected - running as a browser preview.');
+  }
 
   const detected = detectVisualEngines(source, fileName);
   const wantsPython = fileName.endsWith('.py') || detected.isPython;
@@ -2919,21 +2890,61 @@ async function executeProgram() {
 
   // Browser-native HTML/CSS/JS always runs locally. Libraries are loaded on demand,
   // so users do not need to select Three.js, Babylon.js or Plotly themselves.
-  if (!wantsPython && /\.(html?|css|js)$/.test(fileName)) {
+  if (!wantsPython && /\.(html?|css|m?js)$/.test(fileName)) {
     running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
     $('output').textContent = ''; $('consoleExtra').classList.remove('show'); showOutputTab('output');
     showRunningAnimation(); startRuntimeClock();
     try {
-      for (const lib of visualEngines) if (VISUAL_LIBS[lib]) await loadVisualLibrary(lib);
+      const usesThree = visualEngines.includes('three');
+      const THREE_URL = VISUAL_LIBS.three.url;
+      const IMPORT_MAP = '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/","three/examples/jsm/":"https://cdn.jsdelivr.net/npm/three@0.159.0/examples/jsm/"}}<\/script>';
+      const injectIntoHead = (html, snippet) => {
+        if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, m => m + snippet);
+        if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, m => m + '<head>' + snippet + '</head>');
+        return snippet + html;
+      };
       let browserHTML = source;
-      if (/\.js$/.test(fileName)) {
-        const scripts = [];
-        for (const lib of visualEngines) if (VISUAL_LIBS[lib]) scripts.push(`<script src="${VISUAL_LIBS[lib].url}"><\/script>`);
-        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Live Preview</title><style>html,body{margin:0;width:100%;min-height:100%;overflow:auto;background:#080b14}canvas{display:block}</style>${scripts.join('')}</head><body><div id="app"></div><script>\n${source}\n<\/script></body></html>`;
+      if (/\.html?$/.test(fileName)) {
+        // A pasted page that uses THREE but forgot the library tag still works.
+        const hasImport = /\bimport\b[^;\n]*?\bfrom\s*['"]three/.test(source);
+        const alreadyLoaded = /importmap/i.test(source) || /<script[^>]+src=["'][^"']*three/i.test(source);
+        if (usesThree && !alreadyLoaded) browserHTML = injectIntoHead(source, hasImport ? IMPORT_MAP : `<script src="${THREE_URL}"><\/script>`);
+      } else if (/\.m?js$/.test(fileName)) {
+        const isModule = /^\s*(import|export)\s+[\w{*"']/m.test(source);
+        let headTags = '';
+        if (usesThree) headTags = isModule ? IMPORT_MAP : `<script src="${THREE_URL}"><\/script>`;
+        browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Live Preview</title><style>html,body{margin:0;width:100%;min-height:100%;overflow:auto;background:#080b14}canvas{display:block}</style>${headTags}</head><body><div id="app"></div><script${isModule ? ' type="module"' : ''}>\n${source}\n<\/script></body></html>`;
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${source}</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
-      showCompilerVisualPreview(browserHTML);
+      if (!/\.css$/.test(fileName)) {
+        const pvToken = 'pv-' + Math.random().toString(36).slice(2);
+        const BRIDGE = '<script>(function(){var T=' + JSON.stringify(pvToken) + ';function send(t,x){try{parent.postMessage({__jsco_preview:T,type:t,text:String(x).slice(0,2000)},"*")}catch(e){}}' +
+          'window.addEventListener("error",function(e){if(e.target&&e.target!==window){send("ERROR","Failed to load: "+(e.target.src||e.target.href||e.target.tagName))}else{send("ERROR",(e.message||"Script error")+(e.lineno?" (line "+e.lineno+")":""))}},true);' +
+          'window.addEventListener("unhandledrejection",function(e){var r=e.reason;send("ERROR","Unhandled: "+String((r&&r.message)||r))});' +
+          '["log","info","warn","error"].forEach(function(k){var o=console[k];console[k]=function(){try{send(k==="error"?"STDERR":"STDOUT",Array.prototype.map.call(arguments,function(a){try{return typeof a==="object"?JSON.stringify(a):String(a)}catch(x){return String(a)}}).join(" "))}catch(x){}return o.apply(console,arguments)}});})();<\/script>';
+        browserHTML = injectIntoHead(browserHTML, BRIDGE);
+        showCompilerVisualPreview(browserHTML);
+        const pvFrame = getCompilerVisualPreview().querySelector('iframe');
+        if (window.__jscoPreviewCleanup) window.__jscoPreviewCleanup();
+        let pvCount = 0, pvToasted = false;
+        const pvHandler = ev => {
+          if (!pvFrame || !pvFrame.isConnected) { window.removeEventListener('message', pvHandler); return; }
+          const d = ev.data;
+          if (ev.source !== pvFrame.contentWindow || !d || d.__jsco_preview !== pvToken) return;
+          if (++pvCount > 500) return;
+          const t = String(d.text || '');
+          if (d.type === 'STDOUT') writeOutput(t + '\n');
+          else {
+            currentErrors.push(t); writeOutput(t + '\n', 'error');
+            if (!pvToasted) { pvToasted = true; toast('Preview error - open the Program Output or Problems tab.'); }
+          }
+        };
+        window.addEventListener('message', pvHandler);
+        window.__jscoPreviewCleanup = () => window.removeEventListener('message', pvHandler);
+      } else {
+        showCompilerVisualPreview(browserHTML);
+      }
       $('output').textContent = 'Preview ready. Detected: ' + (visualEngines.join(', ') || 'standard browser rendering') + '.';
       showOutputTab('3dpreview'); $('loaderTitle').textContent = 'Preview ready'; $('loaderSubtitle').textContent = 'Your visual project is running.'; setStatus('Browser preview ready');
     } catch (error) {
@@ -3020,7 +3031,7 @@ async function executeProgram() {
     }
 
     const resultText = Array.isArray(result.results)
-      ? result.results.map(item => item && typeof item.text === "string" ? item.text : "").filter(Boolean).join("\\n")
+      ? result.results.map(item => item && typeof item.text === "string" ? item.text : "").filter(Boolean).join("\n")
       : "";
     let outputText = String(result.output || result.stdout || resultText || "");
     const printedImageResult = extractPrintedBase64Images(outputText);
@@ -3059,7 +3070,7 @@ async function executeProgram() {
     const executionSucceeded = (result.success === true && !errorText.trim()) ||
       (result.status === "success" && Number(result.exit_code ?? 0) === 0);
     if (executionSucceeded) {
-      writeOutput("\\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\\n", "success");
+      writeOutput("\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\n", "success");
       $("loaderTitle").textContent = "Execution finished";
       $("loaderSubtitle").textContent = "Program completed successfully.";
       setStatus("Online Compiler ready");
