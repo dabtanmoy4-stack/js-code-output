@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#09090b">
@@ -2843,7 +2843,8 @@ async function executeProgram() {
 
   try {
     // Python execution uses the existing OnlineCompiler API through /api/run-code.
-    const requestBody = { compiler, code: source, input: $("consoleInput").value || "" };
+    const pil = withPilSupport(source);
+    const requestBody = { compiler, code: pil.code, input: $("consoleInput").value || "" };
 
     const response = await fetch("/api/run-code", {
       method: "POST",
@@ -2878,7 +2879,8 @@ async function executeProgram() {
     let outputText = String(result.output || result.stdout || resultText || "");
     const printedImageResult = extractPrintedBase64Images(outputText);
     outputText = printedImageResult.text;
-    const errorText = String(result.error || result.stderr || "");
+    let errorText = String(result.error || result.stderr || "");
+    if (pil.offset) errorText = errorText.replace(/line (\d+)/g, (m, n) => Number(n) > pil.offset ? `line ${Number(n) - pil.offset}` : m);
     if (Array.isArray(result.installedPackages) && result.installedPackages.length) {
       writeOutput("Auto-installed packages for this run: " + result.installedPackages.join(", ") + "\n", "success");
     }
@@ -2938,6 +2940,25 @@ async function executeProgram() {
   }
 }
 
+
+/* PIL support: Image.show() ke Preview tab-e dekhabe */
+function withPilSupport(source) {
+  if (!/\b(PIL|pillow)\b/i.test(source)) return { code: source, offset: 0 };
+  const prelude = [
+    "try:",
+    "    import io as _io, base64 as _b64",
+    "    from PIL import Image as _PI",
+    "    def _jsco_show(self, *a, **k):",
+    "        im = self if self.mode in ('RGB','RGBA','L') else self.convert('RGBA')",
+    "        b = _io.BytesIO(); im.save(b, 'PNG')",
+    "        print('IMAGE_BASE64_START' + _b64.b64encode(b.getvalue()).decode() + 'IMAGE_BASE64_END')",
+    "    _PI.Image.show = _jsco_show",
+    "except Exception:",
+    "    pass",
+    ""
+  ];
+  return { code: prelude.join("\n") + source, offset: prelude.length - 1 };
+}
 
 /* Run button and Ctrl/Cmd+Enter run immediately through /api/run-code. */
 function runProgram() {
