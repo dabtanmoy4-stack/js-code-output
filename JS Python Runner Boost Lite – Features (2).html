@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JS Python Runner Boost Lite – Features</title>
+<style>
+:root{--bg:#050505;--card:#0d0d0f;--ink:#f4f4f5;--mute:#9a9aa2;--line:#26181a;--code:#08080a;--red:#e11d2e;--red2:#ff4757;--dred:#7a0b15;--gold:#d4af37;--gold2:#f6dc84;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;line-height:1.55;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(600px 300px at 50% -40px,rgba(225,29,46,.28),transparent 70%);pointer-events:none;animation:pulse 6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.bar{height:3px;background:linear-gradient(90deg,transparent,var(--red),var(--gold),var(--red2),var(--gold),var(--red),transparent);background-size:200% 100%;animation:sweep 3.5s linear infinite}
+@keyframes sweep{to{background-position:-200% 0}}
+.wrap{position:relative;max-width:1000px;margin:0 auto;padding:30px 16px 40px}
+header{text-align:center;padding:20px 0 26px}
+.logo{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 24px rgba(212,175,55,.4);margin-bottom:14px}
+h1{font-size:clamp(28px,6vw,54px);margin:0;font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.js{background:linear-gradient(90deg,#ff2d55,#ff9500,#ffd60a,#34c759,#00c7be,#007aff,#af52de,#ff2d55);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 4s linear infinite}
+@keyframes flow{to{background-position:-300% 0}}
+.py{color:var(--ink)}.boost{color:var(--red)}.lite{color:#38bdf8}
+header p{color:var(--mute);margin:12px auto 20px;max-width:560px}
+.btn{display:inline-block;position:relative;overflow:hidden;background:var(--red);color:#fff;text-decoration:none;font-weight:700;padding:12px 34px;border-radius:8px;border:1px solid var(--gold);box-shadow:0 0 0 0 rgba(225,29,46,.6);animation:ring 2.6s infinite;transition:transform .15s,background .15s}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3.2s infinite}
+@keyframes shine{0%{left:-60%}60%,100%{left:140%}}
+@keyframes ring{70%{box-shadow:0 0 0 12px rgba(225,29,46,0)}100%{box-shadow:0 0 0 0 rgba(225,29,46,0)}}
+.btn:hover{background:var(--red2);transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.grid{display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;transition:border-color .25s,box-shadow .25s}
+.card:hover{border-color:var(--gold);box-shadow:0 0 22px rgba(212,175,55,.22)}
+.card h2{margin:0 0 6px;font-size:20px;color:var(--gold2);display:flex;align-items:center;gap:10px}.fl{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);flex:none}
+.card p{margin:0 0 10px;color:var(--mute);font-size:14px}
+pre{margin:0;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto;color:#ffd9dc}
+.out{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow-x:auto;position:relative}
+.out::before{content:"OUTPUT";position:absolute;top:6px;right:8px;font-size:10px;letter-spacing:1.5px;color:var(--gold)}
+.out pre{border:0;background:transparent;color:var(--ink)}
+.lbl{font-size:11px;color:var(--mute)}
+canvas{max-width:100%;border-radius:6px;background:#000}
+#t3{width:100%;height:220px;display:block}
+table{border-collapse:collapse;font:12.5px ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+td,th{padding:3px 10px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--gold)}
+th:first-child,td:first-child{text-align:left}
+.pair{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cta{text-align:center;padding-top:30px}
+footer{display:flex;align-items:center;justify-content:flex-start;text-align:left;color:var(--mute);font-size:14px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}.ft{display:flex;flex-direction:column;gap:3px;text-align:left}.ft b{font-size:17px;font-weight:800}.by{font-size:13px;color:var(--mute)}
+footer img{width:34px;height:34px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px;border:1px solid var(--gold)}
+@media (max-width:720px){.wrap{padding:16px 12px 28px}header{padding:10px 0 18px}.logo{width:72px;height:72px}h1{font-size:clamp(26px,8.5vw,40px)}header p{font-size:15px;margin:10px auto 18px}.card{grid-template-columns:1fr;padding:14px;gap:12px}.card h2{font-size:19px}.btn{display:block;width:100%;max-width:360px;margin:0 auto;padding:15px 20px;font-size:17px;text-align:center}pre{font-size:12px}.out{min-height:100px;padding:10px 8px}.out canvas{width:100%;height:auto}.pair{width:100%}.pair>div{flex:1 1 130px}.cta{padding-top:22px}footer{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.js,.btn,.btn::after,.bar,body::before{animation:none}}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="wrap">
+<header>
+<img class="logo" src="logo.jpeg" alt="Logo" onerror="this.style.display='none'">
+<h1><span class="js">JS</span> <span class="py">Python Runner</span> <span class="boost">Boost</span> <span class="lite">Lite</span></h1>
+<p>Run Python right in your browser. Every supported library is listed below with its code and a live output.</p>
+<a class="btn" href="py_runner_boost.html">Got it</a>
+</header>
+
+<main class="grid">
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">three.js</h2><p>3D graphics and animation, straight in the browser.</p>
+<pre>import three
+scene.add(TorusKnot())
+renderer.render(scene, cam)</pre></div>
+<div class="out"><canvas id="t3"></canvas></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">PIL</h2><p>Create images, apply filters, convert modes.</p>
+<pre>from PIL import Image
+img = Image.new("RGB", (150, 100))
+gray = img.convert("L")</pre></div>
+<div class="out"><div class="pair"><div><span class="lbl">RGB</span><br><canvas id="p1" width="150" height="100"></canvas></div><div><span class="lbl">convert("L")</span><br><canvas id="p2" width="150" height="100"></canvas></div></div></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">numpy</h2><p>Arrays and fast numerical math.</p>
+<pre>import numpy as np
+a = np.array([[1,2,3],[4,5,6]])
+print(a.T)
+print(a.mean(), a @ a.T)</pre></div>
+<div class="out"><pre id="np"></pre></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">matplotlib</h2><p>Plots and charts.</p>
+<pre>import matplotlib.pyplot as plt
+plt.plot(x, np.sin(x))
+plt.plot(x, np.cos(x))
+plt.show()</pre></div>
+<div class="out"><canvas id="mp" width="320" height="200"></canvas></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">sklearn</h2><p>Machine learning, such as KMeans clustering.</p>
+<pre>from sklearn.cluster import KMeans
+km = KMeans(n_clusters=3)
+km.fit(X)</pre></div>
+<div class="out"><canvas id="sk" width="320" height="200"></canvas></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">sympy</h2><p>Symbolic math: derivatives, integrals, equations.</p>
+<pre>from sympy import *
+x = symbols("x")
+diff(x**2*sin(x), x)
+integrate(x*exp(x), x)
+solve(x**2-5*x+6, x)</pre></div>
+<div class="out"><pre>2*x*sin(x) + x**2*cos(x)
+(x - 1)*exp(x)
+[2, 3]</pre></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">pandas</h2><p>Work with tables and summarize data.</p>
+<pre>import pandas as pd
+df = pd.DataFrame(data)
+print(df.describe())</pre></div>
+<div class="out"><table>
+<tr><th></th><th>marks</th><th>age</th></tr>
+<tr><td>count</td><td>4.0</td><td>4.0</td></tr>
+<tr><td>mean</td><td>81.5</td><td>17.5</td></tr>
+<tr><td>min</td><td>70.0</td><td>16.0</td></tr>
+<tr><td>max</td><td>92.0</td><td>19.0</td></tr>
+</table></div></section>
+
+<section class="card"><div><h2><img class="fl" src="logo.jpeg" alt="" onerror="this.style.display='none'">Core Python</h2><p>Variables, loops, functions, comprehensions.</p>
+<pre>def fib(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+print(list(fib(10)))
+print([i*i for i in range(6)])</pre></div>
+<div class="out"><pre id="cp"></pre></div></section>
+
+</main>
+
+<div class="cta"><a class="btn" href="py_runner_boost.html">Got it</a></div>
+<footer><img src="logo.jpeg" alt="" onerror="this.style.display='none'"><div class="ft"><b><span class="js">JS</span> <span class="py">Python Runner</span> <span class="boost">Boost</span> <span class="lite">Lite</span></b><span class="by">A product by <span class="js">JS</span> CODE OUTPUT 🇮🇳</span></div></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},R='#e11d2e';
+// three.js
+try{
+var c=$('t3'),w=c.clientWidth||300,h=220;
+var r=new THREE.WebGLRenderer({canvas:c,antialias:true});r.setSize(w,h,false);r.setClearColor(0x000000,1);
+var s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,w/h,.1,100);cam.position.z=5;
+var geo=new THREE.TorusKnotGeometry(1.1,.38,120,16);
+var m=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:0xe11d2e,shininess:80}));
+var wf=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xd4af37,wireframe:true,transparent:true,opacity:.5}));
+m.add(wf);s.add(m);
+var l1=new THREE.PointLight(0xffffff,1,0);l1.position.set(4,4,6);s.add(l1);s.add(new THREE.AmbientLight(0x551018,1));
+(function loop(){m.rotation.x+=.012;m.rotation.y+=.017;r.render(s,cam);requestAnimationFrame(loop)})();
+}catch(e){}
+// PIL
+var a=$('p1').getContext('2d'),g=a.createLinearGradient(0,0,150,100);
+g.addColorStop(0,'#000');g.addColorStop(.55,'#e11d2e');g.addColorStop(1,'#ff9aa2');
+a.fillStyle=g;a.fillRect(0,0,150,100);a.fillStyle='#fff';a.beginPath();a.arc(75,50,24,0,7);a.fill();
+var d=a.getImageData(0,0,150,100),p=d.data;
+for(var i=0;i<p.length;i+=4){var y=.299*p[i]+.587*p[i+1]+.114*p[i+2];p[i]=p[i+1]=p[i+2]=y}
+$('p2').getContext('2d').putImageData(d,0,0);
+// numpy
+$('np').textContent='[[1 4]\n [2 5]\n [3 6]]\n3.5\n[[14 32]\n [32 77]]';
+// matplotlib
+var mc=$('mp').getContext('2d'),L=36,T=26,W=270,H=140;
+mc.fillStyle='#000';mc.fillRect(0,0,320,200);mc.strokeStyle='#2a2a2e';mc.fillStyle='#bbb';mc.font='11px sans-serif';
+for(var k=0;k<=4;k++){mc.beginPath();mc.moveTo(L,T+H*k/4);mc.lineTo(L+W,T+H*k/4);mc.stroke();mc.fillText((1-k*.5).toFixed(1),8,T+H*k/4+4)}
+mc.strokeStyle='#555';mc.strokeRect(L,T,W,H);mc.textAlign='center';mc.fillText('sin(x) vs cos(x)',L+W/2,16);
+function pl(f,col){mc.strokeStyle=col;mc.lineWidth=2;mc.beginPath();for(var i=0;i<=100;i++){var x=i/100*2*Math.PI,px=L+W*i/100,py=T+H/2-f(x)*H/2;i?mc.lineTo(px,py):mc.moveTo(px,py)}mc.stroke()}
+pl(Math.sin,R);pl(Math.cos,'#d4af37');
+mc.textAlign='left';mc.lineWidth=1;mc.fillStyle=R;mc.fillText('sin',L+8,T+14);mc.fillStyle='#d4af37';mc.fillText('cos',L+40,T+14);
+// sklearn KMeans
+var sc=$('sk').getContext('2d'),seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+function gn(){return (rnd()+rnd()+rnd()-1.5)*2}
+var cen=[[80,60],[220,70],[150,150]],pts=[];
+cen.forEach(function(q){for(var i=0;i<40;i++)pts.push([q[0]+gn()*28,q[1]+gn()*24,0])});
+var ks=[[40,40],[280,40],[160,180]];
+for(var it=0;it<10;it++){
+pts.forEach(function(q){var b=0,bd=1e9;ks.forEach(function(k,j){var dd=(q[0]-k[0])*(q[0]-k[0])+(q[1]-k[1])*(q[1]-k[1]);if(dd<bd){bd=dd;b=j}});q[2]=b});
+ks.forEach(function(k,j){var n=0,sx=0,sy=0;pts.forEach(function(q){if(q[2]==j){n++;sx+=q[0];sy+=q[1]}});if(n){k[0]=sx/n;k[1]=sy/n}})}
+sc.fillStyle='#000';sc.fillRect(0,0,320,200);var cols=[R,'#d4af37','#ffffff'];
+pts.forEach(function(q){sc.fillStyle=cols[q[2]];sc.beginPath();sc.arc(q[0],q[1],3.5,0,7);sc.fill()});
+ks.forEach(function(k){sc.strokeStyle='#ff4757';sc.lineWidth=2.5;sc.beginPath();sc.moveTo(k[0]-6,k[1]-6);sc.lineTo(k[0]+6,k[1]+6);sc.moveTo(k[0]+6,k[1]-6);sc.lineTo(k[0]-6,k[1]+6);sc.stroke()});
+// core python
+var f=[],x=0,y=1;for(var i=0;i<10;i++){f.push(x);var t=x+y;x=y;y=t}
+var sq=[];for(i=0;i<6;i++)sq.push(i*i);
+$('cp').textContent='['+f.join(', ')+']\n['+sq.join(', ')+']';
+})();
+</script>
+</body>
+</html>
