@@ -120,6 +120,30 @@ header {
   color:#211704;
   border-color:#ffe99a;
 }
+#goToBoostBtn {
+  background:linear-gradient(110deg,#050505 0%,#101010 24%,#e01825 38%,#ff343d 44%,#151515 55%,#050505 70%,#b5121b 84%,#080808 100%);
+  background-size:260% 100%;
+  background-position:0% 50%;
+  color:#ffffff;
+  border:1px solid #e3262e;
+  box-shadow:0 0 10px #e3262e35;
+  animation:boostRedFlow 2.4s linear infinite;
+  position:relative;
+  overflow:hidden;
+}
+@keyframes boostRedFlow {
+  0% {background-position:0% 50%; box-shadow:0 0 8px #e3262e30;}
+  50% {background-position:100% 50%; box-shadow:0 0 16px #e3262e70;}
+  100% {background-position:0% 50%; box-shadow:0 0 8px #e3262e30;}
+}
+#goToBoostBtn:hover {
+  border-color:#ff343d;
+  box-shadow:0 0 18px #e3262e85;
+  animation-duration:1.15s;
+}
+@media (prefers-reduced-motion:reduce) {
+  #goToBoostBtn {animation:none;background:#090909;border-color:#e3262e;}
+}
 
 .btn.erase:hover {
   border-color:#ff7777;
@@ -706,6 +730,18 @@ header, nav, .search-panel {
   }
 }
 
+
+/* Python Runner Boost promotion: animated red on black */
+@keyframes boostPromoRedSweep{0%{background-position:0% 50%}100%{background-position:220% 50%}}
+@keyframes boostPromoRedGlow{0%,100%{box-shadow:0 14px 42px #000b,0 0 8px #e11d2e55}50%{box-shadow:0 14px 42px #000b,0 0 20px #ff263a99}}
+#boostPromo{position:fixed;right:18px;bottom:18px;z-index:10000;width:min(360px,calc(100vw - 28px));padding:22px 18px 18px;border:1px solid #e11d2e;border-radius:12px;background:linear-gradient(115deg,#050505 0%,#111 35%,#280609 52%,#090909 70%,#050505 100%);background-size:220% 220%;animation:boostPromoRedSweep 4s linear infinite,boostPromoRedGlow 2.5s ease-in-out infinite;color:#f8f8f8;font-size:13px;line-height:1.55}
+#boostPromo[hidden]{display:none!important}
+#boostPromo strong{display:block;margin:4px 28px 8px 0;color:#ff263a;font-size:15px;text-shadow:0 0 10px #ff263a66}
+#boostPromo p{margin:0 0 12px;color:#e3e3e3}
+#boostPromoClose{position:absolute;right:9px;top:8px;width:30px;height:30px;border:1px solid #e11d2e;border-radius:7px;background:#080808;color:#ff263a;font-size:22px;line-height:1;cursor:pointer}
+#boostPromo .promo-go{border:1px solid #ff263a;border-radius:7px;padding:10px 13px;background:linear-gradient(110deg,#050505,#240508,#050505);background-size:220% 100%;animation:boostPromoRedSweep 3s linear infinite;color:#ff263a;font-size:12px;font-weight:800;cursor:pointer}
+#boostPromo .promo-go:hover{background:#e11d2e;color:#fff;box-shadow:0 0 16px #ff263a88}
+@media(max-width:520px){#boostPromo{right:10px;bottom:10px}}
 </style>
 <style id="miod-feature-css">
 .miod-card{flex:0 0 auto;margin:6px 8px 5px;border-radius:10px;overflow:hidden;display:flex;align-items:center;height:84px;cursor:pointer;position:relative;
@@ -763,6 +799,7 @@ header, nav, .search-panel {
   <div class="brand"><span class="brand-js">JS</span> Python Runner</div>
   <div class="spacer"></div>
 
+  <button class="btn primary" id="goToBoostBtn" type="button" title="Open Python Runner Boost">Go to Boost ↗</button>
   <button class="btn icon-btn" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">☾</button>
   <button class="btn account-btn" id="accountBtn" type="button"><span id="accountAvatar">♙</span><span id="accountLabel">Sign in</span></button>
 </header>
@@ -817,6 +854,7 @@ header, nav, .search-panel {
       <span id="fileTitle">main.py</span>
 
       <div class="pane-title-actions">
+        <button class="btn" id="copyCodeBtn" type="button" title="Copy code">⧉ Copy Code</button>
         <button class="icon-action fullscreen-btn" id="editorFullscreenBtn" type="button" title="Full screen editor" aria-label="Full screen editor"><svg viewBox="0 0 24 24"><path d="M8 4H4v4M16 4h4v4M4 16v4h4M20 16v4h-4"/></svg></button>
         <button class="btn erase icon-btn" id="eraseCodeBtn" type="button" title="Erase code" aria-label="Erase code"><svg viewBox="0 0 24 24"><path d="m3 15 9-10a2 2 0 0 1 3 0l6 6a2 2 0 0 1 0 3l-5 5H8z"/><path d="m8 19 7-8"/></svg></button>
       </div>
@@ -867,6 +905,12 @@ print(greet("Python Developer"))</textarea>
 </footer>
 
 <div class="notice" id="notice" role="status" aria-live="polite"></div>
+<div id="boostPromo" role="region" aria-label="Python Runner Boost promotion" hidden>
+  <button id="boostPromoClose" type="button" aria-label="Close promotion" title="Close">×</button>
+  <strong>For a better experience, go to Python Runner Boost</strong>
+  <p>Explore advanced Python projects in the Boost runner.</p>
+  <button class="promo-go" id="boostPromoGo" type="button">Go to Python Runner Boost ↗</button>
+</div>
 <div id="explorerContextMenu" class="context-menu" hidden></div>
 
 
@@ -891,6 +935,12 @@ print(greet("Python Developer"))</textarea>
 
 const $=id=>document.getElementById(id);
 const starterCode=$('code').value;
+const BOOST_PATH='py_boost_animation.html';
+$('goToBoostBtn').addEventListener('click',()=>{window.location.href=BOOST_PATH;});
+$('boostPromoGo').addEventListener('click',()=>{window.location.href=BOOST_PATH;});
+$('boostPromoClose').addEventListener('click',()=>{$('boostPromo').hidden=true;});
+// Show the Boost suggestion every three minutes of page use. Closing only dismisses this instance.
+setInterval(()=>{$('boostPromo').hidden=false;},180000);
 const PROJECT_KEY='jsPythonRunnerProjectV4';
 
 let pyodide=null;
@@ -1476,6 +1526,19 @@ async function runPython(){
 }
 
 $('runBtn').addEventListener('click',runPython);
+$('copyCodeBtn').addEventListener('click',async()=>{
+  const code=editor.getValue();
+  try{
+    await navigator.clipboard.writeText(code);
+    notify('Python code copied.');
+  }catch(error){
+    const area=document.createElement('textarea');
+    area.value=code;area.style.position='fixed';area.style.opacity='0';
+    document.body.appendChild(area);area.select();
+    const copied=document.execCommand('copy');area.remove();
+    notify(copied?'Python code copied.':'Could not copy code.');
+  }
+});
 
 /* Erase only the current editor code */
 
