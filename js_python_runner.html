@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<head><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080909">
@@ -606,32 +606,32 @@ header { flex-wrap:wrap; }
   .brand-js { animation-duration:12s; }
 }
 
-/* Classic blue and gold Boost warning and output notice. */
-.output .boost-notice{font-family:Inter,Arial,sans-serif;white-space:normal;max-width:620px;margin:4px auto;padding:clamp(16px,3vw,28px);border:1px solid #c7a64a;border-radius:10px;background:#102b4c;box-shadow:0 8px 24px #0002;color:#f7f9ff}
-.output .boost-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:8px;margin-bottom:16px;padding:5px;background:#d5b34d;box-shadow:none;overflow:hidden}
+/* Classic red and black Boost warning and output notice. */
+.output .boost-notice{font-family:Inter,Arial,sans-serif;white-space:normal;max-width:620px;margin:4px auto;padding:clamp(16px,3vw,28px);border:1px solid #e02020;border-radius:10px;background:#0a0a0a;box-shadow:0 8px 24px #0002;color:#fff5f5}
+.output .boost-icon{width:58px;height:58px;display:grid;place-items:center;border-radius:8px;margin-bottom:16px;padding:5px;background:#e02020;box-shadow:none;overflow:hidden}
 .output .boost-icon img{display:block;width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff;padding:3px}
-.output .boost-brand{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:#f0c653;margin:0 0 7px!important}
-.output .boost-notice h3{margin:0 0 10px;font-size:clamp(18px,2.5vw,23px);line-height:1.3;color:#f0c653}
-.output .boost-notice p{margin:8px 0;line-height:1.65;font-size:13px;color:#f7f9ff}
-.output .boost-notice .boost-sub{color:#c8d9ec}
-.output .boost-button{display:inline-flex;align-items:center;gap:9px;margin-top:12px;padding:11px 16px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-weight:800;box-shadow:none;transition:background .2s;cursor:pointer}
-.output .boost-button:hover{background:#2674b8}
-.output .boost-foot{font-size:11px!important;color:#c8d9ec!important;margin-top:13px!important}
-.boost-warning-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,12,25,.78);backdrop-filter:blur(7px)}
+.output .boost-brand{font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;color:#ff3b3b;margin:0 0 7px!important}
+.output .boost-notice h3{margin:0 0 10px;font-size:clamp(18px,2.5vw,23px);line-height:1.3;color:#ff3b3b}
+.output .boost-notice p{margin:8px 0;line-height:1.65;font-size:13px;color:#fff5f5}
+.output .boost-notice .boost-sub{color:#d6c8c8}
+.output .boost-button{display:inline-flex;align-items:center;gap:9px;margin-top:12px;padding:11px 16px;border:1px solid #ff5a5a;border-radius:7px;background:#d71920;color:#fff;font-weight:800;box-shadow:none;transition:background .2s;cursor:pointer}
+.output .boost-button:hover{background:#ff2a2a}
+.output .boost-foot{font-size:11px!important;color:#d6c8c8!important;margin-top:13px!important}
+.boost-warning-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.84);backdrop-filter:blur(7px)}
 .boost-warning-overlay[hidden]{display:none}
-.boost-warning-card{position:relative;width:min(540px,100%);padding:clamp(22px,5vw,36px);border:1px solid #c7a64a;border-radius:12px;background:#102b4c;color:#f8fbff;box-shadow:0 18px 55px #0007;text-align:left;font-family:Inter,Arial,sans-serif;animation:boostWarningIn .24s ease-out}
+.boost-warning-card{position:relative;width:min(540px,100%);padding:clamp(22px,5vw,36px);border:1px solid #e02020;border-radius:12px;background:#0a0a0a;color:#fff5f5;box-shadow:0 18px 55px #0007;text-align:left;font-family:Inter,Arial,sans-serif;animation:boostWarningIn .24s ease-out}
 @keyframes boostWarningIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.boost-warning-close{position:absolute;right:12px;top:12px;width:36px;height:36px;border:1px solid #8baac7;border-radius:10px;background:#ffffff0c;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.boost-warning-close{position:absolute;right:12px;top:12px;width:36px;height:36px;border:1px solid #7a2a2a;border-radius:10px;background:#ffffff0c;color:#fff;font-size:25px;line-height:1;cursor:pointer}
 .boost-warning-close:hover{background:#ffffff20}
-.boost-warning-kicker{margin:0 42px 9px 0;color:#f0c653;font-size:11px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}
-.boost-warning-card h2{margin:0 35px 12px 0;font-size:clamp(22px,4vw,30px);line-height:1.2;color:#f0c653}
-.boost-warning-card p{margin:10px 0;color:#e8f1fb;font-size:14px;line-height:1.7}
+.boost-warning-kicker{margin:0 42px 9px 0;color:#ff3b3b;font-size:11px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}
+.boost-warning-card h2{margin:0 35px 12px 0;font-size:clamp(22px,4vw,30px);line-height:1.2;color:#ff3b3b}
+.boost-warning-card p{margin:10px 0;color:#f1e6e6;font-size:14px;line-height:1.7}
 .boost-warning-actions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:20px}
 .boost-warning-actions button{font-weight:800;cursor:pointer}
-.boost-warning-go{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #d8b64a;border-radius:7px;background:#1b5e9b;color:#fff;font-size:14px;box-shadow:none}
-.boost-warning-go:hover{background:#2674b8}
-.boost-warning-change{padding:5px 2px;border:0;background:transparent;color:#c9d9e9;font-size:12px;text-decoration:underline;text-underline-offset:3px}
-.boost-warning-change:hover{color:#f0c653}
+.boost-warning-go{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #ff5a5a;border-radius:7px;background:#d71920;color:#fff;font-size:14px;box-shadow:none}
+.boost-warning-go:hover{background:#ff2a2a}
+.boost-warning-change{padding:5px 2px;border:0;background:transparent;color:#cfc0c0;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.boost-warning-change:hover{color:#ff3b3b}
 
 
 
@@ -1448,26 +1448,24 @@ async function runPython(){
       status('Execution finished');
     }catch(error){
       const message=String(error);
-      const advancedRuntimeError=/ModuleNotFoundError|ImportError|NotImplementedError|PermissionError|FileNotFoundError|OSError|NotSupportedError|unsupported|not supported|not available in this environment|No module named|failed to fetch|networkerror|requires a browser|not implemented|cannot load package|AttributeError:.*(?:socket|SO_REUSEADDR|setsockopt|create_server|create_connection)|(?:socket|SO_REUSEADDR|setsockopt).*(?:has no attribute|not available|not supported|unsupported)|RuntimeError:.*(?:thread|signal|event loop).*(?:not supported|not available|unsupported)|Operation not permitted|Function not implemented/i.test(message);
-      if(advancedRuntimeError){
+      const isSyntaxProblem=/^\s*(?:SyntaxError|IndentationError|TabError)\b/m.test(message);
+      if(isSyntaxProblem){
+        // Keep only the user's own code part of the traceback (hide Pyodide internals)
+        let cleanMessage=message.replace(/^PythonError:\s*/,'');
+        const execIdx=cleanMessage.lastIndexOf('File "<exec>"');
+        if(execIdx!==-1) cleanMessage=cleanMessage.slice(execIdx);
+        cleanMessage=cleanMessage.replace('File "<exec>"','File "main.py"').trim();
+        $('output').textContent=(stdout?stdout+'\n':'')+cleanMessage;
+        $('output').style.color='#ff7777';
+        status('Python syntax error');
+      }else{
         showBoostNotice(stdout, message);
         status('Advanced Python environment recommended');
-      }else{
-        $('output').textContent=(stdout?stdout+'\n':'')+message;
-        $('output').style.color='#ff7777';
-        status('Python error');
       }
     }
   }catch(error){
-    const message=String(error);
-    if(/failed to fetch|networkerror|load.*runtime|pyodide|network|fetch/i.test(message)){
-      showBoostNotice('', message, true);
-      status('Python runtime unavailable');
-    }else{
-      $('output').textContent=message;
-      $('output').style.color='#ff7777';
-      status('Runtime error');
-    }
+    showBoostNotice('', String(error), true);
+    status('Python runtime unavailable');
   }finally{
     const elapsed=(performance.now()-startedAt)/1000;
     $('runTime').textContent=elapsed.toFixed(3)+' s';
