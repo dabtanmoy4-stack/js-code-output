@@ -1273,6 +1273,18 @@ body.light .boost-mode-card.og{background:linear-gradient(155deg,#fff9e9,#f3f4f7
 body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cbd5e1}
 @media(max-width:560px){.boost-picker{padding:16px}.boost-picker-head h2{font-size:17px}.boost-picker-cards{grid-template-columns:1fr}.boost-mode-card{min-height:0;padding:15px}.boost-mode-icon{width:36px;height:36px;margin-bottom:9px}.boost-mode-desc{margin-bottom:12px}}
 
+
+#jscoWip{position:fixed;top:5px;left:50%;transform:translateX(-50%);z-index:100000;background:#d92d3f;color:#fff;border:0;border-radius:999px;padding:4px 14px;font:700 11px Inter,sans-serif;letter-spacing:.3px;cursor:pointer;box-shadow:0 3px 12px rgba(217,45,63,.5);display:flex;align-items:center;gap:7px;animation:jscoPulse 2s ease-in-out infinite}
+#jscoWip i{width:7px;height:7px;border-radius:50%;background:#fff;display:inline-block}
+@keyframes jscoPulse{50%{box-shadow:0 3px 20px rgba(217,45,63,.9)}}
+body{padding-top:30px}
+.jsco-modal{position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
+.jsco-modal.show{display:flex}
+.jsco-card{max-width:420px;width:100%;background:#151518;color:#f5f3ee;border:1px solid #d92d3f;border-radius:16px;padding:22px;font:14px/1.55 Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.jsco-card h3{margin:0 0 8px;font-size:16px;color:#ff7185}
+.jsco-card button{margin-top:14px;background:#e8c77f;color:#1a1308;border:0;border-radius:9px;padding:8px 18px;font-weight:700;cursor:pointer}
+#jscoSorry{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:100002;max-width:min(520px,92vw);background:#1b1b1f;color:#f5f3ee;border:1px solid #d92d3f;border-radius:12px;padding:12px 16px;font:13px/1.5 Inter,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.6);display:none}
+#jscoSorry.show{display:block}
 </style>
 
 
@@ -1341,6 +1353,10 @@ body.light .boost-picker-close{background:#f1f5f9;color:#111827;border-color:#cb
 </head>
 
 <body>
+<button id="jscoWip" type="button" aria-haspopup="dialog"><i></i>We're still working on this page</button>
+<div class="jsco-modal" id="jscoWipModal" role="dialog" aria-modal="true"><div class="jsco-card"><h3>Work in progress</h3><div>Our JS team is still working on this page. Some features may change or be unfinished while we keep making it better. Thank you for your patience!</div><button type="button" id="jscoWipClose">Got it</button></div></div>
+<div id="jscoSorry" role="alert"><b>Sorry about that!</b> We're still improving this feature to make it even better. Please try again in a moment.</div>
+
 <div class="app">
 
   <!-- Header -->
@@ -2813,6 +2829,7 @@ async function runPythonInIsolatedFrame(source, libraries) {
     try{
       await loadFirst(THREE_URLS,()=>!!window.THREE,'Three.js');
       installThreeResizePatch();
+      (${JSCO_BOOST_SRC})(window.THREE,{});
       await loadFirst([PYODIDE_URL],()=>typeof loadPyodide==='function','Pyodide');
       send('READY');
     }catch(e){send('ERROR',{text:String((e&&e.message)||e)});}
@@ -2850,6 +2867,394 @@ function showPythonVisualSurface() {
   showOutputTab('3dpreview');
 }
 
+/* ===== BOOST v2: Three.js 3D view + real Python Turtle + stable scientific Python (Pyodide) ===== */
+function jscoBoost(THREE, opt) {
+  opt = opt || {};
+  var P = THREE.WebGLRenderer.prototype, orig = P.render, S = new WeakMap(), sph = new THREE.Spherical(), tmp = new THREE.Vector3();
+  function init(r, scene, cam) {
+    var st = { yaw: 0, pitch: 0, zoom: 1, target: new THREE.Vector3() };
+    var hasL = false, lit = false;
+    scene.traverse(function (o) {
+      if (o.isLight) hasL = true;
+      var m = o.isMesh && o.material;
+      if (m && (m.isMeshStandardMaterial || m.isMeshPhongMaterial || m.isMeshLambertMaterial)) lit = true;
+    });
+    if (!hasL && lit) {
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      var dl = new THREE.DirectionalLight(0xffffff, 1.6); dl.position.set(5, 10, 7); scene.add(dl);
+    }
+    var bx = new THREE.Box3().setFromObject(scene), gy = 0;
+    if (!bx.isEmpty() && isFinite(bx.min.x) && isFinite(bx.max.x)) { bx.getCenter(st.target); gy = bx.min.y - 0.01; }
+    st.hs = new THREE.Scene();
+    st.grid = new THREE.GridHelper(20, 20, 0x999999, 0x555555);
+    st.grid.material.transparent = true; st.grid.material.opacity = 0.35; st.grid.position.y = gy;
+    st.axes = new THREE.AxesHelper(2.5); st.axes.position.y = gy;
+    st.hs.add(st.grid); st.hs.add(st.axes);
+    var dom = r.domElement;
+    if (!opt.noOrbit && dom) {
+      var down = false, lx = 0, ly = 0;
+      dom.style.touchAction = 'none';
+      dom.addEventListener('pointerdown', function (e) { down = true; lx = e.clientX; ly = e.clientY; try { dom.setPointerCapture(e.pointerId); } catch (_) {} });
+      dom.addEventListener('pointermove', function (e) { if (!down) return; st.yaw += (e.clientX - lx) * 0.008; st.pitch += (e.clientY - ly) * 0.008; lx = e.clientX; ly = e.clientY; });
+      var up = function () { down = false; };
+      dom.addEventListener('pointerup', up); dom.addEventListener('pointercancel', up);
+      dom.addEventListener('wheel', function (e) { e.preventDefault(); st.zoom = Math.min(8, Math.max(0.1, st.zoom * Math.exp(e.deltaY * 0.001))); }, { passive: false });
+    }
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;right:10px;top:10px;z-index:99999;display:flex;gap:6px;align-items:center;font:11px system-ui';
+    var mk = function (t, f) { var b = document.createElement('button'); b.textContent = t; b.style.cssText = 'background:#000b;color:#e8c77f;border:1px solid #e8c77f66;border-radius:7px;padding:4px 9px;cursor:pointer'; b.onclick = f; d.appendChild(b); };
+    mk('Grid', function () { st.grid.visible = st.axes.visible = !st.grid.visible; });
+    if (!opt.noOrbit) mk('Reset', function () { st.yaw = st.pitch = 0; st.zoom = 1; });
+    var h = document.createElement('span'); h.textContent = opt.noOrbit ? '' : 'drag: rotate / wheel: zoom'; h.style.cssText = 'color:#fffa;text-shadow:0 1px 2px #000'; d.appendChild(h);
+    (document.body || document.documentElement).appendChild(d);
+    return st;
+  }
+  P.render = function (scene, camera) {
+    var st = S.get(this);
+    try {
+      if (!st && scene && scene.isScene && camera && camera.isCamera && !this.__jscoSkip) { st = init(this, scene, camera); S.set(this, st); }
+    } catch (e) { this.__jscoSkip = true; }
+    if (!st || !camera || !camera.isCamera || scene !== st.__scene && st.__scene) { return orig.call(this, scene, camera); }
+    st.__scene = st.__scene || scene;
+    var moved = st.yaw || st.pitch || st.zoom !== 1, p0, q0;
+    if (moved) {
+      p0 = camera.position.clone(); q0 = camera.quaternion.clone();
+      sph.setFromVector3(tmp.copy(p0).sub(st.target));
+      sph.theta -= st.yaw; sph.phi = Math.min(3.1, Math.max(0.04, sph.phi - st.pitch)); sph.radius *= st.zoom;
+      camera.position.copy(st.target).add(tmp.setFromSpherical(sph)); camera.lookAt(st.target); camera.updateMatrixWorld();
+    }
+    orig.call(this, scene, camera);
+    if (st.grid.visible) { var ac = this.autoClear; this.autoClear = false; orig.call(this, st.hs, camera); this.autoClear = ac; }
+    if (moved) { camera.position.copy(p0); camera.quaternion.copy(q0); camera.updateMatrixWorld(); }
+  };
+}
+const JSCO_BOOST_SRC = jscoBoost.toString();
+function jscoBoostHTML(html, source) {
+  const opt = JSON.stringify({ noOrbit: /OrbitControls|TrackballControls|FlyControls|ArcballControls|PointerLockControls/.test(source) });
+  const cls = '<script>document.addEventListener("load",function(e){var s=e.target,T=window.THREE;if(s&&s.tagName==="SCRIPT"&&T&&T.WebGLRenderer&&!T.__jb){T.__jb=1;(' + JSCO_BOOST_SRC + ')(T,' + opt + ')}},true)<\/script>';
+  let out = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + cls) : cls + html;
+  if (/\bimport\b[^;\n]*?\bfrom\s*['"]three['"]/.test(html)) {
+    const mod = '<script type="module">import*as T from "three";if(!window.__jbm){window.__jbm=1;(' + JSCO_BOOST_SRC + ')(T,' + opt + ')}<\/script>';
+    out = /<\/body>/i.test(out) ? out.replace(/<\/body>(?![\s\S]*<\/body>)/i, m => mod + m) : out + mod;
+  }
+  return out;
+}
+
+const TURTLE_RE = /^\s*(?:import\s+turtle|from\s+turtle\s+import)\b/m;
+const SCI_RE = /^\s*(?:import|from)\s+(?:numpy|pandas|matplotlib|sklearn|sympy|PIL|scipy)\b/m;
+
+// Pure-Python turtle (no tkinter): records drawing commands, the browser replays them as an animation.
+const TURTLE_PY = `
+import sys, types, math
+_m = types.ModuleType('turtle')
+_ops = []
+_cm = [1.0]; _spd = [3]; _tr = [1]; _tm = []; _cnt = [0]; _dt = [None]; _sc = [None]
+class Terminator(Exception): pass
+def _col(*a):
+    if len(a) == 1: a = a[0]
+    if isinstance(a, str): return a.replace(' ', '')
+    r, g, b = a
+    k = 255 if _cm[0] <= 1 else 1
+    return 'rgb(%d,%d,%d)' % (int(r*k), int(g*k), int(b*k))
+class _Scr:
+    def bgcolor(s, *a):
+        if a: _ops.append(['G', _col(*a)])
+        return 'white'
+    def tracer(s, n=None, d=None):
+        if n is not None:
+            _tr[0] = n; _ops.append(['SP', 0 if not n else _spd[0]])
+        return _tr[0]
+    def colormode(s, c=None):
+        if c is not None: _cm[0] = c
+        return _cm[0]
+    def ontimer(s, f, t=0): _tm.append((t, f))
+    def mainloop(s):
+        n = 0
+        while _tm and n < 5000:
+            _tm.sort(key=lambda x: x[0]); f = _tm.pop(0)[1]; n += 1
+            try: f()
+            except Terminator: break
+    done = mainloop
+    def exitonclick(s): s.mainloop()
+    def clear(s): _ops.append(['C'])
+    clearscreen = reset = resetscreen = clear
+    def window_width(s): return 1000
+    def window_height(s): return 800
+    def textinput(s, t, p): return ''
+    def __getattr__(s, n):
+        if n.startswith('_'): raise AttributeError(n)
+        return lambda *a, **k: None
+def Screen():
+    if _sc[0] is None: _sc[0] = _Scr()
+    return _sc[0]
+class Turtle:
+    def __init__(s, *a, **k):
+        s.i = _cnt[0]; _cnt[0] += 1
+        s.x = s.y = 0.0; s.h = 0.0; s.pd = True; s.pc = s.fc = 'black'; s.sz = 1; s.vis = True; s.shp = 'classic'; s.ss = 1; s.fl = False
+        s._st()
+    screen = property(lambda s: Screen())
+    def getscreen(s): return Screen()
+    def _st(s): _ops.append(['P', s.i, s.pc, s.fc, s.sz, s.shp, s.ss, 1 if s.vis else 0])
+    def _mv(s, x, y):
+        _ops.append(['L', s.i, s.x, s.y, x, y, s.pc, s.sz, s.h] if s.pd else ['M', s.i, s.x, s.y, x, y, s.h])
+        s.x, s.y = x, y
+    def forward(s, d):
+        r = math.radians(s.h); s._mv(s.x + d*math.cos(r), s.y + d*math.sin(r))
+    fd = forward
+    def back(s, d): s.forward(-d)
+    bk = backward = back
+    def left(s, a):
+        _ops.append(['R', s.i, s.h, s.h + a]); s.h += a
+    lt = left
+    def right(s, a): s.left(-a)
+    rt = right
+    def goto(s, x, y=None):
+        if y is None: x, y = x
+        s._mv(float(x), float(y))
+    setpos = setposition = goto
+    def setx(s, x): s._mv(float(x), s.y)
+    def sety(s, y): s._mv(s.x, float(y))
+    def setheading(s, a): s.left((a - s.h + 180) % 360 - 180)
+    seth = setheading
+    def home(s): s.goto(0, 0); s.setheading(0)
+    def circle(s, r, extent=None, steps=None):
+        e = 360 if extent is None else extent
+        if steps is None: steps = 1 + int(min(11 + abs(r)/6.0, 59.0) * abs(e) / 360.0)
+        g = 1 if r >= 0 else -1; h0 = s.h; a0 = math.radians(h0)
+        cx = s.x - r*math.sin(a0); cy = s.y + r*math.cos(a0); vx = r*math.sin(a0); vy = -r*math.cos(a0)
+        for k in range(1, steps + 1):
+            d = g*e*k/steps; a = math.radians(d); s.h = h0 + d
+            s._mv(cx + vx*math.cos(a) - vy*math.sin(a), cy + vx*math.sin(a) + vy*math.cos(a))
+    def dot(s, size=None, *c):
+        size = size or max(s.sz + 4, 2*s.sz)
+        _ops.append(['D', s.i, s.x, s.y, size, _col(*c) if c else s.pc])
+    def stamp(s):
+        _ops.append(['S', s.i, s.x, s.y, s.h, s.pc, s.fc, s.shp, s.ss]); return len(_ops)
+    def penup(s): s.pd = False
+    pu = up = penup
+    def pendown(s): s.pd = True
+    pd = down = pendown
+    def isdown(s): return s.pd
+    def pensize(s, w=None):
+        if w is None: return s.sz
+        s.sz = w; s._st()
+    width = pensize
+    def pencolor(s, *a):
+        if not a: return s.pc
+        s.pc = _col(*a); s._st()
+    def fillcolor(s, *a):
+        if not a: return s.fc
+        s.fc = _col(*a); s._st()
+    def color(s, *a):
+        if not a: return (s.pc, s.fc)
+        if len(a) == 1 or (len(a) == 3 and not isinstance(a[0], str)): s.pc = s.fc = _col(*a)
+        else: s.pc, s.fc = _col(a[0]), _col(a[1])
+        s._st()
+    def begin_fill(s):
+        s.fl = True; _ops.append(['B', s.i, s.x, s.y])
+    def end_fill(s):
+        s.fl = False; _ops.append(['E', s.i, s.fc])
+    def filling(s): return s.fl
+    def hideturtle(s): s.vis = False; s._st()
+    ht = hideturtle
+    def showturtle(s): s.vis = True; s._st()
+    st = showturtle
+    def isvisible(s): return s.vis
+    def speed(s, v=None):
+        if v is None: return _spd[0]
+        if isinstance(v, str): v = {'fastest': 0, 'fast': 10, 'normal': 6, 'slow': 3, 'slowest': 1}.get(v, 3)
+        _spd[0] = int(v); _ops.append(['SP', 0 if not _tr[0] else _spd[0]])
+    def shape(s, n=None):
+        if n is None: return s.shp
+        s.shp = n; s._st()
+    def shapesize(s, a=None, b=None, c=None):
+        if a is None: return (s.ss, s.ss, 1)
+        s.ss = a; s._st()
+    turtlesize = shapesize
+    def write(s, t, move=False, align='left', font=('Arial', 8, 'normal')):
+        _ops.append(['W', s.i, s.x, s.y, str(t), align, list(font), s.pc])
+    def clear(s): _ops.append(['C'])
+    def reset(s):
+        _ops.append(['C']); d = s.pd; s.pd = False; s.goto(0, 0); s.setheading(0); s.pd = d
+    def pos(s): return (s.x, s.y)
+    position = pos
+    def xcor(s): return s.x
+    def ycor(s): return s.y
+    def heading(s): return s.h % 360
+    def distance(s, x, y=None):
+        if y is None: x, y = (x.x, x.y) if hasattr(x, 'x') else x
+        return math.hypot(x - s.x, y - s.y)
+    def towards(s, x, y=None):
+        if y is None: x, y = (x.x, x.y) if hasattr(x, 'x') else x
+        return math.degrees(math.atan2(y - s.y, x - s.x)) % 360
+    def __getattr__(s, n):
+        if n.startswith('_'): raise AttributeError(n)
+        return lambda *a, **k: None
+_T = ['forward','fd','back','bk','backward','left','lt','right','rt','goto','setpos','setposition','setx','sety','setheading','seth','home','circle','dot','stamp','penup','pu','up','pendown','pd','down','isdown','pensize','width','pencolor','fillcolor','color','begin_fill','end_fill','filling','hideturtle','ht','showturtle','st','isvisible','speed','shape','shapesize','turtlesize','write','pos','position','xcor','ycor','heading','distance','towards','undo','onclick','onrelease','ondrag']
+_S = ['bgcolor','tracer','colormode','ontimer','mainloop','done','exitonclick','window_width','window_height','textinput','numinput','update','delay','title','setup','screensize','listen','onkey','onkeypress','onkeyrelease','onscreenclick','bye','mode','clearscreen','resetscreen','bgpic','addshape','register_shape','getcanvas']
+def _dtf():
+    if _dt[0] is None: _dt[0] = Turtle()
+    return _dt[0]
+def _mkT(n): return lambda *a, **k: getattr(_dtf(), n)(*a, **k)
+def _mkS(n): return lambda *a, **k: getattr(Screen(), n)(*a, **k)
+for _x in _T: setattr(_m, _x, _mkT(_x))
+for _x in _S: setattr(_m, _x, _mkS(_x))
+_m.clear = lambda: _ops.append(['C'])
+_m.reset = lambda: _dtf().reset()
+for _k, _v in dict(Turtle=Turtle, Pen=Turtle, RawTurtle=Turtle, Screen=Screen, TurtleScreen=Screen, Terminator=Terminator, _ops=_ops).items(): setattr(_m, _k, _v)
+_m.__all__ = [x for x in dir(_m) if not x.startswith('_')]
+def _mga(n):
+    if n.startswith('_'): raise AttributeError(n)
+    return lambda *a, **k: None
+_m.__getattr__ = _mga
+sys.modules['turtle'] = _m
+`;
+
+const SMART_PRE = `
+import os, sys, warnings
+os.environ['MPLBACKEND'] = 'AGG'
+warnings.filterwarnings('ignore', message='.*non-interactive.*')
+_shown = []
+try:
+    from PIL import Image as _PI
+    import io as _io, base64 as _b64
+    def _pshow(self, *a, **k):
+        im = self if self.mode in ('RGB', 'RGBA', 'L') else self.convert('RGBA')
+        b = _io.BytesIO(); im.save(b, 'PNG'); _shown.append(_b64.b64encode(b.getvalue()).decode())
+    _PI.Image.show = _pshow
+except ImportError:
+    pass
+`;
+const SMART_POST = `
+import json, sys, io, base64
+_r = {'imgs': list(_shown), 'ops': None}
+try:
+    if 'matplotlib.pyplot' in sys.modules:
+        _plt = sys.modules['matplotlib.pyplot']
+        for _n in _plt.get_fignums():
+            _f = _plt.figure(_n); _bf = io.BytesIO()
+            _f.savefig(_bf, format='png', dpi=110, bbox_inches='tight', facecolor=_f.get_facecolor())
+            _r['imgs'].append(base64.b64encode(_bf.getvalue()).decode())
+        _plt.close('all')
+except Exception as _e:
+    print('Figure render error:', _e)
+_t = sys.modules.pop('turtle', None)
+if _t is not None and hasattr(_t, '_ops'): _r['ops'] = _t._ops
+json.dumps(_r)
+`;
+
+async function runPyodideSmart(source) {
+  let rt;
+  try { rt = await loadPython(); } catch (e) { e.__load = true; throw e; }
+  rt.setStdout({ batched: t => writeOutput(t + "\n") });
+  rt.setStderr({ batched: t => { currentErrors.push(t); writeOutput(t + "\n", "error"); } });
+  $("loaderSubtitle").textContent = "Loading Python packages...";
+  try { await rt.loadPackagesFromImports(source); }
+  catch (e) { writeOutput("Package load warning: " + (e.message || e) + "\n", "error"); }
+  $("loaderSubtitle").textContent = "Runtime active · Waiting for output";
+  const ns = rt.globals.get("dict")();
+  ns.set("__name__", "__main__");
+  ns.set("__browser_input", p => new Promise(res => { writeOutput(String(p ?? "")); setWaitingForInput(String(p ?? ""), res); }));
+  let err = null;
+  try {
+    if (TURTLE_RE.test(source)) { const tn = rt.globals.get("dict")(); await rt.runPythonAsync(TURTLE_PY, { globals: tn }); tn.destroy(); }
+    await rt.runPythonAsync(SMART_PRE, { globals: ns });
+    await rt.runPythonAsync(source.replace(/(^|[=,(]\s*)input\s*\(/gm, "$1await __browser_input("), { globals: ns });
+  } catch (e) { err = e; }
+  let r = { imgs: [], ops: null };
+  try { r = JSON.parse(await rt.runPythonAsync(SMART_POST, { globals: ns })); } catch (e) {}
+  try { ns.destroy(); } catch (e) {}
+  if (err) {
+    const m = String(err.message || err), k = m.indexOf('File "<exec>"');
+    if (k > 0) err.message = 'Traceback (most recent call last):\n  ' + m.slice(k);
+    err.__partial = r; throw err;
+  }
+  return r;
+}
+
+const TURTLE_JS = `
+var W=1000,H=800,S=2,cv=document.getElementById('c');cv.width=W*S;cv.height=H*S;
+var cx=cv.getContext('2d');cx.scale(S,S);
+var ly=document.createElement('canvas');ly.width=W*S;ly.height=H*S;var lx=ly.getContext('2d');lx.scale(S,S);lx.lineCap='round';lx.lineJoin='round';
+var i,T,spd,pg,pf,fl,bg,gen=0,inst=0,mult=1,PI=Math.PI;
+function X(x){return W/2+x}function Y(y){return H/2-y}
+function tt(id){return T[id]||(T[id]={x:0,y:0,h:0,pc:'black',fc:'black',sz:1,shp:'classic',ss:1,vis:1})}
+function ln(x0,y0,x1,y1,c,w){lx.strokeStyle=c;lx.lineWidth=w;lx.beginPath();lx.moveTo(X(x0),Y(y0));lx.lineTo(X(x1),Y(y1));lx.stroke()}
+function spr(c,x,y,h,pc,fc,shp,ss){c.save();c.translate(X(x),Y(y));c.rotate(-h*PI/180);c.scale(ss,ss);c.beginPath();
+ var P={arrow:[[10,0],[-8,6],[-8,-6]],triangle:[[10,0],[-8,6],[-8,-6]],square:[[8,8],[-8,8],[-8,-8],[8,-8]]}[shp]||[[10,0],[-8,6],[-4,0],[-8,-6]];
+ if(shp=='circle')c.arc(0,0,8,0,2*PI);
+ else if(shp=='turtle'){c.ellipse(0,0,9,7,0,0,2*PI);c.moveTo(17,0);c.arc(13,0,4,0,2*PI);[[5,7],[5,-7],[-5,7],[-5,-7]].forEach(function(p){c.moveTo(p[0]+3,p[1]);c.arc(p[0],p[1],3,0,2*PI)})}
+ else{P.forEach(function(p,k){k?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1])});c.closePath()}
+ c.fillStyle=fc;c.strokeStyle=pc;c.lineWidth=1.3;c.fill();c.stroke();c.restore()}
+function reset(){lx.clearRect(0,0,W,H);i=0;T={};spd=3;pg=0;pf=0;fl={};bg='white'}
+function fin(o){var k=o[0],s=(k=='G'||k=='SP'||k=='C')?0:tt(o[1]);
+ if(k=='L'){ln(o[2]+(o[4]-o[2])*pf,o[3]+(o[5]-o[3])*pf,o[4],o[5],o[6],o[7]);pf=0;s.x=o[4];s.y=o[5];s.h=o[8];if(fl[o[1]]){fl[o[1]].p.push([o[4],o[5]]);fl[o[1]].l.push(o)}}
+ else if(k=='M'){pf=0;s.x=o[4];s.y=o[5];s.h=o[6];if(fl[o[1]])fl[o[1]].p.push([o[4],o[5]])}
+ else if(k=='R')s.h=o[3];
+ else if(k=='B')fl[o[1]]={p:[[o[2],o[3]]],l:[]};
+ else if(k=='E'){var f=fl[o[1]];if(f&&f.p.length>2){lx.fillStyle=o[2];lx.beginPath();f.p.forEach(function(p,j){j?lx.lineTo(X(p[0]),Y(p[1])):lx.moveTo(X(p[0]),Y(p[1]))});lx.closePath();lx.fill();f.l.forEach(function(l){ln(l[2],l[3],l[4],l[5],l[6],l[7])})}delete fl[o[1]]}
+ else if(k=='P'){s.pc=o[2];s.fc=o[3];s.sz=o[4];s.shp=o[5];s.ss=o[6];s.vis=o[7]}
+ else if(k=='D'){lx.fillStyle=o[5];lx.beginPath();lx.arc(X(o[2]),Y(o[3]),o[4]/2,0,2*PI);lx.fill()}
+ else if(k=='W'){var fo=o[6];lx.fillStyle=o[7];lx.font=(fo[2]||'normal')+' '+Math.round((fo[1]||8)*1.33)+'px '+(fo[0]||'Arial');lx.textAlign=o[5]=='center'?'center':o[5]=='right'?'right':'left';lx.fillText(o[4],X(o[2]),Y(o[3]))}
+ else if(k=='S')spr(lx,o[2],o[3],o[4],o[5],o[6],o[7],o[8]);
+ else if(k=='C')lx.clearRect(0,0,W,H);
+ else if(k=='G')bg=o[1];
+ else if(k=='SP')spd=o[1]}
+function part(o,f){var k=o[0],s=tt(o[1]);
+ if(k=='R'){s.h=o[2]+(o[3]-o[2])*f;return}
+ if(k=='L'){ln(o[2]+(o[4]-o[2])*pf,o[3]+(o[5]-o[3])*pf,o[2]+(o[4]-o[2])*f,o[3]+(o[5]-o[3])*f,o[6],o[7]);s.h=o[8]}else s.h=o[6];
+ pf=f;s.x=o[2]+(o[4]-o[2])*f;s.y=o[3]+(o[5]-o[3])*f}
+function step(){var sp=inst?0:spd,bud=sp*mult*6,t0=performance.now();
+ while(i<OPS.length){var o=OPS[i],k=o[0],L=0;
+  if(k=='L'||k=='M'||k=='R'){L=k=='R'?Math.abs(o[3]-o[2])/2:Math.hypot(o[4]-o[2],o[5]-o[3]);
+   if(sp&&pg+bud<L){pg+=bud;part(o,pg/L);return}
+   bud-=L-pg;pg=0}
+  fin(o);i++;
+  if(sp){if(bud<=0)return}else if(performance.now()-t0>12)return}}
+function draw(){cx.fillStyle=bg;cx.fillRect(0,0,W,H);cx.drawImage(ly,0,0,W,H);for(var id in T){var s=T[id];if(s.vis)spr(cx,s.x,s.y,s.h,s.pc,s.fc,s.shp,s.ss)}}
+function loop(g){if(g!=gen)return;step();draw();if(i<OPS.length)requestAnimationFrame(function(){loop(g)});else document.getElementById('st').textContent='Done'}
+function start(){gen++;reset();inst=0;document.getElementById('st').textContent='';loop(gen)}
+document.getElementById('rp').onclick=start;
+document.getElementById('sk').onclick=function(){inst=1};
+document.getElementById('spdr').oninput=function(){mult=this.value/5};
+start();
+`;
+function makeTurtleHTML2(ops) {
+  const data = JSON.stringify(ops).replace(/</g, '\\u003c');
+  return '<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;background:#080b14;color:#e8c77f;font:12px system-ui;display:flex;flex-direction:column}' +
+    '#bar{display:flex;gap:10px;align-items:center;padding:6px 10px;background:#0007}button{background:#1b1b1f;color:#e8c77f;border:1px solid #e8c77f55;border-radius:7px;padding:4px 10px;cursor:pointer}' +
+    '#w{flex:1;min-height:0}canvas{width:100%;height:100%;object-fit:contain;display:block}</style></head><body>' +
+    '<div id="bar"><b>Python Turtle</b><button id="rp">Replay</button><button id="sk">Instant</button><label>Speed <input id="spdr" type="range" min="1" max="10" value="5"></label><span id="st"></span></div>' +
+    '<div id="w"><canvas id="c"></canvas></div><script>var OPS=' + data + ';' + TURTLE_JS + '<\/script></body></html>';
+}
+
+async function runSmartBranch(source) {
+  running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
+  hideCompilerVisualPreview(); $('output').textContent = ''; $('consoleExtra').classList.remove('show');
+  showOutputTab('output'); showRunningAnimation(); startRuntimeClock();
+  let handled = true;
+  const show = r => {
+    if (r && r.ops && r.ops.length) { showCompilerVisualPreview(makeTurtleHTML2(r.ops)); showOutputTab('3dpreview'); }
+    else if (r && r.imgs && r.imgs.length) showPrintedBase64Images(r.imgs.map(d => ({ mime: 'image/png', data: d })));
+  };
+  try {
+    show(await runPyodideSmart(source));
+    $('loaderTitle').textContent = 'Execution finished'; $('loaderSubtitle').textContent = 'Python program completed in the browser.'; setStatus('Python runtime ready');
+  } catch (e) {
+    if (e && e.__load) { handled = false; toast('Browser Python could not start - using fallback.'); }
+    else {
+      if (e && e.__partial) show(e.__partial);
+      const m = String(e && e.message ? e.message : e);
+      currentErrors.push(m); writeOutput('\n' + m + '\n', 'error');
+      $('loaderTitle').textContent = 'Execution stopped'; $('loaderSubtitle').textContent = 'The runtime reported an error; see the console.'; setStatus('Execution error');
+    }
+  } finally {
+    stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false;
+    $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent;
+  }
+  return handled;
+}
+
 async function executeProgram() {
   if (running) return;
   saveActiveFile();
@@ -2870,13 +3275,17 @@ async function executeProgram() {
   const wantsPython = fileName.endsWith('.py') || detected.isPython;
   const visualEngines = detected.engines;
 
-  // Python Turtle: drawn in the browser Canvas (no backend needed).
-  if (wantsPython && /(^|\n)\s*(import\s+turtle|from\s+turtle\s+import)\b/.test(source)) {
-    currentOutputText = ''; currentErrors = []; waitingForInput = null;
-    $('consoleExtra').classList.remove('show');
-    runTurtlePreview(source);
-    showOutputTab('3dpreview');
-    return;
+  // Real Python (Pyodide) for turtle + numpy/pandas/matplotlib/sklearn/sympy/PIL; falls back if the runtime cannot load.
+  const isTurtle = wantsPython && TURTLE_RE.test(source);
+  if (wantsPython && visualEngines.length === 0 && (isTurtle || SCI_RE.test(source))) {
+    if (await runSmartBranch(source)) return;
+    if (isTurtle) {
+      currentOutputText = ''; currentErrors = []; waitingForInput = null;
+      $('consoleExtra').classList.remove('show');
+      runTurtlePreview(source);
+      showOutputTab('3dpreview');
+      return;
+    }
   }
 
   if (wantsPython && detected.unsupported.length) {
@@ -2917,6 +3326,7 @@ async function executeProgram() {
       } else if (/\.css$/.test(fileName)) {
         browserHTML = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${source}</style></head><body><main class="preview-content"><h1>CSS Preview</h1><p>Edit your CSS file to style this page.</p><button>Example button</button></main></body></html>`;
       }
+      if (usesThree) browserHTML = jscoBoostHTML(browserHTML, source);
       if (!/\.css$/.test(fileName)) {
         const pvToken = 'pv-' + Math.random().toString(36).slice(2);
         const BRIDGE = '<script>(function(){var T=' + JSON.stringify(pvToken) + ';function send(t,x){try{parent.postMessage({__jsco_preview:T,type:t,text:String(x).slice(0,2000)},"*")}catch(e){}}' +
@@ -3973,6 +4383,27 @@ loadPython().catch(() => {
   });
   function init(){ var cf=document.getElementById('miodCardFrame'); if(cf) cf.srcdoc=getSrc().replace('</head>','<style>:root,html,body{background:transparent!important}body::before{background:transparent!important;display:none}</style></head>'); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)}, m=$('jscoWipModal'), tm=null, shown=false;
+  $('jscoWip').onclick=function(){m.classList.add('show')};
+  $('jscoWipClose').onclick=function(){m.classList.remove('show')};
+  m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')m.classList.remove('show')});
+  function sorry(){var b=$('jscoSorry');b.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){b.classList.remove('show')},9000)}
+  var w=window.writeOutput, r=window.showRunningAnimation;
+  if(typeof r==='function')window.showRunningAnimation=function(){shown=false;return r.apply(this,arguments)};
+  if(typeof w==='function')window.writeOutput=function(t,type){
+    if(type==='error'&&!shown&&/error|traceback|exception|fail|could not|timed out|not found|unsupported/i.test(String(t))){
+      shown=true;sorry();
+      w('Sorry about that! We are still improving this feature to make it even better. Please try again in a moment.\n\nTechnical details (for debugging):\n','error');
+    }
+    return w.apply(this,arguments);
+  };
+  window.addEventListener('unhandledrejection',function(){sorry()});
+  window.addEventListener('error',function(e){if(e&&e.message&&!/ResizeObserver/.test(e.message))sorry()});
 })();
 </script>
 </body>
