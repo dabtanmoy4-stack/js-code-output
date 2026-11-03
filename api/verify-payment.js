@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const { KEY_SECRET, auth, configured, sign } = require('../lib/payment');
+import crypto from 'crypto';
+import { KEY_SECRET, auth, configured, sign } from '../lib/payment.js';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
   if (!configured()) return res.status(500).json({ error: 'Payments are not configured on the server.' });
 
@@ -24,4 +24,4 @@ module.exports = async (req, res) => {
   }
 
   res.status(200).json({ token: sign({ pid, oid, runs: 10, iat: Date.now() }) });
-};
+}
