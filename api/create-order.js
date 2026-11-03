@@ -1,6 +1,6 @@
-const { PRICES, KEY_ID, auth, configured } = require('../lib/payment');
+import { PRICES, KEY_ID, auth, configured } from '../lib/payment.js';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
   if (!configured()) return res.status(500).json({ error: 'Payments are not configured on the server.' });
 
@@ -24,4 +24,4 @@ module.exports = async (req, res) => {
   } catch (e) {
     res.status(502).json({ error: 'Could not reach Razorpay.' });
   }
-};
+}
