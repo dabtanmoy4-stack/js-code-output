@@ -1440,6 +1440,76 @@ body{padding-top:30px}
  .miod-label small{display:block}
 }
 </style>
+
+<style id="mobile-only-fit-fix-v2">
+/* Mobile-only layout correction. Desktop rules and layout remain untouched. */
+@media (max-width:760px) {
+  html, body { max-width:100%; overflow-x:hidden; }
+  .app { width:100%; max-width:100%; box-sizing:border-box; }
+  .topbar { min-width:0; max-width:100%; }
+  .brand { min-width:0; }
+  .brand-name { overflow-wrap:anywhere; }
+  /* The three-dot menu is the mobile home for secondary header actions. */
+  .top-actions { display:none !important; }
+  .mobile-more-btn { flex:0 0 38px; }
+  .header-project-area { flex:0 1 auto; min-width:0; }
+  .account-area { flex:0 0 auto; }
+  .mobile-actions-popover {
+    position:fixed !important;
+    top:58px !important;
+    right:8px !important;
+    left:auto !important;
+    width:min(290px, calc(100vw - 16px)) !important;
+    max-height:calc(100dvh - 72px) !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain;
+    z-index:2147483000 !important;
+  }
+  .workspace, .main, .editor-panel, .output-panel,
+  .editor-toolbar, .editor-body, .panel-head { min-width:0; max-width:100%; }
+  .editor-tools { display:none !important; }
+  .tabs { min-width:0; max-width:100%; overflow-x:auto; flex-wrap:nowrap; }
+  .output-head { min-width:0; flex-wrap:wrap; gap:6px; }
+  .output-tabs {
+    min-width:0;
+    max-width:100%;
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    flex-wrap:nowrap !important;
+    white-space:nowrap;
+    scrollbar-width:thin;
+  }
+  .output-tab { flex:0 0 auto; white-space:nowrap; }
+  .output-actions {
+    width:100%;
+    min-width:0;
+    display:flex;
+    justify-content:flex-end;
+    flex-wrap:nowrap !important;
+    gap:6px;
+  }
+  .output-actions > :not(#runBtn) { display:none !important; }
+  .output-actions #runBtn {
+    display:inline-flex !important;
+    flex:1 1 auto;
+    min-width:0;
+    justify-content:center;
+  }
+  .CodeMirror, .CodeMirror-scroll, .output {
+    max-width:100%;
+    min-width:0;
+  }
+  .input-bar { min-width:0; max-width:100%; }
+}
+@media (max-width:390px) {
+  .topbar { gap:4px; padding:6px; }
+  .logo-wrap { flex:0 0 36px; width:36px; height:36px; }
+  .brand-name { font-size:13px; }
+  .header-project-btn { padding:6px 7px; }
+}
+</style>
+
 </head>
 
 <body>
@@ -4042,8 +4112,22 @@ loadPython().catch(() => {
  $('accountBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('accountPopover',$('accountBtn'));});
  // Account label is populated by Firebase Authentication below.
  $('mobileMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();const pop=$('mobileActionsPopover');if(pop.innerHTML.trim()===''){
-  const actions=[['Toggle theme','themeBtn','more'],['New file','newFileBtn','plus'],['New folder','newFolderBtn','folder'],['Find','findBtn','file'],['Replace','replaceBtn','rename'],['Save file','downloadBtn','download'],['Hide / show Explorer','explorerToggle','folder']];
-  pop.innerHTML=actions.map(([label,id,ic])=>'<button data-action="'+id+'">'+svg(ic)+'<span>'+label+'</span></button>').join('');pop.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.action);closePopovers();if(target)target.click();}));
+  const actions=[
+   ['Toggle theme','themeBtn','more'],
+   ['New file','newFileBtn','plus'],
+   ['New folder','newFolderBtn','folder'],
+   ['Clear code','clearCodeBtn','file'],
+   ['Format code','formatBtn','file'],
+   ['Find in code','findBtn','file'],
+   ['Replace text','replaceBtn','rename'],
+   ['Copy code','copyBtn','file'],
+   ['Save current file','downloadBtn','download'],
+   ['REPL mode','consoleBtn','file'],
+   ['Clear output','clearOutputBtn','file'],
+   ['Hide / show Explorer','explorerToggle','folder']
+  ];
+  pop.innerHTML=actions.map(([label,id,ic])=>'<button data-action="'+id+'">'+svg(ic)+'<span>'+label+'</span></button>').join('');
+  pop.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.action);closePopovers();if(target)target.click();}));
  }togglePopover('mobileActionsPopover',$('mobileMoreBtn'));});
  document.addEventListener('click',e=>{if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn'))closePopovers();});
  // Close any open context/choice menu on an outside click or tap.
