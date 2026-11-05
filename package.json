@@ -7,6 +7,6 @@
     "node": "24.x"
   },
   "scripts": {
-    "check": "node --check api/run-code.js"
+    "check": "node --check api/run-code.js && node --check api/generate.js"
   }
 }
