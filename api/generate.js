@@ -1,7 +1,9 @@
-// Vercel serverless function: POST /api/generate -> Gemini 2.5 Flash
+// Vercel serverless function: POST /api/generate -> Gemini Flash
 // Needs GEMINI_API_KEY in Vercel Environment Variables (server-side only).
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+// Google retired gemini-2.5-flash for new users. The alias below always points to the latest Flash model.
+// To pin one, set GEMINI_MODEL in Vercel (e.g. the exact name Google's error message suggested).
+const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 
 const SYSTEM = `You are MIOD AI, a web app builder.
 Return ONE complete, self-contained HTML document (<!DOCTYPE html> ... </html>) with inline CSS and JS.
@@ -48,8 +50,7 @@ export default async function handler(req, res) {
         contents: [{ role: 'user', parts: [{ text }] }],
         generationConfig: {
           temperature: 0.8,
-          maxOutputTokens: 32768,
-          thinkingConfig: { thinkingBudget: 1024 }
+          maxOutputTokens: 32768
         }
       })
     }).finally(() => clearTimeout(timer));
