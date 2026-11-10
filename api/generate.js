@@ -1,151 +1,241 @@
 // api/generate.js
 
 export default async function handler(req, res) {
+  // Only POST allowed
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method not allowed"
+      error: "Method not allowed. Use POST."
+    });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY is missing");
+
+    return res.status(500).json({
+      error: "GEMINI_API_KEY is not configured in Vercel."
     });
   }
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Vercel normally gives req.body as an object,
+    // but this also handles string bodies safely.
+    let body = req.body;
 
-    if (!apiKey) {
-      return res.status(503).json({
-        error: "GEMINI_API_KEY is missing in Vercel Environment Variables."
-      });
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        return res.status(400).json({
+          error: "Invalid JSON request body."
+        });
+      }
     }
 
-    const {
-      prompt = "",
-      history = [],
-      current = ""
-    } = req.body || {};
+    body = body || {};
 
-    if (!prompt.trim()) {
+    const prompt = String(body.prompt || "").trim();
+    const current = String(body.current || "");
+
+    const history = Array.isArray(body.history)
+      ? body.history
+      : [];
+
+    if (!prompt) {
       return res.status(400).json({
         error: "Prompt is empty."
       });
     }
 
-    const model =
-      process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    /*
+      Gemini 3.6 Flash
+      Direct Google Gemini API
+    */
+    const model = "gemini-3.6-flash";
 
-    const apiUrl =
+    const url =
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
-    let previous = "";
+    /*
+      Build previous conversation context.
+      Your frontend sends only user history, so we keep it simple.
+    */
+    let historyText = "";
 
-    if (Array.isArray(history)) {
-      previous = history
+    if (history.length > 0) {
+      historyText = history
         .slice(-6)
-        .map(x => {
-          return `${x.role || "user"}: ${x.content || ""}`;
+        .map((item, index) => {
+          const content = String(item?.content || "");
+          return `Previous user request ${index + 1}:\n${content}`;
         })
-        .join("\n");
+        .join("\n\n");
     }
 
-    const instruction = `
-You are MIOD AI inside JS Code Output.
+    /*
+      Main instruction for MIOD.
+      The frontend expects HTML/code in the response.
+    */
+    const fullPrompt = `
+You are MIOD, the AI coding assistant inside JS Code Output.
 
-Generate complete working HTML based on the user's request.
+Your job is to modify or generate the user's HTML/CSS/JavaScript code.
 
-Rules:
-- Return ONLY HTML.
-- Do not use markdown code fences.
-- Do not explain the answer.
-- If existing HTML is provided, modify it instead of unnecessarily replacing unrelated features.
-- Preserve existing animations and functionality unless the user asks to change them.
-- CSS and JavaScript can be included inside the HTML.
-- The result must work directly in an iframe.
+IMPORTANT:
+- Return the complete updated HTML code.
+- Do not explain the code.
+- Do not use Markdown.
+- Do not wrap the answer in ```html or ``` blocks.
+- Preserve existing functionality unless the user explicitly asks to change it.
+- Preserve existing design, animations and layout unless the user asks to change them.
+- If the user asks for a small change, make only that change.
+- Return valid HTML that can run directly in a browser.
 
-Previous conversation:
-${previous}
-
-Existing HTML:
-${current || "(No existing HTML)"}
-
-User request:
+USER REQUEST:
 ${prompt}
+
+CURRENT HTML CODE:
+${current}
+
+${historyText ? `\nPREVIOUS REQUEST CONTEXT:\n${historyText}` : ""}
+
+Now return ONLY the complete updated HTML code.
 `;
 
-    const geminiResponse = await fetch(apiUrl, {
-      method: "POST",
+    const requestBody = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: fullPrompt
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 65536
+      }
+    };
 
+    console.log("Calling Gemini:", model);
+
+    const response = await fetch(url, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-goog-api-key": apiKey
       },
-
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: instruction
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.3,
-          maxOutputTokens: 30000
-        }
-      })
+      body: JSON.stringify(requestBody)
     });
 
-    const data = await geminiResponse.json();
+    const rawText = await response.text();
 
-    if (!geminiResponse.ok) {
-      console.error("Gemini error:", data);
+    let data = {};
 
-      return res.status(502).json({
-        error:
-          data?.error?.message ||
-          `Gemini API error: ${geminiResponse.status}`
+    try {
+      data = rawText ? JSON.parse(rawText) : {};
+    } catch {
+      data = {
+        raw: rawText
+      };
+    }
+
+    /*
+      IMPORTANT:
+      If Gemini itself returns an error, send the real
+      Gemini error back to the frontend instead of hiding it
+      behind a generic 502.
+    */
+    if (!response.ok) {
+      console.error("Gemini API ERROR:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: data
+      });
+
+      const googleMessage =
+        data?.error?.message ||
+        data?.message ||
+        rawText ||
+        "Unknown Gemini API error";
+
+      return res.status(response.status).json({
+        error: `Gemini API error (${response.status}): ${googleMessage}`,
+        geminiStatus: response.status,
+        geminiStatusText: response.statusText,
+        details: data?.error || data
       });
     }
 
-    let result = "";
-
-    const candidates = data?.candidates || [];
+    /*
+      Extract generated text.
+    */
+    let generatedText = "";
 
     if (
-      candidates[0]?.content?.parts &&
-      Array.isArray(candidates[0].content.parts)
+      data?.candidates &&
+      Array.isArray(data.candidates) &&
+      data.candidates.length > 0
     ) {
-      result = candidates[0].content.parts
-        .map(part => part.text || "")
-        .join("");
+      const candidate = data.candidates[0];
+
+      if (candidate?.content?.parts) {
+        generatedText = candidate.content.parts
+          .map(part => part?.text || "")
+          .join("");
+      }
+
+      // Helpful diagnostic if Gemini stopped without text
+      if (!generatedText && candidate?.finishReason) {
+        return res.status(502).json({
+          error: `Gemini returned no code. Finish reason: ${candidate.finishReason}`,
+          finishReason: candidate.finishReason
+        });
+      }
     }
 
-    if (!result.trim()) {
+    if (!generatedText) {
+      console.error("Gemini returned empty response:", data);
+
       return res.status(502).json({
-        error: "Gemini returned an empty response."
+        error: "Gemini returned an empty response.",
+        details: data
       });
     }
 
-    result = result.trim();
+    /*
+      Remove Markdown code fences if Gemini adds them anyway.
+    */
+    generatedText = generatedText.trim();
 
-    // Remove ```html ... ``` if Gemini accidentally adds it
-    const match = result.match(
-      /^```(?:html)?\s*([\s\S]*?)\s*```$/i
+    const fenced = generatedText.match(
+      /^```(?:html|HTML)?\s*([\s\S]*?)\s*```$/i
     );
 
-    if (match) {
-      result = match[1].trim();
+    if (fenced) {
+      generatedText = fenced[1].trim();
     }
 
+    /*
+      Your existing frontend expects:
+        d.html
+      so keep that exactly.
+    */
     return res.status(200).json({
-      html: result
+      html: generatedText,
+      code: generatedText,
+      text: generatedText
     });
 
   } catch (error) {
-    console.error("generate.js error:", error);
+    console.error("generate.js SERVER ERROR:", error);
 
-    return res.status(503).json({
-      error: error?.message || "Gemini service unavailable."
+    return res.status(500).json({
+      error: `Server error: ${error?.message || "Unknown error"}`,
+      type: error?.name || "Error"
     });
   }
 }
