@@ -1,79 +1,322 @@
-// Vercel serverless function: POST /api/generate -> Gemini Flash
-// Needs GEMINI_API_KEY in Vercel Environment Variables (server-side only).
+```js
+// Vercel Serverless Function
+// POST /api/generate
+// MIOD AI -> Google Gemini API
 
-// Google retired gemini-2.5-flash for new users. The alias below always points to the latest Flash model.
-// To pin one, set GEMINI_MODEL in Vercel (e.g. the exact name Google's error message suggested).
-const MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
-const SYSTEM = `You are MIOD AI, a web app builder.
-Return ONE complete, self-contained HTML document (<!DOCTYPE html> ... </html>) with inline CSS and JS.
+const SYSTEM = `
+You are MIOD AI, a web app builder.
+
+Return ONE complete, self-contained HTML document:
+<!DOCTYPE html> ... </html>
+
 Rules:
-- Output ONLY the code, no explanation, no markdown fences.
-- No external files or APIs. If a library is needed, load it only from https://cdnjs.cloudflare.com.
-- Mobile-first, responsive, modern and colourful. Add <meta name="viewport" content="width=device-width,initial-scale=1">.
-- Do not use localStorage/sessionStorage unless the user asks; keep state in memory.
-- Use console.log for useful debug messages.
-- If "Current project code" is given, modify that code according to the new request and return the full updated document.
-- Write UI text in the language the user wrote their request in.`;
+- Output ONLY the HTML code.
+- Do not use markdown fences.
+- Do not give explanations.
+- Keep CSS and JavaScript inline.
+- Do not use external APIs.
+- If a library is needed, load it only from https://cdnjs.cloudflare.com.
+- Always include:
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+- Make the website mobile-first and responsive.
+- Make the UI modern, colourful and functional.
+- Do not use localStorage or sessionStorage unless the user explicitly asks for it.
+- Keep application state in memory.
+- Use console.log for useful debugging messages.
+- If Current project code is provided, modify that code according to the user's new request.
+- When modifying an existing project, return the COMPLETE updated HTML document.
+- Do not remove existing features unless the user asks you to remove them.
+- Write UI text in the same language used by the user.
+`;
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method not allowed' });
+  // Only POST is allowed
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(500).json({ error: 'GEMINI_API_KEY is not set on the server' });
+
+  // Gemini API key
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY is not configured");
+
+    return res.status(500).json({
+      error: "GEMINI_API_KEY is not set on the server"
+    });
+  }
 
   try {
+    // -----------------------------
+    // Read request body
+    // -----------------------------
     let body = req.body;
-    if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
-    const { prompt, history, current } = body || {};
-    if (typeof prompt !== 'string' || !prompt.trim()) return res.status(400).json({ error: 'Prompt is empty' });
-    if (prompt.length > 8000) return res.status(400).json({ error: 'Prompt too long' });
 
-    const past = Array.isArray(history)
-      ? history.filter(h => h && typeof h.content === 'string').slice(-6).map(h => '- ' + h.content.slice(0, 300)).join('\n')
-      : '';
-    let text = '';
-    if (past) text += `Earlier requests in this project:\n${past}\n\n`;
-    if (typeof current === 'string' && current.trim()) text += `Current project code:\n${current}\n\n`;
-    text += `New request:\n${prompt.trim()}`;
-
-    const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), 55000);
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: 'POST',
-      signal: ctl.signal,
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents: [{ role: 'user', parts: [{ text }] }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 32768
-        }
-      })
-    }).finally(() => clearTimeout(timer));
-
-    const data = await r.json();
-    if (!r.ok) {
-      console.error('Gemini error:', JSON.stringify(data));
-      const code = r.status === 429 ? 429 : 502;
-      return res.status(code).json({ error: code === 429 ? 'Gemini quota/rate limit reached. Try again shortly.' : (data.error?.message || 'Gemini request failed') });
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
     }
-    const cand = data.candidates && data.candidates[0];
-    if (!cand) return res.status(502).json({ error: 'Blocked: ' + (data.promptFeedback?.blockReason || 'no response') });
 
-    let out = (cand.content?.parts || []).filter(p => p.text && !p.thought).map(p => p.text).join('');
-    const m = out.match(/```(?:html)?\n([\s\S]*?)```/);
-    if (m) out = m[1];
-    out = out.trim();
-    if (!out) return res.status(502).json({ error: 'Empty response (' + (cand.finishReason || 'unknown') + ')' });
-    if (cand.finishReason === 'MAX_TOKENS') return res.status(502).json({ error: 'Output too long. Ask for a smaller project.' });
+    const {
+      prompt,
+      history,
+      current
+    } = body || {};
 
-    return res.status(200).json({ html: out });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: e.name === 'AbortError' ? 'Gemini timed out' : 'Server error' });
+    // -----------------------------
+    // Validate prompt
+    // -----------------------------
+    if (
+      typeof prompt !== "string" ||
+      !prompt.trim()
+    ) {
+      return res.status(400).json({
+        error: "Prompt is empty"
+      });
+    }
+
+    if (prompt.length > 8000) {
+      return res.status(400).json({
+        error: "Prompt too long"
+      });
+    }
+
+    // -----------------------------
+    // Prepare previous conversation
+    // -----------------------------
+    let context = "";
+
+    if (Array.isArray(history)) {
+      const past = history
+        .filter(
+          item =>
+            item &&
+            typeof item.content === "string"
+        )
+        .slice(-6)
+        .map(
+          item =>
+            "- " + item.content.slice(0, 500)
+        )
+        .join("\n");
+
+      if (past) {
+        context +=
+          "Earlier requests in this project:\n" +
+          past +
+          "\n\n";
+      }
+    }
+
+    // -----------------------------
+    // Add current project code
+    // -----------------------------
+    if (
+      typeof current === "string" &&
+      current.trim()
+    ) {
+      context +=
+        "Current project code:\n" +
+        current +
+        "\n\n";
+    }
+
+    // -----------------------------
+    // Add new user request
+    // -----------------------------
+    context +=
+      "New request:\n" +
+      prompt.trim();
+
+    // -----------------------------
+    // Abort after 55 seconds
+    // -----------------------------
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 55000);
+
+    let response;
+
+    try {
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+        {
+          method: "POST",
+
+          signal: controller.signal,
+
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+          },
+
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [
+                {
+                  text: SYSTEM
+                }
+              ]
+            },
+
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: context
+                  }
+                ]
+              }
+            ],
+
+            generationConfig: {
+              temperature: 0.8,
+              maxOutputTokens: 32768
+            }
+          })
+        }
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    // -----------------------------
+    // Read Gemini response
+    // -----------------------------
+    const data = await response.json();
+
+    // -----------------------------
+    // Gemini API error
+    // -----------------------------
+    if (!response.ok) {
+      console.error(
+        "Gemini API error:",
+        JSON.stringify(data)
+      );
+
+      if (response.status === 429) {
+        return res.status(429).json({
+          error:
+            "Gemini quota/rate limit reached. Please try again shortly."
+        });
+      }
+
+      return res.status(502).json({
+        error:
+          data?.error?.message ||
+          "Gemini request failed"
+      });
+    }
+
+    // -----------------------------
+    // Get candidate
+    // -----------------------------
+    const candidate =
+      data?.candidates?.[0];
+
+    if (!candidate) {
+      return res.status(502).json({
+        error:
+          "Gemini returned no response (" +
+          (data?.promptFeedback?.blockReason ||
+            "unknown") +
+          ")"
+      });
+    }
+
+    // -----------------------------
+    // Extract generated text
+    // -----------------------------
+    let html = "";
+
+    const parts =
+      candidate?.content?.parts || [];
+
+    for (const part of parts) {
+      if (
+        part &&
+        typeof part.text === "string" &&
+        !part.thought
+      ) {
+        html += part.text;
+      }
+    }
+
+    html = html.trim();
+
+    // -----------------------------
+    // Remove markdown code fences
+    // -----------------------------
+    const fenced =
+      html.match(
+        /```(?:html)?\s*([\s\S]*?)```/i
+      );
+
+    if (fenced) {
+      html = fenced[1].trim();
+    }
+
+    // -----------------------------
+    // Empty response
+    // -----------------------------
+    if (!html) {
+      return res.status(502).json({
+        error:
+          "Gemini returned an empty response (" +
+          (candidate?.finishReason ||
+            "unknown") +
+          ")"
+      });
+    }
+
+    // -----------------------------
+    // Output token limit
+    // -----------------------------
+    if (
+      candidate?.finishReason ===
+      "MAX_TOKENS"
+    ) {
+      return res.status(502).json({
+        error:
+          "Output too long. Ask MIOD for a smaller project."
+      });
+    }
+
+    // -----------------------------
+    // Success
+    // -----------------------------
+    return res.status(200).json({
+      html
+    });
+
+  } catch (error) {
+    console.error(
+      "MIOD backend error:",
+      error
+    );
+
+    if (
+      error?.name === "AbortError"
+    ) {
+      return res.status(504).json({
+        error: "Gemini request timed out"
+      });
+    }
+
+    return res.status(500).json({
+      error: "Server error"
+    });
   }
 }
+```
