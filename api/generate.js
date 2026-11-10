@@ -1,8 +1,3 @@
-```js
-// Vercel Serverless Function
-// POST /api/generate
-// MIOD AI -> Google Gemini API
-
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 const SYSTEM = `
@@ -13,7 +8,7 @@ Return ONE complete, self-contained HTML document:
 
 Rules:
 - Output ONLY the HTML code.
-- Do not use markdown fences.
+- Do not use markdown code fences.
 - Do not give explanations.
 - Keep CSS and JavaScript inline.
 - Do not use external APIs.
@@ -22,7 +17,7 @@ Rules:
   <meta name="viewport" content="width=device-width,initial-scale=1">
 - Make the website mobile-first and responsive.
 - Make the UI modern, colourful and functional.
-- Do not use localStorage or sessionStorage unless the user explicitly asks for it.
+- Do not use localStorage or sessionStorage unless the user explicitly asks.
 - Keep application state in memory.
 - Use console.log for useful debugging messages.
 - If Current project code is provided, modify that code according to the user's new request.
@@ -32,7 +27,6 @@ Rules:
 `;
 
 export default async function handler(req, res) {
-  // Only POST is allowed
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({
@@ -40,11 +34,10 @@ export default async function handler(req, res) {
     });
   }
 
-  // Gemini API key
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    console.error("GEMINI_API_KEY is not configured");
+    console.error("GEMINI_API_KEY is missing");
 
     return res.status(500).json({
       error: "GEMINI_API_KEY is not set on the server"
@@ -52,9 +45,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // -----------------------------
-    // Read request body
-    // -----------------------------
     let body = req.body;
 
     if (typeof body === "string") {
@@ -65,15 +55,10 @@ export default async function handler(req, res) {
       }
     }
 
-    const {
-      prompt,
-      history,
-      current
-    } = body || {};
+    const prompt = body?.prompt;
+    const history = body?.history;
+    const current = body?.current;
 
-    // -----------------------------
-    // Validate prompt
-    // -----------------------------
     if (
       typeof prompt !== "string" ||
       !prompt.trim()
@@ -89,13 +74,10 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // Prepare previous conversation
-    // -----------------------------
-    let context = "";
+    let input = "";
 
     if (Array.isArray(history)) {
-      const past = history
+      const previous = history
         .filter(
           item =>
             item &&
@@ -108,38 +90,30 @@ export default async function handler(req, res) {
         )
         .join("\n");
 
-      if (past) {
-        context +=
+      if (previous) {
+        input +=
           "Earlier requests in this project:\n" +
-          past +
+          previous +
           "\n\n";
       }
     }
 
-    // -----------------------------
-    // Add current project code
-    // -----------------------------
     if (
       typeof current === "string" &&
       current.trim()
     ) {
-      context +=
+      input +=
         "Current project code:\n" +
         current +
         "\n\n";
     }
 
-    // -----------------------------
-    // Add new user request
-    // -----------------------------
-    context +=
+    input +=
       "New request:\n" +
       prompt.trim();
 
-    // -----------------------------
-    // Abort after 55 seconds
-    // -----------------------------
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
     const timeout = setTimeout(() => {
       controller.abort();
@@ -149,16 +123,18 @@ export default async function handler(req, res) {
 
     try {
       response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+        "https://generativelanguage.googleapis.com/v1beta/models/" +
+          encodeURIComponent(MODEL) +
+          ":generateContent",
         {
           method: "POST",
-
-          signal: controller.signal,
 
           headers: {
             "Content-Type": "application/json",
             "x-goog-api-key": apiKey
           },
+
+          signal: controller.signal,
 
           body: JSON.stringify({
             systemInstruction: {
@@ -174,7 +150,7 @@ export default async function handler(req, res) {
                 role: "user",
                 parts: [
                   {
-                    text: context
+                    text: input
                   }
                 ]
               }
@@ -191,14 +167,16 @@ export default async function handler(req, res) {
       clearTimeout(timeout);
     }
 
-    // -----------------------------
-    // Read Gemini response
-    // -----------------------------
-    const data = await response.json();
+    let data;
 
-    // -----------------------------
-    // Gemini API error
-    // -----------------------------
+    try {
+      data = await response.json();
+    } catch {
+      return res.status(502).json({
+        error: "Invalid response from Gemini"
+      });
+    }
+
     if (!response.ok) {
       console.error(
         "Gemini API error:",
@@ -219,9 +197,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // Get candidate
-    // -----------------------------
     const candidate =
       data?.candidates?.[0];
 
@@ -235,9 +210,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // Extract generated text
-    // -----------------------------
     let html = "";
 
     const parts =
@@ -255,21 +227,15 @@ export default async function handler(req, res) {
 
     html = html.trim();
 
-    // -----------------------------
-    // Remove markdown code fences
-    // -----------------------------
     const fenced =
       html.match(
-        /```(?:html)?\s*([\s\S]*?)```/i
+        /^```(?:html)?\s*([\s\S]*?)\s*```$/i
       );
 
     if (fenced) {
       html = fenced[1].trim();
     }
 
-    // -----------------------------
-    // Empty response
-    // -----------------------------
     if (!html) {
       return res.status(502).json({
         error:
@@ -280,9 +246,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // Output token limit
-    // -----------------------------
     if (
       candidate?.finishReason ===
       "MAX_TOKENS"
@@ -293,11 +256,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // -----------------------------
-    // Success
-    // -----------------------------
     return res.status(200).json({
-      html
+      html: html
     });
 
   } catch (error) {
@@ -315,8 +275,21 @@ export default async function handler(req, res) {
     }
 
     return res.status(500).json({
-      error: "Server error"
+      error:
+        error?.message ||
+        "Server error"
     });
   }
 }
 ```
+
+**খুব গুরুত্বপূর্ণ:** GitHub-এ `api/generate.js`-এর পুরোটাই replace করবে। প্রথম character থেকেই `const MODEL...` থাকবে—কোনো ` ```js ` থাকবে না।
+
+তারপর Vercel-এ **Redeploy** করো এবং Environment Variables-এ নিশ্চিত করো:
+
+```text
+GEMINI_API_KEY = তোমার Gemini API key
+GEMINI_MODEL = gemini-2.5-flash
+```
+
+এবার যদি আবার `500` আসে, Vercel-এর log-এ যে **`Gemini API error:`** বা **`MIOD backend error:`** line আসবে সেটাই আসল কারণ দেখাবে।
