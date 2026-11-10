@@ -1,173 +1,36 @@
-const PRIMARY_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
-const FALLBACK_MODEL = "gemini-3.6-flash";
-
-const SYSTEM = `
-You are MIOD AI, a web app builder.
-
-Return ONE complete, self-contained HTML document:
-<!DOCTYPE html>
-<html>
-...
-</html>
-
-Rules:
-- Output ONLY the HTML code.
-- Do not use markdown code fences.
-- Do not give explanations.
-- Keep CSS and JavaScript inline.
-- Do not use external APIs.
-- If a library is needed, load it only from https://cdnjs.cloudflare.com.
-- Always include a viewport meta tag.
-- Make the website mobile-first and responsive.
-- Make the UI modern, colourful and polished.
-- Do not use localStorage or sessionStorage unless the user explicitly asks for it.
-- If current project code is provided, modify that project and return the complete updated HTML.
-- Preserve existing features unless the user explicitly asks to remove them.
-- Do not return partial code.
-- Always return the complete HTML document.
-- Match the language of the user's request.
-`;
-
-function cleanHtml(text) {
-  if (!text) return "";
-
-  text = text.trim();
-
-  // Remove markdown code fences if Gemini accidentally adds them.
-  text = text.replace(/^```html\\s*/i, "");
-  text = text.replace(/^```\\s*/i, "");
-  text = text.replace(/\\s*```$/i, "");
-
-  return text.trim();
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function callGemini(model, input, apiKey, signal) {
-  const url =
-    `https://generativelanguage.googleapis.com/v1beta/models/` +
-    `${encodeURIComponent(model)}:generateContent`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": apiKey
-    },
-    body: JSON.stringify({
-      systemInstruction: {
-        parts: [
-          {
-            text: SYSTEM
-          }
-        ]
-      },
-
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: input
-            }
-          ]
-        }
-      ],
-
-      generationConfig: {
-        temperature: 0.8,
-        maxOutputTokens: 32768
-      }
-    }),
-
-    signal
-  });
-
-  let data = {};
-
-  try {
-    data = await response.json();
-  } catch {
-    data = {};
-  }
-
-  if (!response.ok) {
-    const errorMessage =
-      data?.error?.message ||
-      `Gemini request failed with HTTP ${response.status}`;
-
-    const error = new Error(errorMessage);
-
-    error.status = response.status;
-    error.geminiStatus = data?.error?.status || null;
-    error.model = model;
-    error.raw = data?.error || null;
-
-    throw error;
-  }
-
-  const parts =
-    data?.candidates?.[0]?.content?.parts || [];
-
-  let output = "";
-
-  for (const part of parts) {
-    if (part?.text) {
-      output += part.text;
-    }
-  }
-
-  output = cleanHtml(output);
-
-  if (!output) {
-    const error = new Error("Gemini returned an empty response.");
-    error.status = 502;
-    error.model = model;
-    throw error;
-  }
-
-  return output;
-}
+// api/generate.js
 
 export default async function handler(req, res) {
-  // Only POST is allowed.
+  // Only POST is allowed
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method Not Allowed. Use POST."
-    });
-  }
-
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    console.error("GEMINI_API_KEY is missing.");
-
-    return res.status(500).json({
-      error: "Gemini API is not configured on the server."
+      error: "Method not allowed. Use POST."
     });
   }
 
   try {
-    const body =
-      typeof req.body === "string"
-        ? JSON.parse(req.body)
-        : (req.body || {});
+    // -----------------------------
+    // Gemini API Key
+    // -----------------------------
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.GOOGLE_API_KEY ||
+      process.env.GOOGLE_GEMINI_API_KEY;
 
-    const prompt =
-      typeof body.prompt === "string"
-        ? body.prompt.trim()
-        : "";
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "Gemini API key is not configured on the server."
+      });
+    }
 
-    const history = Array.isArray(body.history)
-      ? body.history
-      : [];
+    // -----------------------------
+    // Get data from frontend
+    // -----------------------------
+    const body = req.body || {};
 
-    const current =
-      typeof body.current === "string"
-        ? body.current.trim()
-        : "";
+    const prompt = String(body.prompt || "").trim();
+    const current = String(body.current || "").trim();
+    const history = Array.isArray(body.history) ? body.history : [];
 
     if (!prompt) {
       return res.status(400).json({
@@ -175,201 +38,215 @@ export default async function handler(req, res) {
       });
     }
 
-    if (prompt.length > 8000) {
-      return res.status(400).json({
-        error: "Prompt is too long. Maximum 8000 characters."
+    // -----------------------------
+    // Build conversation context
+    // -----------------------------
+    let conversation = "";
+
+    if (history.length) {
+      conversation += "\n\nPrevious conversation:\n";
+
+      history.slice(-6).forEach((item) => {
+        const role = item && item.role ? item.role : "user";
+        const content = item && item.content
+          ? String(item.content)
+          : "";
+
+        if (content) {
+          conversation +=
+            `${role.toUpperCase()}: ${content}\n`;
+        }
       });
     }
 
-    // Keep only a small amount of previous conversation.
-    const safeHistory = history
-      .slice(-6)
-      .map(item => {
-        if (!item) return "";
-
-        if (typeof item === "string") {
-          return item.slice(0, 500);
-        }
-
-        const role =
-          typeof item.role === "string"
-            ? item.role
-            : "user";
-
-        const content =
-          typeof item.content === "string"
-            ? item.content
-            : "";
-
-        return `${role}: ${content.slice(0, 500)}`;
-      })
-      .filter(Boolean);
-
-    let input = "";
-
-    if (safeHistory.length) {
-      input += `
-Previous conversation:
-${safeHistory.join("\n")}
-
-`;
-    }
-
-    input += `User request:
-${prompt}
-`;
+    // -----------------------------
+    // Current HTML
+    // -----------------------------
+    let currentCode = "";
 
     if (current) {
-      input += `
-
-Current project code:
+      currentCode = `
+CURRENT HTML CODE:
+------------------
 ${current}
-
-Modify the current project according to the user's request and return the COMPLETE updated HTML.
+------------------
+`;
+    } else {
+      currentCode = `
+CURRENT HTML CODE:
+------------------
+No existing HTML code.
+------------------
 `;
     }
 
-    /*
-     * 55 second total server-side timeout.
-     */
-    const controller = new AbortController();
+    // -----------------------------
+    // Main MIOD instruction
+    // -----------------------------
+    const systemInstruction = `
+You are MIOD AI inside JS Code Output.
 
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, 55000);
+Your job is to generate or modify complete HTML projects.
 
-    try {
-      /*
-       * Attempt 1:
-       * Primary model.
-       *
-       * Retry 503/429/temporary errors with exponential backoff.
-       */
-      let lastError = null;
+IMPORTANT RULES:
 
-      const retryDelays = [1500, 3500, 7000];
+1. Return ONLY the complete HTML code.
+2. Do NOT use Markdown code fences.
+3. Do NOT explain the code.
+4. The result must be directly usable inside an HTML iframe.
+5. Always include proper HTML structure when generating a new project.
+6. If the user asks to modify existing code, preserve the existing functionality unless the user explicitly asks to remove it.
+7. Do not unnecessarily remove existing animations, styles, buttons, sections or functionality.
+8. Make the generated HTML self-contained whenever possible.
+9. CSS and JavaScript may be included inside the HTML.
+10. If the user asks for an animation, make it actually animated rather than static.
+11. If the user asks for a website, produce a complete working website.
+12. Do not return analysis, comments about what you changed, or explanations outside the HTML.
+`;
 
-      for (let attempt = 0; attempt < 4; attempt++) {
-        try {
-          const html = await callGemini(
-            PRIMARY_MODEL,
-            input,
-            apiKey,
-            controller.signal
-          );
+    // -----------------------------
+    // Final prompt
+    // -----------------------------
+    const finalPrompt = `
+${systemInstruction}
 
-          clearTimeout(timeout);
+${conversation}
 
-          return res.status(200).json({
-            html,
-            model: PRIMARY_MODEL
-          });
+${currentCode}
 
-        } catch (error) {
-          lastError = error;
+USER REQUEST:
+${prompt}
 
-          const status = error?.status;
+Now generate the complete final HTML.
+Return ONLY HTML.
+`;
 
-          const temporary =
-            status === 503 ||
-            status === 429 ||
-            status === 500 ||
-            status === 502 ||
-            status === 504;
+    // -----------------------------
+    // Gemini model
+    // -----------------------------
+    // You can change this from Vercel Environment Variables:
+    // GEMINI_MODEL
+    //
+    // Example:
+    // gemini-3.8-flash
+    //
+    const model =
+      process.env.GEMINI_MODEL ||
+      "gemini-3.8-flash";
 
-          if (!temporary || attempt === 3) {
-            break;
+    // -----------------------------
+    // Gemini API URL
+    // -----------------------------
+    const url =
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+
+    // -----------------------------
+    // Call Gemini
+    // -----------------------------
+    const response = await fetch(url, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey
+      },
+
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: finalPrompt
+              }
+            ]
           }
+        ],
 
-          console.warn(
-            `Gemini ${PRIMARY_MODEL} attempt ${attempt + 1} failed ` +
-            `with ${status}. Retrying in ${retryDelays[attempt]}ms...`
-          );
-
-          await sleep(retryDelays[attempt]);
+        generationConfig: {
+          temperature: 0.25,
+          maxOutputTokens: 30000
         }
-      }
+      })
+    });
 
-      /*
-       * Primary model failed.
-       * Try fallback model once.
-       */
-      console.warn(
-        `Primary Gemini model failed. Trying fallback: ${FALLBACK_MODEL}`
-      );
+    // -----------------------------
+    // Read Gemini response
+    // -----------------------------
+    const data = await response.json();
 
-      try {
-        const html = await callGemini(
-          FALLBACK_MODEL,
-          input,
-          apiKey,
-          controller.signal
-        );
+    // -----------------------------
+    // Gemini API error
+    // -----------------------------
+    if (!response.ok) {
+      console.error("Gemini API error:", data);
 
-        clearTimeout(timeout);
+      const message =
+        data?.error?.message ||
+        `Gemini API returned HTTP ${response.status}`;
 
-        return res.status(200).json({
-          html,
-          model: FALLBACK_MODEL,
-          fallback: true
-        });
-
-      } catch (fallbackError) {
-        clearTimeout(timeout);
-
-        console.error(
-          "Primary Gemini error:",
-          JSON.stringify({
-            status: lastError?.status,
-            message: lastError?.message,
-            model: PRIMARY_MODEL
-          })
-        );
-
-        console.error(
-          "Fallback Gemini error:",
-          JSON.stringify({
-            status: fallbackError?.status,
-            message: fallbackError?.message,
-            model: FALLBACK_MODEL
-          })
-        );
-
-        /*
-         * If both models fail, return useful information
-         * to the frontend without exposing the API key.
-         */
-        return res.status(502).json({
-          error: "Gemini API is temporarily unavailable.",
-          details: {
-            primaryModel: PRIMARY_MODEL,
-            primaryStatus: lastError?.status || null,
-            fallbackModel: FALLBACK_MODEL,
-            fallbackStatus: fallbackError?.status || null,
-            message:
-              fallbackError?.message ||
-              lastError?.message ||
-              "Unknown Gemini API error"
-          }
-        });
-      }
-
-    } finally {
-      clearTimeout(timeout);
-    }
-
-  } catch (error) {
-    console.error("MIOD generate error:", error);
-
-    if (error?.name === "AbortError") {
-      return res.status(504).json({
-        error: "Gemini request timed out. Please try again."
+      return res.status(response.status).json({
+        error: message
       });
     }
 
+    // -----------------------------
+    // Extract generated text
+    // -----------------------------
+    let output = "";
+
+    if (
+      data &&
+      Array.isArray(data.candidates) &&
+      data.candidates.length > 0
+    ) {
+      const candidate = data.candidates[0];
+
+      if (
+        candidate.content &&
+        Array.isArray(candidate.content.parts)
+      ) {
+        output = candidate.content.parts
+          .map((part) => part.text || "")
+          .join("");
+      }
+    }
+
+    if (!output.trim()) {
+      console.error("Empty Gemini response:", data);
+
+      return res.status(502).json({
+        error: "Gemini returned an empty response."
+      });
+    }
+
+    // -----------------------------
+    // Remove accidental markdown
+    // -----------------------------
+    output = output.trim();
+
+    const fenced = output.match(
+      /^```(?:html|HTML)?\s*([\s\S]*?)\s*```$/
+    );
+
+    if (fenced) {
+      output = fenced[1].trim();
+    }
+
+    // -----------------------------
+    // Send back to frontend
+    // -----------------------------
+    return res.status(200).json({
+      html: output
+    });
+
+  } catch (error) {
+    console.error("Generate API error:", error);
+
     return res.status(500).json({
-      error: "Something went wrong while generating the project.",
-      details: error?.message || "Unknown server error"
+      error:
+        error?.message ||
+        "Internal server error while contacting Gemini."
     });
   }
 }
