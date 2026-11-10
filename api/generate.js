@@ -3,27 +3,19 @@ const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const SYSTEM = `
 You are MIOD AI, a web app builder.
 
-Return ONE complete, self-contained HTML document:
-<!DOCTYPE html> ... </html>
+Return ONE complete self-contained HTML document.
 
 Rules:
-- Output ONLY the HTML code.
-- Do not use markdown code fences.
-- Do not give explanations.
-- Keep CSS and JavaScript inline.
-- Do not use external APIs.
-- If a library is needed, load it only from https://cdnjs.cloudflare.com.
-- Always include:
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-- Make the website mobile-first and responsive.
-- Make the UI modern, colourful and functional.
-- Do not use localStorage or sessionStorage unless the user explicitly asks.
-- Keep application state in memory.
-- Use console.log for useful debugging messages.
-- If Current project code is provided, modify that code according to the user's new request.
-- When modifying an existing project, return the COMPLETE updated HTML document.
-- Do not remove existing features unless the user asks you to remove them.
-- Write UI text in the same language used by the user.
+- Return only HTML code.
+- Do not return markdown.
+- Do not return explanations.
+- Keep CSS and JavaScript inside the HTML.
+- Do not use localStorage or sessionStorage unless explicitly requested.
+- Make the website responsive and mobile friendly.
+- Include viewport meta tag.
+- If current project code is provided, modify it and return the complete updated HTML.
+- Do not remove existing features unless the user asks.
+- Match the language of the user's request.
 `;
 
 export default async function handler(req, res) {
@@ -37,8 +29,6 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    console.error("GEMINI_API_KEY is missing");
-
     return res.status(500).json({
       error: "GEMINI_API_KEY is not set on the server"
     });
@@ -50,19 +40,29 @@ export default async function handler(req, res) {
     if (typeof body === "string") {
       try {
         body = JSON.parse(body);
-      } catch {
-        body = {};
+      } catch (error) {
+        return res.status(400).json({
+          error: "Invalid JSON body"
+        });
       }
     }
 
-    const prompt = body?.prompt;
-    const history = body?.history;
-    const current = body?.current;
+    const prompt =
+      typeof body?.prompt === "string"
+        ? body.prompt.trim()
+        : "";
 
-    if (
-      typeof prompt !== "string" ||
-      !prompt.trim()
-    ) {
+    const history =
+      Array.isArray(body?.history)
+        ? body.history
+        : [];
+
+    const current =
+      typeof body?.current === "string"
+        ? body.current
+        : "";
+
+    if (!prompt) {
       return res.status(400).json({
         error: "Prompt is empty"
       });
@@ -76,32 +76,27 @@ export default async function handler(req, res) {
 
     let input = "";
 
-    if (Array.isArray(history)) {
-      const previous = history
-        .filter(
-          item =>
-            item &&
-            typeof item.content === "string"
-        )
-        .slice(-6)
-        .map(
-          item =>
-            "- " + item.content.slice(0, 500)
-        )
-        .join("\n");
+    const previous = history
+      .filter(
+        item =>
+          item &&
+          typeof item.content === "string"
+      )
+      .slice(-6)
+      .map(
+        item =>
+          "- " + item.content.slice(0, 500)
+      )
+      .join("\n");
 
-      if (previous) {
-        input +=
-          "Earlier requests in this project:\n" +
-          previous +
-          "\n\n";
-      }
+    if (previous) {
+      input +=
+        "Earlier requests in this project:\n" +
+        previous +
+        "\n\n";
     }
 
-    if (
-      typeof current === "string" &&
-      current.trim()
-    ) {
+    if (current.trim()) {
       input +=
         "Current project code:\n" +
         current +
@@ -110,7 +105,7 @@ export default async function handler(req, res) {
 
     input +=
       "New request:\n" +
-      prompt.trim();
+      prompt;
 
     const controller =
       new AbortController();
@@ -123,19 +118,16 @@ export default async function handler(req, res) {
 
     try {
       response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/" +
-          encodeURIComponent(MODEL) +
-          ":generateContent",
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+          MODEL
+        )}:generateContent`,
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
             "x-goog-api-key": apiKey
           },
-
           signal: controller.signal,
-
           body: JSON.stringify({
             systemInstruction: {
               parts: [
@@ -144,7 +136,6 @@ export default async function handler(req, res) {
                 }
               ]
             },
-
             contents: [
               {
                 role: "user",
@@ -155,7 +146,6 @@ export default async function handler(req, res) {
                 ]
               }
             ],
-
             generationConfig: {
               temperature: 0.8,
               maxOutputTokens: 32768
@@ -167,15 +157,8 @@ export default async function handler(req, res) {
       clearTimeout(timeout);
     }
 
-    let data;
-
-    try {
-      data = await response.json();
-    } catch {
-      return res.status(502).json({
-        error: "Invalid response from Gemini"
-      });
-    }
+    const data =
+      await response.json();
 
     if (!response.ok) {
       console.error(
@@ -186,7 +169,7 @@ export default async function handler(req, res) {
       if (response.status === 429) {
         return res.status(429).json({
           error:
-            "Gemini quota/rate limit reached. Please try again shortly."
+            "Gemini quota or rate limit reached. Try again shortly."
         });
       }
 
@@ -203,29 +186,34 @@ export default async function handler(req, res) {
     if (!candidate) {
       return res.status(502).json({
         error:
-          "Gemini returned no response (" +
+          "Gemini returned no response: " +
           (data?.promptFeedback?.blockReason ||
-            "unknown") +
-          ")"
+            "unknown")
       });
     }
-
-    let html = "";
 
     const parts =
       candidate?.content?.parts || [];
 
-    for (const part of parts) {
-      if (
-        part &&
-        typeof part.text === "string" &&
-        !part.thought
-      ) {
-        html += part.text;
-      }
-    }
+    let html = parts
+      .filter(
+        part =>
+          part &&
+          typeof part.text === "string" &&
+          !part.thought
+      )
+      .map(part => part.text)
+      .join("")
+      .trim();
 
-    html = html.trim();
+    if (!html) {
+      return res.status(502).json({
+        error:
+          "Gemini returned an empty response: " +
+          (candidate?.finishReason ||
+            "unknown")
+      });
+    }
 
     const fenced =
       html.match(
@@ -236,18 +224,8 @@ export default async function handler(req, res) {
       html = fenced[1].trim();
     }
 
-    if (!html) {
-      return res.status(502).json({
-        error:
-          "Gemini returned an empty response (" +
-          (candidate?.finishReason ||
-            "unknown") +
-          ")"
-      });
-    }
-
     if (
-      candidate?.finishReason ===
+      candidate.finishReason ===
       "MAX_TOKENS"
     ) {
       return res.status(502).json({
@@ -257,7 +235,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({
-      html: html
+      html
     });
 
   } catch (error) {
@@ -281,15 +259,3 @@ export default async function handler(req, res) {
     });
   }
 }
-```
-
-**খুব গুরুত্বপূর্ণ:** GitHub-এ `api/generate.js`-এর পুরোটাই replace করবে। প্রথম character থেকেই `const MODEL...` থাকবে—কোনো ` ```js ` থাকবে না।
-
-তারপর Vercel-এ **Redeploy** করো এবং Environment Variables-এ নিশ্চিত করো:
-
-```text
-GEMINI_API_KEY = তোমার Gemini API key
-GEMINI_MODEL = gemini-2.5-flash
-```
-
-এবার যদি আবার `500` আসে, Vercel-এর log-এ যে **`Gemini API error:`** বা **`MIOD backend error:`** line আসবে সেটাই আসল কারণ দেখাবে।
