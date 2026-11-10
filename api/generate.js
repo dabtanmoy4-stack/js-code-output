@@ -1,149 +1,75 @@
 // api/generate.js
 
 export default async function handler(req, res) {
-  // Only POST is allowed
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method not allowed. Use POST."
+      error: "Method not allowed"
     });
   }
 
   try {
-    // -----------------------------
-    // Gemini API Key
-    // -----------------------------
-    const apiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.GOOGLE_API_KEY ||
-      process.env.GOOGLE_GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({
-        error: "Gemini API key is not configured on the server."
+      return res.status(503).json({
+        error: "GEMINI_API_KEY is missing in Vercel Environment Variables."
       });
     }
 
-    // -----------------------------
-    // Get data from frontend
-    // -----------------------------
-    const body = req.body || {};
+    const {
+      prompt = "",
+      history = [],
+      current = ""
+    } = req.body || {};
 
-    const prompt = String(body.prompt || "").trim();
-    const current = String(body.current || "").trim();
-    const history = Array.isArray(body.history) ? body.history : [];
-
-    if (!prompt) {
+    if (!prompt.trim()) {
       return res.status(400).json({
-        error: "Prompt is required."
+        error: "Prompt is empty."
       });
     }
 
-    // -----------------------------
-    // Build conversation context
-    // -----------------------------
-    let conversation = "";
+    const model =
+      process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
-    if (history.length) {
-      conversation += "\n\nPrevious conversation:\n";
+    const apiUrl =
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
-      history.slice(-6).forEach((item) => {
-        const role = item && item.role ? item.role : "user";
-        const content = item && item.content
-          ? String(item.content)
-          : "";
+    let previous = "";
 
-        if (content) {
-          conversation +=
-            `${role.toUpperCase()}: ${content}\n`;
-        }
-      });
+    if (Array.isArray(history)) {
+      previous = history
+        .slice(-6)
+        .map(x => {
+          return `${x.role || "user"}: ${x.content || ""}`;
+        })
+        .join("\n");
     }
 
-    // -----------------------------
-    // Current HTML
-    // -----------------------------
-    let currentCode = "";
-
-    if (current) {
-      currentCode = `
-CURRENT HTML CODE:
-------------------
-${current}
-------------------
-`;
-    } else {
-      currentCode = `
-CURRENT HTML CODE:
-------------------
-No existing HTML code.
-------------------
-`;
-    }
-
-    // -----------------------------
-    // Main MIOD instruction
-    // -----------------------------
-    const systemInstruction = `
+    const instruction = `
 You are MIOD AI inside JS Code Output.
 
-Your job is to generate or modify complete HTML projects.
+Generate complete working HTML based on the user's request.
 
-IMPORTANT RULES:
+Rules:
+- Return ONLY HTML.
+- Do not use markdown code fences.
+- Do not explain the answer.
+- If existing HTML is provided, modify it instead of unnecessarily replacing unrelated features.
+- Preserve existing animations and functionality unless the user asks to change them.
+- CSS and JavaScript can be included inside the HTML.
+- The result must work directly in an iframe.
 
-1. Return ONLY the complete HTML code.
-2. Do NOT use Markdown code fences.
-3. Do NOT explain the code.
-4. The result must be directly usable inside an HTML iframe.
-5. Always include proper HTML structure when generating a new project.
-6. If the user asks to modify existing code, preserve the existing functionality unless the user explicitly asks to remove it.
-7. Do not unnecessarily remove existing animations, styles, buttons, sections or functionality.
-8. Make the generated HTML self-contained whenever possible.
-9. CSS and JavaScript may be included inside the HTML.
-10. If the user asks for an animation, make it actually animated rather than static.
-11. If the user asks for a website, produce a complete working website.
-12. Do not return analysis, comments about what you changed, or explanations outside the HTML.
-`;
+Previous conversation:
+${previous}
 
-    // -----------------------------
-    // Final prompt
-    // -----------------------------
-    const finalPrompt = `
-${systemInstruction}
+Existing HTML:
+${current || "(No existing HTML)"}
 
-${conversation}
-
-${currentCode}
-
-USER REQUEST:
+User request:
 ${prompt}
-
-Now generate the complete final HTML.
-Return ONLY HTML.
 `;
 
-    // -----------------------------
-    // Gemini model
-    // -----------------------------
-    // You can change this from Vercel Environment Variables:
-    // GEMINI_MODEL
-    //
-    // Example:
-    // gemini-3.8-flash
-    //
-    const model =
-      process.env.GEMINI_MODEL ||
-      "gemini-3.8-flash";
-
-    // -----------------------------
-    // Gemini API URL
-    // -----------------------------
-    const url =
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
-
-    // -----------------------------
-    // Call Gemini
-    // -----------------------------
-    const response = await fetch(url, {
+    const geminiResponse = await fetch(apiUrl, {
       method: "POST",
 
       headers: {
@@ -157,96 +83,69 @@ Return ONLY HTML.
             role: "user",
             parts: [
               {
-                text: finalPrompt
+                text: instruction
               }
             ]
           }
         ],
-
         generationConfig: {
-          temperature: 0.25,
+          temperature: 0.3,
           maxOutputTokens: 30000
         }
       })
     });
 
-    // -----------------------------
-    // Read Gemini response
-    // -----------------------------
-    const data = await response.json();
+    const data = await geminiResponse.json();
 
-    // -----------------------------
-    // Gemini API error
-    // -----------------------------
-    if (!response.ok) {
-      console.error("Gemini API error:", data);
+    if (!geminiResponse.ok) {
+      console.error("Gemini error:", data);
 
-      const message =
-        data?.error?.message ||
-        `Gemini API returned HTTP ${response.status}`;
-
-      return res.status(response.status).json({
-        error: message
+      return res.status(502).json({
+        error:
+          data?.error?.message ||
+          `Gemini API error: ${geminiResponse.status}`
       });
     }
 
-    // -----------------------------
-    // Extract generated text
-    // -----------------------------
-    let output = "";
+    let result = "";
+
+    const candidates = data?.candidates || [];
 
     if (
-      data &&
-      Array.isArray(data.candidates) &&
-      data.candidates.length > 0
+      candidates[0]?.content?.parts &&
+      Array.isArray(candidates[0].content.parts)
     ) {
-      const candidate = data.candidates[0];
-
-      if (
-        candidate.content &&
-        Array.isArray(candidate.content.parts)
-      ) {
-        output = candidate.content.parts
-          .map((part) => part.text || "")
-          .join("");
-      }
+      result = candidates[0].content.parts
+        .map(part => part.text || "")
+        .join("");
     }
 
-    if (!output.trim()) {
-      console.error("Empty Gemini response:", data);
-
+    if (!result.trim()) {
       return res.status(502).json({
         error: "Gemini returned an empty response."
       });
     }
 
-    // -----------------------------
-    // Remove accidental markdown
-    // -----------------------------
-    output = output.trim();
+    result = result.trim();
 
-    const fenced = output.match(
-      /^```(?:html|HTML)?\s*([\s\S]*?)\s*```$/
+    // Remove ```html ... ``` if Gemini accidentally adds it
+    const match = result.match(
+      /^```(?:html)?\s*([\s\S]*?)\s*```$/i
     );
 
-    if (fenced) {
-      output = fenced[1].trim();
+    if (match) {
+      result = match[1].trim();
     }
 
-    // -----------------------------
-    // Send back to frontend
-    // -----------------------------
     return res.status(200).json({
-      html: output
+      html: result
     });
 
   } catch (error) {
-    console.error("Generate API error:", error);
+    console.error("generate.js error:", error);
 
-    return res.status(500).json({
-      error:
-        error?.message ||
-        "Internal server error while contacting Gemini."
+    return res.status(503).json({
+      error: error?.message || "Gemini service unavailable."
     });
   }
 }
