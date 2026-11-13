@@ -2420,6 +2420,7 @@ html.dark .CodeMirror-dialog input {
 <button aria-label="Find and Replace" class="tool-btn" onclick="triggerReplace()" title="Find &amp; Replace (Ctrl+H)"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
 <button class="tool-btn" onclick="toggleEditorFullscreen()" title="Toggle Code Editor Fullscreen"><i class="fa-solid fa-expand"></i></button>
 <button aria-label="All Clear" class="tool-btn" onclick="clearEditors()" title="All Clear"><i class="fa-solid fa-eraser"></i></button>
+<button aria-label="Copy Code" class="tool-btn" onclick="copyEditorCode()" title="Copy Full Code"><i class="fa-solid fa-copy"></i></button>
 </div>
 </div>
 <div class="code-search-panel jco-github-search" id="codeSearchPanel" role="search" aria-label="Search and replace">
@@ -5750,6 +5751,31 @@ document.getElementById("toastMsg").textContent = msg;
 t.classList.add("show");
 clearTimeout(t._timer);
 t._timer = setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+async function copyEditorCode(){
+  if(!editor){showToast("Editor is not ready.");return;}
+  const code=editor.getValue();
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(code);
+    }else{
+      const temp=document.createElement("textarea");
+      temp.value=code;
+      temp.setAttribute("readonly","");
+      temp.style.position="fixed";
+      temp.style.opacity="0";
+      document.body.appendChild(temp);
+      temp.select();
+      const copied=document.execCommand("copy");
+      temp.remove();
+      if(!copied) throw new Error("Copy command failed");
+    }
+    showToast("Full code copied!");
+  }catch(e){
+    console.error("Could not copy editor code:",e);
+    showToast("Could not copy code.");
+  }
 }
 
 window.addEventListener("beforeunload", function (e) {
