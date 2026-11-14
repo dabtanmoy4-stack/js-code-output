@@ -172,7 +172,7 @@ async function main(req, res) {
   try {
     // E2B provides an isolated Linux microVM per sandbox session. The API key
     // remains server-side in Vercel and is never sent to the browser.
-    sandbox = await Sandbox.create({ timeoutMs: RUN_TIMEOUT_MS });
+    sandbox = await Sandbox.create({   apiKey: process.env.E2B_API_KEY,   template: "base",   timeoutMs: RUN_TIMEOUT_MS,   allowInternetAccess: true });
 
     await sandbox.files.write('/home/user/main.py', makeCaptureWrapper(code));
     await sandbox.files.write('/home/user/input.txt', input);
