@@ -66,6 +66,14 @@ background-image:linear-gradient(rgba(216,187,122,.14) 1px,transparent 1px),line
 .tag b::after{content:"";display:inline-block;width:1px;height:16px;margin-left:3px;vertical-align:-2px;background:var(--gold);animation:bl 1s steps(1) infinite}
 @keyframes bl{50%{opacity:0}}
 canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+
+.unavailable-overlay{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+.unavailable-overlay.show{display:flex}
+.unavailable-box{width:min(100%,420px);padding:34px 28px 28px;text-align:center;border:1px solid rgba(216,187,122,.72);border-radius:20px;background:linear-gradient(145deg,#17140e,#080a0f 72%);box-shadow:0 20px 70px rgba(0,0,0,.65),0 0 28px rgba(216,187,122,.12)}
+.unavailable-icon{width:54px;height:54px;margin:0 auto 18px;display:grid;place-items:center;border:1px solid rgba(216,187,122,.55);border-radius:50%;color:#e2c98e;font-size:23px}
+.unavailable-box h2{font-family:var(--disp);font-size:clamp(17px,4vw,21px);line-height:1.45;letter-spacing:.045em;color:#f3ecdb}
+.unavailable-box p{margin:12px 0 24px;color:#bcb39f;font:15px/1.6 Arial,sans-serif}
+.unavailable-ok{display:inline-flex;min-width:130px;justify-content:center;align-items:center;padding:12px 26px;border:1px solid rgba(255,243,210,.85);border-radius:999px;background:linear-gradient(135deg,#f8e6ad,#c9a45c 48%,#8a6a2c);color:#100d07;text-decoration:none;font-family:var(--disp);font-size:13px;font-weight:900;letter-spacing:.13em;box-shadow:0 0 18px rgba(216,187,122,.18)}
 </style>
 </head>
 <body>
@@ -79,7 +87,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index
 <canvas id="fx"></canvas>
 <div class="vig"></div>
 <div class="tag"><span>Powered by JS Code Output</span><b id="val"></b></div>
-<a class="start-boost" id="startBoost" href="py_runner_boost.html">START BOOSTING</a>
+<a class="start-boost" id="startBoost" href="#unavailable">START BOOSTING</a>
+<div class="unavailable-overlay" id="unavailableOverlay" role="dialog" aria-modal="true" aria-labelledby="unavailableTitle">
+  <div class="unavailable-box">
+    <div class="unavailable-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+    <h2 id="unavailableTitle">Our Boost Service Is Unavailable Now</h2>
+    <p>Please try again later. Thank you for your understanding.</p>
+    <a class="unavailable-ok" id="unavailableOk" href="js_python_runner.html">GOT IT</a>
+  </div>
+</div>
+
 
 
 
@@ -492,11 +509,15 @@ const go = () => { if (!pieces.length) start(); };
 if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => setTimeout(go, 150)); setTimeout(go, 1800); }
 else setTimeout(go, 300);
 
-// Start Boosting opens the Python Runner Boost page directly.
-$("startBoost").href = "py_runner_boost.html";
+// Start Boosting shows the unavailable-service message instead of navigating away.
+$("startBoost").href = "#unavailable";
 $("startBoost").addEventListener("click", event => {
   event.preventDefault();
-  window.location.href = "py_runner_boost.html";
+  $("unavailableOverlay").classList.add("show");
+});
+$("unavailableOk").addEventListener("click", event => {
+  event.preventDefault();
+  window.location.href = "js_python_runner.html";
 });
 </script>
 </body>
