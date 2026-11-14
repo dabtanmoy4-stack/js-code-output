@@ -1,5 +1,5 @@
 {
-  "name": "js-code-output-onlinecompiler-threejs",
+  "name": "js-code-output-python-runner",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -10,6 +10,9 @@
     "check": "node --check api/e2b_backend.js"
   },
   "dependencies": {
-    "e2b": "latest"
+    "e2b": "2.63.0"
+  },
+  "overrides": {
+    "chalk": "4.1.2"
   }
 }
