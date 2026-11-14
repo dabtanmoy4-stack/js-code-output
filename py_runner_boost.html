@@ -1362,19 +1362,6 @@ body{padding-top:30px}
   to   { filter: hue-rotate(60deg) drop-shadow(0 0 7px rgba(255,255,255,.28)); }
 }
 
-/* ===== Python Runner Boost: key meter, lock card, full-screen offer ===== */
-.pb-meter{display:none;align-items:center;gap:9px;min-height:34px;padding:6px 13px;border:1px solid var(--gold);border-radius:20px;background:var(--panel2);color:var(--text);font-size:11px;font-weight:700}
-.pb-meter.on{display:inline-flex}
-.pb-segs{display:inline-flex;gap:3px}
-.pb-segs i{width:6px;height:15px;border-radius:2px;background:linear-gradient(180deg,var(--gold),var(--gold2))}
-.pb-segs i.used{background:transparent;box-shadow:inset 0 0 0 1px var(--muted);opacity:.5}
-.pb-card{white-space:normal;max-width:460px;margin:22px auto;padding:26px 22px;border:1px solid var(--border);border-radius:16px;background:var(--panel2);text-align:center}
-.pb-card h3{margin:12px 0 6px;font-size:17px;font-weight:800;color:var(--text)}
-.pb-card p{margin:0 0 16px;color:var(--muted);line-height:1.55}
-.pb-key-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;border:1px solid var(--gold);background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2d1a04;font-weight:800;font-size:13px}
-.pb-ov{position:fixed;inset:0;z-index:99999;display:none;overflow-y:auto}
-.pb-ov.open{display:block}
-.pb-x{position:fixed;top:16px;right:16px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid #393126;background:rgba(21,21,24,.85);color:#f5f3ee;font-size:22px;line-height:1}
 </style>
 
 
@@ -1559,10 +1546,6 @@ body{padding-top:30px}
 
 
     <div class="top-actions">
-      <button type="button" class="pb-meter" id="pbMeter" title="Keys used in this pass" aria-label="Keys used">
-        <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
-        <span class="pb-segs" id="pbSegs"></span><span id="pbCount"></span>
-      </button>
       <!-- Masterclass 3D Glowing Crown Badge -->
       <span class="premium-pill">
         <svg class="svg-ic crown-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -3459,14 +3442,9 @@ async function executeProgram() {
     }
   }
 
-  if (wantsPython && detected.unsupported.length) {
-    const message = 'This Runner is currently configured for Pyodide + Three.js only. Not enabled yet: ' + detected.unsupported.join(', ') + '.';
-    currentOutputText = ''; currentErrors = [message];
-    $('output').textContent = message;
-    showOutputTab('console');
-    setStatus('Unsupported graphics library');
-    return;
-  }
+  // Python is handled by the E2B backend so packages such as pygame, vpython,
+  // pyxel, tkinter, OpenCV and the scientific stack can run in a real Linux
+  // environment. Do not block these imports in the browser.
 
   // Browser-native HTML/CSS/JS always runs locally. Libraries are loaded on demand,
   // so users do not need to select Three.js, Babylon.js or Plotly themselves.
@@ -3577,14 +3555,14 @@ async function executeProgram() {
   showOutputTab("output");
   showRunningAnimation();
   startRuntimeClock();
-  setStatus("Online Compiler running");
+  setStatus("E2B Python runtime running");
 
   try {
-    // Python execution uses the existing OnlineCompiler API through /api/run-code.
+    // Python execution uses the E2B backend through /api/e2b_backend.
     const pil = withPilSupport(source);
     const requestBody = { compiler, code: pil.code, input: $("consoleInput").value || "" };
 
-    const response = await fetch("/api/run-code", {
+    const response = await fetch("/api/e2b_backend", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody)
@@ -3654,7 +3632,7 @@ async function executeProgram() {
       writeOutput("\n✓ Execution finished" + (result.time ? ` in ${result.time}s` : "") + ".\n", "success");
       $("loaderTitle").textContent = "Execution finished";
       $("loaderSubtitle").textContent = "Program completed successfully.";
-      setStatus("Online Compiler ready");
+      setStatus("E2B Python runtime ready");
     } else {
       if (!errorText && result.exit_code !== undefined) writeOutput(`\nExit code: ${result.exit_code}\n`, "error");
       $("loaderTitle").textContent = "Execution stopped";
@@ -3666,7 +3644,7 @@ async function executeProgram() {
     currentErrors.push(message);
     writeOutput("\n" + message + "\n", "error");
     $("loaderTitle").textContent = "Execution stopped";
-    $("loaderSubtitle").textContent = "Check the Vercel API route and environment variable.";
+    $("loaderSubtitle").textContent = "Check the E2B backend route and E2B_API_KEY environment variable.";
     setStatus("Execution error");
   } finally {
     stopRuntimeClock();
@@ -3744,12 +3722,8 @@ function withPilSupport(source) {
 }
 
 /* Run button and Ctrl/Cmd+Enter run immediately through /api/run-code. */
-var _pbBusy = false;
 function runProgram() {
-  if (!window.PyBoost) { executeProgram(); return; }
-  if (_pbBusy) return;
-  _pbBusy = true;
-  PyBoost.gate().then(function (ok) { _pbBusy = false; if (ok) executeProgram(); }, function () { _pbBusy = false; });
+  executeProgram();
 }
 
 /* Browser JavaScript preview is automatic: users can write Three.js or ordinary JS directly. */
@@ -4596,72 +4570,5 @@ loadPython().catch(() => {
 })();
 </script>
 
-<script src="pyboost.js"></script>
-<script id="py-boost-js">
-(function(){
-  var $ = function(i){return document.getElementById(i)}, ov = null;
-
-  // The meter exists only once a pass has been bought
-  function render(){
-    var p = PyB.pass(), m = $('pbMeter'), h = '';
-    m.classList.toggle('on', !!p);
-    if(!p) return;
-    for(var i=0;i<PyB.TOTAL;i++) h += '<i class="' + (i < PyB.TOTAL - p.used ? '' : 'used') + '"></i>';
-    $('pbSegs').innerHTML = h;
-    $('pbCount').textContent = p.used + '/' + PyB.TOTAL + ' keys used';
-  }
-
-  function showLock(){
-    var p = PyB.pass(), spent = p && p.used >= PyB.TOTAL;
-    $('output').innerHTML = '<div class="pb-card output-placeholder">' +
-      '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' +
-      '<h3>' + (spent ? 'All 10 keys used' : 'Output locked') + '</h3>' +
-      '<p>' + (spent ? 'Get a new pass to keep running code.' : 'Your code is ready. Unlock with this key to see its output.') + '</p>' +
-      '<button type="button" class="pb-key-btn" id="pbKeyBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>Unlock with this key</button></div>';
-    $('pbKeyBtn').onclick = openOffer;
-  }
-
-  function note(t){ if(typeof toast === 'function') toast(t); }
-
-  // Full-screen like a video player: real browser fullscreen, so no page bars remain
-  function openOffer(){
-    if(!ov){ ov = document.createElement('div'); ov.className = 'pb-ov'; document.body.appendChild(ov); }
-    PyB.mountOffer(ov, {more:true, onPaid:function(){ closeOffer(); render(); note('Payment successful. 10 keys added.'); }});
-    var x = document.createElement('button');
-    x.type = 'button'; x.className = 'pb-x'; x.innerHTML = '&times;'; x.setAttribute('aria-label','Close');
-    x.onclick = closeOffer; ov.appendChild(x);
-    ov.scrollTop = 0; ov.classList.add('open'); document.body.style.overflow = 'hidden';
-    if(ov.requestFullscreen) ov.requestFullscreen().catch(function(){});
-  }
-  function closeOffer(){
-    if(!ov) return;
-    ov.classList.remove('open'); document.body.style.overflow = '';
-    if(document.fullscreenElement) document.exitFullscreen().catch(function(){});
-  }
-  document.addEventListener('fullscreenchange', function(){ if(!document.fullscreenElement && !PyB.paying) closeOffer(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeOffer(); });
-
-  window.PyBoost = {
-    // Runs before every Run click: spends one key, or shows the lock
-    gate: async function(){
-      if(!window.PyB){ note('pyboost.js not found: upload it next to py_runner_boost.html'); return true; }
-      if(await PyB.spend()){
-        render();
-        var o = $('output');   // remove the lock card so new output starts clean
-        if(o.querySelector('.pb-card')) o.innerHTML = '<span class="output-placeholder">\u2726 Your program output will appear here...</span>';
-        return true;
-      }
-      render(); showLock(); return false;
-    }
-  };
-  $('pbMeter').onclick = function(){ if(!window.PyB) return; var p = PyB.pass(); if(p && p.used >= PyB.TOTAL) openOffer(); };
-
-  if(window.PyB) render();
-  if(/[?&]paid=1/.test(location.search)){
-    history.replaceState(history.state, '', location.pathname);
-    note('Payment successful. 10 keys added.');
-  }
-})();
-</script>
 </body>
 </html>
