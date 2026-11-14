@@ -121,6 +121,15 @@ form:focus-within{border-color:transparent;box-shadow:0 0 0 2px #818cf8,0 0 36px
 .send:disabled{opacity:.5;animation:flow 1.2s linear infinite}
 .hint{text-align:center;font-size:11.5px;color:var(--mut);margin:-8px 0 10px}
 
+/* MIOD project files */
+#projectFiles{display:none;flex:none;align-items:center;gap:7px;padding:8px 12px;overflow-x:auto;border-bottom:1px solid var(--bd);background:var(--chip)}
+#projectFiles.on{display:flex}
+#projectFiles .pf-label{font:700 11px system-ui;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;margin-right:3px}
+#projectFiles .pf{flex:none;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid var(--bd);background:var(--panel);color:var(--fg);padding:6px 11px;border-radius:10px;font:600 12px system-ui;cursor:pointer}
+#projectFiles .pf.active{border-color:#a78bfa;background:rgba(167,139,250,.16);box-shadow:0 0 0 1px rgba(167,139,250,.2)}
+#projectFiles .pf:hover{border-color:#c084fc}
+.m .mt{white-space:pre-wrap}
+@media(max-width:860px){#projectFiles{padding:7px 9px}#projectFiles .pf{max-width:145px}}
 /* output */
 #stage{flex:1;position:relative;min-height:0;background:#fff;display:flex;flex-direction:column}
 #fw{flex:1;position:relative;min-height:0;background:#fff}
@@ -324,6 +333,7 @@ header::before{content:"";position:absolute;inset:0;pointer-events:none;border-r
       <button class="btn g" id="bShare" title="Share link" style="color:var(--ink);border:0"></button>
     </div>
     <div id="stage">
+      <div id="projectFiles" aria-label="Project files"><span class="pf-label">Project</span></div>
       <div id="fw" data-dev="desktop">
         <iframe class="out" id="out" sandbox="allow-scripts allow-modals allow-forms allow-popups" title="Output"></iframe>
         <textarea id="code" spellcheck="false" aria-label="Code"></textarea>
@@ -420,7 +430,7 @@ document.getElementById('hAnim').srcdoc = ANIM;
 
 /* ====== SETTINGS: put your keys here ====== */
 const CONFIG = {
-  API_URL: '/api/generate',   // backend (server.js) -> Gemini 2.5 Flash. Key stays on the server
+  API_URL: '/api/generate',   // MIOD backend endpoint; provider credentials stay server-side
   GOOGLE_CLIENT_ID: ''    // Google OAuth Web client ID
 };
 
@@ -455,7 +465,7 @@ put('#vCode','code','Show code');
 $('#bCon').innerHTML = ic('term') + '<b id="cn"></b>';
 document.querySelectorAll('#devSeg .btn').forEach(b => b.innerHTML = ic(b.dataset.d));
 
-let html = '', history = [], codeMode = false, vers = [], vIdx = -1;
+let html = '', history = [], codeMode = false, vers = [], vIdx = -1, projectFiles = [], activeFile = '';
 const EMPTY = $('#empty').outerHTML;
 
 /* ---- theme ---- */
@@ -512,24 +522,51 @@ $('#user').onclick = () => {
   else { me = { name: 'Demo User' }; drawUser(); toast('Demo login. Add GOOGLE_CLIENT_ID for real Google sign-in'); }
 };
 
-/* ---- MIOD AI (connect your API here) ---- */
+/* ---- MIOD AI: provider-neutral chat + multi-file project response ---- */
 async function miodAI(prompt){
-  if (!CONFIG.API_URL) {   // demo mode until API is added
-    await new Promise(r => setTimeout(r, 4000));
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,sans-serif;color:#fff;background:linear-gradient(120deg,#ff3d7f,#ff9f43,#ffd93d,#4ade80,#38bdf8,#9b5cff,#ff3d7f);background-size:400% 400%;animation:bg 14s ease infinite}@keyframes bg{50%{background-position:100% 50%}}.c{backdrop-filter:blur(18px);background:rgba(10,8,24,.55);border:1px solid rgba(255,255,255,.25);padding:36px 40px;border-radius:26px;text-align:center;max-width:min(88vw,460px);box-shadow:0 30px 80px -30px #000}h1{margin:0 0 6px;font-size:30px}p{opacity:.85;margin:0 0 22px;word-break:break-word}button{border:0;padding:12px 26px;border-radius:99px;font:700 16px system-ui;color:#1a1330;cursor:pointer;background:linear-gradient(90deg,#ff9ec4,#ffe08a,#8ff5df,#9ddcff);transition:transform .15s}button:hover{transform:translateY(-2px) scale(1.04)}</style></head><body><div class="c"><h1>MIOD AI demo</h1><p>${prompt.replace(/[<>&]/g,'')}</p><button onclick="this.textContent='It works!';console.log('button clicked')">Click me</button></div></body></html>`;
-  }
-  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 150000);
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 180000);
   let r, d;
   try {
-    r = await fetch(CONFIG.API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, signal: ctl.signal,
-      body: JSON.stringify({ prompt, history: history.filter(x => x.role === 'user').slice(-6).map(x => ({ role:'user', content:x.content })), current: html }) });
+    r = await fetch(CONFIG.API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      signal:ctl.signal,
+      body:JSON.stringify({
+        prompt,
+        history:history.slice(-24),
+        current:html,
+        files:projectFiles,
+        activeFile
+      })
+    });
     d = await r.json().catch(() => ({}));
-  } catch (e) { throw new Error(e.name === 'AbortError' ? 'Request timed out' : 'Cannot reach the server'); }
-  finally { clearTimeout(to); }
+  } catch(e) {
+    throw new Error(e.name === 'AbortError' ? 'Request timed out' : 'Cannot reach the server');
+  } finally { clearTimeout(to); }
   if (!r.ok) throw new Error(d.error || ('Server error ' + r.status));
-  let c = d.html || d.code || d.text || '';
-  const m = c.match(/```(?:html)?\n([\s\S]*?)```/);
-  return m ? m[1] : c;
+
+  const rawFiles = Array.isArray(d.files) ? d.files : [];
+  const files = rawFiles.map((f, i) => ({
+    name:String(f.name || f.path || ('file-' + (i + 1) + '.txt')),
+    content:String(f.content ?? f.code ?? ''),
+    type:String(f.type || ''),
+    updatedAt:Number(f.updatedAt || f.updated_at || i)
+  }));
+  let selectedFile = String(d.selectedFile || d.selected_file || '');
+  if (!selectedFile && files.length) {
+    const htmlFiles = files.filter(f => /\.html?$/i.test(f.name));
+    selectedFile = (htmlFiles.length ? htmlFiles[htmlFiles.length - 1] : files[files.length - 1]).name;
+  }
+  let selected = files.find(f => f.name === selectedFile);
+  let code = String(d.html || d.code || d.output || '');
+  if (!code && selected && /\.html?$/i.test(selected.name)) code = selected.content;
+  if (!code) {
+    const oldText = String(d.text || '');
+    const match = oldText.match(/```(?:html)?\s*\n([\s\S]*?)```/i);
+    if (match) code = match[1];
+  }
+  const message = String(d.message || d.assistant_message || d.reply || d.text || d.explanation || '');
+  return { message, files, selectedFile, html:code };
 }
 
 /* ---- console capture: a tiny spy is injected only into the running preview, never into your code ---- */
@@ -550,7 +587,39 @@ $('#cclr').onclick = conClear;
 $('#bCon').onclick = () => $('#con').classList.toggle('on');
 
 /* ---- output ---- */
-function show(h){ html = h; conClear(); $('#out').srcdoc = h ? inject(h) : ''; $('#code').value = h; updCst(); $('#ph').style.display = h ? 'none' : 'grid'; }
+function show(h){ html = h; codeMode = false; conClear(); $('#out').style.display = 'block'; $('#code').style.display = 'none'; $('#cst').style.display = 'none'; $('#out').srcdoc = h ? inject(h) : ''; $('#code').value = h; updCst(); $('#ph').style.display = h ? 'none' : 'grid'; }
+
+function renderProjectFiles(){
+  const host = $('#projectFiles');
+  host.innerHTML = '<span class="pf-label">Project</span>';
+  if (!projectFiles.length) { host.classList.remove('on'); return; }
+  host.classList.add('on');
+  projectFiles.forEach(file => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'pf' + (file.name === activeFile ? ' active' : '');
+    b.textContent = '▤ ' + file.name; b.title = file.name;
+    b.onclick = () => openProjectFile(file.name);
+    host.appendChild(b);
+  });
+}
+function openProjectFile(name){
+  const file = projectFiles.find(f => f.name === name);
+  if (!file) return;
+  activeFile = file.name;
+  renderProjectFiles();
+  if (/\.html?$/i.test(file.name)) {
+    show(file.content); pushVer(file.content);
+    if (mob()) tab('out');
+    toast('Running ' + file.name);
+  } else {
+    codeMode = true; $('#code').value = file.content;
+    $('#code').style.display = 'block'; $('#cst').style.display = 'block';
+    $('#out').style.display = 'none'; $('#code').style.display = 'block';
+    put('#bCode','play'); $('#bCode').title = 'Run output';
+    updCst(); $('#ph').style.display = 'none';
+    if (mob()) tab('out');
+  }
+}
 function updCst(){ const v = $('#code').value; $('#cst').textContent = v.split('\n').length + ' lines · ' + v.length + ' chars · Ctrl+Enter to run'; }
 
 /* ---- device preview ---- */
@@ -567,7 +636,7 @@ function persist(){
   if (!log.length) return;
   if (!cur) cur = { id: Date.now(), title: log[0].t.slice(0, 40) };
   chats = chats.filter(c => c.id !== cur.id);
-  chats.unshift({ id: cur.id, title: cur.title, ts: Date.now(), log, history, html, vers: vers.slice(-8) });
+  chats.unshift({ id: cur.id, title: cur.title, ts: Date.now(), log, history, html, vers: vers.slice(-8), projectFiles, activeFile });
   chats = chats.slice(0, 30); save();
 }
 const fmtT = ts => ts ? new Date(ts).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : '';
@@ -598,7 +667,7 @@ function drawHist(){
 function openChat(c){
   cur = { id: c.id, title: c.title }; log = c.log.slice(); history = c.history.slice();
   prompts = log.filter(m => m.who === 'u').map(m => m.t); pIdx = -1;
-  vers = c.vers ? c.vers.slice() : (c.html ? [c.html] : []); vIdx = vers.length - 1; updVer();
+  vers = c.vers ? c.vers.slice() : (c.html ? [c.html] : []); vIdx = vers.length - 1; projectFiles = Array.isArray(c.projectFiles) ? c.projectFiles.slice() : []; activeFile = c.activeFile || ''; renderProjectFiles(); updVer();
   $('#msgs').innerHTML = ''; log.forEach(m => drawMsg(m.t, m.who, m.ts));
   setCode(false); show(c.html); $('#hist').style.display = 'none';
 }
@@ -628,27 +697,65 @@ document.addEventListener('keydown', e => {
 async function send(){
   const p = q.value.trim(); if (!p || $('#sendBtn').disabled) return;
   q.value = ''; grow(); pIdx = -1; prompts.push(p); document.querySelectorAll('.sug').forEach(x => x.remove());
-  $('#hist').style.display = 'none'; addMsg(p, 'u'); setCode(false);
+  $('#hist').style.display = 'none';
+  addMsg(p, 'u'); setCode(false);
   const typing = document.createElement('div'); typing.className = 'm a typing'; typing.innerHTML = '<i></i><i></i><i></i>';
   $('#msgs').appendChild(typing); $('#msgs').scrollTop = 1e9;
   $('#load').style.display = 'grid'; $('#lAnim').srcdoc = ANIM; $('#sendBtn').disabled = true; startStatus();
-  if (mob()) tab('out');
+  if (mob()) tab('chat');
   try {
-    const h = await miodAI(p); show(h); pushVer(h);
-    history.push({ role:'user', content:p }, { role:'assistant', content:h });
+    const result = await miodAI(p);
+    const assistantText = result.message || (result.files.length
+      ? 'I updated your project files. Select a file above the preview to open it.'
+      : result.html ? 'Your project is ready in the output panel.'
+      : 'I’m here. Tell me what you would like to build or change.');
+
+    if (result.files.length) {
+      projectFiles = result.files;
+      activeFile = result.selectedFile || '';
+      renderProjectFiles();
+    }
+
+    if (result.html) {
+      show(result.html);
+      if (!result.files.length) {
+        projectFiles = [{name:'index.html', content:result.html, type:'text/html', updatedAt:Date.now()}];
+        activeFile = 'index.html'; renderProjectFiles();
+      }
+      pushVer(result.html);
+      if (mob()) tab('out');
+      burst();
+    } else if (result.files.length) {
+      const chosen = projectFiles.find(f => f.name === activeFile) || projectFiles[projectFiles.length - 1];
+      if (chosen && /\.html?$/i.test(chosen.name)) {
+        activeFile = chosen.name; show(chosen.content); pushVer(chosen.content);
+        if (mob()) tab('out');
+        burst();
+      }
+    }
+
+    history.push({role:'user',content:p},{role:'assistant',content:assistantText});
     typing.remove();
-    const am = addMsg('Done. Your project is running in the output panel. (' + h.split('\n').length + ' lines)', 'a'); typeMsg(am, am.querySelector('.mt').textContent); suggest(); burst();
-    if (document.body.classList.contains('focus')) { setFocus(false); toast('Your project is ready in the output panel'); }
-  } catch (e) { typing.remove(); addMsg('Something went wrong: ' + e.message + '. Check API_URL and try again.', 'a'); }
-  $('#load').style.display = 'none'; $('#lAnim').srcdoc = ''; $('#sendBtn').disabled = false; stopStatus(); persist();
+    const am = addMsg(assistantText, 'a');
+    typeMsg(am, assistantText);
+    if (result.files.length) suggest();
+    if (document.body.classList.contains('focus')) { setFocus(false); toast('MIOD has replied'); }
+  } catch(e) {
+    typing.remove();
+    const err = 'I couldn’t complete that request: ' + e.message + '. Please try again.';
+    addMsg(err, 'a');
+    history.push({role:'user',content:p},{role:'assistant',content:err});
+  }
+  $('#load').style.display = 'none'; $('#lAnim').srcdoc = '';
+  $('#sendBtn').disabled = false; stopStatus(); persist();
 }
 $('#f').onsubmit = e => { e.preventDefault(); send(); };
-$('#clear').onclick = () => { history = []; cur = null; log = []; prompts = []; pIdx = -1; vers = []; vIdx = -1; updVer(); $('#hist').style.display = 'none'; show(''); $('#msgs').innerHTML = EMPTY; };
+$('#clear').onclick = () => { history = []; cur = null; log = []; prompts = []; pIdx = -1; vers = []; vIdx = -1; projectFiles = []; activeFile = ''; renderProjectFiles(); updVer(); $('#hist').style.display = 'none'; show(''); $('#msgs').innerHTML = EMPTY; };
 
 /* ---- toolbar ---- */
 function setCode(on){
   if (!on && codeMode) { const v = $('#code').value; show(v); if (v && v !== vers[vIdx]) pushVer(v); }        // run edited code
-  codeMode = on; $('#code').style.display = on ? 'block' : 'none'; $('#cst').style.display = on ? 'block' : 'none';
+  codeMode = on; $('#code').style.display = on ? 'block' : 'none'; $('#out').style.display = on ? 'none' : 'block'; $('#cst').style.display = on ? 'block' : 'none';
   put('#bCode', on ? 'play' : 'code'); $('#bCode').title = on ? 'Run output' : 'Show code';
 }
 $('#bCode').onclick = () => setCode(!codeMode);
@@ -769,7 +876,7 @@ addEventListener('drop', async e => {
   e.preventDefault(); dragC = 0; dz.classList.remove('on');
   const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return;
   if (!/\.(html?|txt)$/i.test(f.name)) return toast('Please drop an .html file');
-  const t = await f.text(); setCode(false); show(t); pushVer(t); if (mob()) tab('out'); toast('Loaded ' + f.name); persist();
+  const t = await f.text(); projectFiles = [{name:f.name,content:t,type:f.type||'text/html',updatedAt:Date.now()}]; activeFile = f.name; renderProjectFiles(); setCode(false); show(t); pushVer(t); if (mob()) tab('out'); toast('Loaded ' + f.name); persist();
 });
 
 /* rotating idea in the input box */
