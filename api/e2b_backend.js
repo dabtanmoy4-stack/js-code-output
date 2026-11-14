@@ -1,17 +1,15 @@
-import { Sandbox } from "e2b";
+import Sandbox from "e2b";
 
 const MAX_CODE = 300_000;
 const MAX_OUTPUT = 200_000;
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
 const SANDBOX_TIMEOUT_MS = 10 * 60 * 1000;
-const COMMAND_TIMEOUT_MS = 10 * 60 * 1000 + 15_000;
 const INSTALL_TIMEOUT_MS = 4 * 60 * 1000;
 
-function clampText(value, max = MAX_OUTPUT) {
+function clamp(value, max = MAX_OUTPUT) {
   const s = String(value ?? "");
   return s.length > max ? s.slice(0, max) + `\n… output truncated after ${max} characters …` : s;
 }
-
 function json(res, status, body) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,236 +17,90 @@ function json(res, status, body) {
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   return res.status(status).json(body);
 }
-
-function unique(list) { return [...new Set(list.filter(Boolean))]; }
-
-function shellQuote(value) {
-  return `'${String(value).replace(/'/g, `'\\''`)}'`;
+function unique(a) { return [...new Set(a.filter(Boolean))]; }
+function q(s) { return `'${String(s).replace(/'/g, `'\\''`)}'`; }
+function mime(name) {
+  const e = String(name).toLowerCase().split(".").pop();
+  return ({png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",gif:"image/gif",webp:"image/webp",svg:"image/svg+xml",bmp:"image/bmp",pdf:"application/pdf",csv:"text/csv",txt:"text/plain",json:"application/json",html:"text/html",htm:"text/html"})[e] || null;
 }
-
-function mimeFor(name) {
-  const ext = String(name).toLowerCase().split(".").pop();
-  return ({
-    png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif",
-    webp: "image/webp", svg: "image/svg+xml", bmp: "image/bmp", tif: "image/tiff",
-    tiff: "image/tiff", pdf: "application/pdf", csv: "text/csv", txt: "text/plain",
-    json: "application/json", html: "text/html", htm: "text/html"
-  })[ext] || null;
-}
-
-function detectPackages(code) {
-  const map = {
-    PIL: "pillow",
-    cv2: "opencv-python-headless",
-    numpy: "numpy",
-    pandas: "pandas",
-    scipy: "scipy",
-    matplotlib: "matplotlib",
-    seaborn: "seaborn",
-    sympy: "sympy",
-    sklearn: "scikit-learn",
-    requests: "requests",
-    flask: "flask",
-    fastapi: "fastapi",
-    uvicorn: "uvicorn",
-    pygame: "pygame",
-    vpython: "vpython",
-    pyxel: "pyxel",
-    imageio: "imageio",
-    plotly: "plotly",
-    bs4: "beautifulsoup4",
-    yaml: "pyyaml",
-    lxml: "lxml",
-    openpyxl: "openpyxl"
-  };
-
-  const found = [];
-  const importRegex = /^\s*(?:import\s+([A-Za-z_][A-Za-z0-9_.]*)|from\s+([A-Za-z_][A-Za-z0-9_.]*))/gm;
-  for (const m of String(code).matchAll(importRegex)) {
-    const top = (m[1] || m[2] || "").split(".")[0];
-    if (map[top]) found.push(map[top]);
+function packagesFor(code) {
+  const map = { PIL:"pillow", cv2:"opencv-python-headless", numpy:"numpy", pandas:"pandas", scipy:"scipy", matplotlib:"matplotlib", seaborn:"seaborn", sympy:"sympy", sklearn:"scikit-learn", requests:"requests", flask:"flask", fastapi:"fastapi", uvicorn:"uvicorn", pygame:"pygame", vpython:"vpython", pyxel:"pyxel", imageio:"imageio", plotly:"plotly", bs4:"beautifulsoup4", yaml:"pyyaml", lxml:"lxml", openpyxl:"openpyxl" };
+  const out = [];
+  for (const m of String(code).matchAll(/^\s*(?:import|from)\s+([A-Za-z_][A-Za-z0-9_.]*)/gm)) {
+    const p = m[1].split(".")[0];
+    if (map[p]) out.push(map[p]);
   }
-  return unique(found);
+  return unique(out);
 }
-
-function makePrelude() {
+function prelude() {
   return String.raw`
-import os as _jsco_os
-import base64 as _jsco_b64
-
-_JSCO_OUT = _jsco_os.environ.get("JSCO_OUTPUT_DIR", "/home/user/jsco_output")
-_jsco_os.makedirs(_JSCO_OUT, exist_ok=True)
-
-def _jsco_emit_image(path):
+import os as _j_os, base64 as _j_b64, atexit as _j_atexit
+_J_OUT = _j_os.environ.get("JSCO_OUTPUT_DIR", "/home/user/jsco_output")
+_j_os.makedirs(_J_OUT, exist_ok=True)
+def _j_emit(path):
     try:
-        with open(path, "rb") as _f:
-            _b = _f.read()
-        print("IMAGE_BASE64_START" + _jsco_b64.b64encode(_b).decode() + "IMAGE_BASE64_END", flush=True)
-    except Exception as _e:
-        print("[JSCO image error] " + str(_e), flush=True)
-
-# Headless Matplotlib. Every show() also writes a PNG into JSCO_OUTPUT_DIR.
+        with open(path, "rb") as f: data=f.read()
+        print("IMAGE_BASE64_START" + _j_b64.b64encode(data).decode() + "IMAGE_BASE64_END", flush=True)
+    except Exception as e: print("[JSCO image error] " + str(e), flush=True)
 try:
-    import matplotlib as _jsco_mpl
-    _jsco_mpl.use("Agg")
-    import matplotlib.pyplot as _jsco_plt
-    _jsco_old_show = _jsco_plt.show
-    def _jsco_show(*args, **kwargs):
-        for _i, _n in enumerate(list(_jsco_plt.get_fignums())):
+    import matplotlib as _j_mpl
+    _j_mpl.use("Agg")
+    import matplotlib.pyplot as _j_plt
+    _j_old_show = _j_plt.show
+    def _j_show(*a, **kw):
+        for i,n in enumerate(list(_j_plt.get_fignums())):
             try:
-                _f = _jsco_plt.figure(_n)
-                _p = _jsco_os.path.join(_JSCO_OUT, f"plot_{_i + 1}.png")
-                _f.savefig(_p, dpi=120, bbox_inches="tight")
-                _jsco_emit_image(_p)
-            except Exception:
-                pass
-        return _jsco_old_show(*args, **kwargs)
-    _jsco_plt.show = _jsco_show
-    import atexit as _jsco_atexit
-    def _jsco_flush_plots():
+                p=_j_os.path.join(_J_OUT,f"plot_{i+1}.png"); _j_plt.figure(n).savefig(p,dpi=120,bbox_inches="tight"); _j_emit(p)
+            except Exception: pass
+        return _j_old_show(*a, **kw)
+    _j_plt.show = _j_show
+    def _j_flush():
         try:
-            for _i, _n in enumerate(list(_jsco_plt.get_fignums())):
-                _f = _jsco_plt.figure(_n)
-                _p = _jsco_os.path.join(_JSCO_OUT, f"plot_exit_{_i + 1}.png")
-                _f.savefig(_p, dpi=120, bbox_inches="tight")
-                _jsco_emit_image(_p)
-        except Exception:
-            pass
-    _jsco_atexit.register(_jsco_flush_plots)
-except Exception:
-    pass
-
-# Pillow Image.show() becomes a browser-previewable image.
+            for i,n in enumerate(list(_j_plt.get_fignums())):
+                p=_j_os.path.join(_J_OUT,f"plot_exit_{i+1}.png"); _j_plt.figure(n).savefig(p,dpi=120,bbox_inches="tight"); _j_emit(p)
+        except Exception: pass
+    _j_atexit.register(_j_flush)
+except Exception: pass
 try:
-    from PIL import Image as _JSCO_Image
-    def _jsco_pil_show(self, *args, **kwargs):
-        _p = _jsco_os.path.join(_JSCO_OUT, "pil_output.png")
-        _im = self
-        if _im.mode not in ("RGB", "RGBA", "L"):
-            _im = _im.convert("RGBA")
-        _im.save(_p)
-        _jsco_emit_image(_p)
-    _JSCO_Image.Image.show = _jsco_pil_show
-except Exception:
-    pass
+    from PIL import Image as _J_Image
+    def _j_pil_show(self,*a,**kw):
+        im=self.convert("RGBA") if self.mode not in ("RGB","RGBA","L") else self
+        p=_j_os.path.join(_J_OUT,"pil_output.png"); im.save(p); _j_emit(p)
+    _J_Image.Image.show=_j_pil_show
+except Exception: pass
 `;
 }
-
-function wrapPython(code) {
-  return `${makePrelude()}\n# --- JS CODE OUTPUT USER PROGRAM ---\n${code}\n# --- END USER PROGRAM ---\n`;
-}
-
 async function main(req, res) {
   if (req.method === "OPTIONS") return json(res, 204, {});
-  if (req.method !== "POST") return json(res, 405, { success: false, error: "POST only." });
-
-  if (!process.env.E2B_API_KEY) {
-    return json(res, 500, { success: false, error: "E2B_API_KEY is not configured in Vercel Environment Variables." });
-  }
-
-  const body = req.body || {};
-  const compiler = String(body.compiler || "python").toLowerCase();
-  const code = String(body.code || "");
-  const input = String(body.input || "");
-
-  if (!['python', 'python3', 'py'].includes(compiler)) {
-    return json(res, 400, { success: false, error: `Unsupported compiler: ${compiler}` });
-  }
-  if (!code.trim()) return json(res, 400, { success: false, error: "Python code is empty." });
-  if (code.length > MAX_CODE) {
-    return json(res, 413, { success: false, error: `Code is too large. Maximum is ${MAX_CODE} characters.` });
-  }
-
-  const started = Date.now();
-  let sandbox = null;
-
+  if (req.method !== "POST") return json(res, 405, {success:false,error:"POST only."});
+  if (!process.env.E2B_API_KEY) return json(res,500,{success:false,error:"E2B_API_KEY is not configured in Vercel Environment Variables."});
+  const body=req.body||{}; const code=String(body.code||""); const input=String(body.input||"");
+  if (!code.trim()) return json(res,400,{success:false,error:"Python code is empty."});
+  if (code.length>MAX_CODE) return json(res,413,{success:false,error:`Code is too large. Maximum is ${MAX_CODE} characters.`});
+  let sb=null; const started=Date.now();
   try {
-    // The current E2B JS SDK reads E2B_API_KEY from the server environment.
-    // The default template is the E2B base Linux sandbox.
-    sandbox = await Sandbox.create(undefined, {
-      timeoutMs: SANDBOX_TIMEOUT_MS,
-      allowInternetAccess: true
-    });
-
-    await sandbox.files.write("/home/user/main.py", wrapPython(code));
-    await sandbox.files.write("/home/user/input.txt", input);
-    await sandbox.commands.run("mkdir -p /home/user/jsco_output", { timeoutMs: 10000 });
-
-    const packages = detectPackages(code);
-    let installedPackages = [];
-    let packageInstallNote = "";
-
-    if (packages.length) {
-      const install = await sandbox.commands.run(
-        `python3 -m pip install --disable-pip-version-check --no-input --quiet ${packages.map(shellQuote).join(" ")}`,
-        { timeoutMs: INSTALL_TIMEOUT_MS }
-      );
-      if (install.exitCode === 0) {
-        installedPackages = packages;
-      } else {
-        packageInstallNote = `Package setup warning:\n${clampText(install.stderr || install.stdout || "Package installation failed.")}`;
-      }
+    // Current E2B JS SDK accepts Sandbox.create(options) and defaults template to `base`.
+    sb=await Sandbox.create({apiKey:process.env.E2B_API_KEY, timeoutMs:SANDBOX_TIMEOUT_MS, allowInternetAccess:true});
+    await sb.files.write("/home/user/main.py", prelude()+"\n# --- USER PROGRAM ---\n"+code+"\n# --- END USER PROGRAM ---\n");
+    await sb.files.write("/home/user/input.txt",input);
+    await sb.commands.run("mkdir -p /home/user/jsco_output",{timeoutMs:10000});
+    const pkgs=packagesFor(code); let installedPackages=[]; let packageInstallNote="";
+    if(pkgs.length){
+      const ins=await sb.commands.run(`python3 -m pip install --disable-pip-version-check --no-input --quiet ${pkgs.map(q).join(" ")}`,{timeoutMs:INSTALL_TIMEOUT_MS});
+      if(ins.exitCode===0) installedPackages=pkgs; else packageInstallNote=`Package setup warning:\n${clamp(ins.stderr||ins.stdout||"Package installation failed.")}`;
     }
-
-    const command = `cd /home/user && PYTHONUNBUFFERED=1 MPLBACKEND=Agg SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy timeout --signal=TERM --kill-after=5s 600s python3 main.py < input.txt`;
-    const run = await sandbox.commands.run(command, { timeoutMs: COMMAND_TIMEOUT_MS });
-
-    const stdout = clampText(run.stdout);
-    const stderr = clampText(run.stderr);
-    const outputFiles = [];
-
-    const list = await sandbox.commands.run(
-      `find /home/user/jsco_output -maxdepth 1 -type f -size -${MAX_FILE_BYTES}c -printf '%f\\n' 2>/dev/null | sort`,
-      { timeoutMs: 10000 }
-    );
-
-    const names = unique(String(list.stdout || "").split(/\r?\n/).map(s => s.trim())).slice(0, 20);
-    for (const name of names) {
-      if (!/^[A-Za-z0-9._-]+$/.test(name)) continue;
-      const mime = mimeFor(name);
-      if (!mime) continue;
-      const b64 = await sandbox.commands.run(
-        `base64 -w0 ${shellQuote("/home/user/jsco_output/" + name)}`,
-        { timeoutMs: 10000 }
-      );
-      if (b64.exitCode === 0 && b64.stdout) {
-        outputFiles.push({ name, mime, content_base64: String(b64.stdout).trim() });
-      }
+    const run=await sb.commands.run("cd /home/user && PYTHONUNBUFFERED=1 MPLBACKEND=Agg SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy timeout --signal=TERM --kill-after=5s 600s python3 main.py < input.txt",{timeoutMs:SANDBOX_TIMEOUT_MS+15000});
+    const list=await sb.commands.run(`find /home/user/jsco_output -maxdepth 1 -type f -size -${MAX_FILE_BYTES}c -printf '%f\\n' 2>/dev/null | sort`,{timeoutMs:10000});
+    const files=[];
+    for(const name of unique(String(list.stdout||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean)).slice(0,20)){
+      if(!/^[A-Za-z0-9._-]+$/.test(name)) continue; const mt=mime(name); if(!mt) continue;
+      const b=await sb.commands.run(`base64 -w0 ${q("/home/user/jsco_output/"+name)}`,{timeoutMs:10000});
+      if(b.exitCode===0 && b.stdout) files.push({name,mime:mt,content_base64:String(b.stdout).trim()});
     }
-
-    const success = run.exitCode === 0;
-    return json(res, 200, {
-      success,
-      status: success ? "success" : "error",
-      compiler: "python",
-      output: stdout,
-      stdout,
-      stderr,
-      error: success ? "" : stderr,
-      exit_code: run.exitCode,
-      time: ((Date.now() - started) / 1000).toFixed(2),
-      installedPackages,
-      packageInstallNote,
-      files: outputFiles,
-      has_image_output: outputFiles.some(f => String(f.mime).startsWith("image/")) || /IMAGE_BASE64_START[\s\S]*?IMAGE_BASE64_END/.test(stdout)
-    });
-  } catch (err) {
-    const message = clampText(err?.message || err?.error || String(err) || "E2B execution failed.");
-    return json(res, 500, {
-      success: false,
-      status: "error",
-      error: message,
-      stderr: message,
-      output: "",
-      stdout: "",
-      exit_code: null,
-      time: ((Date.now() - started) / 1000).toFixed(2)
-    });
-  } finally {
-    if (sandbox) {
-      try { await sandbox.kill(); } catch (_) {}
-    }
-  }
+    const ok=run.exitCode===0;
+    return json(res,200,{success:ok,status:ok?"success":"error",compiler:"python",output:clamp(run.stdout),stdout:clamp(run.stdout),stderr:clamp(run.stderr),error:ok?"":clamp(run.stderr),exit_code:run.exitCode,time:((Date.now()-started)/1000).toFixed(2),installedPackages,packageInstallNote,files,has_image_output:files.some(f=>/^image\//.test(f.mime))||/IMAGE_BASE64_START[\s\S]*?IMAGE_BASE64_END/.test(run.stdout||"")});
+  } catch(e) {
+    return json(res,500,{success:false,status:"error",error:clamp(e?.message||e?.toString()||"E2B execution failed."),stdout:"",stderr:clamp(e?.message||e?.toString()),output:"",exit_code:null,time:((Date.now()-started)/1000).toFixed(2)});
+  } finally { if(sb) { try{await sb.kill();}catch{} } }
 }
-
 export default main;
