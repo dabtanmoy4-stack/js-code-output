@@ -7,6 +7,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "check": "node --check api/run-code.js && node --check api/generate.js"
+    "check": "node --check api/run-code.js && node --check api/generate.js && node --check api/e2b_backend.js"
+  },
+  "dependencies": {
+    "e2b": "latest"
   }
 }
