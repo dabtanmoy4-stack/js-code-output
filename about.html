@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>About JS CODE OUTPUT — Learn, Build & Publish</title>
-    <meta name="description" content="Learn how JS CODE OUTPUT works — from starting a project and editing HTML, CSS and JavaScript to running, previewing and deploying projects to JS mini.Browser.">
+    <title>About JS CODE OUTPUT — Code in any language, build with MIOD AI</title>
+    <meta name="description" content="JS CODE OUTPUT is an online coding workspace where you can run many programming languages, build projects, preview results, publish, and get help from the MIOD AI assistant.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://jscodoutput.in/about.html">
 
@@ -22,7 +22,7 @@
     <meta name="msapplication-square310x310logo" content="/logo.jpeg">
 
     <meta property="og:title" content="About JS CODE OUTPUT">
-    <meta property="og:description" content="A beginner-friendly online workspace for building, testing and publishing web projects.">
+    <meta property="og:description" content="An online coding workspace to run many programming languages, build projects, preview results, and use the MIOD AI assistant.">
     <meta property="og:url" content="https://jscodoutput.in/about.html">
     <meta property="og:image" content="https://jscodoutput.in/logo.jpeg">
     <meta name="twitter:card" content="summary_large_image">
@@ -38,75 +38,348 @@
     }
     </script>
 
-    <meta name="theme-color" content="#f5f1e8">
+    <meta name="theme-color" content="#e9e1d3">
+    <meta name="color-scheme" content="light">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Nunito:wght@400;500;600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        :root {
+            --bg: #e9e1d3;
+            --bg-2: #f2ebdf;
+            --ink: #2a2620;
+            --ink-2: #5c5448;
+            --ink-3: #8a8070;
+            --indigo: #2f4a7a;
+            --indigo-d: #223a63;
+            --gold: #c79a3b;
+            --sage: #6f8a6a;
+            --rose: #c4796b;
+            --sky: #6f94b8;
+            --shadow-d: rgba(122, 100, 68, .30);
+            --shadow-l: rgba(255, 255, 255, .88);
+        }
+
         html { scroll-behavior: smooth; }
 
         body {
-            background: #f5f1e8;
-            color: #1f2933;
+            background:
+                radial-gradient(900px 500px at 10% -5%, #f7f1e6 0%, transparent 60%),
+                radial-gradient(800px 500px at 100% 20%, #efe6d6 0%, transparent 60%),
+                var(--bg);
+            color: var(--ink);
             min-height: 100vh;
-            font-family: Georgia, "Times New Roman", serif;
+            font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .glass {
-            background: #fffdf8;
-            border: 1px solid #d8d0c2;
-            box-shadow: 0 8px 25px rgba(55, 48, 38, .08);
+        h1, h2, h3, .display { font-family: "Fraunces", Georgia, "Times New Roman", serif; letter-spacing: -.01em; }
+
+        /* ---------- Clay surfaces ---------- */
+        .clay {
+            background: linear-gradient(145deg, #f7f1e6, #e8dfce);
+            border-radius: 28px;
+            box-shadow:
+                14px 14px 28px var(--shadow-d),
+                -10px -10px 24px var(--shadow-l),
+                inset 2px 2px 5px rgba(255, 255, 255, .75),
+                inset -4px -4px 8px rgba(150, 125, 88, .14);
         }
 
-        .glass-soft {
-            background: #f8f4eb;
-            border: 1px solid #ded6c8;
+        .clay-sm {
+            background: linear-gradient(145deg, #f7f1e6, #e9e0cf);
+            border-radius: 20px;
+            box-shadow:
+                8px 8px 16px var(--shadow-d),
+                -6px -6px 14px var(--shadow-l),
+                inset 1px 1px 3px rgba(255, 255, 255, .75),
+                inset -3px -3px 6px rgba(150, 125, 88, .12);
         }
 
-        .gradient-text {
-            color: #17365d;
+        .clay-in {
+            background: linear-gradient(145deg, #e3d9c7, #eee6d8);
+            border-radius: 20px;
+            box-shadow:
+                inset 6px 6px 12px rgba(138, 112, 76, .28),
+                inset -6px -6px 12px rgba(255, 255, 255, .85);
         }
 
-        .hero-grid {
-            background-color: #eee8dc;
-            background-image:
-                linear-gradient(rgba(75, 65, 50, .055) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(75, 65, 50, .055) 1px, transparent 1px);
-            background-size: 38px 38px;
+        .clay-hover { transition: transform .25s ease, box-shadow .25s ease; }
+        .clay-hover:hover { transform: translateY(-4px); }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+            font-weight: 800; border-radius: 18px; padding: .8rem 1.4rem;
+            transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+            cursor: pointer; text-decoration: none;
+        }
+        .btn:focus-visible, a:focus-visible { outline: 3px solid rgba(47, 74, 122, .45); outline-offset: 3px; }
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(145deg, #3d5c92, #243f6d);
+            box-shadow:
+                8px 8px 16px rgba(34, 58, 99, .38),
+                -5px -5px 12px rgba(255, 255, 255, .8),
+                inset 2px 2px 4px rgba(255, 255, 255, .28),
+                inset -3px -3px 6px rgba(10, 25, 55, .32);
+        }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06); }
+        .btn-primary:active { transform: translateY(1px); box-shadow: inset 4px 4px 8px rgba(10,25,55,.4), inset -3px -3px 6px rgba(255,255,255,.15); }
+        .btn-soft {
+            color: var(--ink);
+            background: linear-gradient(145deg, #f7f1e6, #e6dccb);
+            box-shadow:
+                8px 8px 16px var(--shadow-d),
+                -6px -6px 14px var(--shadow-l),
+                inset 1px 1px 3px rgba(255, 255, 255, .8),
+                inset -2px -2px 5px rgba(150, 125, 88, .14);
+        }
+        .btn-soft:hover { transform: translateY(-2px); }
+        .btn-soft:active { transform: translateY(1px); box-shadow: inset 5px 5px 10px rgba(138,112,76,.3), inset -5px -5px 10px rgba(255,255,255,.85); }
+
+        /* ---------- Clay "blobs" (icons / chips) ---------- */
+        .blob {
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 18px; color: #fff; font-weight: 800;
+            box-shadow:
+                6px 6px 12px rgba(80, 62, 35, .28),
+                -4px -4px 10px rgba(255, 255, 255, .8),
+                inset 2px 2px 4px rgba(255, 255, 255, .42),
+                inset -3px -3px 6px rgba(0, 0, 0, .18);
+        }
+        .b-indigo { background: linear-gradient(145deg, #4a6aa3, #2c4676); }
+        .b-gold   { background: linear-gradient(145deg, #dcb056, #b88726); }
+        .b-sage   { background: linear-gradient(145deg, #86a281, #5f7a5a); }
+        .b-rose   { background: linear-gradient(145deg, #d68f81, #b36658); }
+        .b-sky    { background: linear-gradient(145deg, #86abcb, #5a82a8); }
+        .b-ink    { background: linear-gradient(145deg, #4b443a, #2a2620); }
+
+        /* ---------- Misc ---------- */
+        .lang-chip {
+            display: flex; align-items: center; gap: .7rem;
+            padding: .7rem .9rem; border-radius: 20px;
+            font-weight: 700; font-size: .95rem; color: var(--ink);
+            background: linear-gradient(145deg, #f7f1e6, #e9e0cf);
+            box-shadow:
+                6px 6px 12px var(--shadow-d),
+                -5px -5px 11px var(--shadow-l),
+                inset 1px 1px 3px rgba(255, 255, 255, .75),
+                inset -2px -2px 5px rgba(150, 125, 88, .12);
+            transition: transform .2s ease;
+        }
+        .lang-chip:hover { transform: translateY(-3px); }
+        .lang-chip .blob { width: 38px; height: 38px; border-radius: 13px; font-size: .78rem; flex: none; }
+
+        .bubble-user {
+            background: linear-gradient(145deg, #3d5c92, #263f6c); color: #fff;
+            border-radius: 20px 20px 6px 20px;
+            box-shadow: 5px 5px 10px rgba(34,58,99,.3), inset 1px 1px 3px rgba(255,255,255,.25);
+        }
+        .bubble-ai {
+            background: linear-gradient(145deg, #f9f4ea, #ebe2d1); color: var(--ink);
+            border-radius: 20px 20px 20px 6px;
+            box-shadow: 5px 5px 10px var(--shadow-d), -4px -4px 8px var(--shadow-l), inset 1px 1px 3px rgba(255,255,255,.8);
         }
 
-        .shot {
-            transition: transform .25s ease, box-shadow .25s ease;
+        .code-pane {
+            background: linear-gradient(160deg, #2f2a24, #231f1a);
+            border-radius: 16px; color: #efe6d4;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: .8rem; line-height: 1.65;
+            box-shadow: inset 3px 3px 8px rgba(0,0,0,.45), inset -2px -2px 6px rgba(255,255,255,.05);
+        }
+        .tok-k { color: #e0a96d; } .tok-f { color: #8fb8de; } .tok-s { color: #a9c48f; } .tok-c { color: #8a8070; }
+
+        .shot img { border-radius: 18px; display: block; width: 100%; }
+        .shot { padding: .7rem; }
+
+        .section-title { font-size: clamp(1.9rem, 4.2vw, 2.9rem); font-weight: 700; line-height: 1.12; }
+
+        .float-a { animation: floaty 7s ease-in-out infinite; }
+        .float-b { animation: floaty 9s ease-in-out infinite reverse; }
+        @keyframes floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+        @media (prefers-reduced-motion: reduce) {
+            .float-a, .float-b { animation: none; }
+            html { scroll-behavior: auto; }
+            .clay-hover, .btn, .lang-chip { transition: none; }
         }
 
-        .shot:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(55, 48, 38, .16);
-        }
-
-        .classic-rule {
-            width: 70px;
-            height: 2px;
-            background: #9a7b4f;
-            margin: 18px auto 0;
-        }
-
-        .step-line {
-            position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .step-line::after {
-                content: "";
-                position: absolute;
-                top: 27px;
-                left: calc(100% + 10px);
-                width: calc(100% - 20px);
-                height: 1px;
-                background: linear-gradient(90deg, rgba(96,165,250,.45), transparent);
+        @media (min-width: 1024px) {
+            .step-link::after {
+                content: ""; position: absolute; top: 50%; left: 100%;
+                width: 1.25rem; height: 6px; transform: translateY(-50%);
+                border-radius: 6px;
+                background: linear-gradient(145deg, #d9cdb7, #efe6d6);
+                box-shadow: inset 1px 1px 2px rgba(138,112,76,.3);
             }
         }
+
+        /* ---------- MIOD logo animation (9s cycle) ---------- */
+        .miod-anim { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(6px 8px 10px rgba(122, 100, 68, .22)); }
+
+        #wormWrap { transform-box: fill-box; transform-origin: 50% 100%; animation: mkWobble 9s infinite; }
+        #worm { transform-box: fill-box; transform-origin: 50% 50%; animation: mkSpin 9s infinite; }
+
+        .m-eye { transform-box: fill-box; transform-origin: 50% 50%; animation: mkBlink 9s infinite; }
+        .m-pupils { animation: mkShowPupils 9s infinite, mkLook 9s infinite; }
+        .m-dizzy { animation: mkDizzy 9s infinite; }
+
+        .m-l { transform-box: fill-box; transform-origin: 50% 100%; opacity: 0; animation-duration: 9s;
+               animation-iteration-count: infinite; animation-timing-function: ease-out; }
+        #g-i { --dx: -100px; animation-name: mkLiIn; }
+        #g-o { --dx: -170px; animation-name: mkLoIn; }
+        #g-d { --dx: -290px; animation-name: mkLdIn; }
+
+        .m-ch { font-family: 'Fredoka', 'Baloo 2', 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
+                font-weight: 700; font-size: 240px; stroke: #1E1033; stroke-width: 16px; stroke-linejoin: round;
+                paint-order: stroke fill; transform-box: fill-box; transform-origin: 50% 100%; animation: mkBob 9s infinite; }
+        .m-sh { fill: #1E1033; }
+        .m-ci { fill: #FF5C8A; }
+        .m-co { fill: #FFC233; }
+        .m-cd { fill: #4CC9F0; }
+        #s-o, #t-o { animation-delay: .25s; }
+        #s-d, #t-d { animation-delay: .5s; }
+
+        .m-shade { fill: #1E1033; transform-box: fill-box; transform-origin: 50% 50%; opacity: 0; animation: mkShade 9s infinite; }
+
+        .m-spark { fill: #FFD60A; stroke: #1E1033; stroke-width: 4; stroke-linejoin: round;
+                   transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); }
+        .m-spA { animation: mkSpA 9s infinite; }
+        .m-spB { animation: mkSpB 9s infinite; }
+        .m-spC { animation: mkSpC 9s infinite; }
+
+        @keyframes mkSpin {
+            0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(.1,.75,.25,1); }
+            34%  { transform: rotate(1080deg); }
+            100% { transform: rotate(1080deg); }
+        }
+        @keyframes mkWobble {
+            0%,33%    { transform: none; }
+            36%       { transform: scale(1.09,.9); }
+            39%       { transform: scale(.95,1.06); }
+            42%,64%   { transform: none; }
+            67%       { transform: scale(1.025,.975); }
+            70%,100%  { transform: none; }
+        }
+        @keyframes mkDizzy { 0%,30% { opacity: 1; } 34%,100% { opacity: 0; } }
+        @keyframes mkShowPupils { 0%,32% { opacity: 0; } 36%,100% { opacity: 1; } }
+        @keyframes mkLook {
+            0%,38%    { transform: translate(0,0); }
+            42%,62%   { transform: translate(-14px,5px); }
+            68%,100%  { transform: translate(0,0); }
+        }
+        @keyframes mkBlink {
+            0%,65%,69%,84%,88%,100% { transform: scaleY(1); }
+            67%,86% { transform: scaleY(.08); }
+        }
+        @keyframes mkLiIn {
+            0%,37.7% { opacity: 0; transform: translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+            39%      { opacity: 1; }
+            43%      { opacity: 1; transform: translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+            47%      { opacity: 1; transform: translate(0,0) scale(1.16,.84) rotate(0deg); }
+            49.5%    { opacity: 1; transform: translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+            51.5%,90%{ opacity: 1; transform: none; }
+            96%,100% { opacity: 0; transform: none; }
+        }
+        @keyframes mkLoIn {
+            0%,45.5% { opacity: 0; transform: translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+            46.8%    { opacity: 1; }
+            50.8%    { opacity: 1; transform: translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+            54.8%    { opacity: 1; transform: translate(0,0) scale(1.16,.84) rotate(0deg); }
+            57.3%    { opacity: 1; transform: translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+            59.3%,90%{ opacity: 1; transform: none; }
+            96%,100% { opacity: 0; transform: none; }
+        }
+        @keyframes mkLdIn {
+            0%,53.3% { opacity: 0; transform: translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+            54.6%    { opacity: 1; }
+            58.6%    { opacity: 1; transform: translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+            62.6%    { opacity: 1; transform: translate(0,0) scale(1.16,.84) rotate(0deg); }
+            65.1%    { opacity: 1; transform: translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+            67.1%,90%{ opacity: 1; transform: none; }
+            96%,100% { opacity: 0; transform: none; }
+        }
+        @keyframes mkBob {
+            0%,68%   { transform: none; }
+            72%      { transform: translateY(-18px) rotate(-5deg) scale(.98,1.04); }
+            76%      { transform: translateY(0) rotate(0deg) scale(1.06,.94); }
+            79%      { transform: translateY(-6px) scale(.99,1.01); }
+            82%,100% { transform: none; }
+        }
+        @keyframes mkShade {
+            0%,36%   { opacity: 0; transform: scaleX(.3); }
+            47%      { opacity: .28; transform: scaleX(1.08); }
+            50%,90%  { opacity: .28; transform: scaleX(1); }
+            96%,100% { opacity: 0; transform: scaleX(1); }
+        }
+        @keyframes mkSpA { 0%,46% { transform: scale(0) rotate(0deg); } 50% { transform: scale(1.25) rotate(60deg); } 53% { transform: scale(.9) rotate(90deg); } 57%,100% { transform: scale(0) rotate(180deg); } }
+        @keyframes mkSpB { 0%,53% { transform: scale(0) rotate(0deg); } 57% { transform: scale(1.25) rotate(60deg); } 60% { transform: scale(.9) rotate(90deg); } 64%,100% { transform: scale(0) rotate(180deg); } }
+        @keyframes mkSpC { 0%,60% { transform: scale(0) rotate(0deg); } 64% { transform: scale(1.25) rotate(60deg); } 67% { transform: scale(.9) rotate(90deg); } 71%,100% { transform: scale(0) rotate(180deg); } }
+
+        .typing { display: inline-flex; gap: 5px; align-items: center; height: 14px; }
+        .typing i {
+            width: 8px; height: 8px; border-radius: 50%; background: var(--indigo);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,.5);
+            animation: miod-dot 1.2s ease-in-out infinite;
+        }
+        .typing i:nth-child(2) { animation-delay: .18s; }
+        .typing i:nth-child(3) { animation-delay: .36s; }
+        @keyframes miod-dot { 0%,60%,100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+        @media (prefers-reduced-motion: reduce) {
+            #wormWrap, #worm, .m-eye, .m-pupils, .m-dizzy, .m-ch, .m-spark, .m-shade, .typing i { animation: none; }
+            #g-i, #g-o, #g-d { animation: none; opacity: 1; }
+            .m-dizzy, .m-spark { display: none; }
+            .m-shade { opacity: .28; }
+        }
+        /* ---------- Responsive + brand text ---------- */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { overflow-x: clip; }
+        section[id] { scroll-margin-top: 96px; }
+        footer a { display: inline-block; padding: .45rem 0; }
+        #mobileMenu a:active, #mobileMenu a:hover { background: rgba(47, 74, 122, .08); }
+
+        .js-rainbow {
+            display: inline-block; font-weight: 900;
+            background: linear-gradient(90deg, #e8456f, #e59a00, #2fb34a, #1a9fd4, #7a3fe0, #e8456f);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; -webkit-text-fill-color: transparent;
+            animation: jsFlow 4s linear infinite;
+            filter: drop-shadow(1.5px 2px 0 rgba(255, 255, 255, .8)) drop-shadow(2px 3px 3px rgba(122, 100, 68, .35));
+        }
+        @keyframes jsFlow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+        .js-h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; line-height: 1.08; }
+
+        @media (max-width: 639px) {
+            .clay {
+                border-radius: 24px;
+                box-shadow:
+                    8px 8px 16px var(--shadow-d),
+                    -6px -6px 14px var(--shadow-l),
+                    inset 2px 2px 4px rgba(255, 255, 255, .75),
+                    inset -3px -3px 6px rgba(150, 125, 88, .14);
+            }
+            .clay-sm {
+                box-shadow:
+                    5px 5px 10px var(--shadow-d),
+                    -4px -4px 9px var(--shadow-l),
+                    inset 1px 1px 3px rgba(255, 255, 255, .75),
+                    inset -2px -2px 5px rgba(150, 125, 88, .12);
+            }
+            .btn { min-height: 44px; }
+            .lang-chip { padding: .6rem .7rem; font-size: .88rem; gap: .55rem; }
+            .lang-chip .blob { width: 34px; height: 34px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .js-rainbow { animation: none; } }
+
     </style>
+
     <!-- Firebase Analytics -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -128,313 +401,393 @@
     </script>
 </head>
 
-<body class="text-slate-900 selection:bg-amber-200/60">
+<body class="selection:bg-amber-200/70">
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 w-full border-b border-[#d8d0c2] bg-[#f8f5ee]/95 backdrop-blur-md">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-            <a href="/" class="flex items-center gap-3 text-lg sm:text-xl font-bold tracking-wide whitespace-nowrap">
-                <img
-                    src="/logo.jpeg"
-                    alt="JS CODE OUTPUT logo"
-                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover border border-[#8a6a3f]/40 shadow-sm"
-                    loading="eager">
-                <span><span class="text-[#8a6a3f]">JS</span> CODE OUTPUT</span>
+    <header class="sticky top-0 z-50 px-2.5 sm:px-6 pt-2.5 sm:pt-3">
+        <div class="clay-sm max-w-6xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
+            <a href="/" class="flex items-center gap-2 sm:gap-3 font-extrabold whitespace-nowrap min-w-0" aria-label="JS CODE OUTPUT home">
+                <img src="/logo.jpeg" alt="" loading="eager"
+                     class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl object-cover shadow-[4px_4px_8px_rgba(122,100,68,.35),-3px_-3px_6px_rgba(255,255,255,.9)]">
+                <span class="text-[.8rem] min-[400px]:text-sm sm:text-lg"><span class="js-rainbow">JS</span> CODE OUTPUT</span>
             </a>
 
-            <nav class="hidden md:flex items-center gap-6 text-sm text-[#6b6257]">
-                <a href="#how-it-works" class="hover:text-[#24211d] transition">How it works</a>
-                <a href="#workspace" class="hover:text-[#24211d] transition">Workspace</a>
-                <a href="#deploy" class="hover:text-[#24211d] transition">Deploy</a>
-                <a href="#why" class="hover:text-[#24211d] transition">Why JS CODE OUTPUT?</a>
+            <nav class="hidden md:flex items-center gap-7 text-sm font-bold" style="color:var(--ink-2)" aria-label="Page sections">
+                <a href="#languages" class="hover:text-[#2f4a7a] transition">Languages</a>
+                <a href="#how-it-works" class="hover:text-[#2f4a7a] transition">How it works</a>
+                <a href="#miod-ai" class="hover:text-[#2f4a7a] transition">MIOD AI</a>
+                <a href="#deploy" class="hover:text-[#2f4a7a] transition">Publish</a>
+                <a href="#why" class="hover:text-[#2f4a7a] transition">Why us</a>
             </nav>
 
-            <a href="/"
-               class="px-3 sm:px-4 py-2 rounded-lg bg-[#24211d] text-[#fffdf8] hover:bg-[#3a342d] transition font-semibold text-sm">
-                Back to Editor
-            </a>
+            <div class="flex items-center gap-2 flex-none">
+                <a href="/" class="btn btn-primary !py-2 !px-3 sm:!px-5 text-sm">
+                    <span class="sm:hidden">Editor</span><span class="hidden sm:inline">Back to editor</span>
+                </a>
+                <button id="menuBtn" type="button" class="md:hidden btn btn-soft !p-0 w-11 h-11" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+                    <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+            </div>
         </div>
+
+        <nav id="mobileMenu" class="hidden md:hidden clay-sm max-w-6xl mx-auto mt-2 p-2 grid gap-1 font-bold" style="color:var(--ink-2)" aria-label="Page sections">
+            <a href="#languages" class="block px-4 py-3 rounded-xl">Languages</a>
+            <a href="#how-it-works" class="block px-4 py-3 rounded-xl">How it works</a>
+            <a href="#miod-ai" class="block px-4 py-3 rounded-xl">MIOD AI</a>
+            <a href="#deploy" class="block px-4 py-3 rounded-xl">Publish</a>
+            <a href="#why" class="block px-4 py-3 rounded-xl">Why us</a>
+        </nav>
     </header>
 
-    <!-- Hero -->
     <main>
-        <section class="relative overflow-hidden">
-            <div class="absolute inset-0 hero-grid opacity-70 pointer-events-none"></div>
-
-            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-14">
-                <div class="max-w-4xl mx-auto text-center">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full
-                                bg-[#8a6a3f]/10 border border-[#8a6a3f]/25 text-[#8a6a3f] text-xs sm:text-sm font-medium">
-                        <span class="w-2 h-2 rounded-full bg-[#6d7652] shadow-[0_0_10px_rgba(109,118,82,.55)]"></span>
-                        The beginner-friendly web building workspace
+        <!-- What is it -->
+        <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-14 pb-10">
+            <div class="clay p-7 sm:p-11">
+                <div class="grid md:grid-cols-5 gap-8 items-start">
+                    <div class="md:col-span-3">
+                        <h1 class="js-h1">What is <span class="js-rainbow">JS</span> CODE OUTPUT?</h1>
+                        <p class="mt-5 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                            It started as a place to run HTML, CSS and JavaScript. Today it is a full online coding
+                            workspace: you can run code in many programming languages, organise project files,
+                            preview the result, publish finished work, and ask the MIOD AI assistant for help &mdash;
+                            all without installing anything.
+                        </p>
+                        <p class="mt-4 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                            Open the site, create a project, write code, press run and read the output.
+                            <strong style="color:var(--ink)">Write, run, see, improve.</strong>
+                        </p>
+                        <div class="mt-7 flex flex-wrap gap-3 sm:gap-4">
+                            <a href="/" class="btn btn-primary">Start building</a>
+                            <a href="#how-it-works" class="btn btn-soft">See how it works</a>
+                        </div>
                     </div>
 
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.08]">
-                        Code it. <span class="gradient-text">See it live.</span><br>
-                        Ship it.
-                    </h1>
-
-                    <div class="classic-rule"></div>
-                    <p class="mt-6 text-[#6b6257] text-base sm:text-lg md:text-xl leading-8 max-w-3xl mx-auto">
-                        JS CODE OUTPUT is a free online coding and web-building platform where you can
-                        create projects with HTML, CSS and JavaScript, see your work live, organize your
-                        project files, and publish finished projects without needing a complicated local setup.
-                    </p>
-
-                    <div class="mt-8 flex flex-wrap justify-center gap-3">
-                        <a href="/"
-                           class="px-5 py-3 rounded-xl bg-[#8a6a3f] hover:bg-[#735634] transition font-semibold shadow-lg shadow-[#5b452d]/20">
-                            Start Building →
-                        </a>
-                        <a href="#how-it-works"
-                           class="px-5 py-3 rounded-xl bg-[#4f4941]/[.035] hover:bg-[#4f4941]/[.07] border border-[#d8d0c2] transition font-semibold">
-                            See How It Works
-                        </a>
+                    <div class="md:col-span-2 grid grid-cols-2 gap-4">
+                        <div class="clay-sm p-4 text-center">
+                            <div class="display text-3xl font-extrabold" style="color:var(--indigo)">Many</div>
+                            <div class="text-xs font-bold mt-1" style="color:var(--ink-3)">languages</div>
+                        </div>
+                        <div class="clay-sm p-4 text-center">
+                            <div class="display text-3xl font-extrabold" style="color:var(--gold)">AI</div>
+                            <div class="text-xs font-bold mt-1" style="color:var(--ink-3)">assistant built in</div>
+                        </div>
+                        <div class="clay-sm p-4 text-center">
+                            <div class="display text-3xl font-extrabold" style="color:var(--sage)">Live</div>
+                            <div class="text-xs font-bold mt-1" style="color:var(--ink-3)">output preview</div>
+                        </div>
+                        <div class="clay-sm p-4 text-center">
+                            <div class="display text-3xl font-extrabold" style="color:var(--rose)">0</div>
+                            <div class="text-xs font-bold mt-1" style="color:var(--ink-3)">setup needed</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- What is JS CODE OUTPUT -->
-        <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-            <div class="glass rounded-3xl p-6 sm:p-9">
-                <div class="max-w-3xl">
-                    <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">About the platform</span>
-                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">What is JS CODE OUTPUT?</h2>
+        <!-- Languages -->
+        <section id="languages" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="section-title">One workspace, every language</h2>
+                <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                    Pick a language, write your code and run it. Web projects get a live page preview;
+                    scripts and programs show their output right beside your code.
+                </p>
+            </div>
 
-                    <p class="text-[#4f4941] leading-8">
-                        JS CODE OUTPUT is an online coding platform designed to make web development
-                        simple, visual and approachable. You can write HTML, CSS and JavaScript in one
-                        workspace and use the live output to understand what your code is doing.
-                    </p>
-
-                    <p class="text-[#6b6257] leading-8 mt-4">
-                        Instead of starting with a complicated development environment, a beginner can
-                        open the platform, create a project, work with the project files, run the code,
-                        inspect the result and continue improving it. The platform is built around a
-                        straightforward idea: <strong class="text-[#302b25]">write code, see the result, learn by doing.</strong>
-                    </p>
+            <div class="clay p-6 sm:p-9">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+                    <div class="lang-chip"><span class="blob b-rose">HT</span>HTML</div>
+                    <div class="lang-chip"><span class="blob b-sky">CS</span>CSS</div>
+                    <div class="lang-chip"><span class="blob b-gold">JS</span>JavaScript</div>
+                    <div class="lang-chip"><span class="blob b-indigo">TS</span>TypeScript</div>
+                    <div class="lang-chip"><span class="blob b-gold">Py</span>Python</div>
+                    <div class="lang-chip"><span class="blob b-rose">Jv</span>Java</div>
+                    <div class="lang-chip"><span class="blob b-indigo">C</span>C</div>
+                    <div class="lang-chip"><span class="blob b-sky">C++</span>C++</div>
+                    <div class="lang-chip"><span class="blob b-sage">C#</span>C#</div>
+                    <div class="lang-chip"><span class="blob b-indigo">PH</span>PHP</div>
+                    <div class="lang-chip"><span class="blob b-sky">Go</span>Go</div>
+                    <div class="lang-chip"><span class="blob b-ink">Rs</span>Rust</div>
+                    <div class="lang-chip"><span class="blob b-rose">Rb</span>Ruby</div>
+                    <div class="lang-chip"><span class="blob b-sage">Kt</span>Kotlin</div>
+                    <div class="lang-chip"><span class="blob b-gold">Sw</span>Swift</div>
+                    <div class="lang-chip"><span class="blob b-indigo">SQL</span>SQL</div>
                 </div>
+                <p class="text-center text-sm font-semibold mt-7" style="color:var(--ink-3)">
+                    ...and more. Choose your language inside the editor.
+                </p>
             </div>
         </section>
 
         <!-- How it works -->
-        <section id="how-it-works" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">The complete flow</span>
-                <h2 class="text-3xl sm:text-4xl font-bold mt-2">How JS CODE OUTPUT works</h2>
-                <p class="text-[#6b6257] mt-4 leading-7">
-                    From your first visit to a finished project, the workflow is designed to stay clear
-                    and easy to follow.
+        <section id="how-it-works" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="section-title">How it works</h2>
+                <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                    Five steps from a blank screen to a published project.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-4 gap-5">
-                <div class="step-line glass rounded-2xl p-6">
-                    <div class="w-11 h-11 rounded-xl bg-blue-500/15 border border-[#8a6a3f]/25 flex items-center justify-center text-[#8a6a3f] font-bold mb-5">01</div>
-                    <h3 class="font-bold text-lg mb-2">Start</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Begin from the main start page and choose to start building your web project.
-                    </p>
-                </div>
-
-                <div class="step-line glass rounded-2xl p-6">
-                    <div class="w-11 h-11 rounded-xl bg-[#7a5b3a]/10 border border-[#7a5b3a]/20 flex items-center justify-center text-[#7a5b3a] font-bold mb-5">02</div>
-                    <h3 class="font-bold text-lg mb-2">Create a project</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Give your project a clear name so your idea becomes an organized workspace.
-                    </p>
-                </div>
-
-                <div class="step-line glass rounded-2xl p-6">
-                    <div class="w-11 h-11 rounded-xl bg-[#5f7088]/10 border border-[#5f7088]/20 flex items-center justify-center text-[#5f7088] font-bold mb-5">03</div>
-                    <h3 class="font-bold text-lg mb-2">Code & preview</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Work with your HTML, CSS and JavaScript files while watching the live output.
-                    </p>
-                </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="w-11 h-11 rounded-xl bg-[#6d7652]/10 border border-[#6d7652]/20 flex items-center justify-center text-[#6d7652] font-bold mb-5">04</div>
-                    <h3 class="font-bold text-lg mb-2">Publish</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        When your project is ready, use the publishing/deployment workflow to take it beyond the editor.
-                    </p>
-                </div>
-            </div>
+            <ol class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8 list-none p-0">
+                <li class="step-link relative clay p-6">
+                    <span class="blob b-indigo w-12 h-12 mb-5">1</span>
+                    <h3 class="font-bold text-xl mb-2">Start</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Open the start page and choose to build something new.</p>
+                </li>
+                <li class="step-link relative clay p-6">
+                    <span class="blob b-gold w-12 h-12 mb-5">2</span>
+                    <h3 class="font-bold text-xl mb-2">Create a project</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Name it, and your idea gets its own organised space.</p>
+                </li>
+                <li class="step-link relative clay p-6">
+                    <span class="blob b-sky w-12 h-12 mb-5">3</span>
+                    <h3 class="font-bold text-xl mb-2">Code and run</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Write in the language you like, run it, and read the output.</p>
+                </li>
+                <li class="step-link relative clay p-6">
+                    <span class="blob b-rose w-12 h-12 mb-5">4</span>
+                    <h3 class="font-bold text-xl mb-2">Ask MIOD AI</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Stuck on an error or an idea? Ask the assistant for help.</p>
+                </li>
+                <li class="relative clay p-6 sm:col-span-2 lg:col-span-1">
+                    <span class="blob b-sage w-12 h-12 mb-5">5</span>
+                    <h3 class="font-bold text-xl mb-2">Publish</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Deploy the finished project from the editor.</p>
+                </li>
+            </ol>
         </section>
 
-        <!-- Start Page -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-            <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <!-- Walkthrough: Start / Project / Workspace -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div class="grid lg:grid-cols-2 gap-10 items-center">
                 <div>
-                    <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">Step 01 · Start page</span>
-                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Start with a clear idea</h2>
-
-                    <p class="text-[#4f4941] leading-8">
-                        The start page introduces the core experience: build directly in the browser,
-                        see your output live and move from an idea to a working web project.
+                    <p class="font-bold mb-2" style="color:var(--gold)">Step 1 &middot; Start page</p>
+                    <h2 class="section-title">Start with a clear idea</h2>
+                    <p class="mt-5 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                        The start page is the front door. Build directly in the browser, see your output live
+                        and move from an idea to a working project without any setup.
                     </p>
-
-                    <div class="mt-6 grid sm:grid-cols-3 gap-3">
-                        <div class="glass-soft rounded-xl p-4">
-                            <div class="text-[#8a6a3f] font-semibold">Live Output</div>
-                            <p class="text-xs text-[#8a8176] mt-1">See changes as you build.</p>
-                        </div>
-                        <div class="glass-soft rounded-xl p-4">
-                            <div class="text-[#7a5b3a] font-semibold">Projects</div>
-                            <p class="text-xs text-[#8a8176] mt-1">Keep work organized.</p>
-                        </div>
-                        <div class="glass-soft rounded-xl p-4">
-                            <div class="text-[#6d7652] font-semibold">Publish</div>
-                            <p class="text-xs text-[#8a8176] mt-1">Take finished work further.</p>
-                        </div>
+                    <div class="mt-7 grid sm:grid-cols-3 gap-4">
+                        <div class="clay-sm p-4"><div class="font-extrabold" style="color:var(--indigo)">Live output</div><p class="text-xs mt-1" style="color:var(--ink-3)">See changes as you build.</p></div>
+                        <div class="clay-sm p-4"><div class="font-extrabold" style="color:var(--gold)">Projects</div><p class="text-xs mt-1" style="color:var(--ink-3)">Keep work organised.</p></div>
+                        <div class="clay-sm p-4"><div class="font-extrabold" style="color:var(--sage)">Publish</div><p class="text-xs mt-1" style="color:var(--ink-3)">Take finished work further.</p></div>
                     </div>
                 </div>
 
-                <figure class="shot glass rounded-2xl p-2 sm:p-3">
-                    <img
-                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/start%20page%20pic.jpeg"
-                        alt="JS CODE OUTPUT start page showing the live web-building experience"
-                        class="w-full rounded-xl border border-[#d8d0c2]"
-                        loading="lazy">
-                    <figcaption class="px-2 pt-3 pb-1 text-xs text-[#8a8176]">
-                        The JS CODE OUTPUT start page — the entry point to the building experience.
-                    </figcaption>
-                </figure>
+                <div class="clay p-7 sm:p-9 text-center" aria-hidden="true">
+                    <img src="/logo.jpeg" alt="" class="w-20 h-20 rounded-[26px] object-cover mx-auto shadow-[8px_8px_16px_rgba(122,100,68,.35),-6px_-6px_12px_rgba(255,255,255,.9)]">
+                    <div class="display text-2xl font-extrabold mt-5">Build. Run. See it live.</div>
+                    <div class="clay-in !rounded-full h-3 w-3/4 mx-auto mt-5"></div>
+                    <div class="clay-in !rounded-full h-3 w-1/2 mx-auto mt-3"></div>
+                    <span class="btn btn-primary mt-7">Start building</span>
+                </div>
             </div>
         </section>
 
-        <!-- Project Page -->
         <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-            <div class="grid lg:grid-cols-2 gap-8 items-center">
-                <figure class="shot glass rounded-2xl p-2 sm:p-3 order-2 lg:order-1">
-                    <img
-                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/project%20page.jpeg"
-                        alt="JS CODE OUTPUT create new project screen"
-                        class="w-full rounded-xl border border-[#d8d0c2]"
-                        loading="lazy">
-                    <figcaption class="px-2 pt-3 pb-1 text-xs text-[#8a8176]">
-                        Creating a new project with a distinctive project name.
-                    </figcaption>
-                </figure>
+            <div class="grid lg:grid-cols-2 gap-10 items-center">
+                <div class="clay p-6 sm:p-9 order-2 lg:order-1" aria-hidden="true">
+                    <div class="text-sm font-bold mb-2" style="color:var(--ink-3)">Project name</div>
+                    <div class="clay-in px-5 py-4 font-bold" style="color:var(--ink)">my-first-game</div>
+                    <span class="btn btn-primary w-full mt-5">Create project</span>
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div class="clay-sm p-4"><span class="blob b-gold w-9 h-9 text-xs mb-2">Py</span><div class="text-sm font-extrabold">calculator</div></div>
+                        <div class="clay-sm p-4"><span class="blob b-rose w-9 h-9 text-xs mb-2">JS</span><div class="text-sm font-extrabold">portfolio</div></div>
+                    </div>
+                </div>
 
                 <div class="order-1 lg:order-2">
-                    <span class="text-[#7a5b3a] text-sm font-semibold uppercase tracking-widest">Step 02 · Project page</span>
-                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Turn an idea into a project</h2>
-
-                    <p class="text-[#4f4941] leading-8">
-                        A project gives your work a clear home. You can start by choosing a distinctive
-                        project name — whether you are experimenting with a portfolio, a game, a landing
-                        page or another web idea.
+                    <p class="font-bold mb-2" style="color:var(--gold)">Step 2 &middot; Project page</p>
+                    <h2 class="section-title">Turn an idea into a project</h2>
+                    <p class="mt-5 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                        A project gives your work a clear home. Choose a name &mdash; for a portfolio, a game,
+                        a script, a landing page or anything else &mdash; and keep every idea in its own place.
                     </p>
-
-                    <p class="text-[#6b6257] leading-8 mt-4">
-                        Keeping each idea inside its own project makes it easier to return to your work,
-                        continue experimenting and understand what belongs to which project.
+                    <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                        That makes it easy to come back, keep experimenting, and know which files belong to which project.
                     </p>
-
-                    <div class="mt-6 flex flex-wrap gap-2">
-                        <span class="px-3 py-2 rounded-lg bg-[#4f4941]/[.035] border border-[#d8d0c2] text-sm text-[#4f4941]">Project name</span>
-                        <span class="px-3 py-2 rounded-lg bg-[#4f4941]/[.035] border border-[#d8d0c2] text-sm text-[#4f4941]">Organized work</span>
-                        <span class="px-3 py-2 rounded-lg bg-[#4f4941]/[.035] border border-[#d8d0c2] text-sm text-[#4f4941]">Build & experiment</span>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="clay-sm !rounded-2xl px-4 py-2 text-sm font-bold" style="color:var(--ink-2)">Project name</span>
+                        <span class="clay-sm !rounded-2xl px-4 py-2 text-sm font-bold" style="color:var(--ink-2)">Organised files</span>
+                        <span class="clay-sm !rounded-2xl px-4 py-2 text-sm font-bold" style="color:var(--ink-2)">Build and experiment</span>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Workspace -->
-        <section id="workspace" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-[#80613e] text-sm font-semibold uppercase tracking-widest">Step 03 · Workspace</span>
-                <h2 class="text-3xl sm:text-4xl font-bold mt-2">One workspace for the whole build</h2>
-                <p class="text-[#6b6257] mt-4 leading-7">
-                    The workspace brings your project files, code editor, live output and development
-                    controls together so you can build and test without constantly changing tools.
+        <section id="workspace" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <p class="font-bold mb-2" style="color:var(--gold)">Step 3 &middot; Workspace</p>
+                <h2 class="section-title">One workspace for the whole build</h2>
+                <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                    Project files, code editor, live output and controls sit together, so you never
+                    have to switch tools to test your work.
                 </p>
             </div>
 
-            <figure class="shot glass rounded-2xl p-2 sm:p-3 max-w-5xl mx-auto">
-                <img
-                    src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/workspace.jpeg"
-                    alt="JS CODE OUTPUT workspace with file explorer, code editor and live output"
-                    class="w-full rounded-xl border border-[#d8d0c2]"
-                    loading="lazy">
-                <figcaption class="px-2 pt-3 pb-1 text-xs text-[#8a8176]">
-                    The workspace combines the project explorer, editor and live output in one screen.
-                </figcaption>
-            </figure>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-7">
-                <div class="glass rounded-2xl p-5">
-                    <h3 class="font-bold mb-2">Explorer</h3>
-                    <p class="text-[#6b6257] text-sm leading-6">
-                        Manage the files and folders that make up your project.
-                    </p>
+            <div class="clay p-4 sm:p-6 max-w-5xl mx-auto" aria-hidden="true">
+                <div class="flex flex-wrap items-center gap-3 mb-4 px-1">
+                    <span class="btn btn-soft !py-2 !px-4 text-sm">Save draft</span>
+                    <span class="btn btn-primary !py-2 !px-4 text-sm">&#9654; Run</span>
+                    <span class="btn btn-soft !py-2 !px-4 text-sm">Publish</span>
                 </div>
-                <div class="glass rounded-2xl p-5">
-                    <h3 class="font-bold mb-2">Editor</h3>
-                    <p class="text-[#6b6257] text-sm leading-6">
-                        Work with files such as HTML, CSS and JavaScript directly in the workspace.
-                    </p>
-                </div>
-                <div class="glass rounded-2xl p-5">
-                    <h3 class="font-bold mb-2">Live Output</h3>
-                    <p class="text-[#6b6257] text-sm leading-6">
-                        Run your project and see the resulting webpage beside your code.
-                    </p>
-                </div>
-                <div class="glass rounded-2xl p-5">
-                    <h3 class="font-bold mb-2">Build Controls</h3>
-                    <p class="text-[#6b6257] text-sm leading-6">
-                        Use actions such as Save as Draft, Run, Publish, Format, Console and Libraries as available in the workspace.
-                    </p>
+                <div class="grid md:grid-cols-12 gap-4">
+                    <div class="md:col-span-3 clay-in p-4 text-sm font-bold space-y-2" style="color:var(--ink-2)">
+                        <div style="color:var(--ink-3)" class="text-xs">Explorer</div>
+                        <div>&#128193; my-first-game</div>
+                        <div class="pl-4">index.html</div>
+                        <div class="pl-4">style.css</div>
+                        <div class="pl-4">main.py</div>
+                    </div>
+                    <div class="md:col-span-5 code-pane p-4">
+<pre class="whitespace-pre-wrap"><span class="tok-c"># main.py</span>
+<span class="tok-k">for</span> i <span class="tok-k">in</span> <span class="tok-f">range</span>(3):
+    <span class="tok-f">print</span>(<span class="tok-s">"Level"</span>, i + 1)</pre>
+                    </div>
+                    <div class="md:col-span-4 clay-in p-4 text-sm">
+                        <div class="text-xs font-bold mb-2" style="color:var(--sage)">&#9654; Output</div>
+                        <div class="font-semibold leading-7" style="font-family:ui-monospace,Menlo,Consolas,monospace">Level 1<br>Level 2<br>Level 3</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-5 glass-soft rounded-2xl p-5 sm:p-6">
-                <h3 class="font-bold text-lg mb-3">Why this layout matters</h3>
-                <p class="text-[#6b6257] leading-7">
-                    Beginners can learn the relationship between code and output visually. Instead of
-                    writing code in one place and opening another application to check it, the workspace
-                    keeps the source and result close together. That makes experimenting, finding mistakes
-                    and improving a page much easier.
-                </p>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-9">
+                <div class="clay p-6">
+                    <span class="blob b-indigo w-11 h-11 mb-4 text-sm">Fx</span>
+                    <h3 class="font-bold text-lg mb-1">Explorer</h3>
+                    <p class="text-sm leading-6" style="color:var(--ink-2)">Manage the files and folders in your project.</p>
+                </div>
+                <div class="clay p-6">
+                    <span class="blob b-gold w-11 h-11 mb-4 text-sm">&lt;/&gt;</span>
+                    <h3 class="font-bold text-lg mb-1">Editor</h3>
+                    <p class="text-sm leading-6" style="color:var(--ink-2)">Write code in your chosen language right in the browser.</p>
+                </div>
+                <div class="clay p-6">
+                    <span class="blob b-sage w-11 h-11 mb-4 text-sm">&#9654;</span>
+                    <h3 class="font-bold text-lg mb-1">Live output</h3>
+                    <p class="text-sm leading-6" style="color:var(--ink-2)">Run the project and see the result beside your code.</p>
+                </div>
+                <div class="clay p-6">
+                    <span class="blob b-rose w-11 h-11 mb-4 text-sm">&#9881;</span>
+                    <h3 class="font-bold text-lg mb-1">Build controls</h3>
+                    <p class="text-sm leading-6" style="color:var(--ink-2)">Save as draft, run, publish, format, console and libraries &mdash; where available.</p>
+                </div>
             </div>
         </section>
 
-        <!-- Technologies -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-            <div class="glass rounded-3xl p-6 sm:p-9">
-                <div class="text-center max-w-2xl mx-auto mb-8">
-                    <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">Core building blocks</span>
-                    <h2 class="text-3xl font-bold mt-2">HTML · CSS · JavaScript</h2>
-                    <p class="text-[#6b6257] mt-3 leading-7">
-                        JS CODE OUTPUT is centered around the three technologies beginners commonly use
-                        to build interactive webpages.
-                    </p>
-                </div>
+        <!-- MIOD AI -->
+        <section id="miod-ai" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="clay p-7 sm:p-12">
+                <div class="grid lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <div class="mb-7 max-w-[440px]" role="img" aria-label="MIOD">
+                            <svg class="miod-anim" viewBox="100 270 1300 1110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <ellipse class="m-shade" cx="792" cy="1286" rx="250" ry="15"/>
 
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="rounded-2xl bg-[#9a6840]/[.05] border border-[#9a6840]/15 p-6">
-                        <div class="text-[#9a6840] font-bold text-xl mb-2">HTML</div>
-                        <p class="text-[#6b6257] text-sm leading-7">
-                            Build the structure and content of your webpage.
+                                <g class="m-l" id="g-i">
+                                    <text class="m-ch m-sh" id="s-i" x="610" y="1270" dx="11" dy="13">i</text>
+                                    <text class="m-ch m-ci" id="t-i" x="610" y="1270">i</text>
+                                </g>
+                                <g class="m-l" id="g-o">
+                                    <text class="m-ch m-sh" id="s-o" x="650" y="1270" dx="11" dy="13">o</text>
+                                    <text class="m-ch m-co" id="t-o" x="650" y="1270">o</text>
+                                </g>
+                                <g class="m-l" id="g-d">
+                                    <text class="m-ch m-sh" id="s-d" x="800" y="1270" dx="11" dy="13">d</text>
+                                    <text class="m-ch m-cd" id="t-d" x="800" y="1270">d</text>
+                                </g>
+
+                                <g transform="translate(630 1020)"><path class="m-spark m-spA" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+                                <g transform="translate(790 995)"><path class="m-spark m-spB" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+                                <g transform="translate(955 1025)"><path class="m-spark m-spC" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+
+                                <g id="wormWrap">
+                                    <g id="worm">
+                                        <path id="spine" fill="none" d="M540 1230 C400 1080 240 880 250 650 C260 480 420 380 560 420 C650 445 700 520 725 580 C760 520 820 440 950 420 C1150 400 1300 560 1270 760 C1255 860 1190 890 1110 905"/>
+                                        <g id="outline"></g>
+                                        <g id="fill"></g>
+                                        <g fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="22" stroke-linecap="round">
+                                            <path d="M300 760 C285 650 330 560 400 500"/>
+                                            <path d="M1000 470 C1100 460 1190 520 1230 600"/>
+                                        </g>
+                                        <g>
+                                            <g class="m-eye" id="eyeBig">
+                                                <ellipse cx="1085" cy="855" rx="56" ry="56" fill="#fff" stroke="#2a1a4a" stroke-width="7"/>
+                                                <g class="m-pupils">
+                                                    <circle cx="1088" cy="857" r="34" fill="#0e0620"/>
+                                                    <circle cx="1104" cy="843" r="11" fill="#fff"/>
+                                                </g>
+                                                <path class="m-dizzy" id="dzBig" fill="none" stroke="#2a1a4a" stroke-width="6" stroke-linecap="round"/>
+                                            </g>
+                                            <g class="m-eye" id="eyeSmall">
+                                                <ellipse cx="1150" cy="985" rx="44" ry="40" fill="#fff" stroke="#2a1a4a" stroke-width="6"/>
+                                                <g class="m-pupils">
+                                                    <circle cx="1155" cy="988" r="24" fill="#0e0620"/>
+                                                    <circle cx="1166" cy="978" r="8" fill="#fff"/>
+                                                </g>
+                                                <path class="m-dizzy" id="dzSmall" fill="none" stroke="#2a1a4a" stroke-width="5" stroke-linecap="round"/>
+                                            </g>
+                                            <path d="M1035 925 q-8 33 28 48" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+                                            <path d="M1165 795 q24 12 27 38" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <h2 class="section-title">Your coding helper, right inside the workspace</h2>
+                        <p class="mt-5 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                            MIOD AI is the built-in assistant for JS CODE OUTPUT. Describe what you want to build,
+                            ask why your code fails, or request an explanation &mdash; then run the result and see
+                            the output.
                         </p>
+
+                        <ul class="mt-7 space-y-4 list-none p-0">
+                            <li class="flex gap-4 items-start">
+                                <span class="blob b-gold w-10 h-10 text-sm flex-none">1</span>
+                                <div><div class="font-extrabold">Write code from an idea</div><p class="text-sm leading-6" style="color:var(--ink-2)">Describe a program or page in plain words and get a starting point.</p></div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <span class="blob b-rose w-10 h-10 text-sm flex-none">2</span>
+                                <div><div class="font-extrabold">Fix errors</div><p class="text-sm leading-6" style="color:var(--ink-2)">Paste an error and ask what went wrong and how to fix it.</p></div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <span class="blob b-sage w-10 h-10 text-sm flex-none">3</span>
+                                <div><div class="font-extrabold">Learn as you build</div><p class="text-sm leading-6" style="color:var(--ink-2)">Ask for a line-by-line explanation of any code you do not understand.</p></div>
+                            </li>
+                        </ul>
+
+                        <div class="mt-8">
+                            <a href="/miod_ai.html" class="btn btn-primary">Open MIOD AI</a>
+                        </div>
                     </div>
 
-                    <div class="rounded-2xl bg-[#5f7088]/[.05] border border-[#5f7088]/15 p-6">
-                        <div class="text-[#8a6a3f] font-bold text-xl mb-2">CSS</div>
-                        <p class="text-[#6b6257] text-sm leading-7">
-                            Style your project and shape its visual appearance.
-                        </p>
-                    </div>
+                    <!-- Chat mock -->
+                    <div class="clay-in p-4 sm:p-6">
+                        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:1px solid rgba(138,112,76,.2)">
+                            <svg class="w-16 flex-none" id="miodMini" viewBox="190 340 1200 920" aria-hidden="true" style="overflow:visible;filter:drop-shadow(3px 4px 5px rgba(122,100,68,.3))">
+                                <g id="miniOutline"></g><g id="miniFill"></g>
+                                <ellipse cx="1085" cy="855" rx="56" ry="56" fill="#fff" stroke="#2a1a4a" stroke-width="10"/><circle cx="1088" cy="857" r="34" fill="#0e0620"/>
+                                <ellipse cx="1150" cy="985" rx="44" ry="40" fill="#fff" stroke="#2a1a4a" stroke-width="9"/><circle cx="1155" cy="988" r="24" fill="#0e0620"/>
+                            </svg>
+                            <div>
+                                <div class="font-extrabold leading-tight">MIOD AI</div>
+                                <div class="text-xs font-semibold" style="color:var(--sage)">Ready to help</div>
+                            </div>
+                        </div>
 
-                    <div class="rounded-2xl bg-[#8a7040]/[.05] border border-[#8a7040]/15 p-6">
-                        <div class="text-[#8a7040] font-bold text-xl mb-2">JavaScript</div>
-                        <p class="text-[#6b6257] text-sm leading-7">
-                            Add interaction, logic and functionality to your webpage.
-                        </p>
+                        <div class="space-y-4">
+                            <div class="flex justify-end"><div class="bubble-user px-4 py-3 text-sm max-w-[85%]">Why does my Python loop print nothing?</div></div>
+                            <div class="flex"><div class="bubble-ai px-4 py-3 text-sm max-w-[88%] leading-6">Your <code style="font-family:ui-monospace,Menlo,monospace">range(0)</code> is empty, so the loop never runs. Use <code style="font-family:ui-monospace,Menlo,monospace">range(5)</code> instead.</div></div>
+                            <div class="flex justify-end"><div class="bubble-user px-4 py-3 text-sm max-w-[85%]">Thanks! Now make it a C++ version.</div></div>
+                            <div class="flex"><div class="bubble-ai px-4 py-3" aria-label="MIOD AI is typing"><span class="typing"><i></i><i></i><i></i></span></div></div>
+                        </div>
+
+                        <div class="clay-sm !rounded-2xl mt-5 flex items-center gap-3 px-4 py-3">
+                            <span class="text-sm flex-1" style="color:var(--ink-3)">Ask MIOD AI anything...</span>
+                            <span class="blob b-gold w-9 h-9 text-sm">&#10148;</span>
+                        </div>
+                        <p class="text-[11px] mt-3 text-center font-semibold" style="color:var(--ink-3)">Example conversation</p>
                     </div>
                 </div>
             </div>
@@ -442,141 +795,129 @@
 
         <!-- Deploy -->
         <section id="deploy" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-            <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <div class="grid lg:grid-cols-2 gap-10 items-center">
                 <div>
-                    <span class="text-[#6d7652] text-sm font-semibold uppercase tracking-widest">Step 04 · Deploy</span>
-                    <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">When the project is ready, take it further</h2>
-
-                    <p class="text-[#4f4941] leading-8">
-                        Building is only half of the journey. Once your project is working, JS CODE OUTPUT
-                        provides a deployment flow for publishing it inside the <strong class="text-[#24211d]">JS mini.Browser</strong>
-                        ecosystem.
+                    <p class="font-bold mb-2" style="color:var(--gold)">Step 5 &middot; Publish</p>
+                    <h2 class="section-title">When it works, take it further</h2>
+                    <p class="mt-5 leading-8 text-[1.05rem]" style="color:var(--ink-2)">
+                        Building is only half of the journey. JS CODE OUTPUT has a deployment flow for publishing your
+                        project inside the <strong style="color:var(--ink)">JS mini.Browser</strong> ecosystem.
                     </p>
-
-                    <p class="text-[#6b6257] leading-8 mt-4">
-                        The deployment screen lets you provide information such as the project name,
-                        description, virtual domain, category and visibility before deploying. This turns
-                        a project you created in the editor into something that can be presented and shared
-                        through the platform's publishing experience.
+                    <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                        On the deployment screen you add a project name, description, virtual domain,
+                        category and visibility, then deploy.
                     </p>
-
-                    <div class="mt-6 grid sm:grid-cols-2 gap-3">
-                        <div class="glass-soft rounded-xl p-4">
-                            <div class="font-semibold">Virtual domain</div>
-                            <p class="text-xs text-[#8a8176] mt-1">Give the published project its own recognizable name.</p>
-                        </div>
-                        <div class="glass-soft rounded-xl p-4">
-                            <div class="font-semibold">Visibility</div>
-                            <p class="text-xs text-[#8a8176] mt-1">Choose the publishing visibility offered by the deployment screen.</p>
-                        </div>
+                    <div class="mt-7 grid sm:grid-cols-2 gap-4">
+                        <div class="clay-sm p-4"><div class="font-extrabold">Virtual domain</div><p class="text-xs mt-1" style="color:var(--ink-3)">Give the published project its own recognisable name.</p></div>
+                        <div class="clay-sm p-4"><div class="font-extrabold">Visibility</div><p class="text-xs mt-1" style="color:var(--ink-3)">Choose the visibility the deployment screen offers.</p></div>
                     </div>
                 </div>
 
-                <figure class="shot glass rounded-2xl p-2 sm:p-3">
-                    <img
-                        src="https://raw.githubusercontent.com/dabtanmoy4-stack/js-code-output/main/deploy.jpeg"
-                        alt="JS CODE OUTPUT deployment screen for publishing a project to JS mini.Browser"
-                        class="w-full rounded-xl border border-[#d8d0c2]"
-                        loading="lazy">
-                    <figcaption class="px-2 pt-3 pb-1 text-xs text-[#8a8176]">
-                        The deployment form for publishing a project into the JS mini.Browser ecosystem.
-                    </figcaption>
-                </figure>
+                <div class="clay p-6 sm:p-9" aria-hidden="true">
+                    <div class="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div><div class="font-bold mb-1" style="color:var(--ink-3)">Project name</div><div class="clay-in px-4 py-3 font-bold">my-first-game</div></div>
+                        <div><div class="font-bold mb-1" style="color:var(--ink-3)">Virtual domain</div><div class="clay-in px-4 py-3 font-bold">mygame.js</div></div>
+                        <div class="sm:col-span-2"><div class="font-bold mb-1" style="color:var(--ink-3)">Description</div><div class="clay-in px-4 py-3 font-semibold" style="color:var(--ink-2)">A small game built with JS CODE OUTPUT.</div></div>
+                        <div><div class="font-bold mb-1" style="color:var(--ink-3)">Category</div><div class="clay-in px-4 py-3 font-bold">Games</div></div>
+                        <div><div class="font-bold mb-1" style="color:var(--ink-3)">Visibility</div><div class="clay-in px-4 py-3 font-bold">Public</div></div>
+                    </div>
+                    <span class="btn btn-primary w-full mt-6">Deploy</span>
+                </div>
             </div>
         </section>
 
         <!-- Why -->
-        <section id="why" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-[#7a5b3a] text-sm font-semibold uppercase tracking-widest">Built for learning</span>
-                <h2 class="text-3xl sm:text-4xl font-bold mt-2">Why JS CODE OUTPUT is great for beginners</h2>
-                <p class="text-[#6b6257] mt-4 leading-7">
-                    The goal is not to make coding feel complicated. The goal is to make the first steps
-                    understandable and the next steps easy to explore.
+        <section id="why" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="section-title">Why people use JS CODE OUTPUT</h2>
+                <p class="mt-4 leading-8" style="color:var(--ink-2)">
+                    Coding should feel approachable. The first steps should be easy to understand and the next ones easy to explore.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">⚡</div>
-                    <h3 class="font-bold text-lg mb-2">Fast feedback</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        See the relationship between your code and the webpage quickly through live output.
-                    </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="clay p-7">
+                    <span class="blob b-gold w-12 h-12 mb-5">&#9889;</span>
+                    <h3 class="font-bold text-xl mb-2">Fast feedback</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Run your code and see the result straight away.</p>
                 </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">🧩</div>
-                    <h3 class="font-bold text-lg mb-2">Learn by experimenting</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Change a line, run the project and observe what happens. That makes concepts easier to understand.
-                    </p>
+                <div class="clay p-7">
+                    <span class="blob b-indigo w-12 h-12 mb-5 text-sm">&lt;/&gt;</span>
+                    <h3 class="font-bold text-xl mb-2">Many languages</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Try Python, JavaScript, C++, Java and more in the same place.</p>
                 </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">🗂️</div>
-                    <h3 class="font-bold text-lg mb-2">Project-based learning</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Learning becomes more practical when you build actual pages, small apps and creative experiments.
-                    </p>
+                <div class="clay p-7">
+                    <span class="blob b-rose w-12 h-12 mb-5 text-sm">AI</span>
+                    <h3 class="font-bold text-xl mb-2">AI that helps you learn</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">MIOD AI explains, debugs and suggests while you build.</p>
                 </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">💻</div>
-                    <h3 class="font-bold text-lg mb-2">Browser-based</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Get started from the browser without first setting up a large local development environment.
-                    </p>
+                <div class="clay p-7">
+                    <span class="blob b-sage w-12 h-12 mb-5 text-sm">&#9729;</span>
+                    <h3 class="font-bold text-xl mb-2">Works in the browser</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">No big local setup. Open the site and start.</p>
                 </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">🚀</div>
-                    <h3 class="font-bold text-lg mb-2">From idea to publishing</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        The workflow connects creating, testing and publishing instead of treating them as completely separate tasks.
-                    </p>
+                <div class="clay p-7">
+                    <span class="blob b-sky w-12 h-12 mb-5 text-sm">&#128193;</span>
+                    <h3 class="font-bold text-xl mb-2">Project-based</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Build real pages, apps, scripts and experiments, each in its own project.</p>
                 </div>
-
-                <div class="glass rounded-2xl p-6">
-                    <div class="text-2xl mb-4">🌱</div>
-                    <h3 class="font-bold text-lg mb-2">Beginner first</h3>
-                    <p class="text-[#6b6257] text-sm leading-7">
-                        Students, first-time learners, creators and hobby developers can start small and grow from there.
-                    </p>
+                <div class="clay p-7">
+                    <span class="blob b-ink w-12 h-12 mb-5 text-sm">&#128640;</span>
+                    <h3 class="font-bold text-xl mb-2">From idea to published</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Create, test and publish in one connected flow.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Mission -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-            <div class="glass rounded-3xl p-7 sm:p-10 text-center">
-                <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">Our mission</span>
-                <h2 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">Make web development easier to approach</h2>
-                <p class="text-[#4f4941] leading-8 max-w-3xl mx-auto">
-                    Our goal is to make coding more accessible for people who are learning, experimenting
-                    or simply trying to turn an idea into a working webpage. JS CODE OUTPUT is designed
-                    to give beginners a practical place to start while still providing a useful workflow
-                    for building and testing real web projects.
-                </p>
+        <!-- Values -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="section-title">What we believe</h2>
+                <p class="mt-4 leading-8" style="color:var(--ink-2)">Three ideas shape every part of the platform.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="clay p-7">
+                    <span class="blob b-indigo w-12 h-12 mb-5 text-sm">&#10022;</span>
+                    <h3 class="font-bold text-xl mb-2">Keep it simple</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">A tool should get out of the way. Open it, write code, see the result.</p>
+                </div>
+                <div class="clay p-7">
+                    <span class="blob b-gold w-12 h-12 mb-5 text-sm">&#9998;</span>
+                    <h3 class="font-bold text-xl mb-2">Learn by doing</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">Change a line, run it and watch what happens. That is the fastest way to understand code.</p>
+                </div>
+                <div class="clay p-7">
+                    <span class="blob b-sage w-12 h-12 mb-5 text-sm">&#10003;</span>
+                    <h3 class="font-bold text-xl mb-2">AI as a helper</h3>
+                    <p class="text-sm leading-7" style="color:var(--ink-2)">MIOD AI suggests and explains, and you stay in control. Always run and check the result yourself.</p>
+                </div>
             </div>
         </section>
 
-        <!-- Who is it for -->
+        <!-- Mission + audience -->
         <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-            <div class="grid md:grid-cols-2 gap-5">
-                <div class="glass rounded-2xl p-7">
-                    <h2 class="text-2xl font-bold mb-4">Who is it for?</h2>
-                    <p class="text-[#6b6257] leading-7">
-                        JS CODE OUTPUT can be useful for students, beginners, creators, hobby developers
-                        and anyone who wants to quickly experiment with HTML, CSS and JavaScript.
+            <div class="clay p-8 sm:p-12 text-center">
+                <h2 class="section-title">Make coding easier to approach</h2>
+                <p class="mt-5 leading-8 max-w-3xl mx-auto text-[1.05rem]" style="color:var(--ink-2)">
+                    Our goal is to make programming more accessible for people who are learning,
+                    experimenting, or turning an idea into something that works. We give beginners a
+                    practical place to start and give builders a workflow for real projects.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mt-8">
+                <div class="clay p-7">
+                    <h3 class="font-bold text-2xl mb-3">Who is it for?</h3>
+                    <p class="leading-7" style="color:var(--ink-2)">
+                        Students, beginners, creators, hobby developers &mdash; anyone who wants to try
+                        different languages, build projects and preview results quickly.
                     </p>
                 </div>
-
-                <div class="glass rounded-2xl p-7">
-                    <h2 class="text-2xl font-bold mb-4">What can you build?</h2>
-                    <p class="text-[#6b6257] leading-7">
-                        Start with a simple webpage and gradually experiment with portfolios, landing pages,
-                        interactive components, small web apps, games and other browser-based ideas.
+                <div class="clay p-7">
+                    <h3 class="font-bold text-2xl mb-3">What can you build?</h3>
+                    <p class="leading-7" style="color:var(--ink-2)">
+                        Web pages and apps, games, scripts, interactive experiments, creative coding
+                        and practice programs in any supported language.
                     </p>
                 </div>
             </div>
@@ -584,66 +925,141 @@
 
         <!-- Contact -->
         <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-            <div class="glass rounded-3xl p-7 sm:p-10">
+            <div class="clay p-7 sm:p-10">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div>
-                        <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">Need help?</span>
-                        <h2 class="text-2xl sm:text-3xl font-bold mt-2 mb-3">Have a question or feedback?</h2>
-                        <p class="text-[#6b6257] leading-7 max-w-2xl">
-                            Use the Contact Us page for the platform's available contact and support information.
-                            Feedback from users can help make the experience clearer and more useful.
+                        <h2 class="text-2xl sm:text-3xl font-bold mb-3">Have a question or feedback?</h2>
+                        <p class="leading-7 max-w-2xl" style="color:var(--ink-2)">
+                            Visit the Contact Us page for support and contact details. Your feedback helps make
+                            the platform clearer and more useful.
                         </p>
                     </div>
-
-                    <a href="/contact.html"
-                       class="shrink-0 inline-flex items-center justify-center px-5 py-3 rounded-xl
-                              bg-[#24211d]/10 hover:bg-[#4f4941]/[.08] border border-[#d8d0c2] transition font-semibold">
-                        Contact Us →
-                    </a>
+                    <a href="/contact.html" class="btn btn-soft shrink-0">Contact us</a>
                 </div>
             </div>
         </section>
 
         <!-- Closing CTA -->
         <section class="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
-            <div class="relative overflow-hidden glass rounded-3xl p-8 sm:p-12 text-center">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-violet-600/10 pointer-events-none"></div>
-
-                <div class="relative">
-                    <span class="text-[#8a6a3f] text-sm font-semibold uppercase tracking-widest">Your next project starts here</span>
-                    <h2 class="text-3xl sm:text-5xl font-black mt-3 mb-5">
-                        Learn. Build. <span class="gradient-text">See it live.</span>
-                    </h2>
-                    <p class="text-[#6b6257] leading-7 max-w-2xl mx-auto mb-7">
-                        You do not need to know everything before you begin. Start with an idea,
-                        create a project, write your code, watch the result and keep improving.
-                    </p>
-
-                    <a href="/"
-                       class="inline-flex items-center justify-center px-7 py-3.5 rounded-xl
-                              bg-[#8a6a3f] hover:bg-[#735634] transition font-bold shadow-lg shadow-[#5b452d]/20">
-                        Open JS CODE OUTPUT →
-                    </a>
+            <div class="clay p-9 sm:p-14 text-center">
+                <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight">Your next project starts here</h2>
+                <p class="mt-5 leading-8 max-w-2xl mx-auto" style="color:var(--ink-2)">
+                    You do not need to know everything first. Pick a language, write some code,
+                    ask MIOD AI when you need a hand, and keep improving.
+                </p>
+                <div class="mt-9">
+                    <a href="/" class="btn btn-primary !px-8 !py-4 text-lg">Open JS CODE OUTPUT</a>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-[#d8d0c2] mt-8">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-9 text-center">
-            <p class="text-[#8a8176] text-sm mb-4">
-                © 2026 JS CODE OUTPUT. All rights reserved.
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
-                <a href="/about.html" class="text-[#8a6a3f] hover:text-[#8a6a3f] transition">About Us</a>
-                <a href="/contact.html" class="text-[#6b6257] hover:text-[#24211d] transition">Contact Us</a>
-                <a href="/privacy.html" class="text-[#6b6257] hover:text-[#24211d] transition">Privacy Policy</a>
-                <a href="/terms.html" class="text-[#6b6257] hover:text-[#24211d] transition">Terms & Conditions</a>
+    <footer class="px-3 sm:px-6 pb-8">
+        <div class="clay-sm max-w-6xl mx-auto px-6 py-8 text-center">
+            <p class="text-sm mb-4 font-semibold" style="color:var(--ink-3)">&copy; 2026 JS CODE OUTPUT. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-x-7 gap-y-3 text-sm font-bold">
+                <a href="/about.html" style="color:var(--indigo)">About Us</a>
+                <a href="/contact.html" style="color:var(--ink-2)" class="hover:text-[#2f4a7a] transition">Contact Us</a>
+                <a href="/privacy.html" style="color:var(--ink-2)" class="hover:text-[#2f4a7a] transition">Privacy Policy</a>
+                <a href="/terms.html" style="color:var(--ink-2)" class="hover:text-[#2f4a7a] transition">Terms &amp; Conditions</a>
             </div>
         </div>
     </footer>
+
+    <script>
+    (function () {
+        var NS = 'http://www.w3.org/2000/svg';
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var spine = document.getElementById('spine');
+        if (!spine) return;
+        var L = spine.getTotalLength();
+        var ss = function (a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
+        function r(t) { return 22 + 70 * ss(0, 0.32, t) + 38 * ss(0.84, 0.985, t); }
+
+        // body: stacked circles along the spine, with a darker outline ring
+        var N = 380, outs = [], fills = [];
+        var og = document.getElementById('outline'), fg = document.getElementById('fill');
+        for (var i = 0; i <= N; i++) {
+            var t = i / N, p = spine.getPointAtLength(t * L), rr = r(t);
+            var a = document.createElementNS(NS, 'circle');
+            a.setAttribute('cx', p.x.toFixed(1)); a.setAttribute('cy', p.y.toFixed(1)); a.setAttribute('r', (rr + 12).toFixed(1));
+            og.appendChild(a); outs.push(a);
+            var b = document.createElementNS(NS, 'circle');
+            b.setAttribute('cx', p.x.toFixed(1)); b.setAttribute('cy', p.y.toFixed(1)); b.setAttribute('r', rr.toFixed(1));
+            fg.appendChild(b); fills.push(b);
+        }
+
+        // rainbow runs along the body and keeps flowing
+        function paint(time) {
+            var shift = time * 0.045;
+            for (var i = 0; i <= N; i++) {
+                var h = ((i / N) * 300 + shift) % 360;
+                outs[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',70%,36%)');
+                fills[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',85%,62%)');
+            }
+        }
+
+        // dizzy spiral for the eyes during the spin
+        function spiral(cx, cy, rMax, turns) {
+            var d = '', steps = 80;
+            for (var k = 0; k <= steps; k++) {
+                var f = k / steps, ang = f * turns * 2 * Math.PI, rad = rMax * f;
+                d += (k ? ' L ' : 'M ') + (cx + rad * Math.cos(ang)).toFixed(1) + ' ' + (cy + rad * Math.sin(ang)).toFixed(1);
+            }
+            return d;
+        }
+        document.getElementById('dzBig').setAttribute('d', spiral(1085, 855, 40, 2.5));
+        document.getElementById('dzSmall').setAttribute('d', spiral(1150, 985, 30, 2.5));
+
+        paint(0);
+
+        // small static copy of the worm for the chat header
+        var mo = document.getElementById('miniOutline'), mf = document.getElementById('miniFill');
+        if (mo && mf) { mo.innerHTML = og.innerHTML; mf.innerHTML = fg.innerHTML; }
+
+        // run the colour loop only while the logo is on screen
+        var running = false, visible = true;
+        function loop(t) { if (!visible) { running = false; return; } paint(t); requestAnimationFrame(loop); }
+        function start() { if (!running && !reduced) { running = true; requestAnimationFrame(loop); } }
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible) start(); }, { threshold: 0 })
+                .observe(document.querySelector('.miod-anim'));
+        }
+        start();
+
+        // place the letters tightly and aim each one's start at the tail tip
+        function layout() {
+            var keys = ['i', 'o', 'd'], x = 610, gap = 6;
+            keys.forEach(function (k) {
+                var face = document.getElementById('t-' + k), shadow = document.getElementById('s-' + k);
+                var g = document.getElementById('g-' + k), w = face.getComputedTextLength();
+                face.setAttribute('x', x);
+                shadow.setAttribute('x', x);
+                g.style.setProperty('--dx', (540 - (x + w / 2)).toFixed(0) + 'px');
+                x += w + gap;
+            });
+        }
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); } else { layout(); }
+    })();
+    </script>
+
+    <script>
+    (function () {
+        var btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu'), icon = document.getElementById('menuIcon');
+        if (!btn || !menu) return;
+        var burger = '<path d="M4 7h16M4 12h16M4 17h16"/>', cross = '<path d="M6 6l12 12M18 6L6 18"/>';
+        function set(open) {
+            menu.classList.toggle('hidden', !open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            icon.innerHTML = open ? cross : burger;
+        }
+        btn.addEventListener('click', function () { set(menu.classList.contains('hidden')); });
+        menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    })();
+    </script>
 
 </body>
 </html>
