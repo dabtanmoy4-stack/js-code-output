@@ -1,10 +1,14 @@
- <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>JS CODE OUTPUT</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap">
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
+<link rel="apple-touch-icon" href="logo.jpeg">
+<meta name="theme-color" content="#f0ecfd">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap">
 <style>
 @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
 :root{
@@ -58,7 +62,11 @@ header::after{content:"";position:absolute;left:28px;right:28px;bottom:-1px;heig
 .btn:active{transform:scale(.94)}
 .btn.g{background:var(--grad);background-size:300% 100%;animation:flow 6s linear infinite;border:0;color:var(--ink)}
 .btn:focus-visible,#code:focus-visible,#spl:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}
-.btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.btn svg .d{fill:url(#icg);fill-opacity:.7;stroke:none}
+.btn svg .s{fill:none}
+.btn.g svg .d,.seg .btn.on svg .d,#tabs .on svg .d{fill:currentColor;fill-opacity:.2}
+.btn svg{filter:drop-shadow(0 1.5px 1.2px rgba(90,60,170,.28))}
 .btn.ic{padding:8px;min-width:36px}
 #user img{width:22px;height:22px;border-radius:50%}
 #user i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--ink);font-style:normal;font-size:12px}
@@ -253,11 +261,105 @@ header::before{content:"";position:absolute;inset:0;pointer-events:none;border-r
   #q{min-height:50px}
 }
 
+/* ===================================================================
+   CLAY SOFT LOOK  -  puffy pastel surfaces, soft inner light, no hard lines
+   =================================================================== */
+:root{
+  --rb:#ff93bb,#ffb97d,#ffe487,#86e6ae,#86d3f8,#a0aeff,#cba5ff,#ff93bb;
+  --bg:#f1eefd;--surf:#faf8ff;--panel:#f1edfd;--card:#faf8ff;
+  --fg:#2a2150;--mut:#776f9a;--chip:rgba(120,100,190,.09);--bd:transparent;--ao:.28;--dot:transparent;
+  --bt1:#ffffff;--bt2:#ece7fb;
+  --sh-out:10px 12px 26px rgba(118,98,188,.22),-8px -8px 18px rgba(255,255,255,.92),inset 2px 3px 6px rgba(255,255,255,.9),inset -3px -4px 9px rgba(140,120,205,.14);
+  --sh-sm:5px 6px 13px rgba(118,98,188,.19),-4px -4px 10px rgba(255,255,255,.92),inset 1.5px 2px 3px rgba(255,255,255,.95),inset -2px -3px 5px rgba(140,120,205,.12);
+  --sh-in:inset 6px 7px 14px rgba(118,98,188,.16),inset -6px -6px 12px rgba(255,255,255,.95);
+  --sh-col:inset 2px 3px 5px rgba(255,255,255,.7),inset -3px -4px 8px rgba(120,60,170,.16),6px 8px 16px -5px rgba(170,110,235,.55);
+}
+[data-theme=dark]{
+  --bg:#2b2650;--surf:#3a3466;--panel:#322c5a;--card:#3a3466;
+  --fg:#f1eeff;--mut:#aaa4cd;--chip:rgba(255,255,255,.07);--ao:.3;
+  --bt1:#4a4279;--bt2:#38316a;
+  --sh-out:10px 12px 26px rgba(14,9,40,.42),-7px -7px 16px rgba(108,94,176,.28),inset 2px 3px 6px rgba(255,255,255,.09),inset -3px -4px 9px rgba(0,0,0,.30);
+  --sh-sm:5px 6px 13px rgba(14,9,40,.38),-4px -4px 10px rgba(108,94,176,.24),inset 1.5px 2px 3px rgba(255,255,255,.10),inset -2px -3px 5px rgba(0,0,0,.26);
+  --sh-in:inset 6px 7px 14px rgba(14,9,40,.4),inset -5px -5px 12px rgba(110,96,178,.26);
+  --sh-col:inset 2px 3px 5px rgba(255,255,255,.45),inset -3px -4px 8px rgba(90,30,140,.25),6px 8px 16px -5px rgba(0,0,0,.6);
+}
+html,body{scrollbar-width:thin}
+*{scrollbar-width:thin;scrollbar-color:rgba(160,140,225,.55) transparent}
+body{font-family:"Nunito","Segoe UI",system-ui,sans-serif;font-weight:600}
+.brand b,.top h2,.empty .big,#lst,#welcome h1,#drop,#tabs button{font-family:"Fredoka","Nunito",Georgia,system-ui,sans-serif}
+
+/* soft background */
+#aur i{filter:blur(110px)}
+#aur::after{display:none}
+
+/* header = one big clay pillow */
+header{border:0;border-radius:32px;background:var(--surf);box-shadow:var(--sh-out);backdrop-filter:none;-webkit-backdrop-filter:none;padding:8px 18px 8px 10px}
+header::after{display:none}
+.pill{box-shadow:var(--sh-col);padding:4px 14px}
+
+/* two big panels = raised clay slabs with a carved-in tray */
+.ring{padding:8px;border-radius:38px;background:var(--surf);animation:none;box-shadow:var(--sh-out)}
+.in{border-radius:30px;background:var(--panel);box-shadow:var(--sh-in)}
+.top{border-bottom:0}
+.dots i{box-shadow:inset 1px 2px 2px rgba(255,255,255,.75),2px 3px 5px rgba(0,0,0,.25)}
+#stage{margin:2px 12px 12px;border-radius:24px;overflow:hidden;box-shadow:var(--sh-sm);background:var(--panel)}
+#fw{background:var(--panel)}
+#panel.fs{box-shadow:none;padding:0}
+#panel.fs #stage,#panel:fullscreen #stage{margin:0;border-radius:0;box-shadow:none}
+#spl::before{width:6px;box-shadow:2px 3px 6px rgba(120,90,200,.4),inset 1px 1px 2px rgba(255,255,255,.6)}
+
+/* buttons = puffy clay keys */
+.btn{border:0;border-radius:16px;background:linear-gradient(145deg,var(--bt1),var(--bt2));box-shadow:var(--sh-sm);color:var(--fg)}
+.btn:hover{border-color:transparent;transform:translateY(-2px);box-shadow:var(--sh-sm),0 12px 20px -10px rgba(168,85,247,.55)}
+.btn:active{transform:scale(.95);box-shadow:var(--sh-in)}
+.btn.g,.pill.g{background:var(--grad);background-size:300% 100%;box-shadow:var(--sh-col);color:var(--ink)}
+.btn.g:hover{box-shadow:var(--sh-col),0 12px 20px -10px rgba(255,77,141,.5)}
+.btn.g:active{box-shadow:inset 3px 4px 8px rgba(120,60,170,.35)}
+.btn.send{border-radius:50%}
+
+/* segmented groups = carved trough, active key pops out */
+.seg{border:0;border-radius:20px;background:var(--panel);box-shadow:var(--sh-in);padding:4px}
+.seg .btn{background:transparent;box-shadow:none;border-radius:14px}
+.seg .btn:hover{background:var(--chip);box-shadow:none;transform:none}
+.seg .btn:active{box-shadow:none;transform:scale(.93)}
+.seg .btn.on{background:var(--grad);background-size:300% 100%;box-shadow:var(--sh-col);color:var(--ink)}
+.seg .btn.on:hover{background:var(--grad);background-size:300% 100%;box-shadow:var(--sh-col)}
+
+/* chips + chat bubbles + input */
+.chip{border:0;background:linear-gradient(145deg,var(--bt1),var(--bt2));box-shadow:var(--sh-sm);color:var(--fg)}
+.chip:hover{border-color:transparent;box-shadow:var(--sh-sm),0 10px 18px -10px rgba(255,77,141,.5)}
+.chip:active{transform:scale(.96);box-shadow:var(--sh-in)}
+.m.a{background:var(--surf);border:0;box-shadow:var(--sh-sm)}
+.m.u{box-shadow:var(--sh-col)}
+.m.a::before{background:linear-gradient(#ff93bb,#ffe487,#86e6ae,#86d3f8,#cba5ff);opacity:.9}
+form{border:0;background:var(--surf);box-shadow:var(--sh-sm)}
+form:focus-within{border-color:transparent;box-shadow:0 0 0 3px rgba(167,139,250,.5),var(--sh-sm)}
+#q::placeholder{color:var(--mut);opacity:.8}
+
+/* history, project files, toast, share bar */
+.hi{border:0;border-radius:20px;background:linear-gradient(145deg,var(--bt1),var(--bt2));box-shadow:var(--sh-sm)}
+.hi:hover{border-color:transparent}
+#projectFiles{border-bottom:0;background:var(--panel);padding:8px 12px 10px}
+#projectFiles .pf{border:0;border-radius:14px;background:linear-gradient(145deg,var(--bt1),var(--bt2));box-shadow:var(--sh-sm)}
+#projectFiles .pf.active{background:linear-gradient(145deg,#dccbff,#b9a2f5);color:#241a4a;box-shadow:var(--sh-col)}
+#toast{box-shadow:var(--sh-col)}
+#view .bar{border-bottom:0;background:var(--surf);backdrop-filter:none;box-shadow:var(--sh-sm)}
+
+/* mobile */
+@media(max-width:860px){
+  header{border-radius:26px;padding:5px 12px 5px 6px}
+  main .ring{border-radius:30px;padding:6px}
+  .in{border-radius:24px}
+  #stage{margin:2px 8px 8px;border-radius:20px}
+  #tabs{border:0;background:var(--panel);box-shadow:var(--sh-in);backdrop-filter:none;-webkit-backdrop-filter:none}
+  #tabs button.on{box-shadow:var(--sh-col)}
+}
+
 </style>
 </head>
 <body data-tab="chat">
 <div id="aur" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><g id="miod"></g></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="icg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff86b4"/><stop offset=".5" stop-color="#b58cff"/><stop offset="1" stop-color="#5ecbff"/></linearGradient></defs><g id="miod"></g></svg>
 
 <header>
   <div class="brand">
@@ -430,34 +532,35 @@ document.getElementById('hAnim').srcdoc = ANIM;
 
 /* ====== SETTINGS: put your keys here ====== */
 const CONFIG = {
-  API_URL: '/api/generate',   // MIOD backend endpoint; provider credentials stay server-side
-  GOOGLE_CLIENT_ID: ''    // Google OAuth Web client ID
+  API_URL: '/api/generate'   // MIOD backend endpoint; provider credentials stay server-side
 };
 
 const $ = s => document.querySelector(s);
 const P = {
-  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
-  full:'<path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>',
-  copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>',
-  code:'<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>',
-  down:'<path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/>',
-  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
-  send:'<path d="m22 2-11 11M22 2l-7 20-4-9-9-4z"/>',
-  plus:'<path d="M12 5v14M5 12h14"/>',
-  play:'<path d="M6 4v16l14-8z"/>',
-  hist:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/>',
-  refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/>',
-  desktop:'<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
-  tablet:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/>',
-  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
-  term:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 3 2-3 2M13 15h4"/>',
-  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
-  shrink:'<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>',
-  prev:'<path d="m15 18-6-6 6-6"/>', next:'<path d="m9 18 6-6-6-6"/>',
-  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
+  sun:['<circle cx="12" cy="12" r="4.4"/>','<circle cx="12" cy="12" r="4.4"/><path d="M12 2.6v2.1M12 19.3v2.1M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M2.6 12h2.1M19.3 12h2.1M4.9 19.1l1.5-1.5M17.6 6.4l1.5-1.5"/>'],
+  moon:['<path d="M20.4 13.4A8.5 8.5 0 1 1 10.6 3.6a6.8 6.8 0 0 0 9.8 9.8z"/>','<path d="M20.4 13.4A8.5 8.5 0 1 1 10.6 3.6a6.8 6.8 0 0 0 9.8 9.8z"/><path d="M17.6 3.2v3M16.1 4.7h3"/>'],
+  full:['<rect x="4.5" y="4.5" width="15" height="15" rx="3.5"/>','<path d="M8 3.5H5.8a2.3 2.3 0 0 0-2.3 2.3V8M16 3.5h2.2a2.3 2.3 0 0 1 2.3 2.3V8M8 20.5H5.8a2.3 2.3 0 0 1-2.3-2.3V16M16 20.5h2.2a2.3 2.3 0 0 0 2.3-2.3V16"/>'],
+  copy:['<rect x="9" y="9" width="11.5" height="11.5" rx="3.2"/>','<rect x="9" y="9" width="11.5" height="11.5" rx="3.2"/><path d="M15 9V6.6A2.6 2.6 0 0 0 12.4 4H6.6A2.6 2.6 0 0 0 4 6.6v5.8A2.6 2.6 0 0 0 6.6 15H9"/>'],
+  code:['<rect x="2.8" y="4.5" width="18.4" height="15" rx="4.2"/>','<rect x="2.8" y="4.5" width="18.4" height="15" rx="4.2"/><path d="m9.8 9.3-3 2.7 3 2.7M14.2 9.3l3 2.7-3 2.7"/>'],
+  down:['<rect x="3.5" y="14.5" width="17" height="6" rx="3"/>','<path d="M12 3.5v11M7.8 10.8 12 15l4.2-4.2M3.5 15.5v2a3 3 0 0 0 3 3h11a3 3 0 0 0 3-3v-2"/>'],
+  share:['<circle cx="18" cy="5.5" r="2.9"/><circle cx="6" cy="12" r="2.9"/><circle cx="18" cy="18.5" r="2.9"/>','<circle cx="18" cy="5.5" r="2.9"/><circle cx="6" cy="12" r="2.9"/><circle cx="18" cy="18.5" r="2.9"/><path d="M8.5 10.7l6.9-3.9M8.5 13.3l6.9 3.9"/>'],
+  send:['<path d="M20.8 3.2 14 20.8l-3.5-7.3L3.2 10z"/>','<path d="M20.8 3.2 14 20.8l-3.5-7.3L3.2 10zM20.8 3.2 10.5 13.5"/>'],
+  plus:['<circle cx="12" cy="12" r="9"/>','<circle cx="12" cy="12" r="9"/><path d="M12 7.6v8.8M7.6 12h8.8"/>'],
+  play:['<path d="M8 5.2v13.6l11-6.8z"/>','<path d="M8 5.2v13.6l11-6.8z"/>'],
+  hist:['<circle cx="12" cy="12" r="8.6"/>','<path d="M3.4 12a8.6 8.6 0 1 0 2.6-6.1L3.4 8.5M3.4 3.8v4.7h4.7M12 7.6V12l3 1.8"/>'],
+  refresh:['<circle cx="12" cy="12" r="8"/>','<path d="M20 12a8 8 0 1 1-2.4-5.7L20 8.6M20 4v4.6h-4.6"/>'],
+  desktop:['<rect x="2.5" y="4" width="19" height="12.5" rx="3.2"/>','<rect x="2.5" y="4" width="19" height="12.5" rx="3.2"/><path d="M8.5 20.5h7M12 16.5v4"/>'],
+  tablet:['<rect x="4.5" y="2.5" width="15" height="19" rx="3.4"/>','<rect x="4.5" y="2.5" width="15" height="19" rx="3.4"/><path d="M10.5 18.2h3"/>'],
+  phone:['<rect x="7" y="2.5" width="10" height="19" rx="3.2"/>','<rect x="7" y="2.5" width="10" height="19" rx="3.2"/><path d="M10.8 18.2h2.4"/>'],
+  term:['<rect x="2.5" y="4" width="19" height="16" rx="3.8"/>','<rect x="2.5" y="4" width="19" height="16" rx="3.8"/><path d="m7.5 9.8 3 2.2-3 2.2M13 14.8h3.8"/>'],
+  expand:['<rect x="6.2" y="6.2" width="11.6" height="11.6" rx="2.8"/>','<path d="M14.5 3.5h6v6M9.5 20.5h-6v-6M20.5 3.5 14 10M3.5 20.5 10 14"/>'],
+  shrink:['<rect x="6.2" y="6.2" width="11.6" height="11.6" rx="2.8"/>','<path d="M4 14.5h5.5V20M20 9.5h-5.5V4M14.5 9.5 21 3M3 21l6.5-6.5"/>'],
+  prev:['<circle cx="12" cy="12" r="9.2"/>','<path d="m13.8 8-4 4 4 4"/>'],
+  next:['<circle cx="12" cy="12" r="9.2"/>','<path d="m10.2 8 4 4-4 4"/>'],
+  ext:['<rect x="3.5" y="6.5" width="14" height="14" rx="3.2"/>','<path d="M14 3.5h6.5V10M20.5 3.5 11.5 12.5M17.5 14v3.3a3.2 3.2 0 0 1-3.2 3.2H6.7a3.2 3.2 0 0 1-3.2-3.2V9.7a3.2 3.2 0 0 1 3.2-3.2H10"/>'],
+  user:['<circle cx="12" cy="8" r="4.2"/><path d="M4 21a8 8 0 0 1 16 0z"/>','<circle cx="12" cy="8" r="4.2"/><path d="M4 21a8 8 0 0 1 16 0"/>']
 };
-const ic = (n, t) => `<svg viewBox="0 0 24 24">${P[n]}</svg>${t ? '<span>' + t + '</span>' : ''}`;
+const ic = (n, t) => `<svg viewBox="0 0 24 24" aria-hidden="true"><g class="d">${P[n][0]}</g><g class="s">${P[n][1]}</g></svg>${t ? '<span>' + t + '</span>' : ''}`;
 const put = (id, n, t) => $(id).innerHTML = ic(n, t);
 put('#bFull','full'); put('#bCopy','copy'); put('#bCode','code'); put('#bDown','down'); put('#bRun','refresh');
 put('#bShare','share','Share'); put('#sendBtn','send'); put('#clear','plus'); put('#bHist','hist'); put('#bFocus','expand');
@@ -469,8 +572,8 @@ let html = '', history = [], codeMode = false, vers = [], vIdx = -1, projectFile
 const EMPTY = $('#empty').outerHTML;
 
 /* ---- theme ---- */
-function setTheme(t){ document.documentElement.dataset.theme = t; put('#theme', t === 'dark' ? 'sun' : 'moon'); try{localStorage.setItem('theme', t)}catch(e){} }
-let saved = 'dark'; try{ saved = localStorage.getItem('theme') || 'dark' }catch(e){}
+function setTheme(t){ document.documentElement.dataset.theme = t; { const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = t === 'dark' ? '#2a2548' : '#f0ecfd'; } put('#theme', t === 'dark' ? 'sun' : 'moon'); try{localStorage.setItem('miodTheme', t)}catch(e){} }
+let saved = 'light'; try{ saved = localStorage.getItem('miodTheme') || 'light' }catch(e){}
 setTheme(saved);
 $('#theme').onclick = () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 
@@ -481,6 +584,7 @@ document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => tab(b.d
 
 /* ---- toast ---- */
 let tt;
+window.toast = toast;
 function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2400); }
 
 /* ---- resizable split (drag the rainbow bar) + focus mode ---- */
@@ -499,27 +603,23 @@ spl.onkeydown = e => { if (e.key === 'ArrowLeft') { setSplit(curSplit() - 2, tru
 function setFocus(on){ document.body.classList.toggle('focus', on); put('#bFocus', on ? 'shrink' : 'expand'); $('#bFocus').title = on ? 'Back to split view' : 'Focus chat (wide)'; }
 $('#bFocus').onclick = () => setFocus(!document.body.classList.contains('focus'));
 
-/* ---- Google account ---- */
+/* ---- Google account (Firebase Auth - wired up by the module script at the bottom) ---- */
 let me = null;
+const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function drawUser(){
-  $('#user').title = me ? me.name : 'Sign in with Google'; $('#user').setAttribute('aria-label', $('#user').title);
-  $('#user').innerHTML = me
-    ? (me.picture ? `<img src="${me.picture}" alt="">` : `<i class="g">${(me.name||'U')[0].toUpperCase()}</i>`) + `<span>${me.name}</span>`
-    : '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Sign in with Google</span>';
+  const u = $('#user');
+  u.title = me ? me.name + ' - click to sign out' : 'Sign in with Google'; u.setAttribute('aria-label', u.title);
+  u.innerHTML = me
+    ? (me.picture ? `<img src="${esc(me.picture)}" alt="" referrerpolicy="no-referrer">` : `<i class="g">${esc((me.name||'U')[0].toUpperCase())}</i>`) + `<span>${esc(me.name)}</span>`
+    : ic('user') + '<span>Sign in with Google</span>';
 }
 drawUser();
-if (CONFIG.GOOGLE_CLIENT_ID) {
-  const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client';
-  s.onload = () => google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: r => {
-    const b = r.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-    me = JSON.parse(decodeURIComponent(escape(atob(b)))); drawUser();
-  }});
-  document.head.appendChild(s);
-}
-$('#user').onclick = () => {
-  if (me) { me = null; drawUser(); return; }
-  if (CONFIG.GOOGLE_CLIENT_ID && window.google) google.accounts.id.prompt();
-  else { me = { name: 'Demo User' }; drawUser(); toast('Demo login. Add GOOGLE_CLIENT_ID for real Google sign-in'); }
+window.miodSetUser = u => { me = u; drawUser(); };
+$('#user').onclick = async () => {
+  if (!/^https?:$/.test(location.protocol)) return toast('Google sign-in needs http(s): open this page from localhost or your hosting, not file://');
+  if (!window.miodAuth) return toast('Sign-in is still loading… check your internet and try again');
+  if (me) { await window.miodAuth.out(); toast('Signed out'); return; }
+  window.miodAuth.in();
 };
 
 /* ---- MIOD AI: provider-neutral chat + multi-file project response ---- */
@@ -906,6 +1006,52 @@ setInterval(() => { if (!q.value) { ii = (ii + 1) % IDEAS.length; q.placeholder 
   updateVisibleViewport();
 })();
 
+</script>
+<script type="module">
+/* Firebase (Google sign-in + analytics) */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",
+  authDomain: "js-code-output.firebaseapp.com",
+  databaseURL: "https://js-code-output-default-rtdb.firebaseio.com",
+  projectId: "js-code-output",
+  storageBucket: "js-code-output.firebasestorage.app",
+  messagingSenderId: "600350018167",
+  appId: "1:600350018167:web:3ceaa5a5e0d1050504d472",
+  measurementId: "G-L47M0E9V96"
+};
+
+const app = initializeApp(firebaseConfig);
+isSupported().then(ok => { if (ok) getAnalytics(app); }).catch(() => {});
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
+const note = m => (window.toast ? window.toast(m) : console.warn(m));
+
+onAuthStateChanged(auth, u => {
+  window.miodSetUser(u ? { name: u.displayName || u.email || 'User', email: u.email, picture: u.photoURL, uid: u.uid } : null);
+});
+
+window.miodAuth = {
+  async in(){
+    try {
+      await signInWithPopup(auth, provider);
+      note('Signed in with Google');
+    } catch (e) {
+      const c = e && e.code;
+      if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return;
+      if (c === 'auth/popup-blocked' || c === 'auth/operation-not-supported-in-this-environment') { try { return await signInWithRedirect(auth, provider); } catch (_) {} }
+      if (c === 'auth/unauthorized-domain') return note('Add this domain in Firebase > Authentication > Settings > Authorized domains');
+      if (c === 'auth/operation-not-allowed') return note('Turn on Google in Firebase > Authentication > Sign-in method');
+      note('Sign-in failed: ' + ((e && e.message) || c || 'unknown error'));
+    }
+  },
+  out(){ return signOut(auth); }
+};
 </script>
 </body>
 </html>
