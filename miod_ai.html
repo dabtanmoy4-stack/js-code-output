@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>JS CODE OUTPUT</title>
+<meta name="description" content="Build and run JS / HTML projects with MIOD AI.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JS CODE OUTPUT">
+<meta property="og:title" content="JS CODE OUTPUT">
+<meta property="og:description" content="Here is my amazing project, built with MIOD AI">
+<!-- WhatsApp/Facebook need a FULL address for the preview image: if the logo does not show in a shared link,
+     change both logo.jpeg below to https://YOUR-DOMAIN/logo.jpeg -->
+<meta property="og:image" content="logo.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="logo.jpeg">
 <link rel="icon" type="image/jpeg" href="logo.jpeg">
 <link rel="shortcut icon" type="image/jpeg" href="logo.jpeg">
 <link rel="apple-touch-icon" href="logo.jpeg">
@@ -214,7 +224,7 @@ iframe.out{display:block;width:100%;height:100%;border:0;background:#fff;margin:
   #code{font-size:12px}
   #view .bar{padding:8px 12px}
 }
-@media(max-width:480px){.top .lg{display:none}#bCopy{display:none}}
+@media(max-width:480px){.top .lg{display:none}.seg .btn.ic{min-width:36px;padding:6px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
 /* ===== v6 polish ===== */
@@ -235,8 +245,8 @@ header::before{content:"";position:absolute;inset:0;pointer-events:none;border-r
 #drop{display:none;position:fixed;inset:14px;z-index:95;border:3px dashed #c084fc;border-radius:28px;background:rgba(7,6,13,.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff;font:600 26px Georgia,"Times New Roman",serif;text-align:center;padding:20px}
 #drop small{font:500 15px system-ui;opacity:.7}
 #drop.on{display:flex}
-@container (max-width:640px){#bCopy,#bOpen{display:none}}
-@container (max-width:430px){#bFull,#bCopy,#bOpen,.dots,#vLbl{display:none}#panel .top h2{font-size:0}#verSeg .btn{min-width:34px}}
+@container (max-width:640px){#bOpen{display:none}}
+@container (max-width:430px){#bFull,#bOpen,.dots,#vLbl{display:none}#panel .top h2{font-size:0}#verSeg .btn{min-width:34px}}
 
 /* ===== Mobile keyboard stability: keep the app chrome in place ===== */
 @media (max-width:860px){
@@ -354,6 +364,29 @@ form:focus-within{border-color:transparent;box-shadow:0 0 0 3px rgba(167,139,250
   #tabs{border:0;background:var(--panel);box-shadow:var(--sh-in);backdrop-filter:none;-webkit-backdrop-filter:none}
   #tabs button.on{box-shadow:var(--sh-col)}
 }
+
+/* account menu */
+#acct{display:none;position:fixed;z-index:80;width:300px;max-width:calc(100vw - 20px);max-height:calc(100dvh - 90px);overflow:auto;padding:10px;border-radius:26px;background:var(--surf);box-shadow:var(--sh-out);animation:pop .25s cubic-bezier(.2,1.4,.4,1)}
+#acct.on{display:block}
+#acct .cur{display:flex;align-items:center;gap:12px;padding:12px;border-radius:20px;background:var(--panel);box-shadow:var(--sh-in);margin-bottom:8px}
+#acct .av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;overflow:hidden;color:var(--ink);font:700 18px "Fredoka",system-ui,sans-serif;box-shadow:var(--sh-sm)}
+#acct .av img{width:100%;height:100%;object-fit:cover;display:block}
+#acct .nm{min-width:0;flex:1}
+#acct .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}
+#acct .nm small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+#acct .lbl{font:700 12.5px "Nunito",system-ui,sans-serif;color:var(--mut);padding:6px 8px 6px}
+#acct .row{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:18px;padding:8px 10px;margin:0 0 7px;background:linear-gradient(145deg,var(--bt1),var(--bt2));box-shadow:var(--sh-sm);color:var(--fg);font:inherit;font-weight:700;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s}
+#acct .row:hover{transform:translateY(-1px)}
+#acct .row:active{transform:scale(.98);box-shadow:var(--sh-in)}
+#acct .row:focus-visible{outline:2px solid #818cf8;outline-offset:2px}
+#acct .row .av{width:34px;height:34px;font-size:15px}
+#acct .row>svg{width:22px;height:22px;margin:0 6px;flex:none}
+#acct .x{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--mut);font-size:18px;line-height:1}
+#acct .x:hover{background:var(--chip);color:var(--fg)}
+#acct svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1.5px 1.2px rgba(90,60,170,.28))}
+#acct svg .d{fill:url(#icg);fill-opacity:.7;stroke:none}
+#acct svg .s{fill:none}
+#view .bar .btn.ic{min-width:40px}
 
 </style>
 </head>
@@ -484,6 +517,7 @@ form:focus-within{border-color:transparent;box-shadow:0 0 0 3px rgba(167,139,250
   <div class="bar">
     <svg class="lg" style="width:48px;height:40px" viewBox="130 310 1260 1000" aria-hidden="true"><use href="#miod"/></svg>
     <b class="gt">JS CODE OUTPUT</b><span class="sp"></span>
+    <button class="btn ic" id="vCopy" title="Copy code" aria-label="Copy code"></button>
     <button class="btn g" id="vCode" style="color:var(--ink);border:0"></button>
   </div>
   <iframe id="vOut" sandbox="allow-scripts allow-modals allow-forms allow-popups" title="Project"></iframe>
@@ -558,6 +592,7 @@ const P = {
   prev:['<circle cx="12" cy="12" r="9.2"/>','<path d="m13.8 8-4 4 4 4"/>'],
   next:['<circle cx="12" cy="12" r="9.2"/>','<path d="m10.2 8 4 4-4 4"/>'],
   ext:['<rect x="3.5" y="6.5" width="14" height="14" rx="3.2"/>','<path d="M14 3.5h6.5V10M20.5 3.5 11.5 12.5M17.5 14v3.3a3.2 3.2 0 0 1-3.2 3.2H6.7a3.2 3.2 0 0 1-3.2-3.2V9.7a3.2 3.2 0 0 1 3.2-3.2H10"/>'],
+  out:['<rect x="3.5" y="4" width="9" height="16" rx="3"/>','<path d="M14.5 12h7M18.5 8.8l3 3.2-3 3.2M10 4H6.5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3H10"/>'],
   user:['<circle cx="12" cy="8" r="4.2"/><path d="M4 21a8 8 0 0 1 16 0z"/>','<circle cx="12" cy="8" r="4.2"/><path d="M4 21a8 8 0 0 1 16 0"/>']
 };
 const ic = (n, t) => `<svg viewBox="0 0 24 24" aria-hidden="true"><g class="d">${P[n][0]}</g><g class="s">${P[n][1]}</g></svg>${t ? '<span>' + t + '</span>' : ''}`;
@@ -608,17 +643,58 @@ let me = null;
 const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function drawUser(){
   const u = $('#user');
-  u.title = me ? me.name + ' - click to sign out' : 'Sign in with Google'; u.setAttribute('aria-label', u.title);
+  u.title = me ? me.name + ' - account' : 'Sign in with Google'; u.setAttribute('aria-label', u.title);
   u.innerHTML = me
     ? (me.picture ? `<img src="${esc(me.picture)}" alt="" referrerpolicy="no-referrer">` : `<i class="g">${esc((me.name||'U')[0].toUpperCase())}</i>`) + `<span>${esc(me.name)}</span>`
     : ic('user') + '<span>Sign in with Google</span>';
 }
 drawUser();
-window.miodSetUser = u => { me = u; drawUser(); };
-$('#user').onclick = async () => {
+let accts = []; try { accts = JSON.parse(localStorage.getItem('miodAccts') || '[]'); } catch(e){}
+const saveAccts = () => { try { localStorage.setItem('miodAccts', JSON.stringify(accts)); } catch(e){} };
+window.miodSetUser = u => {
+  me = u; drawUser();
+  if (u && u.email) { accts = accts.filter(a => a.email !== u.email); accts.unshift({ name: u.name, email: u.email, picture: u.picture }); accts = accts.slice(0, 6); saveAccts(); }
+  if (!u) closeAcct();
+};
+
+/* account menu: current account, switch, add another, sign out */
+const acctEl = document.createElement('div'); acctEl.id = 'acct'; document.body.appendChild(acctEl);
+const avHtml = a => `<span class="av g">${a.picture ? `<img src="${esc(a.picture)}" alt="" referrerpolicy="no-referrer">` : esc((a.name || 'U')[0].toUpperCase())}</span>`;
+function renderAcct(){
+  const others = accts.filter(a => !me || a.email !== me.email);
+  acctEl.innerHTML =
+    `<div class="cur">${avHtml(me)}<div class="nm"><b>${esc(me.name)}</b><small>${esc(me.email || '')}</small></div></div>` +
+    (others.length ? '<div class="lbl">Switch account</div>' + others.map(a =>
+      `<div class="row" role="button" tabindex="0" data-sw="${esc(a.email)}">${avHtml(a)}<div class="nm"><b>${esc(a.name)}</b><small>${esc(a.email)}</small></div><span class="x" data-rm="${esc(a.email)}" title="Remove from list">×</span></div>`).join('') : '') +
+    `<div class="row" role="button" tabindex="0" data-add="1">${ic('plus')}<div class="nm"><b>Add another account</b></div></div>` +
+    `<div class="row" role="button" tabindex="0" data-out="1">${ic('out')}<div class="nm"><b>Sign out</b></div></div>`;
+}
+function openAcct(){
+  renderAcct();
+  const r = $('#user').getBoundingClientRect();
+  acctEl.style.top = (r.bottom + 10) + 'px'; acctEl.style.left = 'auto'; acctEl.style.right = Math.max(10, innerWidth - r.right) + 'px';
+  acctEl.classList.add('on');
+}
+function closeAcct(){ acctEl.classList.remove('on'); }
+async function acctAction(e){
+  const rm = e.target.closest('[data-rm]');
+  if (rm) { accts = accts.filter(a => a.email !== rm.dataset.rm); saveAccts(); renderAcct(); return; }
+  const t = e.target.closest('[data-sw],[data-add],[data-out]'); if (!t) return;
+  closeAcct();
+  if (t.dataset.sw) return window.miodAuth && window.miodAuth.in(t.dataset.sw);
+  if (t.dataset.add) return window.miodAuth && window.miodAuth.in();
+  if (t.dataset.out) { await window.miodAuth.out(); toast('Signed out'); }
+}
+acctEl.onclick = acctAction;
+acctEl.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); acctAction(e); } };
+document.addEventListener('pointerdown', e => { if (acctEl.classList.contains('on') && !acctEl.contains(e.target) && !$('#user').contains(e.target)) closeAcct(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') closeAcct(); });
+addEventListener('resize', closeAcct);
+
+$('#user').onclick = () => {
+  if (me) return acctEl.classList.contains('on') ? closeAcct() : openAcct();
   if (!/^https?:$/.test(location.protocol)) return toast('Google sign-in needs http(s): open this page from localhost or your hosting, not file://');
   if (!window.miodAuth) return toast('Sign-in is still loading… check your internet and try again');
-  if (me) { await window.miodAuth.out(); toast('Signed out'); return; }
   window.miodAuth.in();
 };
 
@@ -871,7 +947,16 @@ $('#bFull').onclick = () => {
   if (p.classList.contains('fs')) return p.classList.remove('fs');
   if (p.requestFullscreen) p.requestFullscreen().catch(() => p.classList.add('fs')); else p.classList.add('fs');   // iPhone fallback
 };
-$('#bCopy').onclick = async () => { const t = codeMode ? $('#code').value : html; if(!t) return toast('Nothing to copy yet'); await navigator.clipboard.writeText(t); toast('Code copied'); };
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; } catch(e){}
+  try {
+    const a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', '');
+    a.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px';
+    document.body.appendChild(a); a.focus(); a.select(); a.setSelectionRange(0, t.length);
+    const ok = document.execCommand('copy'); a.remove(); return ok;
+  } catch(e){ return false; }
+}
+$('#bCopy').onclick = async () => { const t = codeMode ? $('#code').value : html; if(!t) return toast('Nothing to copy yet'); toast(await copyText(t) ? 'Code copied' : 'Copy failed - open the code view and long-press to copy'); };
 $('#bDown').onclick = () => {
   const t = codeMode ? $('#code').value : html; if(!t) return toast('Nothing to download yet');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t], {type:'text/html'})); a.download = 'miod-project.html'; a.click();
@@ -881,20 +966,52 @@ $('#bDown').onclick = () => {
 async function pipe(data, ts){ return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(ts)).arrayBuffer()); }
 async function pack(s){ const u = await pipe(s, new CompressionStream('deflate-raw')); let b=''; u.forEach(c => b += String.fromCharCode(c)); return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 async function unpack(s){ const b = atob(s.replace(/-/g,'+').replace(/_/g,'/')); const u = Uint8Array.from(b, c => c.charCodeAt(0)); return new TextDecoder().decode(await pipe(u, new DecompressionStream('deflate-raw'))); }
+const DB_URL = 'https://js-code-output-default-rtdb.firebaseio.com';   // short links are stored here (shares/<id>)
+const SHARE_TEXT = 'Here is my amazing project';                          // short line above the link in WhatsApp etc. ('' = link only)
+const baseUrl = () => location.href.split('#')[0].split('?')[0];
+function newId(){ const A = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return [...crypto.getRandomValues(new Uint8Array(8))].map(x => A[x % A.length]).join(''); }
+async function shortLink(t){
+  const h = await pack(t);
+  for (let i = 0; i < 3; i++) {
+    const id = newId();
+    const r = await fetch(`${DB_URL}/shares/${id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ h, c: Date.now() }) });
+    if (r.ok) return baseUrl() + '?s=' + id;
+    if (r.status !== 401 && r.status !== 403) break;
+  }
+  throw new Error('short link failed');
+}
 $('#bShare').onclick = async () => {
   const t = codeMode ? $('#code').value : html; if(!t) return toast('Build something first');
-  const url = location.origin + location.pathname + '#s=' + await pack(t);
-  try { await navigator.clipboard.writeText(url); toast('Share link copied'); } catch(e){ prompt('Copy this link', url); }
+  const btn = $('#bShare'); btn.disabled = true; toast('Making your link…');
+  let url, short = true;
+  try { url = await shortLink(t); } catch(e){ short = false; url = baseUrl() + '#s=' + await pack(t); }
+  btn.disabled = false;
+  if (navigator.share && mob()) {
+    try { await navigator.share(SHARE_TEXT ? { title: 'JS CODE OUTPUT', text: SHARE_TEXT, url } : { title: 'JS CODE OUTPUT', url }); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  const ok = await copyText(SHARE_TEXT ? SHARE_TEXT + '\n' + url : url);
+  if (!ok) return prompt('Copy this link', url);
+  toast(short ? 'Short link copied' : 'Full link copied (short links need the Firebase database rules)');
 };
 
 /* ---- friend view ---- */
 (async function(){
-  if (!location.hash.startsWith('#s=')) return;
-  let c; try { c = await unpack(location.hash.slice(3)); } catch(e){ return; }
+  const qs = new URLSearchParams(location.search).get('s');
+  const hs = location.hash.startsWith('#s=') ? location.hash.slice(3) : '';
+  if (!qs && !hs) return;
   document.body.classList.add('share');
   document.querySelector('header').style.display = 'none'; document.querySelector('main').style.display = 'none'; $('#tabs').style.display = 'none';
   const w = $('#welcome'), v = $('#view'); w.style.display = 'flex'; v.style.display = 'flex';
+  let c = '';
+  try {
+    if (qs) { const j = await (await fetch(`${DB_URL}/shares/${encodeURIComponent(qs)}.json`)).json(); if (j && j.h) c = await unpack(j.h); }
+    else c = await unpack(hs);
+  } catch(e){}
+  if (!c) c = '<body style="margin:0;height:100vh;display:grid;place-items:center;font:600 16px system-ui;color:#6b6580;background:#f1eefd">This project link is not available.</body>';
   $('#vOut').srcdoc = c; $('#vPre').textContent = c;
+  put('#vCopy', 'copy');
+  $('#vCopy').onclick = async () => toast(await copyText(c) ? 'Code copied' : 'Copy failed');
   let on = false;
   $('#vCode').onclick = () => { on = !on; $('#vPre').style.display = on ? 'block' : 'none'; $('#vOut').style.display = on ? 'none' : 'block'; put('#vCode', on ? 'play' : 'code', on ? 'Show output' : 'Show code'); };
   setTimeout(() => { w.style.opacity = 0; setTimeout(() => w.style.display = 'none', 600); }, 2200);
@@ -1028,8 +1145,6 @@ const app = initializeApp(firebaseConfig);
 isSupported().then(ok => { if (ok) getAnalytics(app); }).catch(() => {});
 
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
 const note = m => (window.toast ? window.toast(m) : console.warn(m));
 
 onAuthStateChanged(auth, u => {
@@ -1037,14 +1152,16 @@ onAuthStateChanged(auth, u => {
 });
 
 window.miodAuth = {
-  async in(){
+  async in(hint){
+    const pr = new GoogleAuthProvider();
+    pr.setCustomParameters(hint ? { login_hint: hint } : { prompt: 'select_account' });
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, pr);
       note('Signed in with Google');
     } catch (e) {
       const c = e && e.code;
       if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return;
-      if (c === 'auth/popup-blocked' || c === 'auth/operation-not-supported-in-this-environment') { try { return await signInWithRedirect(auth, provider); } catch (_) {} }
+      if (c === 'auth/popup-blocked' || c === 'auth/operation-not-supported-in-this-environment') { try { return await signInWithRedirect(auth, pr); } catch (_) {} }
       if (c === 'auth/unauthorized-domain') return note('Add this domain in Firebase > Authentication > Settings > Authorized domains');
       if (c === 'auth/operation-not-allowed') return note('Turn on Google in Firebase > Authentication > Sign-in method');
       note('Sign-in failed: ' + ((e && e.message) || c || 'unknown error'));
