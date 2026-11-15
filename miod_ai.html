@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JS CODE OUTPUT</title>
+<title>MIOD AI</title>
 <meta name="description" content="Build and run JS / HTML projects with MIOD AI.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="JS CODE OUTPUT">
-<meta property="og:title" content="JS CODE OUTPUT">
+<meta property="og:site_name" content="MIOD AI">
+<meta property="og:title" content="MIOD AI">
 <meta property="og:description" content="Here is my amazing project, built with MIOD AI">
 <!-- WhatsApp/Facebook need a FULL address for the preview image: if the logo does not show in a shared link,
      change both logo.jpeg below to https://YOUR-DOMAIN/logo.jpeg -->
@@ -511,12 +511,12 @@ form:focus-within{border-color:transparent;box-shadow:0 0 0 3px rgba(167,139,250
 <!-- friend share page -->
 <div id="welcome">
   <svg class="lg" style="width:min(60vw,240px);height:auto" viewBox="130 310 1260 1000" aria-hidden="true"><use href="#miod"/></svg>
-  <h1 class="gt">Welcome to JS CODE OUTPUT</h1>
+  <h1 class="gt">Welcome to MIOD AI</h1>
 </div>
 <div id="view">
   <div class="bar">
     <svg class="lg" style="width:48px;height:40px" viewBox="130 310 1260 1000" aria-hidden="true"><use href="#miod"/></svg>
-    <b class="gt">JS CODE OUTPUT</b><span class="sp"></span>
+    <b class="gt">MIOD AI</b><span class="sp"></span>
     <button class="btn ic" id="vCopy" title="Copy code" aria-label="Copy code"></button>
     <button class="btn g" id="vCode" style="color:var(--ink);border:0"></button>
   </div>
@@ -987,7 +987,7 @@ $('#bShare').onclick = async () => {
   try { url = await shortLink(t); } catch(e){ short = false; url = baseUrl() + '#s=' + await pack(t); }
   btn.disabled = false;
   if (navigator.share && mob()) {
-    try { await navigator.share(SHARE_TEXT ? { title: 'JS CODE OUTPUT', text: SHARE_TEXT, url } : { title: 'JS CODE OUTPUT', url }); return; }
+    try { await navigator.share(SHARE_TEXT ? { title: 'MIOD AI', text: SHARE_TEXT, url } : { title: 'MIOD AI', url }); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
   }
   const ok = await copyText(SHARE_TEXT ? SHARE_TEXT + '\n' + url : url);
