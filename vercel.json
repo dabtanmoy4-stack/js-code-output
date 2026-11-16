@@ -1,6 +1,9 @@
 {
   "functions": {
-    "api/run-code.js": {
+    "api/modal_backend.js": {
+      "maxDuration": 60
+    },
+    "api/modal_live_session.js": {
       "maxDuration": 60
     }
   }
