@@ -210,7 +210,7 @@ def detect_manim_scenes(code: str):
 @modal.fastapi_endpoint(method="POST")
 async def run_python(request: Request):
     started = time.time()
-    expected = os.environ.get("JSCO_MODAL_TOKEN", "")
+    expected = os.environ.get("JSCOMODALTOKEN", "")
     supplied = request.headers.get("x-jsco-token", "")
     if not expected or supplied != expected:
         return json_response({"success": False, "error": "Unauthorized Modal runner request."}, 401)
@@ -392,7 +392,7 @@ def live_sessions_app():
 
     @web.post("/live/start")
     async def start_live(request: Request):
-        expected = os.environ.get("JSCO_MODAL_TOKEN", "")
+        expected = os.environ.get("JSCOMODALTOKEN", "")
         if not expected or request.headers.get("x-jsco-token", "") != expected:
             return JSONResponse({"success": False, "error": "Unauthorized."}, status_code=401)
         try:
@@ -445,7 +445,7 @@ def live_sessions_app():
 
     @web.post("/live/stop")
     async def stop_live(request: Request):
-        expected = os.environ.get("JSCO_MODAL_TOKEN", "")
+        expected = os.environ.get("JSCOMODALTOKEN", "")
         if not expected or request.headers.get("x-jsco-token", "") != expected:
             return JSONResponse({"success": False, "error": "Unauthorized."}, status_code=401)
         try: body = await request.json()
