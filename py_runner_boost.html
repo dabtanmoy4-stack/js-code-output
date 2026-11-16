@@ -2630,6 +2630,69 @@ function showPrintedBase64Images(images) {
   return rendered > 0;
 }
 
+function showModalFilesPreview(files) {
+  if (!Array.isArray(files) || !files.length) return false;
+  const preview = getCompilerVisualPreview();
+  const output = $('output');
+  if (!preview || !output) return false;
+  const supported = files.filter(f => f && typeof f.content_base64 === 'string' && f.content_base64 && f.name);
+  if (!supported.length) return false;
+  preview.replaceChildren();
+  preview.style.cssText = 'display:flex;flex-direction:column;gap:12px;flex:0 0 auto;width:100%;min-height:180px;max-height:70vh;padding:12px;background:#fff;border-radius:8px;overflow:auto';
+  let visual = false;
+  for (const file of supported) {
+    const mime = String(file.mime || 'application/octet-stream').toLowerCase();
+    const name = String(file.name || 'Python output file');
+    const dataUrl = `data:${mime};base64,${file.content_base64}`;
+    const card = document.createElement('section');
+    card.style.cssText = 'width:100%;min-width:0;border:1px solid #e5e7eb;border-radius:9px;padding:9px;background:#fff';
+    const heading = document.createElement('div');
+    heading.textContent = name;
+    heading.style.cssText = 'font:600 12px Inter,sans-serif;color:#334155;margin-bottom:8px;overflow-wrap:anywhere';
+    card.appendChild(heading);
+    if (mime.startsWith('image/')) {
+      const img = document.createElement('img');
+      img.alt = name; img.src = dataUrl;
+      img.style.cssText = 'display:block;max-width:100%;max-height:55vh;width:auto;height:auto;object-fit:contain;margin:auto';
+      card.appendChild(img); visual = true;
+    } else if (mime === 'text/html' || mime === 'image/svg+xml') {
+      const frame = document.createElement('iframe');
+      frame.title = name; frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals');
+      frame.style.cssText = 'display:block;width:100%;height:420px;border:0;background:#fff';
+      if (mime === 'text/html') {
+        try { frame.srcdoc = new TextDecoder().decode(Uint8Array.from(atob(file.content_base64), c => c.charCodeAt(0))); }
+        catch (_) { frame.src = dataUrl; }
+      } else frame.src = dataUrl;
+      card.appendChild(frame); visual = true;
+    } else if (mime === 'application/pdf') {
+      const frame = document.createElement('iframe');
+      frame.title = name; frame.src = dataUrl;
+      frame.style.cssText = 'display:block;width:100%;height:520px;border:0;background:#fff';
+      card.appendChild(frame); visual = true;
+    } else if (mime === 'video/mp4' || mime === 'video/webm') {
+      const video = document.createElement('video');
+      video.controls = true; video.loop = true; video.src = dataUrl;
+      video.style.cssText = 'display:block;width:100%;max-height:55vh;background:#0b1020';
+      card.appendChild(video); visual = true;
+    } else if (mime.startsWith('text/') || mime === 'application/json' || mime === 'application/xml') {
+      const pre = document.createElement('pre');
+      pre.style.cssText = 'max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:11px ui-monospace,monospace;color:#1f2937;background:#f8fafc;padding:9px;border-radius:6px';
+      try { pre.textContent = new TextDecoder().decode(Uint8Array.from(atob(file.content_base64), c => c.charCodeAt(0))).slice(0, 30000); }
+      catch (_) { pre.textContent = 'Preview unavailable for this text file.'; }
+      card.appendChild(pre); visual = true;
+    }
+    const link = document.createElement('a');
+    link.href = dataUrl; link.download = name; link.textContent = 'Download ' + name;
+    link.style.cssText = 'display:inline-flex;margin-top:8px;color:#8a6500;font:600 11px Inter,sans-serif;text-decoration:underline';
+    card.appendChild(link);
+    preview.appendChild(card);
+  }
+  preview.style.display = 'flex';
+  output.style.display = '';
+  if (visual) showOutputTab('3dpreview');
+  return true;
+}
+
 function hideCompilerVisualPreview() {
   const preview = document.getElementById("compilerVisualPreview");
   const output = $("output");
@@ -3409,95 +3472,103 @@ async function runSmartBranch(source) {
   return handled;
 }
 
-async function runE2BPython(source) {
+async function runModalPython(source) {
   running = true;
-  currentOutputText = "";
+  currentOutputText = '';
   currentErrors = [];
   waitingForInput = null;
   hideCompilerVisualPreview();
-  $("output").textContent = "";
-  $("consoleExtra").classList.remove("show");
-  showOutputTab("output");
+  $('output').textContent = '';
+  $('consoleExtra').classList.remove('show');
+  showOutputTab('output');
   showRunningAnimation();
   startRuntimeClock();
-  setStatus("E2B Python running");
+  setStatus('Modal Python running');
+
+  if (window.JSCO_LIVE && window.JSCO_LIVE.shouldUse(source)) {
+    try {
+      await window.JSCO_LIVE.run(String(source), {
+        preview: getCompilerVisualPreview(),
+        output: $('output'),
+        showOutputTab,
+        setStatus
+      });
+      $('loaderTitle').textContent = 'Interactive session started';
+      $('loaderSubtitle').textContent = 'Your Python program is running in a live browser-connected Modal session.';
+    } catch (liveError) {
+      const message = String(liveError && liveError.message ? liveError.message : liveError);
+      currentErrors.push(message);
+      writeOutput(message + '\n', 'error');
+      $('loaderTitle').textContent = 'Live session could not start';
+      $('loaderSubtitle').textContent = 'Check the Modal live endpoint and camera permissions.';
+      setStatus('Live session error');
+    } finally {
+      stopRuntimeClock();
+      running = false;
+      hideRunningAnimation();
+      $('runBtn').disabled = false;
+      $('runBtn').querySelector('span').textContent = 'Run Code';
+      $('consoleNote').textContent = 'Interactive session started. Use Stop session in the preview to end it.';
+    }
+    return;
+  }
 
   try {
-    const response = await fetch("/api/e2b_backend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        compiler: "python",
-        code: String(source),
-        input: $("consoleInput").value || ""
-      })
+    const response = await fetch('/api/modal_backend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ compiler: 'python', code: String(source), input: $('consoleInput').value || '' })
     });
-
     const responseText = await response.text();
     let result = null;
     try { result = responseText ? JSON.parse(responseText) : null; } catch (_) {}
-
-    if (!result || typeof result !== "object" || Array.isArray(result)) {
-      const preview = (responseText || "(empty response)")
-        .replace(/<[^>]*>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .slice(0, 800);
-      throw new Error(`E2B API returned an invalid response (HTTP ${response.status}). ${preview}`);
+    if (!result || typeof result !== 'object' || Array.isArray(result)) {
+      const preview = (responseText || '(empty response)').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 800);
+      throw new Error(`Modal API returned an invalid response (HTTP ${response.status}). ${preview}`);
     }
+    if (!response.ok) throw new Error(result.error || result.message || `Modal API failed (${response.status}).`);
 
-    if (!response.ok) {
-      throw new Error(result.error || result.message || `E2B API failed (${response.status}).`);
-    }
-
-    let outputText = String(result.output || result.stdout || "");
-    const printed = extractPrintedBase64Images(outputText);
-    outputText = printed.text;
-
-    if (outputText) writeOutput(outputText + (outputText.endsWith("\n") ? "" : "\n"));
-    if (result.stderr) writeOutput(String(result.stderr) + (String(result.stderr).endsWith("\n") ? "" : "\n"), "error");
-
+    const outputText = String(result.output || result.stdout || '');
+    if (outputText) writeOutput(outputText + (outputText.endsWith('\n') ? '' : '\n'));
+    if (result.stderr) writeOutput(String(result.stderr) + (String(result.stderr).endsWith('\n') ? '' : '\n'), 'error');
     if (Array.isArray(result.installedPackages) && result.installedPackages.length) {
-      writeOutput("Auto-installed packages: " + result.installedPackages.join(", ") + "\n", "success");
+      writeOutput('Packages available for this run: ' + result.installedPackages.join(', ') + '\n', 'success');
     }
-    if (result.packageInstallNote) writeOutput(String(result.packageInstallNote) + "\n", "info");
+    if (result.packageInstallNote) writeOutput(String(result.packageInstallNote) + '\n', 'info');
+    if (Array.isArray(result.runtimeNotes)) {
+      for (const note of result.runtimeNotes) writeOutput('\nRuntime note: ' + String(note) + '\n', 'info');
+    }
 
-    const fileImages = Array.isArray(result.files)
-      ? result.files
-          .filter(f => f && /^image\//i.test(String(f.mime || "")) && f.content_base64)
-          .map(f => ({ mime: String(f.mime), data: String(f.content_base64), name: String(f.name || "Python image output") }))
-      : [];
-
-    const allImages = [];
-    for (const img of printed.images || []) allImages.push(img);
-    for (const img of fileImages) allImages.push(img);
-
-    if (allImages.length) {
-      showPrintedBase64Images(allImages);
-      showOutputTab("3dpreview");
-    } else {
-      showOutputTab("output");
+    const printed = extractPrintedBase64Images(outputText);
+    const files = Array.isArray(result.files) ? result.files : [];
+    let rendered = false;
+    if (files.length) rendered = showModalFilesPreview(files);
+    if (!rendered && printed.images.length) {
+      showPrintedBase64Images(printed.images);
+      rendered = true;
     }
 
     if (result.success) {
       $('loaderTitle').textContent = 'Execution finished';
-      $('loaderSubtitle').textContent = `Python program completed on E2B in ${result.time || '—'}s.`;
-      setStatus('E2B Python ready');
+      $('loaderSubtitle').textContent = `Python program completed on Modal in ${result.time || '—'}s.`;
+      setStatus('Modal Python ready');
+      if (!outputText.trim() && !files.length) writeOutput('✓ Program finished with no console output.\n', 'success');
     } else {
       const err = String(result.error || result.stderr || 'Python execution failed.');
       currentErrors.push(err);
-      if (!result.stderr && !outputText) writeOutput(err + "\n", "error");
+      if (!result.stderr && !outputText) writeOutput(err + '\n', 'error');
       $('loaderTitle').textContent = 'Execution stopped';
-      $('loaderSubtitle').textContent = 'E2B reported a Python execution error; see the console.';
-      setStatus('E2B execution error');
+      $('loaderSubtitle').textContent = 'Modal reported a Python execution error; see the console.';
+      setStatus('Modal execution error');
     }
+    if (!rendered) showOutputTab('output');
   } catch (error) {
     const message = String(error && error.message ? error.message : error);
     currentErrors.push(message);
-    writeOutput(message + "\n", "error");
+    writeOutput(message + '\n', 'error');
     $('loaderTitle').textContent = 'Execution stopped';
-    $('loaderSubtitle').textContent = 'E2B could not execute this Python program.';
-    setStatus('E2B connection error');
+    $('loaderSubtitle').textContent = 'Check the Modal endpoint and Vercel environment variables.';
+    setStatus('Modal connection error');
   } finally {
     stopRuntimeClock();
     running = false;
@@ -3528,8 +3599,27 @@ async function executeProgram() {
   const wantsPython = fileName.endsWith('.py') || detected.isPython;
   const visualEngines = detected.engines;
 
-  // All Python files now use the server-side E2B execution engine. Browser Pyodide is kept for the legacy code below but is bypassed for Python runs.
-  if (wantsPython) return await runE2BPython(source);
+  // Browser-native renderers handle browser graphics. General Python execution uses Modal Sandbox.
+  if (wantsPython && TURTLE_RE.test(source)) return await runSmartBranch(source);
+  if (wantsPython && visualEngines.includes('three')) {
+    running = true; currentOutputText = ''; currentErrors = []; waitingForInput = null;
+    hideCompilerVisualPreview(); $('output').textContent = ''; $('consoleExtra').classList.remove('show');
+    showOutputTab('output'); showRunningAnimation(); startRuntimeClock();
+    try {
+      const hasVisual = await runPythonInIsolatedFrame(source, visualEngines);
+      showOutputTab(hasVisual ? '3dpreview' : 'output');
+      $('loaderTitle').textContent = 'Execution finished'; $('loaderSubtitle').textContent = 'Python Three.js preview completed in the browser.'; setStatus('Browser 3D preview ready');
+    } catch (error) {
+      const message = String(error && error.message ? error.message : error);
+      currentErrors.push(message); writeOutput(message + '\n', 'error');
+      $('loaderTitle').textContent = 'Preview failed'; $('loaderSubtitle').textContent = 'Check the browser graphics code and CDN connection.'; setStatus('3D preview error');
+    } finally {
+      stopRuntimeClock(); running = false; hideRunningAnimation(); $('runBtn').disabled = false;
+      $('runBtn').querySelector('span').textContent = 'Run Code'; $('consoleNote').textContent = 'Finished. Duration: ' + $('runtimeCount').textContent;
+    }
+    return;
+  }
+  if (wantsPython) return await runModalPython(source);
 
   // Real Python (Pyodide) for turtle + numpy/pandas/matplotlib/sklearn/sympy/PIL; falls back if the runtime cannot load.
   const isTurtle = wantsPython && TURTLE_RE.test(source);
@@ -4677,5 +4767,6 @@ loadPython().catch(() => {
 })();
 </script>
 
+<script src="/modal_live.js"></script>
 </body>
 </html>
