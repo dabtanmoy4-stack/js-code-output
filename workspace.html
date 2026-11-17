@@ -2404,7 +2404,7 @@ html.dark .CodeMirror-dialog input {
 </div>
 </div>
 <div class="explorer-body" id="fileExplorer"></div>
-<div class="miod-card" id="miodCard" onclick="openMiod()" title="Code with MIOD AI" role="button" tabindex="0">
+<div class="miod-card" id="miodCard" onclick="window.location.href='miod_ai.html'" title="Code with MIOD AI" role="button" tabindex="0">
 <iframe id="miodCardFrame" title="MIOD preview" tabindex="-1" aria-hidden="true"></iframe>
 <div class="miod-label"><span>✨ Code with MIOD AI</span><small>Tap to open →</small></div>
 </div>
@@ -6668,7 +6668,7 @@ document.addEventListener('click',function(e){
   };
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape') window.closeMiod();
-    if((e.key==='Enter'||e.key===' ') && document.activeElement && document.activeElement.id==='miodCard'){e.preventDefault();window.openMiod();}
+    if((e.key==='Enter'||e.key===' ') && document.activeElement && document.activeElement.id==='miodCard'){e.preventDefault();window.location.href='miod_ai.html';}
   });
   function init(){ var cf=document.getElementById('miodCardFrame'); if(cf) cf.srcdoc=getSrc().replace('</head>','<style>:root,html,body{background:transparent!important}body::before{background:transparent!important;display:none}</style></head>'); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
