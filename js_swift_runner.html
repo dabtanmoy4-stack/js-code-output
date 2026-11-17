@@ -1,0 +1,2666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090b">
+<title>JS Swift Runner — Swift Language IDE</title>
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+
+
+<!-- Fonts & CodeMirror Assets -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+/* ==========================================================================
+   JS Swift Runner — single, consolidated stylesheet
+   Liquid-glass chrome, opaque popovers/menus/editor, dark + light themes.
+   ========================================================================== */
+
+/* ---------- design tokens ---------- */
+:root {
+  color-scheme: dark;
+  --bg: #07080b;
+  --solid: #121318;            /* opaque: popovers, menus, dialogs, tour */
+  --solid-2: #181a21;
+  --editor: #0a0b0f;           /* opaque: code + output for legibility */
+  --field: rgba(0, 0, 0, .30); /* text inputs */
+  --text: #f5f3ee;
+  --muted: #a7a5ad;
+  --gold: #e4c682;
+  --gold-deep: #b98a2e;
+  --gold-ink: #1b1408;
+  --red: #ff7b7b;
+  --green: #8fe3ae;
+  --border: rgba(255, 255, 255, .14);
+  --border-gold: rgba(228, 198, 130, .45);
+  --line: rgba(255, 255, 255, .09);
+  --fill: rgba(255, 255, 255, .06);
+  --fill-2: rgba(255, 255, 255, .11);
+  --fill-hover: rgba(255, 255, 255, .16);
+  --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, .28);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, .14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --sidebar-w: 250px;
+  --popover-top: 64px;
+}
+
+body.light {
+  color-scheme: light;
+  --bg: #f3efe6;
+  --solid: #fffdf8;
+  --solid-2: #f7f2e7;
+  --editor: #fffefb;
+  --field: rgba(255, 255, 255, .85);
+  --text: #211d15;
+  --muted: #6f685b;
+  --gold: #8a6414;
+  --gold-deep: #b88a2e;
+  --red: #b3261e;
+  --green: #17734a;
+  --border: rgba(96, 72, 30, .20);
+  --border-gold: rgba(160, 116, 34, .48);
+  --line: rgba(96, 72, 30, .12);
+  --fill: rgba(255, 255, 255, .55);
+  --fill-2: rgba(255, 255, 255, .78);
+  --fill-hover: #ffffff;
+  --shadow: 0 16px 40px rgba(78, 58, 24, .16);
+  --shadow-sm: 0 4px 12px rgba(78, 58, 24, .10);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, .95);
+}
+
+/* ---------- base / reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font: 13px/1.5 Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: color .3s var(--ease);
+}
+h1, h2, h3, p { margin: 0; }
+button, input, textarea, select { font: inherit; color: inherit; margin: 0; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+[hidden] { display: none !important; }
+.hidden { display: none !important; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.svg-ic { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+
+/* Fixed wallpaper: gives the glass surfaces something real to blur. */
+.bg-fx {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 8% 0%, rgba(214, 170, 80, .20), transparent 60%),
+    radial-gradient(50% 45% at 100% 8%, rgba(120, 140, 200, .16), transparent 60%),
+    radial-gradient(55% 50% at 82% 100%, rgba(80, 104, 170, .20), transparent 62%),
+    radial-gradient(45% 40% at 0% 100%, rgba(186, 112, 96, .12), transparent 60%),
+    var(--bg);
+}
+body.light .bg-fx {
+  background:
+    radial-gradient(60% 50% at 8% 0%, rgba(236, 200, 128, .55), transparent 60%),
+    radial-gradient(50% 45% at 100% 8%, rgba(190, 204, 232, .55), transparent 60%),
+    radial-gradient(55% 50% at 82% 100%, rgba(164, 182, 218, .45), transparent 62%),
+    radial-gradient(45% 40% at 0% 100%, rgba(242, 216, 180, .50), transparent 60%),
+    var(--bg);
+}
+
+/* ---------- glass surfaces (fill comes from ::before, so children never inherit blur) ---------- */
+.topbar, .panel { position: relative; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.topbar::before, .panel::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(150deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .035) 55%, rgba(255, 255, 255, .06));
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: var(--glass-hi);
+}
+body.light .topbar::before, body.light .panel::before {
+  background: linear-gradient(150deg, rgba(255, 255, 255, .80), rgba(255, 255, 255, .52));
+}
+.topbar::after {
+  content: ""; position: absolute; left: 10%; right: 10%; top: 0; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 240, 189, .9), transparent);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 36px; padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: linear-gradient(145deg, var(--fill-2), var(--fill));
+  color: var(--text); font-size: 11.5px; font-weight: 650; white-space: nowrap;
+  box-shadow: var(--glass-hi), var(--shadow-sm);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  transition: background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.btn:hover:not(:disabled) { border-color: var(--border-gold); background: linear-gradient(145deg, var(--fill-hover), var(--fill-2)); transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(.985); }
+.btn:disabled { opacity: .45; }
+.btn.icon-only { width: 36px; padding: 0; }
+.btn.gold {
+  background: linear-gradient(115deg, #f8e8b7, #d7b45e 36%, #a8792c 66%, #f1dc9a);
+  background-size: 220% 100%;
+  border-color: rgba(255, 236, 190, .7);
+  color: var(--gold-ink); font-weight: 800;
+  box-shadow: 0 2px 0 #75531f, 0 6px 14px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .55);
+}
+.btn.gold:hover:not(:disabled) { background-position: 100% 0; filter: brightness(1.05); }
+.btn.danger { color: var(--red); }
+.small-btn {
+  display: inline-grid; place-items: center; height: 28px; min-width: 28px; padding: 0 6px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--fill); color: var(--text); font-size: 11px;
+  transition: background .2s, border-color .2s;
+}
+.small-btn:hover { border-color: var(--border-gold); background: var(--fill-2); }
+
+/* ---------- header ---------- */
+.app {
+  height: 100vh;
+  height: 100dvh;
+  padding: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+  overflow: hidden;
+}
+.topbar {
+  flex: 0 0 auto; min-height: 66px; padding: 8px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.logo-wrap {
+  width: 52px; height: 52px; flex-shrink: 0; display: grid; place-items: center; overflow: hidden;
+  border-radius: 50%; background: #fff; border: 0;
+  box-shadow: 0 0 0 2px var(--border-gold), 0 6px 16px rgba(0, 0, 0, .3);
+}
+.logo-wrap .jsco-logo { width: 100%; height: 100%; display: block; object-fit: cover; }
+.brand-name { font-weight: 900; font-size: 19px; letter-spacing: -.6px; white-space: nowrap; }
+.brand-sub { margin-top: 3px; color: var(--muted); font-size: 9.5px; letter-spacing: 1.3px; text-transform: uppercase; white-space: nowrap; }
+.rainbow-js {
+  display: inline-block; color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(100deg,#ff5f8f,#f9c74f,#59e1c2,#62a8ff,#c28aff,#ff5f8f);
+  background-size: 350% 100%;
+  animation: jsRainbowShift 5s linear infinite;
+}
+@keyframes jsRainbowShift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .rainbow-js { animation: none; } }
+body.light .rainbow-js { background-image: linear-gradient(100deg,#b91c5c,#a16207,#047857,#1d4ed8,#7c3aed,#b91c5c); }
+.runner-text { color: var(--gold); }
+.boost {
+  margin-left: 4px; font-size: 10px; font-weight: 900; letter-spacing: .14em;
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(180deg, #fff3cf, #e4c682 55%, #b98a2e);
+}
+body.light .boost { background-image: linear-gradient(180deg, #c99a3c, #8a6414); }
+.hexlogo { display: inline-block; vertical-align: -2px; filter: drop-shadow(0 1px 3px rgba(160, 110, 30, .45)); }
+.hex-inline { margin-right: 4px; }
+
+.top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.theme-toggle { width: 36px; padding: 0; }
+
+.header-project-area, .account-area { position: relative; }
+.header-project-area { margin-right: auto; min-width: 0; }
+.header-project-btn { min-height: 38px; }
+.project-chevron, .account-chevron { opacity: .7; width: 12px; height: 12px; }
+.account-area { flex: 0 0 auto; }
+.account-button {
+  min-height: 42px; max-width: 250px; display: flex; align-items: center; gap: 9px; padding: 5px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: linear-gradient(145deg, var(--fill-2), var(--fill)); color: var(--text);
+  box-shadow: var(--glass-hi), var(--shadow-sm); text-align: left;
+  transition: border-color .25s, background .25s;
+}
+.account-button:hover { border-color: var(--border-gold); }
+.google-g {
+  width: 28px; height: 28px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%;
+  background: #fff; color: #4285f4; border: 1px solid #d7dce3; font: 800 18px/1 Arial, sans-serif;
+}
+.account-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.account-copy strong { font-size: 11px; font-weight: 750; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-copy small { font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+.mobile-more-btn { display: none; width: 40px; height: 40px; padding: 0; }
+
+/* popovers: fully opaque so page content never shows through */
+.header-popover {
+  position: absolute; z-index: 20001; top: calc(100% + 8px);
+  min-width: 240px; max-width: min(340px, calc(100vw - 20px)); padding: 10px;
+  border: 1px solid var(--border-gold); border-radius: 14px;
+  background: var(--solid); color: var(--text); box-shadow: var(--shadow);
+  animation: menuIn .16s var(--ease);
+}
+.projects-popover { left: 0; }
+.account-popover { right: 0; }
+.mobile-actions-popover { right: 0; top: calc(100% + 8px); min-width: 220px; }
+.header-popover > strong {
+  display: block; padding: 4px 8px 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--muted);
+}
+.header-popover p { margin: 4px 8px 10px; color: var(--muted); font-size: 11.5px; line-height: 1.6; }
+.popover-divider { height: 1px; margin: 6px 4px; background: var(--line); }
+.header-popover .project-item,
+.mobile-actions-popover button {
+  width: 100%; min-height: 42px; display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border-radius: 9px; background: transparent; color: var(--text); text-align: left; box-shadow: none;
+}
+.header-popover .project-item:hover,
+.mobile-actions-popover button:hover { background: var(--fill-2); }
+.header-popover .project-item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.header-popover .project-item strong { font-size: 12px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-popover .project-item small { color: var(--muted); font-size: 10px; }
+.header-popover .project-item > svg, .mobile-actions-popover button > svg { width: 16px; height: 16px; flex: 0 0 16px; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(4px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* ---------- status strip & footer (intentionally hidden in this layout) ---------- */
+.status-strip, .footer, .drop-hint, .file-footer { display: none !important; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 6px rgba(228, 198, 130, .45); }
+
+/* ---------- workspace grid ---------- */
+.workspace {
+  position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  gap: 8px; transition: grid-template-columns .3s var(--ease);
+}
+.workspace.sidebar-collapsed { --sidebar-w: 46px; }
+.panel { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.panel-head {
+  min-height: 42px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border-bottom: 1px solid var(--line); background: linear-gradient(100deg, rgba(228, 198, 130, .07), transparent 70%);
+}
+.panel-title { font-size: 10.5px; font-weight: 800; letter-spacing: 1.2px; }
+.panel-sub { font-size: 10.5px; color: var(--muted); }
+.panel-head .head-tools { display: flex; align-items: center; gap: 5px; }
+
+/* ---------- explorer ---------- */
+.explorer { min-width: 0; }
+.explorer-tools { padding: 8px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.explorer-tools > * { min-width: 0; }
+.search-box {
+  display: flex; align-items: center; gap: 7px; height: 36px; min-width: 0; padding: 0 10px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--field);
+}
+.search-box:focus-within { border-color: var(--border-gold); box-shadow: 0 0 0 3px rgba(228, 198, 130, .14); }
+.search-box input { flex: 1 1 0; width: 100%; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; font-size: 12px; }
+.search-box input::placeholder { color: var(--muted); }
+.search-shortcut { font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+.explorer-actions { display: none; gap: 5px; }
+.explorer-actions .btn { flex: 1; min-height: 34px; padding: 6px 5px; font-size: 10.5px; }
+.explorer-collapse svg { transition: transform .3s var(--ease); }
+.explorer.is-collapsed .explorer-collapse svg { transform: rotate(180deg); }
+.explorer.is-collapsed .explorer-tools,
+.explorer.is-collapsed .tree,
+.explorer.is-collapsed .miod-card { display: none; }
+.workspace.sidebar-collapsed .explorer .panel-title { display: none; }
+.workspace.sidebar-collapsed .explorer .panel-head { justify-content: center; padding: 10px 0; }
+.workspace.sidebar-collapsed .explorer .head-tools > .small-btn:not(.explorer-collapse) { display: none; }
+.workspace.sidebar-collapsed .explorer .head-tools { gap: 0; }
+
+.tree { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 4px 6px 12px; }
+.tree-label {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 8px 5px;
+  font-size: 10px; font-weight: 800; letter-spacing: .9px; text-transform: uppercase; color: var(--muted);
+}
+.tree-row {
+  position: relative; display: flex; align-items: center; gap: 7px; min-height: 28px;
+  margin: 1px 2px; padding: 4px 8px 4px calc(8px + var(--depth, 0) * 16px);
+  border: 1px solid transparent; border-radius: 8px;
+  color: var(--text); font-size: 12.5px; cursor: pointer; user-select: none;
+  transition: background .15s, border-color .15s;
+}
+.tree-row:hover { background: var(--fill-2); }
+.tree-row.active { background: rgba(228, 198, 130, .16); border-color: var(--border-gold); }
+.tree-row.dragging { opacity: .45; }
+.tree-row.drop-target { border-color: var(--gold); background: rgba(228, 198, 130, .14); }
+.tree-row > svg { width: 15px; height: 15px; flex: 0 0 15px; }
+.tree-row .tree-chevron { width: 11px; height: 11px; flex: 0 0 11px; color: var(--muted); transition: transform .15s var(--ease); }
+.tree-row .tree-chevron.open { transform: rotate(90deg); }
+.tree-row .tree-chevron.spacer { opacity: 0; }
+.tree-row .filename { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-row .tree-action { display: none; align-items: center; color: var(--muted); padding: 2px; border-radius: 5px; }
+.tree-row:hover .tree-action { display: inline-flex; }
+.tree-row .tree-action:hover { color: var(--red); background: var(--fill-hover); }
+.tree-row .tree-action svg { width: 12px; height: 12px; }
+
+/* ---------- main & editor ---------- */
+.main { min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .85fr); gap: 8px; }
+.editor-panel, .output-panel { min-width: 0; min-height: 0; }
+.editor-toolbar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  padding: 8px 10px; border-bottom: 1px solid var(--line);
+}
+.tabs { display: flex; align-items: center; gap: 5px; min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tab {
+  display: flex; align-items: center; gap: 7px; padding: 6px 10px; flex-shrink: 0;
+  border: 1px solid transparent; border-radius: 8px; background: var(--fill);
+  color: var(--muted); font-size: 11.5px; white-space: nowrap; cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); background: var(--fill-2); border-color: var(--border-gold); }
+.tab svg { width: 14px; height: 14px; }
+.tab .tab-close { display: inline-flex; padding: 2px; border-radius: 4px; opacity: .6; }
+.tab .tab-close:hover { opacity: 1; color: var(--red); }
+.editor-tools { display: flex; flex-wrap: wrap; gap: 5px; }
+.editor-tools .btn { min-height: 30px; padding: 5px 9px; font-size: 11px; }
+.editor-body { position: relative; flex: 1 1 auto; min-height: 320px; }
+.editor-foot {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  padding: 7px 12px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--muted);
+  background: var(--editor);
+}
+.editor-foot > span { display: inline-flex; align-items: center; gap: 6px; }
+.fs-label { display: none !important; }
+
+/* CodeMirror, filling the editor body */
+.editor-body .CodeMirror {
+  position: absolute; inset: 0; height: auto !important; min-height: 0 !important; max-height: none !important;
+  background: var(--editor) !important; color: var(--text) !important;
+  font: 14px/1.7 "JetBrains Mono", Consolas, monospace;
+}
+.CodeMirror-gutters { background: var(--editor) !important; border-right: 1px solid var(--line) !important; }
+.CodeMirror-linenumber { color: var(--muted) !important; opacity: .75; }
+.CodeMirror-cursor { border-left: 2px solid var(--gold) !important; }
+.CodeMirror .CodeMirror-selected, .CodeMirror-focused .CodeMirror-selected { background: rgba(228, 198, 130, .24) !important; }
+.CodeMirror-hints {
+  z-index: 30000 !important; max-width: min(420px, calc(100vw - 24px)); min-width: 220px; max-height: 240px; overflow-y: auto;
+  padding: 5px; border: 1px solid var(--border-gold); border-radius: 10px;
+  background: var(--solid) !important; color: var(--text) !important; box-shadow: var(--shadow-sm);
+  font: 12px/1.5 "JetBrains Mono", Consolas, monospace;
+}
+.CodeMirror-hint { padding: 5px 9px; border-radius: 6px; color: var(--text); white-space: nowrap; }
+li.CodeMirror-hint-active { background: rgba(228, 198, 130, .22) !important; color: var(--gold) !important; }
+/* material-darker token colours, tuned per theme */
+.cm-s-material-darker .cm-keyword { color: #ff7ab2; font-weight: 700; }
+.cm-s-material-darker .cm-def, .cm-s-material-darker .cm-variable-2, .cm-s-material-darker .cm-property { color: #82aaff; }
+.cm-s-material-darker .cm-string, .cm-s-material-darker .cm-string-2 { color: #c3e88d; }
+.cm-s-material-darker .cm-number, .cm-s-material-darker .cm-atom { color: #f78c6c; }
+.cm-s-material-darker .cm-comment { color: #9aa4b2; font-style: italic; }
+.cm-s-material-darker .cm-builtin { color: #ffcb6b; }
+.cm-s-material-darker .cm-operator { color: #89ddff; }
+.cm-s-material-darker .cm-error { color: #ff6b6b; }
+body.light .cm-s-material-darker .cm-keyword { color: #a21caf; }
+body.light .cm-s-material-darker .cm-def, body.light .cm-s-material-darker .cm-variable-2, body.light .cm-s-material-darker .cm-property { color: #0759b5; }
+body.light .cm-s-material-darker .cm-string, body.light .cm-s-material-darker .cm-string-2 { color: #087443; }
+body.light .cm-s-material-darker .cm-number, body.light .cm-s-material-darker .cm-atom { color: #b45309; }
+body.light .cm-s-material-darker .cm-comment { color: #64748b; }
+body.light .cm-s-material-darker .cm-builtin { color: #9a6700; }
+body.light .cm-s-material-darker .cm-operator { color: #0369a1; }
+.cm-word-highlight { background: rgba(228, 198, 130, .20); border-bottom: 1px solid rgba(228, 198, 130, .6); border-radius: 2px; }
+
+/* ---------- output panel ---------- */
+.output-panel { display: flex; flex-direction: column; }
+.output-head { flex-wrap: wrap; row-gap: 4px; }
+.output-tabs { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+.output-tab {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 9px;
+  border-bottom: 2px solid transparent; border-radius: 0; background: transparent;
+  color: var(--muted); font-size: 11px; font-weight: 750; cursor: pointer;
+}
+.output-tab:hover { color: var(--text); }
+.output-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.output-tab svg { width: 13px; height: 13px; }
+.output-tab .pbadge {
+  min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px; display: inline-grid; place-items: center;
+  background: var(--red); color: #fff; font: 700 10px/1 Inter, sans-serif;
+}
+.output-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.output-actions .btn { min-height: 30px; padding: 5px 9px; font-size: 11px; }
+.output-actions #runBtn { order: 0; }
+.output-actions #consoleBtn { order: 1; }
+.output-actions #clearOutputBtn { order: 2; }
+.output-actions .fullscreen-btn { order: 3; }
+
+.loader-wrap {
+  align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--fill);
+  display: none;
+}
+.loader-wrap.show { display: flex; }
+.loader-orb {
+  width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%;
+  border: 2px solid var(--line); border-top-color: var(--gold); animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-copy { flex: 1; min-width: 0; }
+.loader-copy strong { display: block; font-size: 11px; color: var(--gold); margin-bottom: 3px; }
+.loader-copy span { font-size: 10.5px; color: var(--muted); }
+#loaderTimer { color: var(--gold); font: 11px/1 "JetBrains Mono", monospace; }
+.loader-bar { position: relative; height: 2px; margin-top: 6px; overflow: hidden; border-radius: 4px; background: var(--line); }
+.loader-bar::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 35%;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: loadBar 1.1s ease-in-out infinite;
+}
+@keyframes loadBar { from { transform: translateX(-120%); } to { transform: translateX(330%); } }
+
+.output {
+  flex: 1 1 0; min-height: 160px; overflow: auto; padding: 14px 16px;
+  background: var(--editor); color: var(--text);
+  font: 12.5px/1.75 "JetBrains Mono", Consolas, monospace;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.output-placeholder { color: var(--muted); }
+.output-line-error { color: var(--red); }
+.output-line-success { color: var(--gold); }
+
+.input-bar {
+  display: flex; align-items: stretch; gap: 8px; padding: 8px 10px;
+  border-top: 1px solid var(--line); background: var(--fill);
+}
+.prompt-mark { align-self: center; white-space: nowrap; font: 800 11px "JetBrains Mono", monospace; color: var(--gold); }
+#stdinBox {
+  flex: 1; min-width: 0; min-height: 44px; max-height: 150px; resize: vertical; padding: 9px 11px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--field); outline: 0;
+  font: 12px/1.55 "JetBrains Mono", monospace;
+}
+#stdinBox:focus, .console-row input:focus { border-color: var(--border-gold); box-shadow: 0 0 0 3px rgba(228, 198, 130, .16); }
+.input-bar .btn { align-self: center; }
+
+.console-extra { display: none; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--fill); font: 11px/1.6 "JetBrains Mono", monospace; color: var(--muted); }
+.console-extra.show { display: block; }
+.console-row { display: flex; align-items: center; gap: 8px; }
+.console-row > span { color: var(--gold); font-weight: 800; }
+.console-row input {
+  flex: 1; min-width: 0; padding: 9px 11px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--field); outline: 0; font: 12px "JetBrains Mono", monospace;
+}
+.console-note { margin-top: 6px; font-size: 10.5px; }
+
+/* ---------- fullscreen ---------- */
+.panel.is-fullscreen {
+  position: fixed !important; inset: 8px !important; z-index: 20000;
+  width: auto !important; height: auto !important; max-height: none !important; margin: 0 !important;
+}
+.panel.is-fullscreen .editor-body, .panel.is-fullscreen .output { min-height: 0; }
+.panel.is-fullscreen .output { height: auto; max-height: none; }
+.panel.is-fullscreen .panel-head,
+.panel.is-fullscreen .editor-toolbar { padding-right: 170px; }
+.fullscreen-exit {
+  position: fixed !important; top: 14px !important; right: 16px !important; z-index: 30001;
+  height: 40px; min-width: 40px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 999px !important; background: var(--solid) !important; color: var(--text) !important;
+  border: 1px solid var(--border-gold) !important; box-shadow: var(--shadow-sm) !important; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 22px; z-index: 1000; transform: translate(-50%, 16px);
+  max-width: min(92vw, 520px); padding: 10px 18px; border: 1px solid var(--border-gold); border-radius: 999px;
+  background: var(--solid); color: var(--text); box-shadow: var(--shadow); font-size: 12px; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- context / choice menus ---------- */
+.context-menu, .choice-menu {
+  position: fixed; z-index: 9999; min-width: 210px; padding: 6px;
+  border: 1px solid var(--border-gold); border-radius: 12px; background: var(--solid); color: var(--text);
+  box-shadow: var(--shadow); animation: menuIn .14s var(--ease);
+}
+.context-menu button, .choice-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border-radius: 8px;
+  background: transparent; color: inherit; text-align: left; font-size: 12px; font-weight: 600; box-shadow: none;
+}
+.context-menu button:hover, .choice-menu button:hover { background: var(--fill-2); color: var(--gold); }
+.context-menu button.danger { color: var(--red); }
+.context-menu button svg, .choice-menu button svg { width: 15px; height: 15px; flex: 0 0 15px; }
+.menu-sep { height: 1px; margin: 5px 4px; background: var(--line); }
+
+.name-dialog-backdrop { position: fixed; inset: 0; z-index: 30000; display: grid; place-items: center; padding: 18px; background: rgba(4, 5, 9, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.name-dialog { width: min(420px, 100%); padding: 22px; border: 1px solid var(--border-gold); border-radius: 16px; background: var(--solid); color: var(--text); box-shadow: var(--shadow); animation: menuIn .18s var(--ease); }
+.name-dialog h3 { margin: 0 0 6px; font-size: 16px; }
+.name-dialog p { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.name-dialog input {
+  width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--field); outline: none; font: 13px Inter, sans-serif;
+}
+.name-dialog input:focus { border-color: var(--border-gold); box-shadow: 0 0 0 3px rgba(228, 198, 130, .16); }
+.name-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.name-dialog-actions button { padding: 8px 14px; border: 1px solid var(--border); border-radius: 9px; background: var(--fill); font-size: 12px; font-weight: 650; }
+.name-dialog-actions button:hover { background: var(--fill-2); }
+.name-dialog-actions button.primary { border-color: #d6ad55; background: linear-gradient(135deg, #f0d58c, #bd8e32); color: var(--gold-ink); }
+
+/* ---------- find & replace ---------- */
+.find-replace-panel {
+  position: fixed; z-index: 2147483000; top: 84px; right: 18px; width: min(460px, calc(100vw - 36px)); padding: 10px;
+  border: 1px solid var(--border-gold); border-radius: 12px; background: var(--solid); color: var(--text);
+  box-shadow: var(--shadow); font: 13px/1.4 Inter, system-ui, sans-serif;
+}
+.find-replace-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.find-replace-tabs { display: flex; gap: 4px; }
+.find-replace-tab { padding: 6px 10px; border-radius: 7px; color: var(--muted); font-weight: 650; }
+.find-replace-tab.active { color: var(--text); background: var(--fill-2); }
+.find-replace-close { padding: 2px 8px; border-radius: 6px; color: var(--muted); font-size: 20px; line-height: 1; }
+.find-replace-close:hover { background: var(--fill-2); color: var(--text); }
+.fr-input-row { display: flex; align-items: center; gap: 5px; margin-top: 6px; }
+.fr-input-wrap {
+  display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; padding: 0 7px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--field);
+}
+.fr-input-wrap:focus-within { border-color: var(--border-gold); box-shadow: 0 0 0 3px rgba(228, 198, 130, .16); }
+.fr-input-wrap input { flex: 1; min-width: 0; padding: 7px 0; border: 0; outline: 0; background: transparent; font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.fr-input-wrap input::placeholder { color: var(--muted); }
+.fr-mini {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 26px; height: 26px; padding: 0 5px;
+  border: 1px solid var(--border); border-radius: 6px; background: var(--fill); font-size: 11px;
+}
+.fr-mini:hover { background: var(--fill-2); }
+.fr-mini.active { border-color: var(--border-gold); background: rgba(228, 198, 130, .18); color: var(--gold); }
+.fr-count { min-width: 48px; text-align: right; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.fr-action { padding: 7px 9px; border: 1px solid var(--border); border-radius: 7px; background: var(--fill); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.fr-action:hover { background: var(--fill-2); }
+.fr-action.primary { border-color: #d6ad55; background: linear-gradient(135deg, #f0d58c, #bd8e32); color: var(--gold-ink); }
+.fr-status { min-height: 15px; margin: 6px 2px 0; font-size: 11px; color: var(--muted); }
+.fr-status.error { color: var(--red); }
+.cm-fr-match { background: rgba(228, 198, 130, .26); outline: 1px solid rgba(228, 198, 130, .55); border-radius: 2px; }
+.cm-fr-current { background: rgba(255, 190, 50, .55); outline: 1px solid #e3b341; border-radius: 2px; color: #1b1408 !important; }
+
+/* ---------- guided tour ---------- */
+.tour-backdrop { position: fixed; inset: 0; z-index: 50000; background: rgba(3, 4, 8, .62); pointer-events: none; }
+.tour-spotlight {
+  position: relative !important; z-index: 50001 !important; border-radius: 10px !important;
+  outline: 2px solid var(--gold) !important; outline-offset: 4px !important;
+  box-shadow: 0 0 0 9999px rgba(3, 4, 8, .62), 0 0 26px 4px rgba(228, 198, 130, .55) !important;
+}
+.tour-card {
+  position: fixed; z-index: 50003; left: 50%; top: 50%; width: min(440px, calc(100vw - 28px)); padding: 20px 22px;
+  border: 1px solid var(--border-gold); border-radius: 16px; background: var(--solid); color: var(--text);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .45); pointer-events: auto;
+}
+.tour-card h3 { margin: 0 0 8px; font-size: 17px; color: var(--gold); }
+.tour-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 18px; }
+.tour-step { font-size: 11px; color: var(--muted); }
+.tour-card .btn { min-height: 34px; }
+
+/* ---------- compiler settings popover ---------- */
+.cs-pop {
+  position: fixed; z-index: 9999; display: none; width: min(340px, calc(100vw - 24px)); padding: 16px;
+  border: 1px solid var(--border-gold); border-radius: 18px; background: var(--solid); color: var(--text);
+  box-shadow: var(--shadow); font: 500 12px/1.4 Inter, system-ui, sans-serif; animation: menuIn .18s var(--ease);
+}
+.cs-pop.show { display: block; }
+.cs-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.cs-h button { font-size: 18px; line-height: 1; padding: 2px 8px; border-radius: 8px; opacity: .75; }
+.cs-h button:hover { opacity: 1; background: var(--fill-2); }
+.cs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+.cs-row:first-of-type { border-top: 0; }
+.cs-row label { flex: 1; min-width: 0; }
+.cs-row small { display: block; margin-top: 1px; font-size: 10.5px; font-weight: 400; color: var(--muted); }
+.cs-row select {
+  min-width: 128px; padding: 7px 28px 7px 11px; border: 1px solid var(--border-gold); border-radius: 10px; background: var(--field);
+  font: 600 11.5px Inter, sans-serif; cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b98a2e' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.cs-row select option { color: #222; background: #fff; }
+.cs-sw { position: relative; width: 44px; height: 26px; flex: none; border-radius: 14px; background: var(--fill-hover); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3); transition: background .25s; }
+.cs-sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .35); transition: transform .28s var(--ease); }
+.cs-sw[aria-checked="true"] { background: linear-gradient(180deg, #f0d896, #c99a3c); }
+.cs-sw[aria-checked="true"]::after { transform: translateX(18px); }
+.cs-step { display: flex; align-items: center; gap: 6px; }
+.cs-step button { width: 30px; height: 28px; border: 1px solid var(--border-gold); border-radius: 9px; background: var(--fill); font-weight: 800; line-height: 26px; text-align: center; }
+.cs-step button:hover { background: var(--fill-2); }
+.cs-step b { min-width: 34px; text-align: center; font-weight: 700; }
+.cs-flags { margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: var(--field); color: var(--gold); font: 500 10.5px/1.5 "JetBrains Mono", monospace; word-break: break-all; }
+.cs-reset { margin-top: 10px; font-size: 11px; font-weight: 700; color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- MIOD ad card (sidebar) ---------- */
+.miod-card {
+  flex: 0 0 auto; margin: 6px 8px 8px; border-radius: 12px; overflow: hidden;
+  display: flex; align-items: center; height: 84px; cursor: pointer; position: relative;
+  border: 1px solid rgba(212, 175, 55, .45);
+  background: linear-gradient(120deg, #ffe3ee, #fff3cf, #d9f4ff, #e4ffe9, #ece3ff, #ffe3ee);
+  background-size: 300% 100%; animation: miodSoftBg 9s linear infinite;
+  box-shadow: 0 0 10px rgba(212, 175, 55, .35); transition: transform .2s, box-shadow .2s;
+}
+.miod-card:hover { transform: translateY(-1px); box-shadow: 0 0 16px rgba(212, 175, 55, .75), 0 6px 16px rgba(80, 60, 160, .22); }
+.miod-card iframe { flex: 0 0 40%; width: 40%; height: 100%; border: 0; background: transparent; pointer-events: none; }
+.miod-label { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 0 10px 0 2px; color: #1e1033 !important; font-size: 10px; font-weight: 800; line-height: 1.25; }
+.miod-label small { font-size: 8px; font-weight: 700; opacity: .6; }
+@keyframes miodSoftBg { from { background-position: 0% 50%; } to { background-position: 300% 50%; } }
+#miodFull { position: fixed; inset: 0; z-index: 2147483000; display: none; background: #fff; }
+#miodFull.show { display: block; }
+#miodFullFrame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; color-scheme: only light; }
+#miodClose {
+  position: absolute; top: 14px; right: 16px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+  border: 2px solid #1e1033; background: #fff; color: #1e1033; font-size: 24px; line-height: 1; display: grid; place-items: center; padding: 0;
+}
+#miodSoon {
+  position: absolute; left: 0; right: 0; bottom: 6vh; z-index: 2; text-align: center; pointer-events: none;
+  opacity: 0; transform: translateY(14px); transition: opacity .6s, transform .6s;
+  font: 700 clamp(22px, 4vw, 44px) 'Fredoka', system-ui, sans-serif; color: #1e1033;
+}
+#miodSoon.show { opacity: 1; transform: none; }
+#miodSoon span { background: transparent; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1099px) {
+  .workspace { --sidebar-w: 220px; }
+  .main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(320px, 1fr) minmax(260px, .8fr); }
+}
+
+@media (max-width: 760px) {
+  .app { height: auto; min-height: 100vh; min-height: 100dvh; padding: 6px 6px 16px; overflow: visible; }
+  .topbar { min-height: 0; padding: 8px 10px; gap: 8px; border-radius: 14px; flex-wrap: nowrap; }
+  .brand { gap: 9px; min-width: 0; flex: 1 1 auto; }
+  .logo-wrap { width: 40px; height: 40px; }
+  .brand-name { font-size: 15px; letter-spacing: -.3px; }
+  .brand-sub { display: none; }
+  .top-actions { display: flex; align-items: center; gap: 6px; margin-left: 0; flex: 0 0 auto; }
+  .top-actions .theme-toggle { width: 38px; min-width: 38px; height: 38px; }
+  .header-project-btn, .account-button, .mobile-more-btn { width: 38px; height: 38px; min-height: 38px; }
+  .logo-wrap { width: 36px; height: 36px; }
+  .brand { gap: 8px; }
+  .brand-name { font-size: 14px; }
+  .mobile-more-btn { display: inline-flex; align-items: center; justify-content: center; }
+  .header-project-area { margin-right: 0; }
+  .header-project-btn { min-height: 40px; width: 40px; padding: 0; }
+  .header-project-btn span, .project-chevron { display: none; }
+  .account-button { width: 40px; min-width: 40px; height: 40px; padding: 4px; justify-content: center; max-width: none; }
+  .account-copy, .account-chevron { display: none; }
+  .header-popover { position: fixed; top: var(--popover-top); left: 8px; right: 8px; min-width: 0; max-width: none; width: auto; }
+  .mobile-actions-popover { right: 8px; left: auto; width: min(260px, calc(100vw - 16px)); }
+  .workspace { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
+  .explorer { max-height: none; }
+  .explorer-tools { padding: 8px; }
+  .search-box { height: 40px; }
+  .search-box input { font-size: 13px; }
+  .search-shortcut { display: none; }
+  .explorer-actions { display: flex; }
+  .explorer-actions .btn { min-height: 40px; font-size: 11.5px; }
+  .tree { max-height: 240px; min-height: 90px; }
+  .tree-row { min-height: 38px; padding-top: 8px; padding-bottom: 8px; font-size: 13px; }
+  .main { display: flex; flex-direction: column; gap: 8px; }
+  .editor-panel { height: auto; }
+  .editor-toolbar { padding: 8px; gap: 8px; }
+  .tabs { width: 100%; }
+  .tab { padding: 8px 10px; }
+  .editor-tools { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .editor-tools .btn { min-height: 38px; padding: 6px 4px; font-size: 10.5px; }
+  .editor-body { flex: none; height: 360px; min-height: 280px; }
+  .editor-foot { padding: 8px 10px; font-size: 10px; }
+  .output-panel { height: auto; }
+  .output-head { padding: 6px 8px; }
+  .output-tab { padding: 9px 7px; font-size: 10.5px; }
+  .output-actions { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .output-actions .btn { min-height: 38px; padding: 6px 4px; font-size: 10.5px; }
+  .output-actions .fullscreen-btn span { display: none; }
+  .output { flex: none; height: 300px; min-height: 0; padding: 12px; font-size: 12px; line-height: 1.7; }
+  .input-bar { padding: 8px; gap: 6px; flex-wrap: wrap; }
+  #stdinBox { font-size: 12px; min-height: 52px; }
+  .input-bar .btn { min-height: 40px; width: 100%; }
+  .console-row input { min-height: 40px; font-size: 12px; }
+  .toast { bottom: 14px; }
+  .tour-card { padding: 18px; }
+  .find-replace-panel { top: 72px; left: 8px; right: 8px; width: auto; padding: 8px; }
+  .fr-action { padding: 7px; font-size: 11px; }
+  .fr-count { min-width: 40px; }
+  .panel.is-fullscreen .panel-head, .panel.is-fullscreen .editor-toolbar { padding-right: 150px; }
+  .fullscreen-exit { top: 12px !important; right: 12px !important; }
+  .panel.is-fullscreen .editor-body { height: auto; }
+  .panel.is-fullscreen .output { height: auto; }
+  .panel.is-fullscreen .output-actions { width: auto; }
+  .explorer.is-collapsed .explorer-collapse svg { transform: rotate(90deg); }
+  .explorer:not(.is-collapsed) .explorer-collapse svg { transform: rotate(-90deg); }
+}
+
+@media (max-width: 390px) {
+  .brand-name { font-size: 14px; }
+  .editor-body { height: 320px; }
+  .output { height: 280px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+.empty-editor { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 24px; text-align: center; background: var(--editor); color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+.empty-editor strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 6px; }
+.empty-editor p { margin: 0; }
+.tree-empty { padding: 12px 16px; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+</style></head>
+
+<body>
+<script>try{if(JSON.parse(localStorage.getItem("jsSwiftRunnerPrefsV1")||"{}").theme==="light")document.body.classList.add("light")}catch(e){}</script>
+<div class="bg-fx" aria-hidden="true"></div>
+
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-wrap" title="JS CODE OUTPUT · Swift Language Runtime">
+        <img class="jsco-logo" src="logo.jpeg" alt="JS CODE OUTPUT logo">
+      </div>
+      <div>
+        <div class="brand-name"><span class="rainbow-js">JS</span> <span>Swift</span> <span class="runner-text">Runner</span></div>
+        <div class="brand-sub"><svg class="hexlogo hex-inline" width="11" height="12" viewBox="0 0 32 36" aria-hidden="true"><path d="M16 1.5 30 9.5v17L16 34.5 2 26.5v-17z" fill="#e4c682" stroke="#b98a2e" stroke-width="2" stroke-linejoin="round"/><path d="M22 13.6a6.5 6.5 0 1 0 0 8.8" fill="none" stroke="#2a1f08" stroke-width="3.4" stroke-linecap="round"/></svg> Swift Language</div>
+      </div>
+    </div>
+
+    <div class="header-project-area">
+      <button class="btn header-project-btn" id="projectsBtn" aria-haspopup="true" aria-expanded="false" title="Projects">
+        <svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg><span>Projects</span><svg class="svg-ic project-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+      </button>
+      <div class="header-popover projects-popover" id="projectsPopover" hidden></div>
+    </div>
+
+
+    <div class="top-actions">
+      <!-- Masterclass 3D Glowing Crown Badge -->
+      <!-- Masterclass Theme Toggle Button (3D Sun / Moon SVG) -->
+      <button class="btn theme-toggle icon-only" id="themeBtn" title="Switch theme" aria-label="Switch theme">
+        <svg class="svg-ic" id="themeSvg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <!-- Dynamically swapped via JS -->
+        </svg>
+      </button>
+
+
+    </div>
+    <div class="account-area">
+      <button class="account-button" id="accountBtn" aria-haspopup="true" aria-expanded="false" title="Google account">
+        <span class="google-g" aria-hidden="true">G</span><span class="account-copy"><strong id="accountLabel">Google Account</strong><small id="accountSubLabel">Not connected</small></span><svg class="svg-ic account-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 10 5 5 5-5"/></svg>
+      </button>
+      <div class="header-popover account-popover" id="accountPopover" hidden><strong>Google account</strong><p>Sign-in is loading. Please wait a moment.</p></div>
+    </div>
+    <button class="btn mobile-more-btn" id="mobileMoreBtn" aria-label="More actions" title="More actions"><svg class="svg-ic" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+    <div class="header-popover mobile-actions-popover" id="mobileActionsPopover" hidden></div>
+  </header>
+
+  <!-- Status Bar -->
+  <div class="status-strip">
+    <div class="status-left">
+      <span class="status-item"><i class="dot" id="runtimeDot"></i><span id="runtimeStatus">Connecting to Swift runtime...</span></span>
+      <span class="status-item"><svg class="hexlogo hex-inline" width="13" height="14" viewBox="0 0 32 36" aria-hidden="true"><path d="M16 1.5 30 9.5v17L16 34.5 2 26.5v-17z" fill="#e4c682" stroke="#b98a2e" stroke-width="2" stroke-linejoin="round"/><path d="M22 13.6a6.5 6.5 0 1 0 0 8.8" fill="none" stroke="#2a1f08" stroke-width="3.4" stroke-linecap="round"/></svg> <span id="compilerLabel">Swift · Swift Runtime</span></span>
+    </div>
+    <div class="status-right">
+      <span class="status-item">⏱ Runtime: <strong id="runtimeCount">0.000s</strong></span>
+      <span class="status-item">⌘ <span id="fileCount">4 files</span></span>
+    </div>
+  </div>
+
+  <!-- Workspace Grid -->
+  <div class="workspace">
+    <!-- File Explorer Sidebar -->
+    <aside class="panel explorer">
+      <div class="panel-head">
+        <span class="panel-title">EXPLORER</span>
+        <div class="head-tools">
+          <button class="small-btn explorer-collapse" id="explorerToggle" title="Collapse explorer" aria-expanded="true">
+            <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <!-- New File SVG -->
+          <button class="small-btn" id="newFileBtn" title="New File">
+            <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          </button>
+          <!-- New Folder SVG -->
+          <button class="small-btn" id="newFolderBtn" title="New Folder">
+            <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+          </button>
+          <!-- Refresh SVG -->
+          <button class="small-btn" id="refreshBtn" title="Refresh">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="explorer-tools">
+        <div class="search-box">
+          <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="searchInput" type="search" placeholder="Search files and code..." aria-label="Search files and code">
+          <span class="search-shortcut">Ctrl P</span>
+        </div>
+        <div class="explorer-actions">
+          <button class="btn" id="uploadBtn">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload
+          </button>
+          <button class="btn" id="importFolderBtn">
+            <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Folder
+          </button>
+          <input type="file" id="uploadFiles" multiple hidden>
+          <input type="file" id="uploadFolder" webkitdirectory multiple hidden>
+        </div>
+      </div>
+
+      <div class="tree" id="fileTree">
+        <div class="tree-label">WORKSPACE</div>
+        <div class="tree-row">
+          <svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="url(#fldGrad)" stroke="#B8860B" stroke-width="1"/></svg>
+          <span class="filename">my_project</span>
+        </div>
+        <div class="tree-label">FOLDERS <button class="small-btn" id="newFolderSmall">＋</button></div>
+        <div id="folderList"></div>
+        <div class="tree-label">FILES <button class="small-btn" id="newFileSmall">＋</button></div>
+        <div id="fileList"></div>
+      </div>
+
+      <div class="drop-hint" id="dropZone">
+        <div style="margin-bottom:5px">
+          <svg class="svg-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        Drop files here to import<br>
+        <span>Drag files into the workspace</span>
+      </div>
+      <div class="file-footer">
+        <div>⌘ Local workspace</div>
+        <div>Autosave · LocalStorage</div>
+      </div>
+<div class="miod-card" id="miodCard" onclick="openMiod()" title="Code with MIOD AI" role="button" tabindex="0">
+<iframe id="miodCardFrame" title="MIOD preview" tabindex="-1" aria-hidden="true"></iframe>
+<div class="miod-label"><span>✨ Code with MIOD AI</span><small>Tap to open →</small></div>
+</div>
+      </aside>
+
+    <!-- Main Workspace -->
+    <main class="main">
+      <!-- Editor Panel -->
+      <section class="panel editor-panel">
+        <div class="panel-head">
+          <span class="panel-title">CODE EDITOR</span>
+          <span style="display:flex;align-items:center;gap:6px"><span class="panel-sub" id="editorLanguage">Swift · Swift Runtime</span><button class="small-btn fullscreen-btn" data-fullscreen="editor-panel" title="Fullscreen editor" aria-label="Fullscreen editor"><span class="fs-label" style="display:none">Exit</span><svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg></button></span>
+        </div>
+
+        <div class="editor-toolbar">
+          <div class="tabs" id="editorTabs">
+            <span id="activeFileName" hidden></span>
+          </div>
+          <div class="editor-tools">
+            <button class="btn danger" id="clearCodeBtn" title="Clear code in the currently selected file">
+              <i class="fa-solid fa-eraser"></i> Clear
+            </button>
+            <button class="btn" id="formatBtn" title="Basic indentation helper">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+              Format
+            </button>
+            <button class="btn" id="findBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Find
+            </button>
+            <button class="btn" id="copyBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+            <button class="btn" id="downloadBtn">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-body"><textarea id="code"></textarea></div>
+        <div class="editor-foot">
+          <span><i class="dot gold-dot"></i><span id="editorFilePath">my_project</span></span>
+          <span><span id="cursorPosition">Ln 1, Col 1</span> · UTF-8 · Spaces: 4</span>
+        </div>
+      </section>
+
+      <!-- Program Output Panel -->
+      <section class="panel output-panel" id="outputPanel">
+        <div class="panel-head output-head">
+          <div class="output-tabs">
+            <button class="output-tab active" data-output-tab="output">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Swift Output
+            </button>
+            <button class="output-tab" data-output-tab="console">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/></svg>
+              Quick Run
+            </button>
+            <button class="output-tab" data-output-tab="problems">
+              <svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Problems
+            </button>
+</div>
+          <div class="output-actions">
+            <button class="btn fullscreen-btn" data-fullscreen="output-panel" title="Fullscreen output" aria-label="Fullscreen output"><svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg><span>Full screen</span></button>
+            <!-- Masterclass Play Button SVG -->
+                  <button class="btn gold run" id="runBtn">
+                    <svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <defs>
+                        <linearGradient id="playGrad" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#2D1A04"/>
+                          <stop offset="100%" stop-color="#000000"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M8 5v14l11-7L8 5z" fill="url(#playGrad)" stroke="#2D1A04" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Run Swift</span>
+                  </button>
+            <button class="btn" id="consoleBtn">
+              <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Quick Mode
+            </button>
+            <button class="btn" id="clearOutputBtn">
+              <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="loader-wrap" id="loaderWrap">
+          <div class="loader-orb"></div>
+          <div class="loader-copy" style="flex:1">
+            <strong id="loaderTitle">Running Swift program...</strong>
+            <span id="loaderSubtitle">Your output will appear here when ready.</span>
+            <div class="loader-bar"></div>
+          </div>
+          <span id="loaderTimer" style="color:var(--gold);font:11px monospace">0.000s</span>
+        </div>
+
+        <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your Swift output will appear here...</span></div>
+
+        <!-- Program input (stdin) for scanf() / fgets() / getchar() -->
+        <div class="input-bar" id="inputBar">
+          <span class="prompt-mark">stdin ›</span>
+          <textarea id="stdinBox" rows="2" spellcheck="false" placeholder="Program input for scanf() / fgets() / getchar() — one value per line. Press Ctrl+Enter to run."></textarea>
+          <button class="btn gold" id="sendInputBtn">
+            Run with input
+            <svg class="svg-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+
+        <!-- REPL Command Runner -->
+        <div class="console-extra" id="consoleExtra">
+          <div class="console-row">
+            <span style="color:var(--gold)">›</span>
+            <input id="consoleCommand" placeholder="Swift expression or statement (e.g. 2 + 3 * 4 or print(&quot;Hi&quot;))">
+            <button class="btn" id="consoleCommandBtn">Execute</button>
+          </div>
+          <div class="console-note" id="consoleNote">Quick Run: type a Swift expression or statement and press Execute. Expressions are wrapped in print() automatically.</div>
+        </div>
+</section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <span><strong>♛ JS CODE OUTPUT</strong> · Swift Language Runtime</span>
+    <span>Swift Language · Swift Runtime · <span id="footerStatus">Starting compiler...</span></span>
+    <span>Made for developers ✦</span>
+  </footer>
+</div>
+
+<!-- Global Shared SVG Definitions -->
+<svg style="display:none;">
+  <defs>
+    <!-- Gold Folder Gradient -->
+    <linearGradient id="fldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#FFCA28"/>
+      <stop offset="100%" stop-color="#C79100"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- CodeMirror (C syntax highlighting) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/swift/swift.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+// Masterclass SVG Vector Templates for Files and Controls
+const SVG_ICONS = {
+  sun: `<path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" fill="#FFD700" stroke="#FFA500" stroke-width="1.5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>`,
+  moon: `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#E8C77F" stroke="#B68A42" stroke-width="1.5"/>`,
+  cFile: `<svg class="svg-ic" width="16" height="16" viewBox="0 0 32 36"><path d="M16 1.5 30 9.5v17L16 34.5 2 26.5v-17z" fill="#e4c682" stroke="#b98a2e" stroke-width="2" stroke-linejoin="round"/><path d="M22 13.6a6.5 6.5 0 1 0 0 8.8" fill="none" stroke="#2a1f08" stroke-width="3.4" stroke-linecap="round"/></svg>`,
+  hFile: `<svg class="svg-ic" width="16" height="16" viewBox="0 0 32 36"><path d="M16 1.5 30 9.5v17L16 34.5 2 26.5v-17z" fill="#aab4c8" stroke="#6c7790" stroke-width="2" stroke-linejoin="round"/><path d="M11.5 12v12M20.5 12v12M11.5 18h9" fill="none" stroke="#1d2230" stroke-width="3.2" stroke-linecap="round"/></svg>`,
+  markdownFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B3A2FF" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15V9l3 3 3-3v6M17 15l-2-2h4"/></svg>`,
+  jsonFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DFB36D" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12a1 1 0 0 0-1-1 1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h1M14 12a1 1 0 0 0 1-1 1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-1"/></svg>`,
+  textFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  genericFile: `<svg class="svg-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`,
+  folder: `<svg class="svg-ic" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="url(#fldGrad)" stroke="#B8860B" stroke-width="1"/></svg>`,
+  deleteAction: `<svg class="svg-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+};
+
+// Old sample files. Used only to clear them from browsers that saved them earlier.
+const LEGACY_STARTER_FILES = {};
+const LEGACY_STARTER_FOLDERS = ["include", "src", "data"];
+const STORAGE_KEY = "jsSwiftRunnerProjectV1";
+const PREF_KEY = "jsSwiftRunnerPrefsV1";
+const STDIN_KEY = "jsSwiftRunnerStdinV1";
+
+let files = {};
+let folders = [];
+let activeFile = "";
+let openTabs = [];
+let running = false;
+let editorLoaded = false;   // fix: the empty editor must never overwrite the saved file at startup
+let runtimeStarted = 0;
+let runtimeInterval = null;
+let currentOutputTab = "output";
+let currentOutputText = "";
+let outputChunks = [];
+let currentErrors = [];
+let toastTimer = null;
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function isLegacySample(saved) {
+  const names = Object.keys(saved.files);
+  if (names.length !== Object.keys(LEGACY_STARTER_FILES).length) return false;
+  if (!names.every(n => saved.files[n] === LEGACY_STARTER_FILES[n])) return false;
+  const savedFolders = Array.isArray(saved.folders) ? saved.folders : [];
+  return savedFolders.length === LEGACY_STARTER_FOLDERS.length && LEGACY_STARTER_FOLDERS.every(f => savedFolders.includes(f));
+}
+
+function loadWorkspace() {
+  files = {};
+  folders = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (saved && saved.files && typeof saved.files === "object") {
+      if (isLegacySample(saved)) persistWorkspace();   // untouched sample files: store the empty workspace instead
+      else {
+        files = saved.files;
+        folders = Array.isArray(saved.folders) ? saved.folders : [];
+      }
+    }
+  } catch {
+    files = {};
+    folders = [];
+  }
+  if (!Object.keys(files).length) files["main.swift"] = "import Foundation\n\nprint(\"Hello from JS Swift Runner!\")\n";
+  activeFile = Object.keys(files)[0] || "";
+  openTabs = [];
+}
+
+function persistWorkspace() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ files, folders }));
+  } catch {
+    toast("Browser storage limit reached. Backup files locally.");
+  }
+}
+
+function loadPrefs() {
+  try {
+    const prefs = JSON.parse(localStorage.getItem(PREF_KEY) || "{}");
+    if (prefs.theme === "light") document.body.classList.add("light");
+  } catch {}
+  updateThemeButton();
+}
+
+function savePrefs() {
+  try {
+    localStorage.setItem(PREF_KEY, JSON.stringify({
+      theme: document.body.classList.contains("light") ? "light" : "dark"
+    }));
+  } catch {}
+}
+
+function updateThemeButton() {
+  const light = document.body.classList.contains("light");
+  $("themeSvg").innerHTML = light ? SVG_ICONS.moon : SVG_ICONS.sun;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", light ? "#f3efe6" : "#07080b");
+  $("themeBtn").setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+  $("themeBtn").setAttribute("title", light ? "Switch to dark mode" : "Switch to light mode");
+}
+
+function fileMode(name) {
+  if (/\.swift$/i.test(name)) return "text/x-swift";
+  if (/\.(html|htm)$/i.test(name)) return "htmlmixed";
+  if (/\.css$/i.test(name)) return "css";
+  if (/\.(xml|properties)$/i.test(name)) return "xml";
+  if (/\.(js|json)$/i.test(name)) return "javascript";
+  if (/\.md$/i.test(name)) return "markdown";
+  return "text/plain";
+}
+function languageLabel(name) {
+  if (/\.swift$/i.test(name)) return "Swift · " + C_ENGINE.label;
+  if (/\.html?$/i.test(name)) return "HTML";
+  if (/\.css$/i.test(name)) return "CSS";
+  if (/\.json$/i.test(name)) return "JSON";
+  if (/\.xml$/i.test(name)) return "XML";
+  return "Plain text";
+}
+function getSvgForFile(name) {
+  if (/\.swift$/i.test(name)) return SVG_ICONS.cFile;
+  if (/\.(xml|html|htm|css|properties)$/i.test(name)) return SVG_ICONS.hFile;
+  if (/\.md$/i.test(name)) return SVG_ICONS.markdownFile;
+  if (/\.json$/i.test(name)) return SVG_ICONS.jsonFile;
+  if (/\.txt$/i.test(name)) return SVG_ICONS.textFile;
+  return SVG_ICONS.genericFile;
+}
+
+// Initialize CodeMirror instance
+const editor = CodeMirror.fromTextArea($("code"), {
+  mode: "text/x-swift",
+  theme: "material-darker",
+  lineNumbers: true,
+  indentUnit: 4,
+  tabSize: 4,
+  indentWithTabs: false,
+  lineWrapping: true,
+  autofocus: false,
+  extraKeys: {
+    "Ctrl-Enter": () => runProgram(),
+    "Cmd-Enter": () => runProgram()
+  }
+});
+
+/* Lightweight local IntelliSense for Swift and other supported files.
+   Suggestions combine language keywords, common APIs, and words already in the project. */
+const COMPLETION_WORDS = {
+  swift: `import Foundation SwiftUI UIKit let var func class struct enum protocol extension typealias associatedtype init deinit self Self super public private fileprivate internal open static final override mutating nonmutating lazy weak unowned inout throws rethrows try catch defer guard if else switch case default where for while repeat break continue return throw as is in nil true false Any AnyObject String Int Double Float Bool Character Array Dictionary Set Optional Result print readLine fatalError assert precondition map flatMap filter reduce compactMap forEach sorted contains count isEmpty append removeFirst removeLast first last guard let if let async await Task Codable Encodable Decodable`,
+  c: `iostream vector string algorithm map unordered_map set unordered_set queue stack deque memory functional utility tuple optional variant namespace using std cout cin cerr endl getline to_string stoi stod begin end push_back emplace_back size empty clear sort reverse find accumulate unique lower_bound upper_bound make_pair make_tuple nullptr new delete template typename class public private protected virtual override constexpr static_cast dynamic_cast try catch throw auto break case char const continue default do double else enum extern float for goto if inline int long register restrict return short signed sizeof static struct switch typedef union unsigned void volatile while bool true false NULL size_t FILE EOF stdin stdout stderr include define ifdef ifndef endif pragma printf scanf fprintf sprintf snprintf sscanf fgets fputs puts putchar getchar fopen fclose fread fwrite fscanf fflush feof perror malloc calloc realloc free memcpy memmove memset memcmp strlen strcpy strncpy strcat strncat strcmp strncmp strchr strrchr strstr strtok atoi atof atol strtol strtod abs labs rand srand exit abort qsort bsearch isalpha isdigit isalnum isspace isupper islower toupper tolower sqrt pow sin cos tan fabs floor ceil fmod log log10 exp time clock assert main int8_t int16_t int32_t int64_t uint8_t uint16_t uint32_t uint64_t`,
+  javascript: `const let var function return if else for while do switch case break continue try catch finally throw new class extends import export from default async await Promise setTimeout setInterval clearTimeout fetch JSON Math Date Array Object String Number Boolean Map Set console log warn error document window navigator localStorage sessionStorage querySelector querySelectorAll getElementById addEventListener removeEventListener preventDefault stopPropagation createElement appendChild removeChild classList innerHTML textContent value map filter reduce forEach find includes startsWith endsWith split join trim parseInt parseFloat isNaN typeof`,
+  markdown: `# ## ### #### - * ** [] () link image code`
+};
+function showCodeSuggestions(cm, explicit = false) {
+  if (!window.CodeMirror || !CodeMirror.showHint) return;
+  const cursor = cm.getCursor();
+  const line = cm.getLine(cursor.line) || "";
+  const before = line.slice(0, cursor.ch);
+  const match = before.match(/[A-Za-z_$][\w$]*$/);
+  if (!explicit && (!match || match[0].length < 1)) return;
+  const mode = String(cm.getOption("mode") || "text/x-swift").toLowerCase();
+  const language = mode.includes("javascript") || mode === "text/javascript" ? "javascript" : mode.includes("markdown") ? "markdown" : mode.includes("swift") ? "swift" : "c";
+  const typed = match ? match[0] : "";
+  const builtins = COMPLETION_WORDS[language].split(/\s+/);
+  const seen = new Set();
+  const candidates = [];
+  const add = word => {
+    if (!word || seen.has(word) || word === typed || (typed && !word.toLowerCase().startsWith(typed.toLowerCase()))) return;
+    seen.add(word);
+    candidates.push(word);
+  };
+  builtins.forEach(add);
+  const wordRe = /[A-Za-z_$][\w$]*/g;
+  let m;
+  while ((m = wordRe.exec(cm.getValue())) !== null) add(m[0]);
+  candidates.sort((a,b) => {
+    const aExact = a.startsWith(typed), bExact = b.startsWith(typed);
+    return aExact === bExact ? a.localeCompare(b) : (aExact ? -1 : 1);
+  });
+  if (!candidates.length) return;
+  CodeMirror.showHint(cm, () => ({
+    list: candidates.slice(0, 80).map(text => ({text, displayText: text})),
+    from: CodeMirror.Pos(cursor.line, cursor.ch - typed.length),
+    to: CodeMirror.Pos(cursor.line, cursor.ch)
+  }), {completeSingle: false, closeOnUnfocus: true, alignWithWord: true});
+}
+editor.on("inputRead", (cm, change) => {
+  if (!change || !change.text || !change.text.length) return;
+  const last = change.text[change.text.length - 1] || "";
+  if (/^[A-Za-z_$]$/.test(last)) showCodeSuggestions(cm, false);
+});
+editor.on("keydown", (cm, event) => {
+  if ((event.ctrlKey || event.metaKey) && event.code === "Space") {
+    event.preventDefault();
+    showCodeSuggestions(cm, true);
+  }
+});
+
+
+function renderTabs() {
+  const tabsContainer = $("editorTabs");
+  tabsContainer.replaceChildren();
+
+  openTabs.forEach(fileName => {
+    if (files[fileName] === undefined) return;
+    const tabEl = document.createElement("div");
+    tabEl.className = "tab" + (fileName === activeFile ? " active" : "");
+    tabEl.innerHTML = `${getSvgForFile(fileName)} <span>${escapeHTML(fileName)}</span> <span class="tab-close" title="Close tab">${SVG_ICONS.deleteAction}</span>`;
+
+    tabEl.addEventListener("click", e => {
+      if (e.target.closest(".tab-close")) {
+        e.stopPropagation();
+        closeTab(fileName);
+        return;
+      }
+      openFile(fileName);
+    });
+    tabsContainer.appendChild(tabEl);
+  });
+}
+
+function closeTab(fileName) {
+  openTabs = openTabs.filter(f => f !== fileName);
+  if (activeFile === fileName) {
+    if (openTabs.length) {
+      openFile(openTabs[openTabs.length - 1]);
+    } else if (Object.keys(files).length) {
+      openFile(Object.keys(files)[0]);
+    }
+  } else {
+    renderTabs();
+  }
+}
+
+function renderTree(filter = $("searchInput").value.trim().toLowerCase()) {
+  const folderList = $("folderList");
+  const fileList = $("fileList");
+  folderList.replaceChildren();
+  fileList.replaceChildren();
+
+  folders.filter(folder => !filter || folder.toLowerCase().includes(filter)).forEach(folder => {
+    const row = document.createElement("div");
+    row.className = "tree-row";
+    row.draggable = true;
+    row.dataset.folder = folder;
+    row.innerHTML = `${SVG_ICONS.folder}<span class="filename">${escapeHTML(folder)}</span><span class="tree-action" title="Delete folder">${SVG_ICONS.deleteAction}</span>`;
+
+    row.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/x-folder", folder);
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", () => row.classList.remove("dragging"));
+    row.addEventListener("dragover", e => {
+      if (e.dataTransfer.types.includes("Files")) {
+        e.preventDefault();
+        row.classList.add("drop-target");
+      }
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-target"));
+    row.addEventListener("drop", async e => {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      const dropped = [...(e.dataTransfer.files || [])];
+      if (dropped.length) await importFiles(dropped, folder);
+    });
+
+    row.addEventListener("click", e => {
+      if (e.target.closest(".tree-action")) {
+        e.stopPropagation();
+        if (confirm(`Delete folder "${folder}"? Files will remain in workspace root.`)) {
+          folders = folders.filter(f => f !== folder);
+          renderTree();
+          persistWorkspace();
+        }
+      }
+    });
+
+    folderList.appendChild(row);
+  });
+
+  Object.keys(files).filter(name =>
+    !filter || name.toLowerCase().includes(filter) || String(files[name]).toLowerCase().includes(filter)
+  ).forEach(name => {
+    const row = document.createElement("div");
+    row.className = "tree-row" + (name === activeFile ? " active" : "");
+    row.draggable = true;
+    row.dataset.file = name;
+    row.innerHTML = `${getSvgForFile(name)}<span class="filename">${escapeHTML(name)}</span><span class="tree-action" title="Delete file">${SVG_ICONS.deleteAction}</span>`;
+
+    row.addEventListener("click", e => {
+      if (e.target.closest(".tree-action")) {
+        e.stopPropagation();
+        deleteFile(name);
+        return;
+      }
+      openFile(name);
+    });
+    row.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/x-file", name);
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", () => row.classList.remove("dragging"));
+    row.addEventListener("dragover", e => {
+      if (e.dataTransfer.types.includes("Files")) {
+        e.preventDefault();
+        row.classList.add("drop-target");
+      }
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-target"));
+    row.addEventListener("drop", async e => {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      const dropped = [...(e.dataTransfer.files || [])];
+      if (dropped.length) await importFiles(dropped);
+    });
+
+    fileList.appendChild(row);
+  });
+
+  $("fileCount").textContent = `${Object.keys(files).length} files`;
+}
+
+function openFile(name) {
+  if (!(name in files)) return;
+  saveActiveFile();
+  activeFile = name;
+
+  if (!openTabs.includes(name)) openTabs.push(name);
+
+  editor.setOption("mode", fileMode(name));
+  editor.setValue(String(files[name] ?? ""));
+  editorLoaded = true;
+  const activeFileNameEl = $("activeFileName");
+  if (activeFileNameEl) activeFileNameEl.textContent = name;
+  const editorFilePathEl = $("editorFilePath");
+  if (editorFilePathEl) editorFilePathEl.textContent = "my_project / " + name;
+  const editorLanguageEl = $("editorLanguage");
+  if (editorLanguageEl) editorLanguageEl.textContent = languageLabel(name);
+
+  renderTabs();
+  renderTree();
+  updateCursor();
+  editor.refresh();
+}
+
+function saveActiveFile() {
+  if (editorLoaded && activeFile && files[activeFile] !== undefined) {
+    files[activeFile] = editor.getValue();
+    persistWorkspace();
+  }
+}
+
+function syncActiveFile() {
+  if (activeFile && files[activeFile] !== undefined) { setEditorEmpty(false); return; }
+  const next = openTabs.find(t => files[t] !== undefined) || Object.keys(files)[0];
+  if (next !== undefined) { openFile(next); return; }
+  activeFile = "";
+  openTabs = [];
+  setEditorEmpty(true);
+}
+
+function setEditorEmpty(on) {
+  const wrap = editor.getWrapperElement();
+  let note = wrap.querySelector(".empty-editor");
+  if (!note) {
+    note = document.createElement("div");
+    note.className = "empty-editor";
+    note.innerHTML = '<div><strong>No file open</strong><p>Create a file with + in the explorer, upload files, or drop them here.</p></div>';
+    wrap.appendChild(note);
+  }
+  note.hidden = !on;
+  editor.setOption("readOnly", on);
+  if (!on) return;
+  editor.setValue("");
+  renderTabs();
+  const nameEl = $("activeFileName"); if (nameEl) nameEl.textContent = "";
+  const pathEl = $("editorFilePath"); if (pathEl) pathEl.textContent = "my_project";
+  const langEl = $("editorLanguage"); if (langEl) langEl.textContent = "";
+}
+
+function updateCursor() {
+  const cursor = editor.getCursor();
+  $("cursorPosition").textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+}
+
+editor.on("change", () => {
+  if (activeFile && files[activeFile] !== undefined) {
+    files[activeFile] = editor.getValue();
+    persistWorkspace();
+  }
+});
+editor.on("cursorActivity", updateCursor);
+
+function createFile() {
+  const name = prompt("New file name:", "NewFile.swift");
+  if (!name) return;
+  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "");
+  if (!safe) return toast("Enter a valid file name.");
+  if (files[safe] !== undefined) return toast("File already exists.");
+
+  files[safe] = "";
+  persistWorkspace();
+  openFile(safe);
+  toast("File created.");
+}
+
+function createFolder() {
+  const name = prompt("New folder name:", "new_folder");
+  if (name === null || !name.trim()) return;
+  const safe = name.trim().replace(/[\\/:*?"<>|]/g, "").replace(/^\/+|\/+$/g, "");
+  if (!safe) return toast("Enter a valid folder name.");
+  const parts = safe.split("/").filter(Boolean);
+  let path = "";
+  for (const part of parts) {
+    path = path ? path + "/" + part : part;
+    if (!folders.includes(path)) folders.push(path);
+  }
+  persistWorkspace();
+  renderTree();
+  toast("Folder created.");
+}
+
+function deleteFile(name) {
+  if (!confirm(`Delete "${name}" from workspace?`)) return;
+  delete files[name];
+  openTabs = openTabs.filter(f => f !== name);
+  if (activeFile === name) activeFile = "";
+  persistWorkspace();
+  syncActiveFile();
+  renderTabs();
+  renderTree();
+  toast("File deleted.");
+}
+
+function downloadBlob(filename, content, mime = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadActiveFile() {
+  if (!activeFile) return toast("Open or create a file first.");
+  saveActiveFile();
+  downloadBlob(activeFile, editor.getValue());
+  toast("File download started.");
+}
+
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(editor.getValue());
+    toast("Code copied to clipboard.");
+  } catch {
+    editor.focus();
+    editor.execCommand("selectAll");
+    toast("Code selected. Copy manually.");
+  }
+}
+
+function formatCode() {
+  const codeOnly = line => line.replace(/\/\/.*$/, "").replace(/"(?:\\.|[^"\\])*"/g, '""').replace(/'(?:\\.|[^'\\])*'/g, "''");
+  let depth = 0;
+  const out = editor.getValue().split("\n").map(raw => {
+    const line = raw.trim();
+    if (!line) return "";
+    const lead = /^[\]})]/.test(line) ? Math.max(0, depth - 1) : depth;
+    const code = codeOnly(line);
+    const opens = (code.match(/[{(\[]/g) || []).length;
+    const closes = (code.match(/[\])}]/g) || []).length;
+    depth = Math.max(0, depth + opens - closes);
+    return "    ".repeat(lead) + line;
+  });
+  editor.operation(() => editor.setValue(out.join("\n")));
+  toast("Code formatted.");
+}
+
+function renderOutput() {
+  const output = $("output");
+  output.replaceChildren();
+  if (!outputChunks.length) {
+    const ph = document.createElement("span");
+    ph.className = "output-placeholder";
+    ph.textContent = "✦ Your Swift output will appear here...";
+    output.appendChild(ph);
+    return;
+  }
+  outputChunks.forEach(({ text, type }) => {
+    if (type === "error" || type === "success") {
+      const span = document.createElement("span");
+      span.className = type === "error" ? "output-line-error" : "output-line-success";
+      span.textContent = text;
+      output.appendChild(span);
+    } else {
+      output.appendChild(document.createTextNode(text));
+    }
+  });
+  output.scrollTop = output.scrollHeight;
+}
+
+function showOutputTab(tab) {
+  currentOutputTab = tab;
+  document.querySelectorAll(".output-tab").forEach(button => {
+    button.classList.toggle("active", button.dataset.outputTab === tab);
+  });
+  $("consoleExtra").classList.toggle("show", tab === "console");
+  const output = $("output");
+  if (tab === "problems") {
+    output.textContent = currentErrors.length ? currentErrors.join("\n\n") : "✓ No problems reported in the last run.";
+    return;
+  }
+  if (tab === "console" && !outputChunks.length) {
+    output.textContent = "Quick Run ready. Type a Swift expression or statement below.";
+    return;
+  }
+  renderOutput();
+}
+
+function writeOutput(text, type = "normal") {
+  text = String(text);
+  currentOutputText += text;
+  outputChunks.push({ text, type });
+  if (currentOutputTab === "problems") return;
+
+  const output = $("output");
+  if (output.querySelector(".output-placeholder")) output.textContent = "";
+
+  if (type === "error" || type === "success") {
+    const span = document.createElement("span");
+    span.className = type === "error" ? "output-line-error" : "output-line-success";
+    span.textContent = text;
+    output.appendChild(span);
+  } else {
+    output.appendChild(document.createTextNode(text));
+  }
+  output.scrollTop = output.scrollHeight;
+}
+
+function setStatus(message, busy = false) {
+  $("runtimeStatus").textContent = message;
+  $("footerStatus").textContent = message;
+  $("runtimeDot").classList.toggle("busy", busy);
+  $("runtimeDot").classList.toggle("gold-dot", busy);
+}
+
+/* Swift execution: Judge0 for single-file; custom multi-file server requires Swift toolchain. */
+const C_ENGINE = {
+  url: "https://ce.judge0.com", headers: {}, languageId: 83,
+  multiLanguageId: 89, label: "Swift", flags: "", cpuSeconds: 5
+};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function b64enc(text) {
+  const bytes = new TextEncoder().encode(text); let bin = "";
+  for (let i=0;i<bytes.length;i+=0x8000) bin += String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+  return btoa(bin);
+}
+function b64dec(b64) {
+  if (!b64) return "";
+  try { const bin=atob(String(b64).replace(/\s/g,""));const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  } catch {return String(b64);}
+}
+function swiftFiles() { return Object.keys(files).filter(f=>/\.swift$/i.test(f)); }
+function pickEntry() {
+  const sources=swiftFiles();
+  return sources.find(f=>/(^|\/)main\.swift$/i.test(f)) ||
+         (/\.swift$/i.test(activeFile) ? activeFile : sources[0]) || null;
+}
+async function buildSwiftSubmission(entry,stdin) {
+  const sources=swiftFiles();
+  if(!sources.length) throw new Error("Create a .swift source file first.");
+  const common={stdin:stdin?b64enc(stdin.endsWith("\n")?stdin:stdin+"\n"):null,cpu_time_limit:C_ENGINE.cpuSeconds};
+  if(sources.length===1 && Object.keys(files).length===1) {
+    return {...common,source_code:b64enc(String(files[entry])),language_id:C_ENGINE.languageId};
+  }
+  if(!window.JSZip) throw new Error("JSZip failed to load; multi-file Swift requires JSZip.");
+  const zip=new JSZip();
+  for(const [path,content] of Object.entries(files)) {
+    if(!path || path.startsWith("/") || path.split("/").includes("..")) continue;
+    zip.file(path,String(content));
+  }
+  zip.file("compile", "#!/bin/sh\nset -eu\ncommand -v swiftc >/dev/null || { echo 'Swift compiler (swiftc) is not installed on the multi-file server' >&2; exit 1; }\nfind . -type f -name '*.swift' -print0 | xargs -0 -r swiftc -o program\n");
+  zip.file("run", "#!/bin/sh\nset -eu\n./program\n");
+  const archive=await zip.generateAsync({type:"base64"});
+  return {...common,language_id:C_ENGINE.multiLanguageId,source_code:b64enc(""),additional_files:archive};
+}
+async function submitC(submission) {
+  const base=C_ENGINE.url.replace(/\/+$/,"");
+  const headers={...C_ENGINE.headers,"Content-Type":"application/json"};
+  const res=await fetch(base+"/submissions?base64_encoded=true&wait=true",{method:"POST",headers,body:JSON.stringify(submission)});
+  if(res.status===429) throw new Error("Compiler is busy. Please try again shortly.");
+  if(!res.ok) throw new Error("Compiler HTTP "+res.status+": "+(await res.text()).slice(0,400));
+  let data=await res.json();
+  for(let i=0;data && data.status && data.status.id<=2 && data.token && i<35;i++) {
+    await sleep(700);
+    const next=await fetch(base+"/submissions/"+encodeURIComponent(data.token)+"?base64_encoded=true",{headers:C_ENGINE.headers});
+    if(!next.ok) throw new Error("Could not retrieve compiler result (HTTP "+next.status+").");
+    data=await next.json();
+  }
+  return data;
+}
+async function initCompiler() {
+  setStatus("Connecting to Swift runtime...",true);
+  try {
+    const res=await fetch(C_ENGINE.url.replace(/\/+$/ ,"")+"/languages",{headers:C_ENGINE.headers});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const langs=await res.json();
+    const chosen=langs.find(l=>/^Swift\s*\(/i.test(l.name)) || langs.find(l=>/^Swift$/i.test(l.name));
+    if(!chosen) throw new Error("Swift runtime unavailable on this server.");
+    C_ENGINE.languageId=chosen.id; C_ENGINE.label=chosen.name;
+    const multi=langs.find(l=>/Multi-file program/i.test(l.name));
+    if(multi) C_ENGINE.multiLanguageId=multi.id;
+    $("compilerLabel").textContent="Swift · "+chosen.name;
+    $("editorLanguage").textContent=languageLabel(activeFile);
+    setStatus("Swift runtime ready");
+  } catch(e) {
+    setStatus("Runtime not reachable yet");
+    writeOutput("Swift runtime unavailable: "+e.message+"\nConfigure C_ENGINE.url to your Swift-enabled Judge0 server if needed.\n","error");
+  }
+}
+
+function startRuntimeClock() {
+  runtimeStarted = performance.now();
+  clearInterval(runtimeInterval);
+  const update = () => {
+    const value = `${((performance.now() - runtimeStarted) / 1000).toFixed(3)}s`;
+    $("runtimeCount").textContent = value;
+    $("loaderTimer").textContent = value;
+  };
+  update();
+  runtimeInterval = setInterval(update, 35);
+}
+
+function stopRuntimeClock() {
+  clearInterval(runtimeInterval);
+  runtimeInterval = null;
+  const value = `${((performance.now() - runtimeStarted) / 1000).toFixed(3)}s`;
+  $("runtimeCount").textContent = value;
+  $("loaderTimer").textContent = value;
+}
+
+function showRunningAnimation() {
+  $("loaderWrap").classList.add("show");
+  $("loaderTitle").textContent = "Running Swift program...";
+  $("loaderSubtitle").textContent = "Runtime active · Waiting for output";
+  $("runBtn").disabled = true;
+  $("runBtn").querySelector("span").textContent = "Running...";
+  setStatus("Program running", true);
+}
+
+function hideRunningAnimation() {
+  $("loaderWrap").classList.remove("show");
+  $("runBtn").disabled = false;
+  $("runBtn").querySelector("span").textContent = "Run Swift";
+}
+
+function updateProblemsBadge() {
+  const tab = document.querySelector('.output-tab[data-output-tab="problems"]');
+  if (!tab) return;
+  let b = tab.querySelector(".pbadge");
+  if (!currentErrors.length) { if (b) b.remove(); return; }
+  if (!b) { b = document.createElement("b"); b.className = "pbadge"; tab.appendChild(b); }
+  b.textContent = String(currentErrors.length);
+}
+
+function buildQuickSource(code) {
+  const t=code.trim();
+  if (/^(?:import\s|print\s*\(|let\s|var\s|func\s|class\s|struct\s|enum\s|protocol\s|for\s|while\s|if\s|guard\s|switch\s|@)/.test(t) || t.includes("\n")) return t+"\n";
+  return "import Foundation\nprint("+t+")\n";
+}
+function renderResult(r) {
+  const out = b64dec(r.stdout), err = b64dec(r.stderr), cc = b64dec(r.compile_output), msg = b64dec(r.message);
+  const sid = r.status ? r.status.id : 0;
+  const desc = r.status ? r.status.description : "";
+  const stats = [];
+  if (r.time != null && r.time !== "") stats.push(Number(r.time).toFixed(3) + "s CPU");
+  if (r.memory != null) stats.push((r.memory / 1024).toFixed(1) + " MB");
+  if (r.exit_code != null) stats.push("exit " + r.exit_code);
+
+  if (cc.trim()) currentErrors.push(cc.trim());
+
+  if (sid === 6) {
+    writeOutput(cc.trim() + "\n", "error");
+    $("loaderTitle").textContent = "Compilation failed";
+    $("loaderSubtitle").textContent = "Fix the errors shown in the output.";
+    setStatus("Compilation error");
+    return;
+  }
+
+  if (out) writeOutput(out);
+  if (err) {
+    currentErrors.push(err.trim());
+    writeOutput((out && !out.endsWith("\n") ? "\n" : "") + err + (err.endsWith("\n") ? "" : "\n"), "error");
+  }
+
+  if (sid === 3) {
+    const warns = (cc.match(/\bwarning:/g) || []).length;
+    if (!out && !err) writeOutput("✓ Program finished with no output.", "success");
+    else writeOutput((out && !out.endsWith("\n") ? "\n" : "") + "\n✓ Execution finished", "success");
+    writeOutput(" · " + stats.join(" · ") + "\n", "success");
+    if (warns) writeOutput("⚠ " + warns + " compiler warning" + (warns > 1 ? "s" : "") + " — see the Problems tab.\n");
+    $("loaderTitle").textContent = "Execution finished";
+    $("loaderSubtitle").textContent = "Program completed successfully.";
+    setStatus("Swift runtime ready");
+    return;
+  }
+
+  let text;
+  if (sid === 5) text = "Time limit exceeded (" + C_ENGINE.cpuSeconds + " s). Check for an infinite loop.";
+  else if (sid === 11) text = "Program exited with status " + (r.exit_code != null ? r.exit_code : "≠ 0") + ".";
+  else if (sid >= 7 && sid <= 12) {
+    const sig = (/SIG[A-Z]+/.exec(desc) || [""])[0];
+    const nice = { SIGSEGV: "Segmentation fault (invalid memory access, e.g. a bad pointer or array index)", SIGFPE: "Arithmetic error (e.g. division by zero)", SIGABRT: "Program aborted (assert failed or abort() called)", SIGXFSZ: "Output file too large" }[sig];
+    text = "Runtime error: " + (nice || desc.replace(/^Runtime Error\s*/i, "") || "the program crashed") + ".";
+  }
+  else text = desc || "Execution failed.";
+  if (msg.trim()) text += " " + msg.trim();
+  currentErrors.push(text);
+  writeOutput("\n✗ " + text + "\n", "error");
+  $("loaderTitle").textContent = "Execution stopped";
+  $("loaderSubtitle").textContent = "Check the output for details.";
+  setStatus("Execution error");
+}
+
+async function executeC(source, stdin, keepConsole = false) {
+  if (running) return;
+  running = true;
+  currentOutputText = "";
+  outputChunks = [];
+  currentErrors = [];
+  showOutputTab(keepConsole ? "console" : "output");
+  $("output").textContent = "";
+  if (!keepConsole) $("consoleExtra").classList.remove("show");
+  showRunningAnimation();
+  startRuntimeClock();
+  try {
+    const submission = keepConsole ? {source_code:b64enc(source),language_id:C_ENGINE.languageId,stdin:stdin?b64enc(stdin):null,cpu_time_limit:C_ENGINE.cpuSeconds} : await buildSwiftSubmission(source,stdin);
+    const result = await submitC(submission);
+    renderResult(result);
+  } catch (error) {
+    const raw = String(error && error.message ? error.message : error);
+    const network = /Failed to fetch|NetworkError|Load failed|fetch/i.test(raw);
+    const message = network
+      ? "Could not reach the Swift runtime service (" + C_ENGINE.url + ").\nCheck your internet connection, or set C_ENGINE.url to your own Judge0 server."
+      : raw;
+    currentErrors.push(message);
+    writeOutput(message + "\n", "error");
+    $("loaderTitle").textContent = "Execution stopped";
+    $("loaderSubtitle").textContent = "Check the output for details.";
+    setStatus("Compiler not reachable");
+  } finally {
+    updateProblemsBadge();
+    stopRuntimeClock();
+    running = false;
+    hideRunningAnimation();
+    $("consoleNote").textContent = "Finished. Duration: " + $("runtimeCount").textContent;
+  }
+}
+
+async function runProgram() {
+  if (running) return;
+  saveActiveFile();
+  const entry = pickEntry();
+  if (!entry) { toast("Add a .swift file to run."); return; }
+  let source;
+  try { source = entry; }
+  catch (e) { toast(String(e && e.message ? e.message : e)); return; }
+  await executeC(source, $("stdinBox").value, false);
+}
+
+try { $("stdinBox").value = localStorage.getItem(STDIN_KEY) || ""; } catch {}
+$("stdinBox").addEventListener("input", () => { try { localStorage.setItem(STDIN_KEY, $("stdinBox").value); } catch {} });
+$("stdinBox").addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runProgram(); }
+});
+$("sendInputBtn").addEventListener("click", runProgram);
+
+/* Drag-and-drop & File Importing */
+async function importFiles(fileArray, targetFolder = "") {
+  let count = 0;
+  for (const file of fileArray) {
+    if (!file || file.name.startsWith(".")) continue;
+    const name = file.name.replace(/[\\/:*?"<>|]/g, "");
+    if (!name) continue;
+    try {
+      const content = await file.text();
+      const path = targetFolder ? `${targetFolder}/${name}` : name;
+      files[path] = content;
+      count++;
+    } catch {
+      toast(`Could not read ${name}`);
+    }
+  }
+  if (count) {
+    persistWorkspace();
+    renderTree();
+    toast(`${count} file(s) imported.`);
+  }
+}
+
+const dropZone = $("dropZone");
+["dragenter", "dragover"].forEach(type => {
+  dropZone.addEventListener(type, e => {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+  });
+});
+["dragleave", "dragend"].forEach(type => {
+  dropZone.addEventListener(type, () => dropZone.classList.remove("drag-over"));
+});
+dropZone.addEventListener("drop", async e => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  await importFiles([...(e.dataTransfer.files || [])]);
+});
+
+document.addEventListener("dragover", e => {
+  if (e.dataTransfer && e.dataTransfer.types.includes("Files")) e.preventDefault();
+});
+document.addEventListener("drop", e => {
+  if (e.target.closest("#dropZone,#fileTree") || !e.dataTransfer.types.includes("Files")) return;
+  e.preventDefault();
+  importFiles([...(e.dataTransfer.files || [])]);
+});
+
+$("uploadBtn").addEventListener("click", () => $("uploadFiles").click());
+$("importFolderBtn").addEventListener("click", () => $("uploadFolder").click());
+
+$("uploadFolder").addEventListener("change", async e => {
+  const list = [...(e.target.files || [])];
+  for (const file of list) {
+    const relative = file.webkitRelativePath || file.name;
+    const parts = relative.split("/");
+    if (parts.length > 1 && !folders.includes(parts[0])) folders.push(parts[0]);
+    try { files[relative] = await file.text(); } catch {}
+  }
+  persistWorkspace();
+  renderTree();
+  toast(`${list.length} files imported.`);
+  e.target.value = "";
+});
+
+/* Sidebar / Explorer Controls */
+$("searchInput").addEventListener("input", () => renderTree());
+$("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const first = $("fileList").querySelector("[data-file]");
+    if (first) openFile(first.dataset.file);
+  }
+});
+$("refreshBtn").addEventListener("click", () => {
+  saveActiveFile();
+  renderTree();
+  toast("Workspace refreshed.");
+});
+$("newFileBtn").addEventListener("click", createFile);
+$("newFileSmall").addEventListener("click", createFile);
+$("newFolderBtn").addEventListener("click", createFolder);
+$("newFolderSmall").addEventListener("click", createFolder);
+
+function setExplorerCollapsed(on) {
+  document.querySelector(".explorer").classList.toggle("is-collapsed", on);
+  document.querySelector(".workspace").classList.toggle("sidebar-collapsed", on);
+  const btn = $("explorerToggle");
+  btn.title = on ? "Show explorer" : "Hide explorer";
+  btn.setAttribute("aria-label", btn.title);
+  btn.setAttribute("aria-expanded", String(!on));
+  setTimeout(() => editor.refresh(), 60);
+}
+$("explorerToggle").addEventListener("click", () =>
+  setExplorerCollapsed(!document.querySelector(".explorer").classList.contains("is-collapsed")));
+
+/* Editor Action Toolbar */
+$("runBtn").addEventListener("click", runProgram);
+$("copyBtn").addEventListener("click", copyCode);
+$("downloadBtn").addEventListener("click", downloadActiveFile);
+$("formatBtn").addEventListener("click", formatCode);
+$("findBtn").addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); if (typeof window.openFindReplace === "function") window.openFindReplace("find"); });
+
+$("clearOutputBtn").addEventListener("click", () => {
+  currentOutputText = "";
+  outputChunks = [];
+  currentErrors = [];
+  $("output").textContent = "";
+  toast("Output cleared.");
+});
+
+$("consoleBtn").addEventListener("click", () => {
+  $("consoleExtra").classList.toggle("show");
+  showOutputTab($("consoleExtra").classList.contains("show") ? "console" : "output");
+});
+document.querySelectorAll(".output-tab").forEach(button => {
+  button.addEventListener("click", () => showOutputTab(button.dataset.outputTab));
+});
+
+/* Quick Run: evaluate one Swift expression or statement */
+$("consoleCommandBtn").addEventListener("click", async () => {
+  const command = $("consoleCommand").value.trim();
+  if (!command || running) return;
+  $("consoleCommand").value = "";
+  await executeC(buildQuickSource(command), $("stdinBox").value, true);
+});
+$("consoleCommand").addEventListener("keydown", e => {
+  if (e.key === "Enter") $("consoleCommandBtn").click();
+});
+
+/* Theme Switcher */
+$("themeBtn").addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  updateThemeButton();
+  savePrefs();
+  toast(document.body.classList.contains("light") ? "Light mode enabled." : "Dark mode enabled.");
+});
+
+/* Keyboard Shortcuts */
+document.addEventListener("keydown", e => {
+  const modifier = e.ctrlKey || e.metaKey;
+  if (modifier && e.key.toLowerCase() === "p") {
+    e.preventDefault();
+    $("searchInput").focus();
+    $("searchInput").select();
+  }
+  if (modifier && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    downloadActiveFile();
+  }
+});
+
+/* App Startup */
+loadWorkspace();
+loadPrefs();
+renderTree();
+syncActiveFile();
+initCompiler();
+</script>
+
+<script>
+/* VS Code/GitHub-like workspace enhancements */
+(function(){
+  const $ = id => document.getElementById(id);
+  const originalCreateFile = window.createFile;
+  const originalCreateFolder = window.createFolder;
+  let menuTarget = null;
+  let collapsed = false;
+  const collapsedFolders = new Set();
+  let wordMarks = [];
+  const editorEl = document.querySelector('.editor-toolbar .editor-tools');
+  if (editorEl && !$('replaceBtn')) {
+    const b=document.createElement('button'); b.className='btn'; b.id='replaceBtn'; b.textContent='Replace'; b.title='Find and replace (Ctrl+H)'; editorEl.insertBefore(b, $('findBtn').nextSibling);
+    b.addEventListener('click', (e)=>{e.preventDefault();e.stopPropagation();if(typeof window.openFindReplace==='function')window.openFindReplace('replace');});
+  }
+  // The workspace starts empty; files come only from the user.
+  function normalizePath(v){ return String(v||'').replace(/\\/g,'/').replace(/^\/+|\/+$/g,'').replace(/\/+/g,'/'); }
+  function allFolderPaths(){
+    const set=new Set((folders||[]).map(normalizePath).filter(Boolean));
+    Object.keys(files||{}).forEach(p=>{const parts=normalizePath(p).split('/'); for(let i=1;i<parts.length;i++) set.add(parts.slice(0,i).join('/'));});
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }
+  function ensureFolder(path){ path=normalizePath(path); if(!path)return; const parts=path.split('/'); for(let i=1;i<=parts.length;i++){const p=parts.slice(0,i).join('/'); if(!folders.includes(p)) folders.push(p);} }
+  function closeMenus(){ document.querySelectorAll('.context-menu,.choice-menu').forEach(n=>n.remove()); }
+  function showMenu(x,y,items,klass='context-menu'){
+    closeMenus(); const m=document.createElement('div');m.className=klass;m.style.left=Math.min(x,innerWidth-220)+'px';m.style.top=Math.min(y,innerHeight-300)+'px';
+    items.forEach(it=>{if(it.sep){const s=document.createElement('div');s.className='menu-sep';m.appendChild(s);return;}const b=document.createElement('button');b.innerHTML=(it.icon||'')+'<span>'+it.label+'</span>';if(it.danger)b.classList.add('danger');b.addEventListener('click',()=>{closeMenus();it.run();});m.appendChild(b);});document.body.appendChild(m);return m;
+  }
+  function promptName(label,placeholder){return new Promise(resolve=>{const back=document.createElement('div');back.className='name-dialog-backdrop';const isFolder=/folder/i.test(label);const title=isFolder?'Create folder':'Create file';const hint=isFolder?'Choose a name. Use / to create nested folders.':'Choose a file name, including its extension.';back.innerHTML='<form class="name-dialog" role="dialog" aria-modal="true"><h3>'+title+'</h3><p>'+hint+'</p><input id="nameDialogInput" autocomplete="off" spellcheck="false" placeholder="'+String(placeholder||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" value="'+String(placeholder||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"><div class="name-dialog-actions"><button type="button" data-cancel>Cancel</button><button class="primary" type="submit">Create</button></div></form>';document.body.appendChild(back);const form=back.querySelector('form'),input=back.querySelector('input');const done=v=>{back.remove();resolve(v)};form.addEventListener('submit',e=>{e.preventDefault();done(input.value.trim())});back.querySelector('[data-cancel]').addEventListener('click',()=>done(''));back.addEventListener('click',e=>{if(e.target===back)done('')});input.focus();input.select();back.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();done('')}});});}
+  async function createFileIn(folder=''){
+    const n=await promptName('New file name (example: main.swift):','NewFile.swift'); if(!n)return;
+    const path=normalizePath(folder?folder+'/'+n:n); if(files[path]!==undefined)return toast('That file already exists.');
+    ensureFolder(path.split('/').slice(0,-1).join('/')); files[path]=''; persistWorkspace(); renderTree(); openFile(path); toast('File created.');
+  }
+  async function createFolderIn(parent=''){
+    const n=await promptName('New folder name:','new_folder'); if(!n)return;
+    const path=normalizePath(parent?parent+'/'+n:n); if(allFolderPaths().includes(path))return toast('Folder already exists.');
+    ensureFolder(path); persistWorkspace(); renderTree(); toast('Folder created.');
+  }
+  function uploadInto(folder=''){ $('uploadFiles').dataset.targetFolder=folder; $('uploadFiles').click(); }
+  function downloadFile(name){ if(files[name]===undefined)return; downloadBlob(name.split('/').pop(),files[name]); }
+  async function renameFile(old){ const n=await promptName('Rename file:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(files[next]!==undefined)return toast('Name already exists.');files[next]=files[old];delete files[old];openTabs=openTabs.map(x=>x===old?next:x);if(activeFile===old)activeFile=next;persistWorkspace();renderTree();openFile(next);toast('File renamed.'); }
+  async function renameFolder(old){ const n=await promptName('Rename folder:',old.split('/').pop()); if(!n)return; const parent=old.includes('/')?old.slice(0,old.lastIndexOf('/')+1):''; const next=normalizePath(parent+n);if(allFolderPaths().includes(next))return toast('Folder already exists.');
+    const moved={};Object.keys(files).forEach(k=>{if(k===old||k.startsWith(old+'/')){moved[next+k.slice(old.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);ensureFolder(next);if(activeFile===old||activeFile.startsWith(old+'/'))activeFile=next+activeFile.slice(old.length);openTabs=openTabs.map(f=>f===old||f.startsWith(old+'/')?next+f.slice(old.length):f);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Folder renamed.'); }
+  function copyFile(name){let base=name,ext='';const slash=base.lastIndexOf('/');const dir=slash>=0?base.slice(0,slash+1):'';let leaf=slash>=0?base.slice(slash+1):base;const dot=leaf.lastIndexOf('.');if(dot>0){ext=leaf.slice(dot);leaf=leaf.slice(0,dot);}let next=dir+leaf+'_copy'+ext,i=2;while(files[next]!==undefined)next=dir+leaf+'_copy'+i+++ext;files[next]=files[name];persistWorkspace();renderTree();openFile(next);toast('File copied.');}
+  function deleteFolder(path){if(!confirm('Delete folder "'+path+'" and all files inside it?'))return;Object.keys(files).forEach(k=>{if(k===path||k.startsWith(path+'/')){delete files[k];openTabs=openTabs.filter(t=>t!==k);}});folders=folders.filter(f=>f!==path&&!f.startsWith(path+'/'));persistWorkspace();syncActiveFile();renderTree();toast('Folder deleted.');}
+  function movePath(src,dest){src=normalizePath(src);dest=normalizePath(dest);if(!src||src===dest||(dest&&dest.startsWith(src+'/')))return; if(files[src]!==undefined){const next=dest?dest+'/'+src.split('/').pop():src.split('/').pop();if(files[next]!==undefined)return toast('Destination already contains this file.');files[next]=files[src];delete files[src];if(activeFile===src)activeFile=next;openTabs=openTabs.map(t=>t===src?next:t);}else if(allFolderPaths().includes(src)){const next=dest?dest+'/'+src.split('/').pop():src.split('/').pop();if(allFolderPaths().includes(next))return toast('Destination already contains this folder.');const moved={};Object.keys(files).forEach(k=>{if(k.startsWith(src+'/')){moved[next+k.slice(src.length)]=files[k];delete files[k];}});Object.assign(files,moved);folders=folders.map(f=>f===src||f.startsWith(src+'/')?next+f.slice(src.length):f);if(activeFile===src||activeFile.startsWith(src+'/'))activeFile=next+activeFile.slice(src.length);openTabs=openTabs.map(t=>t===src||t.startsWith(src+'/')?next+t.slice(src.length):t);}ensureFolder(dest);persistWorkspace();renderTree();if(files[activeFile]!==undefined)openFile(activeFile);toast('Moved successfully.');}
+  window.renderTree=function(filter=($('searchInput')?.value||'').trim().toLowerCase()){
+    if(typeof syncActiveFile==='function')syncActiveFile();const tree=$('fileTree');if(!tree)return;tree.replaceChildren();const title=document.createElement('div');title.className='tree-label';title.innerHTML='<span>WORKSPACE</span><span>'+Object.keys(files).length+' files</span>';tree.appendChild(title);
+    if(!Object.keys(files).length&&!allFolderPaths().length){const empty=document.createElement('div');empty.className='tree-empty';empty.textContent='No files yet. Click + to create a file, or use Upload or drop files here.';tree.appendChild(empty);}
+    const foldersAll=allFolderPaths();const visibleFiles=Object.keys(files).filter(n=>!filter||n.toLowerCase().includes(filter)||String(files[n]).toLowerCase().includes(filter));
+    const visibleFolders=foldersAll.filter(f=>!filter||f.toLowerCase().includes(filter)||visibleFiles.some(n=>n.startsWith(f+'/')));
+    const entries=[...visibleFolders.map(path=>({path,folder:true})),...visibleFiles.map(path=>({path,folder:false}))].sort((a,b)=>{const da=a.path.split('/').length,db=b.path.split('/').length; if(da!==db)return da-db;return a.path.localeCompare(b.path);});
+    const seen=new Set();
+    entries.forEach(item=>{const path=item.path;const parent=path.includes('/')?path.slice(0,path.lastIndexOf('/')):'';if(parent&&!seen.has(parent)&&!filter)return;const ancestors=path.split('/').slice(0,-1);if(ancestors.some((_,i)=>collapsedFolders.has(ancestors.slice(0,i+1).join('/')))&&!filter)return;const row=document.createElement('div');row.className='tree-row'+(!item.folder&&path===activeFile?' active':'');row.dataset[item.folder?'folder':'file']=path;row.style.setProperty('--depth',Math.max(0,path.split('/').length-1));row.draggable=true;row.title=path;
+      const icon=item.folder?SVG_ICONS.folder:getSvgForFile(path);
+      const depth=Math.max(0,path.split('/').length-1);
+      const hasChildren=item.folder&&foldersAll.some(f=>f!==path&&f.startsWith(path+'/')) || item.folder&&visibleFiles.some(f=>f.startsWith(path+'/'));
+      const isClosed=collapsedFolders.has(path);
+      const chevron=item.folder?(hasChildren?'<svg class="tree-chevron '+(!isClosed?'open':'')+'" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 3 5 5-5 5"/></svg>':'<span class="tree-chevron spacer"></span>'):'<span class="tree-chevron spacer"></span>';
+      row.style.setProperty('--depth',depth);
+      row.innerHTML=chevron+icon+'<span class="filename">'+escapeHTML(path.split('/').pop())+'</span>';
+      row.addEventListener('click',()=>{if(item.folder){if(collapsedFolders.has(path))collapsedFolders.delete(path);else collapsedFolders.add(path);renderTree();}else openFile(path);});
+      if(item.folder) row.addEventListener('dblclick',e=>{e.preventDefault();menuTarget={path,folder:true};showMenu(e.clientX,e.clientY,[{label:'Add Folder',icon:'▰',run:()=>createFolderIn(path)},{label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Upload Files',icon:'⇧',run:()=>uploadInto(path)}]);});
+      row.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();menuTarget={path,folder:item.folder};const p=item.folder?[
+        {label:'New File',icon:'＋',run:()=>createFileIn(path)},{label:'Add Folder',icon:'▰',run:()=>createFolderIn(path)},{label:'Add File Name',icon:'✎',run:()=>createFileIn(path)},{label:'Upload Files',icon:'⇧',run:()=>uploadInto(path)},{sep:true},{label:'Rename',icon:'✎',run:()=>renameFolder(path)},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFolder(path)}
+      ]:[{label:'Open',icon:'↗',run:()=>openFile(path)},{label:'Copy',icon:'▣',run:()=>copyFile(path)},{label:'Rename',icon:'✎',run:()=>renameFile(path)},{label:'Download',icon:'⇩',run:()=>downloadFile(path)},{sep:true},{label:'Delete',icon:'⌫',danger:true,run:()=>deleteFile(path)}];showMenu(e.clientX,e.clientY,p);});
+      row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/x-workspace-path',path);e.dataTransfer.setData(item.folder?'text/x-folder':'text/x-file',path);e.dataTransfer.effectAllowed='move';row.classList.add('dragging');});row.addEventListener('dragend',()=>row.classList.remove('dragging'));
+      row.addEventListener('dragover',e=>{if(item.folder||e.dataTransfer.types.includes('Files')){e.preventDefault();row.classList.add('drop-target');}});row.addEventListener('dragleave',()=>row.classList.remove('drop-target'));
+      row.addEventListener('drop',async e=>{e.preventDefault();e.stopPropagation();row.classList.remove('drop-target');const incoming=[...(e.dataTransfer.files||[])];if(incoming.length){await importFiles(incoming,item.folder?path:'');return;}const src=e.dataTransfer.getData('text/x-workspace-path')||e.dataTransfer.getData('text/x-file')||e.dataTransfer.getData('text/x-folder');if(src&&item.folder)movePath(src,path);});tree.appendChild(row);seen.add(path);
+    });
+    if(!entries.length){const empty=document.createElement('div');empty.style.cssText='padding:18px 10px;color:var(--muted);font-size:12px';empty.textContent=filter?'No matching files':'Workspace is empty';tree.appendChild(empty);}
+    $('fileCount').textContent=Object.keys(files).length+' files';
+  };
+  function treeContextOnce(e){if(e.target.closest('.tree-row'))return;e.preventDefault();showMenu(e.clientX,e.clientY,[{label:'New File',icon:'＋',run:()=>chooseCreate('file')},{label:'New Folder',icon:'▰',run:()=>chooseCreate('folder')},{label:'Upload Files',icon:'⇧',run:()=>uploadInto('')},{label:'Upload Folder',icon:'⇧',run:()=>$('uploadFolder').click()}]);}
+  $('fileTree').addEventListener('contextmenu',treeContextOnce);
+  function chooseCreate(type){showMenu(innerWidth/2-95,innerHeight/2-45,[{label:'Create',icon:'＋',run:()=>type==='file'?createFileIn(''):createFolderIn('')},{label:'Upload',icon:'⇧',run:()=>type==='file'?uploadInto(''):$('uploadFolder').click()}],'choice-menu');}
+  // Make all add/create controls offer Create or Upload.
+  ['newFileBtn','newFileSmall'].forEach(id=>{const el=$(id);if(el)el.addEventListener('click',e=>{e.stopImmediatePropagation();chooseCreate('file');},true);});
+  ['newFolderBtn','newFolderSmall'].forEach(id=>{const el=$(id);if(el)el.addEventListener('click',e=>{e.stopImmediatePropagation();chooseCreate('folder');},true);});
+  const uploadFiles=$('uploadFiles');uploadFiles.addEventListener('change',async e=>{const target=uploadFiles.dataset.targetFolder||'';await importFiles([...(e.target.files||[])],target);uploadFiles.dataset.targetFolder='';e.target.value='';});
+  // Folder drag-and-drop and arbitrary workspace drop targets.
+  $('fileTree').addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('Files'))e.preventDefault();});
+  $('fileTree').addEventListener('drop',async e=>{if(e.target.closest('.tree-row'))return;if(e.dataTransfer.files?.length){e.preventDefault();await importFiles([...e.dataTransfer.files]);return;}const src=e.dataTransfer.getData('text/x-workspace-path')||e.dataTransfer.getData('text/x-file')||e.dataTransfer.getData('text/x-folder');if(src){e.preventDefault();movePath(src,'');}});
+  // Whole-word occurrence highlighting under cursor, similar to GitHub/VS Code.
+  function clearWordMarks(){wordMarks.forEach(m=>m.clear());wordMarks=[];}
+  function highlightWord(){clearWordMarks();const cur=editor.getCursor(),line=editor.getLine(cur.line)||'',left=(line.slice(0,cur.ch).match(/[\w$]*$/)||[''])[0],right=(line.slice(cur.ch).match(/^[\w$]*/)||[''])[0];const word=left+right;if(!word||word.length<2||!/^[A-Za-z_$]/.test(word))return;const escaped=word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp('\\b'+escaped+'\\b','g');for(let i=0;i<editor.lineCount();i++){const txt=editor.getLine(i);let m;while((m=re.exec(txt))!==null)wordMarks.push(editor.markText({line:i,ch:m.index},{line:i,ch:m.index+m[0].length},{className:'cm-word-highlight'}));}}
+  editor.on('cursorActivity',highlightWord);editor.on('change',highlightWord);
+  function replaceInEditor(){window.openFindReplace&&window.openFindReplace('replace');}
+  // Accessible, GitHub-inspired Find / Replace widget with real editor navigation.
+  (function installFindReplace(){
+    // `editor` is this file's CodeMirror instance.
+    // Uses the local editor binding directly.
+    if(!editor)return;
+    const panel=document.createElement('div');panel.className='find-replace-panel';panel.hidden=true;panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Find and replace');
+    panel.innerHTML='<div class="find-replace-head"><div class="find-replace-tabs"><button type="button" class="find-replace-tab active" data-mode="find">Find</button><button type="button" class="find-replace-tab" data-mode="replace">Replace</button></div><button type="button" class="find-replace-close" aria-label="Close find and replace" title="Close (Esc)">×</button></div><div class="fr-input-row"><label class="fr-input-wrap"><input class="fr-find" type="text" placeholder="Find" autocomplete="off" spellcheck="false" aria-label="Find text"><button class="fr-mini" data-option="case" type="button" title="Match case (Aa)" aria-label="Match case">Aa</button><button class="fr-mini" data-option="word" type="button" title="Match whole word" aria-label="Match whole word">ab</button></label><span class="fr-count">0 results</span><button class="fr-mini" data-step="prev" type="button" title="Previous match (Shift+Enter)" aria-label="Previous match">↑</button><button class="fr-mini" data-step="next" type="button" title="Next match (Enter)" aria-label="Next match">↓</button></div><div class="fr-input-row fr-replace-row" hidden><label class="fr-input-wrap"><input class="fr-replace" type="text" placeholder="Replace" autocomplete="off" spellcheck="false" aria-label="Replace with"></label><button type="button" class="fr-action" data-action="replace">Replace</button><button type="button" class="fr-action primary" data-action="all">Replace all</button></div><div class="fr-status" aria-live="polite"></div>';
+    const host=document.body;if(!host)return;host.appendChild(panel);
+    const findInput=panel.querySelector('.fr-find'),replaceInput=panel.querySelector('.fr-replace'),countEl=panel.querySelector('.fr-count'),status=panel.querySelector('.fr-status'),replaceRow=panel.querySelector('.fr-replace-row');
+    let mode='find',matches=[],current=-1,marks=[],matchCase=false,wholeWord=false;
+    function clearMarks(){marks.forEach(m=>{try{m.clear()}catch(_){}});marks=[];}
+    function posFromIndex(text,index){const before=text.slice(0,index).split('\n');return {line:before.length-1,ch:before[before.length-1].length};}
+    function indexFromPos(text,pos){const lines=text.split('\n');let n=0;for(let i=0;i<pos.line;i++)n+=(lines[i]||'').length+1;return n+pos.ch;}
+    function getMatches(){const text=editor.getValue(),needle=findInput.value;matches=[];if(!needle)return;const hay=matchCase?text:text.toLocaleLowerCase(),term=matchCase?needle:needle.toLocaleLowerCase();let from=0,idx;while((idx=hay.indexOf(term,from))!==-1){const end=idx+term.length;const boundary=c=>!c||!/[A-Za-z0-9_$]/.test(c);if(!wholeWord||(boundary(text[idx-1])&&boundary(text[end]))){matches.push({from:posFromIndex(text,idx),to:posFromIndex(text,end),start:idx,end});}from=Math.max(end,idx+1);}}
+    function paint(){clearMarks();getMatches();matches.forEach((m,i)=>marks.push(editor.markText(m.from,m.to,{className:i===current?'cm-fr-current':'cm-fr-match'})));countEl.textContent=matches.length?(current+1)+' of '+matches.length: (findInput.value?'0 results':'');status.classList.toggle('error',!!findInput.value&&!matches.length);status.textContent=findInput.value&&!matches.length?'No results found':(matches.length?'':'Type to search in the current file');}
+    function selectCurrent(){if(!matches.length){current=-1;paint();return;}if(current<0||current>=matches.length)current=0;paint();const m=matches[current];editor.setSelection(m.from,m.to);editor.scrollIntoView({from:m.from,to:m.to},80);editor.focus();countEl.textContent=(current+1)+' of '+matches.length;}
+    function refreshSearch(preserve){const old=current;getMatches();current=matches.length?(preserve?Math.min(Math.max(old,0),matches.length-1):0):-1;paint();if(matches.length){const m=matches[current];editor.setSelection(m.from,m.to);editor.scrollIntoView({from:m.from,to:m.to},70);}}
+    function step(dir){getMatches();if(!matches.length){current=-1;paint();return;}current=(current+dir+matches.length)%matches.length;selectCurrent();}
+    function setMode(next){mode=next;panel.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));replaceRow.hidden=mode!=='replace';if(mode==='replace')replaceInput.focus();else findInput.focus();panel.querySelector('.fr-action[data-action="replace"]').textContent='Replace';}
+    function open(next){panel.hidden=false;setMode(next||'find');if(!findInput.value){const sel=editor.getSelection();if(sel&&!sel.includes('\n'))findInput.value=sel;}refreshSearch(false);findInput.focus();findInput.select();}
+    function close(){panel.hidden=true;clearMarks();editor.focus();}
+    function replaceOne(){getMatches();if(!matches.length){paint();status.textContent='No match to replace.';return;}let m=matches[current]||matches[0];if(!m)return;const start=m.start;editor.operation(()=>{editor.replaceRange(replaceInput.value,m.from,m.to,'+replace');});getMatches();if(matches.length){let next=matches.findIndex(x=>x.start>=start+replaceInput.value.length);current=next>=0?next:Math.max(0,matches.length-1);paint();const hit=matches[current];if(hit){editor.setSelection(hit.from,hit.to);editor.scrollIntoView({from:hit.from,to:hit.to},70);}}else{current=-1;paint();}status.classList.remove('error');status.textContent='Replaced 1 occurrence.';}
+    function replaceAll(){const needle=findInput.value;if(!needle){status.textContent='Enter text to find first.';return;}getMatches();if(!matches.length){paint();return;}const text=editor.getValue(),replacement=replaceInput.value;let out='',last=0;matches.forEach(m=>{out+=text.slice(last,m.start)+replacement;last=m.end;});out+=text.slice(last);const count=matches.length;editor.setValue(out);current=-1;paint();status.textContent='Replaced '+count+' occurrence'+(count===1?'':'s')+'.';}
+    window.openFindReplace=open;
+    // Route CodeMirror shortcuts to this custom panel instead of the unavailable built-in find addon.
+
+    // Keep the floating panel above editor stacking contexts and place it directly under <body>.
+    panel.style.position='fixed';
+    panel.style.zIndex='2147483647';
+    panel.style.pointerEvents='auto';
+    findInput.addEventListener('input',()=>{current=0;refreshSearch(false);});replaceInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();replaceOne();}});
+    findInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();step(e.shiftKey?-1:1);}else if(e.key==='Escape'){e.preventDefault();close();}});
+    panel.querySelector('.find-replace-close').addEventListener('click',close);
+    panel.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+    panel.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>step(b.dataset.step==='prev'?-1:1)));
+    panel.querySelectorAll('[data-option]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.option==='case')matchCase=!matchCase;else wholeWord=!wholeWord;b.classList.toggle('active',b.dataset.option==='case'?matchCase:wholeWord);current=0;refreshSearch(false);findInput.focus();}));
+    panel.querySelector('[data-action="replace"]').addEventListener('click',replaceOne);panel.querySelector('[data-action="all"]').addEventListener('click',replaceAll);
+    document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(mod&&e.key.toLowerCase()==='f'){e.preventDefault();open('find');}else if(mod&&e.key.toLowerCase()==='h'){e.preventDefault();open('replace');}else if(e.key==='Escape'&&!panel.hidden)close();});
+    editor.on('change',()=>{if(!panel.hidden){const old=current;refreshSearch(true);}});
+    const originalSetValue=editor.setValue.bind(editor); // keep marks refreshed when file switches
+    editor.on('blur',()=>{});
+  })();
+  // Shortcuts: Ctrl/Cmd+H replace, Ctrl/Cmd+Shift+F workspace search, Ctrl/Cmd+B explorer toggle.
+  document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(!mod)return;const k=e.key.toLowerCase();if(k==='b'){e.preventDefault();$('explorerToggle').click();}if(e.shiftKey&&k==='f'){e.preventDefault();$('searchInput').focus();$('searchInput').select();}});
+  // Search across filenames and file contents; Enter opens the first match.
+  $('searchInput').placeholder='Search files and code…';
+  // Make external file drops work over the complete explorer and editor/output workspace.
+  ['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{if(e.dataTransfer&&e.dataTransfer.types.includes('Files'))e.preventDefault();}));
+  // Initial clean VS Code tree; don't change an existing saved workspace.
+  renderTree();renderTabs();setTimeout(()=>{editor.refresh();highlightWord();},100);
+})();
+</script>
+
+
+<script>
+/* Header projects/account controls, native SVG action icons, and touch long-press menus */
+(function(){
+ const $=id=>document.getElementById(id);
+ const PROJECTS_KEY='jsSwiftRunnerProjectsV1';
+ const ACCOUNT_KEY='jsSwiftRunnerAccountLabelV1';
+ const svg=(name)=>{
+  const paths={
+   file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+   folder:'<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/>',
+   plus:'<path d="M12 5v14M5 12h14"/>', upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/>',
+   rename:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L9 17l-4 1 1-4Z"/>',
+   copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+   download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>',
+   trash:'<path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/>',
+   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+   more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
+   project:'<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/>'
+  };
+  return '<svg class="svg-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>';
+ };
+ // Replace text glyphs in existing context menus with consistent file-style SVG icons.
+ const iconMap={'＋':'plus','✎':'rename','⇧':'upload','⌫':'trash','▣':'copy','⇩':'download','▰':'folder','↗':'file'};
+ const oldShow=window.showMenu;
+ // Enhancement script's menu is closure-scoped, so normalize each newly created menu via observer.
+ const iconObserver=new MutationObserver(()=>document.querySelectorAll('.context-menu button,.choice-menu button').forEach(b=>{const first=b.firstChild;if(first&&first.nodeType===3){const glyph=first.textContent.trim();if(iconMap[glyph]){first.textContent='';b.insertAdjacentHTML('afterbegin',svg(iconMap[glyph]));}}}));
+ iconObserver.observe(document.body,{childList:true,subtree:true});
+ function readProjects(){try{return JSON.parse(localStorage.getItem(PROJECTS_KEY)||'[]')}catch(e){return []}}
+ function saveProjects(list){try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(list))}catch(e){}}
+ (function scrubSampleProjects(){try{const list=readProjects();let changed=false;list.forEach(p=>{const s=p&&p.snapshot;if(s&&isLegacySample({files:s.files||{},folders:s.folders||[]})){s.files={};s.folders=[];s.activeFile='';s.openTabs=[];p.files=0;changed=true;}});if(changed)saveProjects(list);}catch(e){}})();
+ function rememberCurrent(){if(!Object.keys(files||{}).length)return;let list=readProjects();const name=localStorage.getItem('jsSwiftRunnerCurrentProjectName')||'My Swift Project';const item={name,updated:Date.now(),files:Object.keys(files||{}).length,snapshot:{files:JSON.parse(JSON.stringify(files||{})),folders:[...(folders||[])],activeFile:activeFile||'',openTabs:[...(openTabs||[])]}};list=list.filter(p=>p.name!==name);list.unshift(item);saveProjects(list.slice(0,20));}
+ function renderProjects(){const pop=$('projectsPopover');if(!pop)return;rememberCurrent();const list=readProjects();pop.innerHTML='<strong>Recent projects</strong><div class="popover-divider"></div>'+list.map((p,i)=>'<button class="project-item" data-project-index="'+i+'">'+svg('project')+'<span><strong>'+String(p.name).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><small>'+p.files+' file(s) · '+new Date(p.updated).toLocaleDateString()+'</small></span></button>').join('')+'<div class="popover-divider"></div><button class="project-item" id="newProjectAction">'+svg('plus')+'<span><strong>New project</strong><small>Create a clean C workspace</small></span></button>';
+  pop.querySelectorAll('[data-project-index]').forEach(b=>b.addEventListener('click',()=>{const p=list[Number(b.dataset.projectIndex)];closePopovers();if(p){rememberCurrent();const chosen=readProjects().find(x=>x.name===p.name)||p;localStorage.setItem('jsSwiftRunnerCurrentProjectName',p.name);if(chosen.snapshot){files=chosen.snapshot.files||{};folders=chosen.snapshot.folders||[];activeFile=chosen.snapshot.activeFile||Object.keys(files)[0]||'';openTabs=chosen.snapshot.openTabs||[];if(typeof persistWorkspace==='function')persistWorkspace();if(typeof renderTree==='function')renderTree();syncActiveFile();}if(typeof toast==='function')toast('Project opened: '+p.name);}}));
+  const n=$('newProjectAction');if(n)n.addEventListener('click',()=>{const name=prompt('Project name:','My Swift Project '+(list.length+1));if(!name||!name.trim())return;rememberCurrent();localStorage.setItem('jsSwiftRunnerCurrentProjectName',name.trim());files={};folders=[];activeFile='';openTabs=[];if(typeof persistWorkspace==='function')persistWorkspace();if(typeof renderTree==='function')renderTree();syncActiveFile();closePopovers();renderProjects();if(typeof toast==='function')toast('New project created.');});
+ }
+ function closePopovers(){['projectsPopover','accountPopover','mobileActionsPopover'].forEach(id=>{const el=$(id);if(el)el.hidden=true});['projectsBtn','accountBtn','mobileMoreBtn'].forEach(id=>{const el=$(id);if(el)el.setAttribute('aria-expanded','false')});}
+ function togglePopover(id,btn){const el=$(id),was=el.hidden;closePopovers();const bar=document.querySelector('.topbar');document.documentElement.style.setProperty('--popover-top',(bar?Math.round(bar.getBoundingClientRect().bottom)+6:64)+'px');el.hidden=!was;if(btn)btn.setAttribute('aria-expanded',String(was));if(id==='projectsPopover'&&was)renderProjects();}
+ $('projectsBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('projectsPopover',$('projectsBtn'));});
+ $('accountBtn')?.addEventListener('click',e=>{e.stopPropagation();togglePopover('accountPopover',$('accountBtn'));});
+ // Account label is populated by Firebase Authentication below.
+ $('mobileMoreBtn')?.addEventListener('click',e=>{e.stopPropagation();const pop=$('mobileActionsPopover');const dark=!document.body.classList.contains('light');
+ const actions=[['New file','newFileBtn','plus'],['New folder','newFolderBtn','folder'],['Find','findBtn','file'],['Replace','replaceBtn','rename'],['Save file','downloadBtn','download'],['Hide / show explorer','explorerToggle','folder']];
+ pop.innerHTML=actions.map(([label,id,ic])=>'<button type="button" data-action="'+id+'">'+svg(ic)+'<span>'+label+'</span></button>').join('');
+ pop.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.action);closePopovers();if(target)target.click();}));
+ togglePopover('mobileActionsPopover',$('mobileMoreBtn'));});
+ document.addEventListener('click',e=>{if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn'))closePopovers();});
+ // Close any open context/choice menu on an outside click or tap.
+ document.addEventListener('pointerdown',e=>{
+   if(e.target.closest('.context-menu,.choice-menu')) return;
+   document.querySelectorAll('.context-menu,.choice-menu').forEach(n=>n.remove());
+   if(!e.target.closest('.header-project-area,.account-area,.mobile-actions-popover,.mobile-more-btn')) closePopovers();
+ },true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopovers();});
+ // Long-press on touch devices opens the same context menu as desktop right-click.
+ let pressTimer=null,pressStart=null,longPressed=false;
+ document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;const row=e.target.closest('.tree-row');if(!row)return;longPressed=false;pressStart={x:e.clientX,y:e.clientY,row};pressTimer=setTimeout(()=>{longPressed=true;const r=pressStart.row;const path=r.dataset.file||r.dataset.folder;const folder=!!r.dataset.folder;const menu=document.createEvent('MouseEvents');menu.initMouseEvent('contextmenu',true,true,window,1,e.screenX,e.screenY,e.clientX,e.clientY,false,false,false,false,2,null);r.dispatchEvent(menu);},520);},{passive:true});
+ document.addEventListener('pointermove',e=>{if(!pressStart)return;if(Math.hypot(e.clientX-pressStart.x,e.clientY-pressStart.y)>12){clearTimeout(pressTimer);pressTimer=null;}},{passive:true});
+ ['pointerup','pointercancel'].forEach(type=>document.addEventListener(type,()=>{clearTimeout(pressTimer);pressTimer=null;pressStart=null;} ,{passive:true}));
+ document.addEventListener('click',e=>{if(longPressed&&e.target.closest('.tree-row')){e.preventDefault();e.stopPropagation();longPressed=false;}},true);
+ // Let the Projects control remain the left-side workspace switcher; account stays at far right.
+ renderProjects();
+})();
+</script>
+
+
+<!-- Firebase Authentication (Google sign-in) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+(function(){
+ const firebaseConfig={apiKey:"AIzaSyDhFodV_ulVObuJCkBL-3UmTEnj1prWTuw",authDomain:"js-code-output.firebaseapp.com",databaseURL:"https://js-code-output-default-rtdb.firebaseio.com",projectId:"js-code-output",storageBucket:"js-code-output.firebasestorage.app",messagingSenderId:"600350018167",appId:"1:600350018167:web:3ceaa5a5e0d1050504d472",measurementId:"G-L47M0E9V96"};
+ const $ = id => document.getElementById(id);
+ const esc = v => String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const GOOGLE_G = '<svg class="svg-ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.2c0-.7-.06-1.37-.18-2H12v3.8h5.24a4.5 4.5 0 0 1-1.94 2.95v2.46h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/><path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.46c-.87.58-1.98.93-3.31.93-2.54 0-4.7-1.72-5.47-4.04H3.28v2.54A9.74 9.74 0 0 0 12 21.5z"/><path fill="#FBBC05" d="M6.53 13.57A5.85 5.85 0 0 1 6.22 12c0-.54.1-1.07.3-1.57V7.89H3.28A9.5 9.5 0 0 0 2.25 12c0 1.53.37 2.97 1.03 4.11z"/><path fill="#EA4335" d="M12 6.39c1.43 0 2.71.49 3.72 1.47l2.79-2.79C16.84 3.52 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.72 5.39l3.24 2.54C7.3 8.11 9.46 6.39 12 6.39z"/></svg>';
+ const pop = $('accountPopover'), label = $('accountLabel'), sub = $('accountSubLabel');
+ const signedOut = note => {
+   pop.innerHTML = '<strong>Google account</strong><p>' + esc(note || 'Sign in to connect your Google account.') + '</p><button class="btn" id="googleSignInBtn">' + GOOGLE_G + ' Sign in with Google</button>';
+ };
+ const signedIn = user => {
+   pop.innerHTML = '<strong>' + esc(user.displayName || 'Google account') + '</strong><p>' + esc(user.email || 'Connected') + '</p><button class="btn" id="googleSignOutBtn">Sign out</button>';
+ };
+ try {
+   if (!window.firebase) throw new Error('Firebase SDK did not load');
+   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+   const auth = firebase.auth();
+   auth.onAuthStateChanged(user => {
+     if (user) { label.textContent = user.displayName || 'Google account'; sub.textContent = user.email || 'Connected'; signedIn(user); }
+     else { label.textContent = 'Google Account'; sub.textContent = 'Not connected'; signedOut(); }
+   });
+   document.addEventListener('click', async e => {
+     if (e.target.closest('#googleSignInBtn')) {
+       try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+       catch (err) {
+         signedOut(err.code === 'auth/unauthorized-domain' ? 'Add this website domain to Firebase Authentication → Settings → Authorized domains.'
+           : err.code === 'auth/popup-closed-by-user' ? 'Sign-in was cancelled.' : (err.message || 'Google sign-in failed.'));
+       }
+     }
+     if (e.target.closest('#googleSignOutBtn')) { try { await auth.signOut(); } catch (err) { console.error(err); } }
+   });
+ } catch (err) {
+   console.error('Firebase setup failed', err);
+   pop.innerHTML = '<strong>Google account</strong><p>Sign-in is unavailable right now. Please refresh the page and try again.</p>';
+ }
+})();
+</script>
+<script>
+// Fullscreen controls for both editor and output; every fullscreen view has a visible exit control.
+(function(){
+ const buttons=[...document.querySelectorAll('[data-fullscreen]')];
+ function setFullscreen(panel,on){
+   panel.classList.toggle('is-fullscreen',on);
+   const kind=panel.classList.contains('editor-panel')?'editor-panel':'output-panel';
+   const btn=buttons.find(b=>b.dataset.fullscreen===kind);
+   if(btn){btn.title=on?'Exit fullscreen':'Fullscreen '+(kind==='editor-panel'?'editor':'output');btn.setAttribute('aria-label',btn.title);const label=btn.querySelector('.fs-label');if(label)label.style.display=on?'inline':'none';}
+   if(on){
+     panel.dataset.fullscreenActive='1';
+     if(!panel.querySelector('.fullscreen-exit')){const b=document.createElement('button');b.className='btn gold fullscreen-exit';b.type='button';b.title='Exit full screen';b.setAttribute('aria-label','Exit full screen');b.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v5H3M16 3v5h5M3 16h5v5M21 16h-5v5"/></svg><span>Exit full screen</span>';b.addEventListener('click',()=>setFullscreen(panel,false));panel.appendChild(b);}
+   } else {delete panel.dataset.fullscreenActive;panel.querySelector('.fullscreen-exit')?.remove();}
+   setTimeout(()=>{if(typeof editor!=='undefined'&&panel.classList.contains('editor-panel'))editor.refresh();},100);
+ }
+ buttons.forEach(btn=>btn.addEventListener('click',()=>{const panel=document.querySelector('.'+btn.dataset.fullscreen);if(panel)setFullscreen(panel,!panel.classList.contains('is-fullscreen'));}));
+ // Exit control is created inside setFullscreen and removed when returning to normal view.
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.panel.is-fullscreen').forEach(p=>setFullscreen(p,false));});
+ // Clear only the currently selected file, with confirmation before destructive action.
+ const clearBtn=document.getElementById('clearCodeBtn');
+ if(clearBtn)clearBtn.addEventListener('click',()=>{
+   if(!activeFile)return toast('Open or create a file first.');const name=activeFile;
+   if(!confirm('Clear all code in "'+name+'"? This cannot be undone.'))return;
+   editor.operation(()=>editor.setValue(''));
+   editor.focus();
+   if(typeof persistWorkspace==='function')persistWorkspace();
+   if(typeof toast==='function')toast('Code cleared for '+name+'.');
+ });
+ // Leave-page warning. Browsers display their own standard wording for beforeunload.
+ let allowLeave=false;
+ window.addEventListener('beforeunload',e=>{if(allowLeave)return;e.preventDefault();e.returnValue='Do you want to leave this page?';return e.returnValue;});
+ // Mobile/browser back-button warning: add a history guard and ask before allowing navigation.
+ try{
+   history.pushState({leaveGuard:true},'',location.href);
+   window.addEventListener('popstate',()=>{
+     if(allowLeave)return;
+     if(confirm('Do you want to leave this page?')){
+       allowLeave=true;history.back();
+     }else{history.pushState({leaveGuard:true},'',location.href);}
+   });
+ }catch(_){}
+ // First-visit guided tour: highlight each visible feature button one at a time.
+ const tourKey='jsSwiftRunner_onboarding_v2';
+ if(!localStorage.getItem(tourKey)){
+   const backdrop=document.createElement('div');backdrop.className='tour-backdrop';backdrop.setAttribute('aria-hidden','true');
+   backdrop.innerHTML='<section class="tour-card" role="dialog" aria-modal="false" aria-labelledby="tourTitle"><h3 id="tourTitle"></h3><p id="tourCopy"></p><div class="tour-actions"><span class="tour-step" id="tourStep"></span><div style="display:flex;gap:8px"><button class="btn" id="tourSkip">Skip tour</button><button class="btn gold" id="tourNext">Next</button></div></div></section>';
+   document.body.appendChild(backdrop);
+   const card=backdrop.querySelector('.tour-card');
+   const title=backdrop.querySelector('#tourTitle'),copy=backdrop.querySelector('#tourCopy'),counter=backdrop.querySelector('#tourStep'),next=backdrop.querySelector('#tourNext');
+   const visible=el=>{const r=el.getBoundingClientRect(),st=getComputedStyle(el);return r.width>0&&r.height>0&&st.display!=='none'&&st.visibility!=='hidden'&&!el.closest('.tour-card')&&!el.disabled;};
+   const labelOf=el=>(el.getAttribute('aria-label')||el.getAttribute('title')||el.innerText||el.textContent||'Feature').replace(/\s+/g,' ').trim().slice(0,90)||'Feature button';
+   const explain=label=>{const t=label.toLowerCase();
+     if(/run|execute|play/.test(t))return 'Run the code in your selected file and check the result in the Output panel.';
+     if(/clear.*(code|editor)|clear code/.test(t))return 'Clear the code in the currently selected file. A confirmation appears before the code is removed.';
+     if(/clear/.test(t))return 'Clear the related output or content. Check the button label to see which area it affects.';
+     if(/full.?screen|fullscreen|exit full/.test(t))return 'Expand this panel to use more screen space. Use the exit-fullscreen control or press Escape to return.';
+     if(/theme|dark|light/.test(t))return 'Switch the interface appearance between the available theme modes.';
+     if(/new file|create file|add file/.test(t))return 'Create a new file in your workspace so you can write code separately.';
+     if(/folder/.test(t))return 'Create, open, or manage folders to organize your project files.';
+     if(/save|download|export/.test(t))return 'Save or export your work using this control. Review its label for the exact action.';
+     if(/format|beautif/.test(t))return 'Format the code to make its indentation and layout easier to read.';
+     if(/find|search/.test(t))return 'Search for text or code in the editor or workspace.';
+     if(/copy|paste/.test(t))return 'Use this control to copy or insert the relevant content.';
+     if(/console|input/.test(t))return 'Open or use the related console/input area to inspect or interact with code execution.';
+     if(/project|explorer|file/.test(t))return 'Use this workspace control to open or manage your project and files.';
+     if(/setting|config|api/.test(t))return 'Open the related settings and adjust the available options.';
+     if(/help|tour|guide/.test(t))return 'Open help or guidance for using the runner.';
+     return 'This button controls “'+label+'”. Try it when you need this feature; the label indicates its action.';
+   };
+   const buttons=[...document.querySelectorAll('button,[role="button"]')].filter(visible).filter(el=>!el.matches('#tourNext,#tourSkip'));
+   const steps=[{el:null,title:'Welcome to JS Swift Runner',body:'This guided tour will move through the visible buttons one by one. Each step highlights a button and explains what it does.'},...buttons.map(el=>({el,title:labelOf(el),body:explain(labelOf(el))})),{el:null,title:'You’re ready!',body:'You have reached the end of the button tour. You can now explore the runner and use the highlighted controls whenever you need them.'}];
+   let idx=0,active=null;
+   const cleanup=()=>{if(active){active.classList.remove('tour-spotlight');active=null;}}
+   const placeCard=()=>{
+     const margin=14, gap=18, vw=window.innerWidth, vh=window.innerHeight;
+     card.style.transform='none';
+     if(!active || !active.isConnected){card.style.left=Math.max(margin,(vw-card.offsetWidth)/2)+'px';card.style.top=Math.max(margin,(vh-card.offsetHeight)/2)+'px';return;}
+     const r=active.getBoundingClientRect(), cw=card.offsetWidth, ch=card.offsetHeight;
+     let left,top;
+     if(vw-r.right>=cw+gap){left=r.right+gap;top=r.top+(r.height-ch)/2;}
+     else if(r.left>=cw+gap){left=r.left-cw-gap;top=r.top+(r.height-ch)/2;}
+     else if(vh-r.bottom>=ch+gap){left=r.left+(r.width-cw)/2;top=r.bottom+gap;}
+     else {left=r.left+(r.width-cw)/2;top=r.top-ch-gap;}
+     left=Math.max(margin,Math.min(left,vw-cw-margin));top=Math.max(margin,Math.min(top,vh-ch-margin));
+     card.style.left=left+'px';card.style.top=top+'px';
+   };
+   const finish=()=>{cleanup();localStorage.setItem(tourKey,'done');backdrop.remove();window.removeEventListener('resize',placeCard);window.removeEventListener('scroll',placeCard,true);};
+   const render=()=>{
+     cleanup();const step=steps[idx];title.textContent=step.title;copy.textContent=step.body;counter.textContent='Step '+(idx+1)+' of '+steps.length;next.textContent=idx===steps.length-1?'Finish':'Next';
+     if(step.el&&step.el.isConnected&&visible(step.el)){active=step.el;active.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});active.classList.add('tour-spotlight');}
+     placeCard();requestAnimationFrame(placeCard);setTimeout(placeCard,250);
+   };
+   window.addEventListener('resize',placeCard);window.addEventListener('scroll',placeCard,true);
+   next.addEventListener('click',()=>{if(idx===steps.length-1){finish();return;}idx++;render();});
+   backdrop.querySelector('#tourSkip').addEventListener('click',finish);
+   render();
+ }
+})();
+</script>
+
+
+
+<div id="miodFull" aria-hidden="true">
+<button id="miodClose" type="button" onclick="closeMiod()" aria-label="Close">×</button>
+<iframe id="miodFullFrame" title="MIOD"></iframe>
+<div id="miodSoon"><span>MIOD will be coming soon</span></div>
+</div>
+<script type="text/plain" id="miodSource"><!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<title>MIOD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap">
+<style>
+  :root { box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); background:#fff !important; color-scheme:only light; }
+  html, body { height:100%; margin:0; background:#fff !important; color-scheme:only light; }
+  body::before { content:""; position:fixed; inset:0; background:#fff; z-index:-1; }
+  body { display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .wrap { width:min(96vw, 88vh*1.17, 1000px); }
+  svg { width:100%; height:auto; display:block; overflow:visible; }
+
+  /* 9s cycle: dizzy spin -> squash & settle -> letters hop out of the tail and land
+     with squash-and-stretch -> happy bounce -> hold -> fade */
+
+  #wormWrap { transform-box:fill-box; transform-origin:50% 100%; animation:wobble 9s infinite; }
+  #worm { transform-box:fill-box; transform-origin:50% 50%; animation:spin 9s infinite; }
+
+  .eye { transform-box:fill-box; transform-origin:50% 50%; animation:blink 9s infinite; }
+  .pupils { animation:showPupils 9s infinite, look 9s infinite; }
+  .dizzy { animation:dizzy 9s infinite; }
+
+  .l { transform-box:fill-box; transform-origin:50% 100%; opacity:0; animation-duration:9s;
+       animation-iteration-count:infinite; animation-timing-function:ease-out; }
+  #g-i { --dx:-100px; animation-name:liIn; }
+  #g-o { --dx:-170px; animation-name:loIn; }
+  #g-d { --dx:-290px; animation-name:ldIn; }
+
+  /* cartoon sticker letters: chunky ink outline + hard offset shadow */
+  .ch { font-family:'Fredoka','Baloo 2','Arial Rounded MT Bold','Nunito',system-ui,sans-serif;
+        font-weight:700; font-size:240px; stroke:#1E1033; stroke-width:16px; stroke-linejoin:round;
+        paint-order:stroke fill; transform-box:fill-box; transform-origin:50% 100%; animation:bob 9s infinite; }
+  .sh { fill:#1E1033; }
+  .c-i { fill:#FF5C8A; }
+  .c-o { fill:#FFC233; }
+  .c-d { fill:#4CC9F0; }
+  #s-o, #t-o { animation-delay:.25s; }
+  #s-d, #t-d { animation-delay:.5s; }
+
+  .shade { fill:#1E1033; transform-box:fill-box; transform-origin:50% 50%; opacity:0; animation:shade 9s infinite; }
+
+  .spark { fill:#FFD60A; stroke:#1E1033; stroke-width:4; stroke-linejoin:round;
+           transform-box:fill-box; transform-origin:50% 50%; transform:scale(0); }
+  .spA { animation:spA 9s infinite; }
+  .spB { animation:spB 9s infinite; }
+  .spC { animation:spC 9s infinite; }
+
+  @keyframes spin {
+    0%   { transform:rotate(0deg); animation-timing-function:cubic-bezier(.1,.75,.25,1); }
+    34%  { transform:rotate(1080deg); }
+    100% { transform:rotate(1080deg); }
+  }
+  @keyframes wobble {
+    0%,33%    { transform:none; }
+    36%       { transform:scale(1.09,.9); }
+    39%       { transform:scale(.95,1.06); }
+    42%,64%   { transform:none; }
+    67%       { transform:scale(1.025,.975); }
+    70%,100%  { transform:none; }
+  }
+  @keyframes dizzy {
+    0%,30%   { opacity:1; }
+    34%,100% { opacity:0; }
+  }
+  @keyframes showPupils {
+    0%,32%   { opacity:0; }
+    36%,100% { opacity:1; }
+  }
+  @keyframes look {
+    0%,38%    { transform:translate(0,0); }
+    42%,62%   { transform:translate(-14px,5px); }
+    68%,100%  { transform:translate(0,0); }
+  }
+  @keyframes blink {
+    0%,65%,69%,84%,88%,100% { transform:scaleY(1); }
+    67%,86% { transform:scaleY(.08); }
+  }
+
+  @keyframes liIn {
+    0%,37.7% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    39%      { opacity:1; }
+    43%      { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    47%      { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    49.5%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    51.5%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes loIn {
+    0%,45.5% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    46.8%    { opacity:1; }
+    50.8%    { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    54.8%    { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    57.3%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    59.3%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes ldIn {
+    0%,53.3% { opacity:0; transform:translate(var(--dx),20px) scale(.2) rotate(-70deg); }
+    54.6%    { opacity:1; }
+    58.6%    { opacity:1; transform:translate(calc(var(--dx) * .35),-46px) scale(1) rotate(-14deg); }
+    62.6%    { opacity:1; transform:translate(0,0) scale(1.16,.84) rotate(0deg); }
+    65.1%    { opacity:1; transform:translate(0,-6px) scale(.96,1.05) rotate(0deg); }
+    67.1%,90%{ opacity:1; transform:none; }
+    96%,100% { opacity:0; transform:none; }
+  }
+  @keyframes bob {
+    0%,68%   { transform:none; }
+    72%      { transform:translateY(-18px) rotate(-5deg) scale(.98,1.04); }
+    76%      { transform:translateY(0) rotate(0deg) scale(1.06,.94); }
+    79%      { transform:translateY(-6px) scale(.99,1.01); }
+    82%,100% { transform:none; }
+  }
+  @keyframes shade {
+    0%,36%   { opacity:0; transform:scaleX(.3); }
+    47%      { opacity:.28; transform:scaleX(1.08); }
+    50%,90%  { opacity:.28; transform:scaleX(1); }
+    96%,100% { opacity:0; transform:scaleX(1); }
+  }
+  @keyframes spA {
+    0%,46%   { transform:scale(0) rotate(0deg); }
+    50%      { transform:scale(1.25) rotate(60deg); }
+    53%      { transform:scale(.9) rotate(90deg); }
+    57%,100% { transform:scale(0) rotate(180deg); }
+  }
+  @keyframes spB {
+    0%,53%   { transform:scale(0) rotate(0deg); }
+    57%      { transform:scale(1.25) rotate(60deg); }
+    60%      { transform:scale(.9) rotate(90deg); }
+    64%,100% { transform:scale(0) rotate(180deg); }
+  }
+  @keyframes spC {
+    0%,60%   { transform:scale(0) rotate(0deg); }
+    64%      { transform:scale(1.25) rotate(60deg); }
+    67%      { transform:scale(.9) rotate(90deg); }
+    71%,100% { transform:scale(0) rotate(180deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #wormWrap, #worm, .eye, .pupils, .dizzy, .ch, .spark, .shade { animation:none; }
+    #g-i, #g-o, #g-d { animation:none; opacity:1; }
+    .dizzy, .spark { display:none; }
+    .shade { opacity:.28; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg viewBox="100 270 1300 1110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MIOD">
+  <!-- ground shadow: spreads out when the letters land -->
+  <ellipse class="shade" cx="792" cy="1286" rx="250" ry="15"/>
+
+  <!-- letters sit behind the worm so they hop out from under its tail -->
+  <g class="l" id="g-i">
+    <text class="ch sh" id="s-i" x="610" y="1270" dx="11" dy="13">i</text>
+    <text class="ch c-i" id="t-i" x="610" y="1270">i</text>
+  </g>
+  <g class="l" id="g-o">
+    <text class="ch sh" id="s-o" x="650" y="1270" dx="11" dy="13">o</text>
+    <text class="ch c-o" id="t-o" x="650" y="1270">o</text>
+  </g>
+  <g class="l" id="g-d">
+    <text class="ch sh" id="s-d" x="800" y="1270" dx="11" dy="13">d</text>
+    <text class="ch c-d" id="t-d" x="800" y="1270">d</text>
+  </g>
+
+  <!-- sparkles pop on each landing -->
+  <g transform="translate(630 1020)"><path class="spark spA" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+  <g transform="translate(790 995)"><path class="spark spB" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+  <g transform="translate(955 1025)"><path class="spark spC" d="M0 -26 L6.5 -8.9 L24.7 -8 L10.5 3.4 L15.3 21 L0 11 L-15.3 21 L-10.5 3.4 L-24.7 -8 L-6.5 -8.9 Z"/></g>
+
+  <g id="wormWrap">
+    <g id="worm">
+      <path id="spine" fill="none" d="M540 1230 C400 1080 240 880 250 650 C260 480 420 380 560 420 C650 445 700 520 725 580 C760 520 820 440 950 420 C1150 400 1300 560 1270 760 C1255 860 1190 890 1110 905"/>
+      <g id="outline"></g>
+      <g id="fill"></g>
+      <g fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="22" stroke-linecap="round">
+        <path d="M300 760 C285 650 330 560 400 500"/>
+        <path d="M1000 470 C1100 460 1190 520 1230 600"/>
+      </g>
+      <g>
+        <!-- big eye: white sclera, pupils glance toward the letters and blink -->
+        <g class="eye" id="eyeBig">
+          <ellipse cx="1085" cy="855" rx="56" ry="56" fill="#fff" stroke="#2a1a4a" stroke-width="7"/>
+          <g class="pupils">
+            <circle cx="1088" cy="857" r="34" fill="#0e0620"/>
+            <circle cx="1104" cy="843" r="11" fill="#fff"/>
+          </g>
+          <path class="dizzy" id="dzBig" fill="none" stroke="#2a1a4a" stroke-width="6" stroke-linecap="round"/>
+        </g>
+        <!-- small eye -->
+        <g class="eye" id="eyeSmall">
+          <ellipse cx="1150" cy="985" rx="44" ry="40" fill="#fff" stroke="#2a1a4a" stroke-width="6"/>
+          <g class="pupils">
+            <circle cx="1155" cy="988" r="24" fill="#0e0620"/>
+            <circle cx="1166" cy="978" r="8" fill="#fff"/>
+          </g>
+          <path class="dizzy" id="dzSmall" fill="none" stroke="#2a1a4a" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <path d="M1035 925 q-8 33 28 48" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+        <path d="M1165 795 q24 12 27 38" fill="none" stroke="#2a1a4a" stroke-width="7" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>
+</div>
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var spine = document.getElementById('spine');
+  var L = spine.getTotalLength();
+  var ss = function (a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
+  function r(t) { return 22 + 70 * ss(0, 0.32, t) + 38 * ss(0.84, 0.985, t); }
+
+  // body: stacked circles along the spine, with a darker outline ring
+  var N = 380, outs = [], fills = [];
+  var og = document.getElementById('outline'), fg = document.getElementById('fill');
+  for (var i = 0; i <= N; i++) {
+    var t = i / N, p = spine.getPointAtLength(t * L), rr = r(t);
+    var a = document.createElementNS(NS, 'circle');
+    a.setAttribute('cx', p.x.toFixed(1)); a.setAttribute('cy', p.y.toFixed(1)); a.setAttribute('r', (rr + 12).toFixed(1));
+    og.appendChild(a); outs.push(a);
+    var b = document.createElementNS(NS, 'circle');
+    b.setAttribute('cx', p.x.toFixed(1)); b.setAttribute('cy', p.y.toFixed(1)); b.setAttribute('r', rr.toFixed(1));
+    fg.appendChild(b); fills.push(b);
+  }
+
+  // always multi-colour: a rainbow runs along the body and keeps flowing
+  function paint(time) {
+    var shift = time * 0.045; // degrees per ms
+    for (var i = 0; i <= N; i++) {
+      var h = ((i / N) * 300 + shift) % 360;
+      outs[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',70%,36%)');
+      fills[i].setAttribute('fill', 'hsl(' + h.toFixed(0) + ',85%,62%)');
+    }
+  }
+
+  // dizzy spiral for the eyes shown during the spin
+  function spiral(cx, cy, rMax, turns) {
+    var d = '', steps = 80;
+    for (var k = 0; k <= steps; k++) {
+      var f = k / steps, ang = f * turns * 2 * Math.PI, rad = rMax * f;
+      d += (k ? ' L ' : 'M ') + (cx + rad * Math.cos(ang)).toFixed(1) + ' ' + (cy + rad * Math.sin(ang)).toFixed(1);
+    }
+    return d;
+  }
+  document.getElementById('dzBig').setAttribute('d', spiral(1085, 855, 40, 2.5));
+  document.getElementById('dzSmall').setAttribute('d', spiral(1150, 985, 30, 2.5));
+
+  paint(0);
+  if (!reduced) { var last=0; (function loop(t){ if(t-last>50 && !document.hidden){ paint(t); last=t; } requestAnimationFrame(loop); })(0); }
+
+  // place the letters tightly, and aim each one's start at the tail tip
+  function layout() {
+    var keys = ['i', 'o', 'd'], x = 610, gap = 6;
+    keys.forEach(function (k) {
+      var face = document.getElementById('t-' + k), shadow = document.getElementById('s-' + k);
+      var g = document.getElementById('g-' + k), w = face.getComputedTextLength();
+      face.setAttribute('x', x);
+      shadow.setAttribute('x', x);
+      g.style.setProperty('--dx', (540 - (x + w / 2)).toFixed(0) + 'px');
+      x += w + gap;
+    });
+  }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); } else { layout(); }
+})();
+<\/script>
+</body>
+</html>
+</script>
+<script id="miod-feature-js">
+(function(){
+  function getSrc(){ var el=document.getElementById('miodSource'); return el? el.textContent.split('<\\/script').join('</script'):''; }
+  var timer=null;
+  window.openMiod=function(){
+    var o=document.getElementById('miodFull'),f=document.getElementById('miodFullFrame'),t=document.getElementById('miodSoon');
+    if(!o) return;
+    t.classList.remove('show');
+    f.srcdoc=getSrc();
+    o.classList.add('show');
+    clearTimeout(timer);
+    timer=setTimeout(function(){t.classList.add('show');},6500);
+  };
+  window.closeMiod=function(){
+    clearTimeout(timer);
+    var o=document.getElementById('miodFull'),f=document.getElementById('miodFullFrame');
+    if(o) o.classList.remove('show');
+    if(f) f.srcdoc='';
+  };
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') window.closeMiod();
+    if((e.key==='Enter'||e.key===' ') && document.activeElement && document.activeElement.id==='miodCard'){e.preventDefault();window.openMiod();}
+  });
+  function init(){ var cf=document.getElementById('miodCardFrame'); if(cf) cf.srcdoc=getSrc().replace('</head>','<style>:root,html,body{background:transparent!important}body::before{background:transparent!important;display:none}</style></head>'); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+
+<script id="pro-settings">
+(function(){
+  const KEY="jsSwiftRunnerProSettingsV1",DEF={wrap:true,font:14,cpu:5};
+  let S={...DEF};try{S={...S,...JSON.parse(localStorage.getItem(KEY)||"{}")};}catch(e){}
+  const pop=document.createElement("div");pop.className="cs-pop";pop.id="csPop";
+  function apply(){C_ENGINE.cpuSeconds=S.cpu;try{editor.getWrapperElement().style.fontSize=S.font+"px";editor.setOption("lineWrapping",S.wrap);editor.refresh();}catch(e){}}
+  function save(){localStorage.setItem(KEY,JSON.stringify(S));apply();}
+  function build(){
+    pop.innerHTML='<div class="cs-h"><span>Swift Runtime &amp; Editor</span><button id="csClose">×</button></div>'+
+    '<div class="cs-row"><label>Runtime<small>Auto-detected from runtime service</small></label><b>'+C_ENGINE.label+'</b></div>'+
+    '<div class="cs-row"><label>CPU time limit</label><select id="csCpu">'+[2,5,10,15].map(n=>'<option value="'+n+'"'+(S.cpu===n?' selected':'')+'>'+n+' s</option>').join('')+'</select></div>'+
+    '<div class="cs-row"><label>Font size</label><div class="cs-step"><button id="csFm">−</button><b>'+S.font+'px</b><button id="csFp">+</button></div></div>'+
+    '<div class="cs-row"><label>Word wrap</label><button class="cs-sw" id="csWrap" role="switch" aria-checked="'+S.wrap+'"></button></div>'+
+    '<div class="cs-flags">Swift compiler options are managed by the runtime.</div><button class="cs-reset" id="csReset">Reset to defaults</button>';
+    const g=id=>document.getElementById(id);
+    g("csClose").onclick=()=>pop.classList.remove("show");
+    g("csCpu").onchange=e=>{S.cpu=+e.target.value;save();};
+    g("csFm").onclick=()=>{S.font=Math.max(10,S.font-1);save();build();};
+    g("csFp").onclick=()=>{S.font=Math.min(26,S.font+1);save();build();};
+    g("csWrap").onclick=()=>{S.wrap=!S.wrap;save();build();};
+    g("csReset").onclick=()=>{S={...DEF};save();build();};
+  }
+  document.body.appendChild(pop);
+  document.addEventListener("click",e=>{
+    const btn=e.target.closest('button');
+    if(btn && /settings/i.test((btn.title||"")+" "+(btn.getAttribute("aria-label")||"")) && !pop.contains(btn)){
+      e.preventDefault();e.stopImmediatePropagation();build();
+      const r=btn.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-350,r.left))+"px";
+      pop.style.top=Math.max(8,Math.min(innerHeight-330,r.bottom+8))+"px";pop.classList.add("show");
+    }else if(!pop.contains(e.target))pop.classList.remove("show");
+  },true);
+  apply();
+})();
+</script>
+</body>
+</html>
