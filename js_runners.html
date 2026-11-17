@@ -1,701 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Choose Your Runner | JS CODE OUTPUT</title>
-
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fbfaf6"><meta name="description" content="Choose from 16 programming language runners at JS CODE OUTPUT. Write code, run projects, and explore development in your browser."><title>Choose Your Runner | JS CODE OUTPUT</title><link rel="icon" type="image/jpeg" href="logo.jpeg"><link rel="shortcut icon" href="logo.jpeg"><link rel="apple-touch-icon" href="logo.jpeg">
 <style>
-:root {
-  --bg: #fbfaf6;
-  --card: #ffffff;
-  --gold: #b98a2c;
-  --gold-mid: #d9ae4a;
-  --gold-light: #f4dc98;
-  --gold-pale: #fff4cf;
-  --gold-dark: #8c6618;
-  --blue: #5bbfe8;
-  --blue-soft: #dff4fd;
-  --blue-deep: #2a8fba;
-  --text: #2a2620;
-  --muted: #7b7568;
-  --line: #d9ae4a55;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  min-height: 100vh;
-  font-family: Georgia, "Times New Roman", serif;
-  color: var(--text);
-  background:
-    radial-gradient(ellipse 55% 40% at 8% 0, #f8e8b8 0, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 95% 90%, #d6f1fc 0, transparent 70%),
-    radial-gradient(ellipse 35% 30% at 100% 10%, #eaf7fd 0, transparent 70%),
-    var(--bg);
-  background-attachment: fixed;
-  overflow-x: hidden;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .35;
-  background-image:
-    linear-gradient(#d9ae4a14 1px, transparent 1px),
-    linear-gradient(90deg, #d9ae4a14 1px, transparent 1px);
-  background-size: 44px 44px;
-}
-
-/* ---------- Header ---------- */
-header {
-  position: relative;
-  height: 84px;
-  padding: 0 7%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(180deg, #ffffff, #fbf8ef);
-  border-bottom: 1px solid var(--line);
-  box-shadow: 0 6px 22px #8c661810, inset 0 -2px 0 #ffffff;
-}
-
-header::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -1px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold-mid), var(--blue), transparent);
-  opacity: .8;
-}
-
-.brand { display: flex; align-items: center; gap: 13px; }
-
-.brand img {
-  width: 46px;
-  height: 46px;
-  object-fit: contain;
-  border-radius: 12px;
-  border: 1px solid #d9ae4a88;
-  background: #fff;
-  box-shadow: 0 3px 0 #e6cf92, 0 8px 14px #8c661820;
-}
-
-.gold-text {
-  background: linear-gradient(90deg, #8c6618, #d9ae4a, #5bbfe8, #b98a2c, #8c6618);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shine 7s linear infinite;
-}
-
-.brand-name {
-  font-size: 20px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-}
-
-.header-label {
-  color: var(--blue-deep);
-  font-size: 12px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-}
-
-/* ---------- Main ---------- */
-main {
-  max-width: 1200px;
-  margin: auto;
-  padding: 80px 28px 90px;
-}
-
-.intro {
-  text-align: center;
-  margin-bottom: 60px;
-  animation: fadeUp .7s ease both;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font: bold 11px Arial, sans-serif;
-  margin-bottom: 20px;
-}
-
-.eyebrow::before, .eyebrow::after {
-  content: "";
-  width: 30px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--blue));
-}
-.eyebrow::after { transform: scaleX(-1); }
-
-h1 {
-  font-size: clamp(36px, 5.5vw, 62px);
-  line-height: 1.13;
-  font-weight: normal;
-  letter-spacing: -1.2px;
-  margin-bottom: 18px;
-  color: var(--text);
-  text-shadow: 0 2px 0 #fff, 0 6px 14px #8c661818;
-}
-
-h1 span {
-  font-weight: bold;
-  background: linear-gradient(90deg, #8c6618, #d9ae4a, #5bbfe8, #b98a2c, #8c6618);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shine 7s linear infinite;
-}
-
-.intro p {
-  max-width: 560px;
-  margin: auto;
-  color: var(--muted);
-  font: 15px/1.8 Arial, sans-serif;
-}
-
-/* ---------- Cards (glossy, 3D) ---------- */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-}
-
-.runner-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 390px;
-  padding: 28px 25px 30px;
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, #ffffffee 0, #ffffff88 38%, transparent 39%),
-    linear-gradient(160deg, #ffffff, #fffdf6 55%, #f1faff);
-  border: 1px solid #d9ae4a66;
-  box-shadow:
-    0 6px 0 #ecdcae,
-    0 8px 0 #d9ae4a55,
-    0 22px 34px #8c661822,
-    inset 0 1px #fff,
-    inset 0 -1px #5bbfe833;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
-  animation: fadeUp .7s ease both;
-}
-
-.runner-card:nth-child(2) { animation-delay: .1s; }
-.runner-card:nth-child(3) { animation-delay: .2s; }
-
-/* top colour line */
-.runner-card::before {
-  content: "";
-  position: absolute;
-  left: 12%; right: 12%; top: 0;
-  height: 3px;
-  border-radius: 0 0 4px 4px;
-  background: linear-gradient(90deg, transparent, var(--gold-mid), var(--blue), transparent);
-}
-
-/* glossy sweep on hover */
-.runner-card::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 45%; height: 100%;
-  background: linear-gradient(100deg, transparent, #ffffffcc, transparent);
-  transform: translateX(-160%) skewX(-18deg);
-  pointer-events: none;
-}
-
-.runner-card:hover {
-  transform: translateY(-8px);
-  border-color: #d9ae4acc;
-  box-shadow:
-    0 6px 0 #e6cf92,
-    0 8px 0 #d9ae4a77,
-    0 32px 44px #8c661830,
-    0 0 36px #5bbfe833,
-    inset 0 1px #fff,
-    inset 0 -1px #5bbfe855;
-}
-
-.runner-card:hover::after { animation: cardSweep 1s ease; }
-
-.card-top {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-}
-
-.number {
-  font: bold 12px Arial, sans-serif;
-  letter-spacing: 2px;
-  color: var(--gold);
-}
-
-.status {
-  border: 1px solid #5bbfe888;
-  border-radius: 30px;
-  padding: 6px 12px;
-  font: bold 10px Arial, sans-serif;
-  letter-spacing: 1px;
-  color: var(--blue-deep);
-  background: linear-gradient(180deg, #f4fbff, var(--blue-soft));
-  box-shadow: 0 2px 0 #b9e3f5, inset 0 1px #fff;
-}
-
-/* Original coloured logos on a raised 3D plate */
-.language-logo {
-  position: relative;
-  width: 98px;
-  height: 98px;
-  display: grid;
-  place-items: center;
-  border-radius: 26px;
-  background:
-    linear-gradient(180deg, #ffffff 0, #ffffffaa 45%, transparent 46%),
-    linear-gradient(145deg, #fffaf0, #f3e6c2);
-  border: 1px solid #d9ae4a88;
-  box-shadow:
-    0 6px 0 #dcc283,
-    0 14px 20px #8c661828,
-    inset 0 2px #fff,
-    inset 0 -3px 6px #d9ae4a33;
-  margin-bottom: 28px;
-  animation: floatY 4.5s ease-in-out infinite;
-}
-
-.runner-card:nth-child(2) .language-logo { animation-delay: .5s; }
-.runner-card:nth-child(3) .language-logo { animation-delay: 1s; }
-
-.language-logo img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  filter: drop-shadow(0 3px 2px #0002);
-}
-
-.runner-card h2 {
-  font-size: 25px;
-  font-weight: normal;
-  margin-bottom: 12px;
-  line-height: 1.3;
-  color: var(--text);
-}
-
-.runner-card h2 .js {
-  font-weight: bold;
-  background: linear-gradient(90deg, #8c6618, #d9ae4a, #5bbfe8, #b98a2c, #8c6618);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shine 6s linear infinite;
-}
-
-.description {
-  font: 13px/1.7 Arial, sans-serif;
-  color: var(--muted);
-  min-height: 44px;
-  margin-bottom: 26px;
-}
-
-/* ---------- Glossy 3D Button ---------- */
-.build-btn {
-  position: relative;
-  margin-top: auto;
-  width: 100%;
-  min-height: 52px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border: 0;
-  border-radius: 13px;
-  color: #3b2a07;
-  font: bold 12px Arial, sans-serif;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  background: linear-gradient(180deg, #fff1bd 0%, #f4d57a 48%, #e3b94f 52%, #efcd6c 100%);
-  box-shadow:
-    inset 0 1px #fffc,
-    inset 0 -2px 4px #b98a2c66,
-    0 6px 0 #a47a1f,
-    0 13px 18px #8c661838;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-
-/* glass gloss on top half */
-.build-btn::after {
-  content: "";
-  position: absolute;
-  left: 3px; right: 3px; top: 2px;
-  height: 46%;
-  border-radius: 11px 11px 28px 28px;
-  background: linear-gradient(180deg, #ffffffcc, #ffffff22);
-  pointer-events: none;
-}
-
-/* moving shine */
-.build-btn::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 40%; height: 100%;
-  background: linear-gradient(100deg, transparent, #ffffffcc, transparent);
-  transform: translateX(-200%) skewX(-20deg);
-  animation: btnSweep 5s ease-in-out infinite;
-  z-index: 1;
-}
-
-.build-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px #fffc,
-    inset 0 -2px 4px #b98a2c66,
-    0 8px 0 #a47a1f,
-    0 18px 26px #8c661840,
-    0 0 26px #5bbfe855;
-}
-
-.build-btn:active {
-  transform: translateY(5px);
-  box-shadow:
-    inset 0 1px #fffc,
-    inset 0 -2px 4px #b98a2c66,
-    0 1px 0 #a47a1f,
-    0 4px 8px #8c661838;
-}
-
-.build-btn:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 3px;
-}
-
-.build-btn .arrow {
-  position: relative;
-  z-index: 2;
-  font-size: 18px;
-  transition: transform .25s ease;
-}
-.build-btn:hover .arrow { transform: translateX(5px); }
-
-/* ---------- Footer ---------- */
-footer {
-  padding: 26px;
-  border-top: 1px solid var(--line);
-  text-align: center;
-  color: #8c8576;
-  font: 12px/1.8 Arial, sans-serif;
-  background: linear-gradient(180deg, transparent, #f7f1e0);
-}
-
-footer strong {
-  color: var(--gold);
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-/* ---------- Modal ---------- */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: #2a22108c;
-}
-
-.modal-overlay.show { display: flex; animation: fadeIn .2s ease; }
-
-.modal {
-  position: relative;
-  overflow: hidden;
-  width: min(100%, 420px);
-  padding: 34px 30px 30px;
-  text-align: center;
-  border: 1px solid #d9ae4a88;
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, #ffffffee 0, #ffffff88 30%, transparent 31%),
-    linear-gradient(160deg, #ffffff, #fffaec 60%, #eef9fe);
-  box-shadow: 0 7px 0 #e6cf92, 0 30px 70px #00000044, inset 0 1px #fff;
-  animation: modalIn .3s ease;
-}
-
-.modal::before {
-  content: "";
-  position: absolute;
-  left: 12%; right: 12%; top: 0;
-  height: 3px;
-  border-radius: 0 0 4px 4px;
-  background: linear-gradient(90deg, transparent, var(--gold-mid), var(--blue), transparent);
-}
-
-.modal-icon {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 22px;
-  display: grid;
-  place-items: center;
-}
-
-.modal-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 18px;
-  border: 1px solid #d9ae4a88;
-  background: #fff;
-  box-shadow: 0 4px 0 #e6cf92, 0 10px 16px #8c661826;
-}
-
-.modal h3 {
-  font-size: 24px;
-  font-weight: normal;
-  margin-bottom: 12px;
-  color: var(--gold-dark);
-}
-
-.modal p {
-  font: 14px/1.8 Arial, sans-serif;
-  color: var(--muted);
-  margin-bottom: 26px;
-}
-
-.got-it {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  min-height: 48px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #fff1bd 0%, #f4d57a 48%, #e3b94f 52%, #efcd6c 100%);
-  color: #3b2a07;
-  font: bold 12px Arial, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  cursor: pointer;
-  box-shadow: inset 0 1px #fffc, 0 5px 0 #a47a1f, 0 10px 16px #8c661838;
-  transition: transform .15s, box-shadow .15s;
-}
-.got-it::after {
-  content: "";
-  position: absolute;
-  left: 3px; right: 3px; top: 2px;
-  height: 46%;
-  border-radius: 10px 10px 24px 24px;
-  background: linear-gradient(180deg, #ffffffcc, #ffffff22);
-  pointer-events: none;
-}
-.got-it:hover { transform: translateY(-2px); box-shadow: inset 0 1px #fffc, 0 7px 0 #a47a1f, 0 14px 20px #8c661840; }
-.got-it:active { transform: translateY(4px); box-shadow: inset 0 1px #fffc, 0 1px 0 #a47a1f; }
-
-/* ---------- Animations (transform/opacity = smooth) ---------- */
-@keyframes shine { to { background-position: 300% center; } }
-@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes btnSweep { 0%, 60% { transform: translateX(-200%) skewX(-20deg); } 100% { transform: translateX(400%) skewX(-20deg); } }
-@keyframes cardSweep { from { transform: translateX(-160%) skewX(-18deg); } to { transform: translateX(380%) skewX(-18deg); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modalIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-/* ---------- Responsive ---------- */
-@media (max-width: 900px) {
-  main { padding-top: 55px; }
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .runner-card:nth-child(3) { grid-column: 1 / -1; width: calc(50% - 14px); justify-self: center; }
-}
-
-@media (max-width: 600px) {
-  header { height: 72px; padding: 0 18px; }
-  .brand img { width: 40px; height: 40px; }
-  .brand-name { font-size: 15px; }
-  .header-label { font-size: 9px; letter-spacing: 1px; }
-  main { padding: 48px 18px 55px; }
-  .intro { margin-bottom: 38px; }
-  .intro p { font-size: 13px; }
-  .cards { grid-template-columns: 1fr; gap: 24px; }
-  .runner-card:nth-child(3) { grid-column: auto; width: 100%; }
-  .runner-card { min-height: 360px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="brand">
-    <img src="logo.jpeg" alt="JS CODE OUTPUT Logo">
-    <div class="brand-name"><span class="gold-text">JS CODE OUTPUT</span></div>
-  </div>
-  <div class="header-label">Developer Workspace</div>
-</header>
-
-<main>
-  <section class="intro">
-    <div class="eyebrow">Your creative workspace</div>
-    <h1>Choose Your <span>Runner</span></h1>
-    <p>
-      Select your workspace and start building.
-      A simple, elegant place for your next great idea.
-    </p>
-  </section>
-
-  <section class="cards">
-
-    <!-- CARD 1: PYTHON -->
-    <article class="runner-card card-python">
-      <div class="card-top">
-        <span class="number">NO. 01</span>
-        <span class="status">PYTHON</span>
-      </div>
-
-      <div class="language-logo">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python logo">
-      </div>
-
-      <h2><span class="js">JS</span> Python Runner</h2>
-      <p class="description">
-        Write Python code, run your ideas and explore programming.
-      </p>
-
-      <a class="build-btn" href="py_projects.html">
-        Start Build <span class="arrow">→</span>
-      </a>
+:root{--ink:#292720;--muted:#817e75;--gold:#b68a37;--line:#e9e2d2;--blue:#58b9df}*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 8% 0%,#f8ebca 0%,transparent 36%),radial-gradient(ellipse at 100% 85%,#e1f3fb 0%,transparent 40%),#fbfaf6}header{background:#ffffffc9;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}.header-inner{max-width:1320px;margin:auto;padding:17px 26px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font:700 17px Georgia,serif;letter-spacing:.8px}.brand img{width:43px;height:43px;object-fit:contain;border-radius:11px;border:1px solid #e8d7ad;box-shadow:0 3px 10px #8c66181b}.header-note{font-size:11px;letter-spacing:2px;color:#9c762f;font-weight:700;text-transform:uppercase}main{max-width:1320px;margin:0 auto;padding:52px 26px 74px}.intro{text-align:center;margin:0 auto 30px}.eyebrow{color:#ac8231;letter-spacing:3px;text-transform:uppercase;font-size:11px;font-weight:700}.intro h1{font:400 clamp(34px,4.5vw,56px) Georgia,serif;margin:12px 0}.intro h1 em{font-style:normal;background:linear-gradient(95deg,#a47822,#dfb64d,#40acd9,#a47822);background-size:300% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:shine 7s linear infinite}.intro p{color:var(--muted);font-size:14px;line-height:1.7;margin:0}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 22px;flex-wrap:wrap}.count{color:#756c59;font-size:12px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase}.search{width:min(100%,330px);position:relative}.search input{width:100%;height:42px;padding:0 15px 0 40px;border:1px solid #e1d8c7;border-radius:12px;background:#fff;color:var(--ink);font:13px Arial;outline:none;box-shadow:0 4px 15px #7d66410c}.search input:focus{border-color:#b99753;box-shadow:0 0 0 3px #d9ae4a26}.search:before{content:none}.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;display:block;color:#9c804a;pointer-events:none}.search-icon svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}.runner-card{position:relative;min-width:0;display:flex;flex-direction:column;padding:18px;border:1px solid #e5dfd4;border-radius:19px;background:linear-gradient(155deg,#fff 0%,#fffefa 65%,#f7fbfd 100%);box-shadow:0 5px 18px #6d573412,0 1px 2px #6d573409;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s}.runner-card:before{content:'';position:absolute;top:0;left:18px;right:18px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),#d7b15d,transparent);opacity:.7}.runner-card:hover{transform:translateY(-5px);border-color:#cbb887;box-shadow:0 16px 32px #5d4c2b20}.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.index{font-size:10px;letter-spacing:1.3px;color:#a6a092;font-weight:700}.tag{font-size:10px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,white);border:1px solid color-mix(in srgb,var(--accent) 18%,white);padding:5px 10px;border-radius:20px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card-body{display:flex;align-items:flex-start;gap:13px;min-height:112px}.language-logo{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#f5f1e8);border:1px solid #ebe2d2;border-radius:15px;box-shadow:0 3px 0 #e9dfc8,0 7px 12px #67502b15}.language-logo img{width:37px;height:37px;object-fit:contain}.fallback{font-weight:800;color:var(--accent);font-size:18px}.card-copy{min-width:0}.card-copy h2{font:400 18px/1.25 Georgia,serif;margin:2px 0 8px;overflow-wrap:anywhere}.animated-js{font-weight:700;background:linear-gradient(90deg,#996a19,#e2ae42,#3cafd9,#9d66c6,#996a19);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}.card-copy p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}.build-btn{margin-top:16px;display:flex;justify-content:space-between;align-items:center;text-decoration:none;border:1px solid #d5b66d;border-radius:11px;background:linear-gradient(180deg,#fff5d7,#f4d992 48%,#ebc56b);padding:11px 14px;font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:#604615;box-shadow:0 3px 0 #c6a050,0 6px 12px #98702317;transition:transform .15s,filter .15s}.build-btn:hover{filter:brightness(1.035);transform:translateY(-2px)}.build-btn:focus-visible{outline:3px solid #4cadd2;outline-offset:3px}.build-btn .arrow-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s ease}.build-btn .arrow-icon svg{display:block;width:17px;height:17px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.build-btn:hover .arrow-icon{transform:translate(2px,-2px)}.empty{display:none;text-align:center;color:#827866;padding:38px 0}footer{text-align:center;border-top:1px solid var(--line);padding:25px;color:#8a8478;font-size:12px;line-height:1.8}footer strong{color:#ac8231;letter-spacing:1.4px}@keyframes shine{to{background-position:300% center}}@media(max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:800px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding-top:40px}}@media(max-width:520px){.header-inner{padding:14px 16px}.brand{font-size:14px}.brand img{width:37px;height:37px}.header-note{display:none}main{padding:36px 15px 48px}.toolbar{align-items:stretch}.search{width:100%}.cards{grid-template-columns:1fr;gap:13px}.card-body{min-height:85px}.runner-card{padding:16px}.intro{margin-bottom:26px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body><header><div class="header-inner"><a class="brand" href="index.html"><img src="logo.jpeg" alt="JS CODE OUTPUT logo"><span>JS CODE OUTPUT</span></a><span class="header-note">Developer Workspace</span></div></header><main><section class="intro"><div class="eyebrow">Your creative workspace</div><h1>Choose Your <em>Runner</em></h1><p>One place to explore languages, write code, and build your next idea.</p></section><div class="toolbar"><span class="count" id="count">16 Language Runners</span><label class="search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><input type="search" id="runnerSearch" placeholder="Search a language..." aria-label="Search languages" autocomplete="off"></label></div><section class="cards" id="cards" aria-label="Available language runners">
+<article class="runner-card" data-name="python" style="--accent:#3776ab">
+      <div class="card-top"><span class="index">01 / 16</span><span class="tag">Python</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>PY</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Python Runner</h2><p>Run scripts, explore data and build Python projects.</p></div></div>
+      <a class="build-btn" href="py_projects.html" aria-label="Open JS Python Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
     </article>
-
-    <!-- CARD 2: HTML -->
-    <article class="runner-card card-html">
-      <div class="card-top">
-        <span class="number">NO. 02</span>
-        <span class="status">WEB DEVELOPMENT</span>
-      </div>
-
-      <div class="language-logo">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5 logo">
-      </div>
-
-      <h2><span class="js">JS</span> HTML Runner</h2>
-      <p class="description">
-        Create web pages and build your next website with HTML.
-      </p>
-
-      <a class="build-btn" href="projects.html">
-        Start Build <span class="arrow">→</span>
-      </a>
+<article class="runner-card" data-name="html" style="--accent:#e34f26">
+      <div class="card-top"><span class="index">02 / 16</span><span class="tag">HTML</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>HT</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> HTML Runner</h2><p>Build web pages and preview your HTML projects.</p></div></div>
+      <a class="build-btn" href="projects.html" aria-label="Open JS HTML Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
     </article>
-
-    <!-- CARD 3: C++ -->
-    <article class="runner-card card-cpp">
-      <div class="card-top">
-        <span class="number">NO. 03</span>
-        <span class="status">C++</span>
-      </div>
-
-      <div class="language-logo">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++ logo">
-      </div>
-
-      <h2><span class="js">JS</span> C++ Runner</h2>
-      <p class="description">
-        A dedicated C++ coding workspace is coming soon.
-      </p>
-
-      <button class="build-btn" type="button" id="cppButton">
-        Start Build <span class="arrow">→</span>
-      </button>
+<article class="runner-card" data-name="css" style="--accent:#1572b6">
+      <div class="card-top"><span class="index">03 / 16</span><span class="tag">CSS</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>CS</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> CSS Runner</h2><p>Style beautiful responsive web experiences.</p></div></div>
+      <a class="build-btn" href="workspace.html" aria-label="Open JS CSS Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
     </article>
-
-  </section>
-</main>
-
-<footer>
-  <strong>JS CODE OUTPUT</strong><br>
-  Write code. Run it. See the output. A focused browser-first
-  environment for learning, testing and building.
-</footer>
-
-<!-- C++ UNAVAILABLE POPUP -->
-<div class="modal-overlay" id="cppModal"
-     role="dialog" aria-modal="true"
-     aria-labelledby="modalTitle"
-     aria-describedby="modalDescription">
-
-  <div class="modal">
-    <div class="modal-icon"><img src="logo.jpeg" alt="JS CODE OUTPUT Logo"></div>
-    <h3 id="modalTitle">Feature Temporarily Unavailable</h3>
-    <p id="modalDescription">
-      This feature might be unavailable right now.
-      Please check back again later.
-    </p>
-    <button class="got-it" type="button" id="gotItButton">Got it</button>
-  </div>
-</div>
-
-<script>
-(function () {
-  const cppButton = document.getElementById("cppButton");
-  const modal = document.getElementById("cppModal");
-  const gotItButton = document.getElementById("gotItButton");
-
-  function openModal() {
-    modal.classList.add("show");
-    document.body.style.overflow = "hidden";
-    gotItButton.focus();
-  }
-
-  function closeModal() {
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
-    cppButton.focus();
-  }
-
-  cppButton.addEventListener("click", openModal);
-  gotItButton.addEventListener("click", closeModal);
-
-  modal.addEventListener("click", function (event) {
-    if (event.target === modal) closeModal();
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && modal.classList.contains("show")) {
-      closeModal();
-    }
-  });
-})();
-</script>
-
-</body>
-</html>
+<article class="runner-card" data-name="javascript" style="--accent:#c49b12">
+      <div class="card-top"><span class="index">04 / 16</span><span class="tag">JavaScript</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>JA</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> JavaScript Runner</h2><p>Create interactive experiences for the web.</p></div></div>
+      <a class="build-btn" href="workspace.html" aria-label="Open JS JavaScript Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="typescript" style="--accent:#3178c6">
+      <div class="card-top"><span class="index">05 / 16</span><span class="tag">TypeScript</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="TypeScript logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>TY</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> TypeScript Runner</h2><p>Write typed JavaScript for modern applications.</p></div></div>
+      <a class="build-btn" href="workspace.html" aria-label="Open JS TypeScript Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="java" style="--accent:#e76f32">
+      <div class="card-top"><span class="index">06 / 16</span><span class="tag">Java</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>JA</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Java Runner</h2><p>Build and run Java programs.</p></div></div>
+      <a class="build-btn" href="js_java_runner.html" aria-label="Open JS Java Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="c" style="--accent:#5967a9">
+      <div class="card-top"><span class="index">07 / 16</span><span class="tag">C</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>C</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> C Runner</h2><p>Explore foundational systems programming.</p></div></div>
+      <a class="build-btn" href="js_c_runner.html" aria-label="Open JS C Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="c++" style="--accent:#00599c">
+      <div class="card-top"><span class="index">08 / 16</span><span class="tag">C++</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" alt="C++ logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>C+</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> C++ Runner</h2><p>Write and test C++ programs.</p></div></div>
+      <a class="build-btn" href="js_c++_runner.html" aria-label="Open JS C++ Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="c#" style="--accent:#7d42a4">
+      <div class="card-top"><span class="index">09 / 16</span><span class="tag">C#</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg" alt="C# logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>C#</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> C# Runner</h2><p>Develop applications with C#.</p></div></div>
+      <a class="build-btn" href="js_c#_runner.html" aria-label="Open JS C# Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="php" style="--accent:#777bb4">
+      <div class="card-top"><span class="index">10 / 16</span><span class="tag">PHP</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="PHP logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>PH</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> PHP Runner</h2><p>Work with PHP scripts and backend logic.</p></div></div>
+      <a class="build-btn" href="js_php_runner.html" aria-label="Open JS PHP Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="go" style="--accent:#00add8">
+      <div class="card-top"><span class="index">11 / 16</span><span class="tag">Go</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" alt="Go logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>GO</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Go Runner</h2><p>Build efficient programs with Go.</p></div></div>
+      <a class="build-btn" href="js_go_runner.html" aria-label="Open JS Go Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="rust" style="--accent:#9a5c35">
+      <div class="card-top"><span class="index">12 / 16</span><span class="tag">Rust</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" alt="Rust logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>RU</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Rust Runner</h2><p>Explore safe, high-performance Rust code.</p></div></div>
+      <a class="build-btn" href="js_rust_runner.html" aria-label="Open JS Rust Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="ruby" style="--accent:#cc342d">
+      <div class="card-top"><span class="index">13 / 16</span><span class="tag">Ruby</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg" alt="Ruby logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>RU</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Ruby Runner</h2><p>Write expressive Ruby programs.</p></div></div>
+      <a class="build-btn" href="js_ruby_runner.html" aria-label="Open JS Ruby Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="kotlin" style="--accent:#8056dc">
+      <div class="card-top"><span class="index">14 / 16</span><span class="tag">Kotlin</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg" alt="Kotlin logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>KO</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Kotlin Runner</h2><p>Create modern Kotlin applications.</p></div></div>
+      <a class="build-btn" href="js_kotlin_runner.html" aria-label="Open JS Kotlin Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="swift" style="--accent:#f05138">
+      <div class="card-top"><span class="index">15 / 16</span><span class="tag">Swift</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" alt="Swift logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>SW</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> Swift Runner</h2><p>Experiment with the Swift language.</p></div></div>
+      <a class="build-btn" href="js_swift_runner.html" aria-label="Open JS Swift Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+<article class="runner-card" data-name="sql" style="--accent:#2774a6">
+      <div class="card-top"><span class="index">16 / 16</span><span class="tag">SQL</span></div>
+      <div class="card-body"><div class="language-logo"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqldeveloper/sqldeveloper-original.svg" alt="SQL logo" loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.fallback').hidden=false"><span class="fallback" hidden>SQ</span></div><div class="card-copy"><h2><span class="animated-js">JS</span> SQL Runner</h2><p>Practice queries and work with data.</p></div></div>
+      <a class="build-btn" href="js_sql_runner.html" aria-label="Open JS SQL Runner">Start Build <span class="arrow-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+    </article>
+</section><p class="empty" id="empty">No matching runner found. Try another language.</p></main><footer><strong>JS CODE OUTPUT</strong><div>Write code. Run it. See the output. Your browser-first coding workspace.</div></footer><script>const search=document.getElementById('runnerSearch');const cards=[...document.querySelectorAll('.runner-card')];const count=document.getElementById('count');const empty=document.getElementById('empty');search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const show=card.dataset.name.includes(q)||card.querySelector('h2').textContent.toLowerCase().includes(q);card.hidden=!show;card.style.display=show?'':'none';if(show)visible++});count.textContent=`${visible} Language Runner${visible===1?'':'s'}`;empty.style.display=visible?'none':'block'});</script></body></html>
