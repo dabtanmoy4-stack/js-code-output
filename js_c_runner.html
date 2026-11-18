@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#09090b">
 <title>JS C Runner — C Language IDE</title>
+<link rel="icon" href="logo.jpeg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkpTIENPREUgT1VUUFVUIj4KPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5NCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMmIzMzQwIiBzdHJva2Utd2lkdGg9IjMuMiIvPgo8cGF0aCBkPSJNNTAgODIgMzQgMTAwbDE2IDE4IiBmaWxsPSJub25lIiBzdHJva2U9IiMyYjMzNDAiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0xNDYgMTIwbDctNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJiMzM0MCIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTU4IDgybDE2IDE4LTE2IDE4IiBmaWxsPSJub25lIiBzdHJva2U9IiMyYjMzNDAiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjx0ZXh0IHg9Ijk5IiB5PSIxMTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJJbnRlciwnU2Vnb2UgVUknLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjYiIGZvbnQtd2VpZ2h0PSI4MDAiPjx0c3BhbiBmaWxsPSIjMmIzMzQwIj5KPC90c3Bhbj48dHNwYW4gZmlsbD0iIzJmNWRhNiIgZHg9IjMiPlM8L3RzcGFuPjwvdGV4dD4KPHRleHQgeD0iMTAwIiB5PSIxNTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJJbnRlciwnU2Vnb2UgVUknLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjkiIGZvbnQtd2VpZ2h0PSI1MDAiIGZpbGw9IiMyYjMzNDAiIHRleHRMZW5ndGg9Ijk4IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciPkNPREU8L3RleHQ+CjxwYXRoIGQ9Ik01NSAxNjNoMjJNMTIzIDE2M2gyMiIgc3Ryb2tlPSIjMmIzMzQwIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTY3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iSW50ZXIsJ1NlZ29lIFVJJyxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMyZjVkYTYiIHRleHRMZW5ndGg9IjQwIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciPk9VVFBVVDwvdGV4dD4KPC9zdmc+">
 
 
@@ -956,7 +957,9 @@ body.light .cm-s-material-darker .cm-operator { color: #0369a1; }
           <span id="loaderTimer" style="color:var(--gold);font:11px monospace">0.000s</span>
         </div>
 
-        <div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your C output will appear here...</span></div>
+        <div style="display:flex;gap:8px;padding:8px 12px;align-items:center;flex-wrap:wrap"><label for="cRunMode">Run mode</label><select id="cRunMode" style="background:var(--solid);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--text)"><option value="console">Console C</option><option value="web">WebAssembly / SDL2 Graphics</option></select><span style="font-size:10px;color:var(--muted)">Web graphics preview appears below</span></div>
+<div id="cGraphicsHint" style="display:none"></div><iframe id="cGraphicsFrame" hidden sandbox="allow-scripts allow-pointer-lock" referrerpolicy="no-referrer" style="width:100%;height:360px;border:1px solid var(--border);background:#111" title="C graphical output"></iframe>
+<div class="output" id="output" aria-live="polite"><span class="output-placeholder">✦ Your C output will appear here...</span></div>
 
         <!-- Program input (stdin) for scanf() / fgets() / getchar() -->
         <div class="input-bar" id="inputBar">
@@ -1581,7 +1584,7 @@ function setStatus(message, busy = false) {
    Change url/headers below to use your own Judge0 server or a RapidAPI key.
    ===================================================================== */
 const C_ENGINE = {
-  url: "https://ce.judge0.com",
+  url: "/api/c-run",
   headers: {},                               // e.g. { "X-RapidAPI-Key": "...", "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com" }
   languageId: 103,                           // auto-detected at startup (C GCC 14 = 103, C GCC 9 = 50)
   label: "GCC",
@@ -1658,59 +1661,36 @@ function pickEntry() {
 }
 
 /* ---- talk to the compiler service ---- */
-async function submitC(source, stdin) {
-  const base = C_ENGINE.url.replace(/\/+$/, "");
-  const headers = Object.assign({ "Content-Type": "application/json" }, C_ENGINE.headers);
-  const body = {
-    source_code: b64enc(source),
-    language_id: C_ENGINE.languageId,
-    stdin: stdin ? b64enc(stdin.endsWith("\n") ? stdin : stdin + "\n") : null,
-    compiler_options: C_ENGINE.flags,
-    cpu_time_limit: C_ENGINE.cpuSeconds
-  };
-  const post = payload => fetch(base + "/submissions?base64_encoded=true&wait=true", { method: "POST", headers, body: JSON.stringify(payload) });
-
-  let res = await post(body);
-  if (!res.ok && (res.status === 400 || res.status === 422)) {
-    const text = await res.clone().text();
-    if (/compiler_options/i.test(text)) { delete body.compiler_options; res = await post(body); }
+async function submitC(source, stdin, mode = "console") {
+  const response = await fetch(C_ENGINE.url, {
+    method: "POST", headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({source, stdin, mode, files: files, entry: pickEntry(),
+      compiler: window.C_COMPILER || "gcc", flags: C_ENGINE.flags})
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `Backend HTTP ${response.status}`);
+  if (data.html) {
+    const frame = document.getElementById("cGraphicsFrame");
+    frame.srcdoc = data.html;
+    frame.hidden = false;
+    document.getElementById("cGraphicsHint").hidden = true;
+  } else {
+    document.getElementById("cGraphicsFrame").hidden = true;
   }
-  if (res.status === 429) throw new Error("The compiler service is busy (too many requests). Wait a few seconds and press Run C again.");
-  if (!res.ok) throw new Error("Compiler service error " + res.status + ": " + (await res.text()).slice(0, 200));
-
-  let data = await res.json();
-  for (let i = 0; data && data.status && data.status.id <= 2 && data.token && i < 25; i++) {
-    await sleep(700);
-    const r2 = await fetch(base + "/submissions/" + data.token + "?base64_encoded=true", { headers });
-    data = await r2.json();
-  }
-  return data;
+  return { stdout: b64enc(data.stdout || ""), stderr: b64enc(data.stderr || ""),
+    compile_output: b64enc(data.compile_output || ""), message: b64enc(data.message || ""),
+    status: {id: data.status_id || (data.ok ? 3 : 6), description: data.status || ""},
+    exit_code: data.exit_code, time: data.time, memory: data.memory};
 }
 
 async function initCompiler() {
-  setStatus("Connecting to C compiler...", true);
   try {
-    const base = C_ENGINE.url.replace(/\/+$/, "");
-    const res = await fetch(base + "/languages", { headers: C_ENGINE.headers });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const langs = await res.json();
-    const ver = n => ((/GCC\s+([\d.]+)/.exec(n) || [])[1] || "0").split(".").map(Number);
-    const cs = langs.filter(l => /^C \(GCC/i.test(l.name)).sort((a, b) => {
-      const x = ver(a.name), y = ver(b.name);
-      for (let i = 0; i < 3; i++) if ((y[i] || 0) !== (x[i] || 0)) return (y[i] || 0) - (x[i] || 0);
-      return 0;
-    });
-    if (cs.length) {
-      C_ENGINE.languageId = cs[0].id;
-      C_ENGINE.label = "GCC " + ((/GCC\s+([\d.]+)/.exec(cs[0].name) || [])[1] || "");
-      $("compilerLabel").textContent = "C · " + C_ENGINE.label.trim() + " Compiler";
-      $("editorLanguage").textContent = languageLabel(activeFile);
-    }
+    const res = await fetch(C_ENGINE.url, {method:"GET"});
+    if (!res.ok) throw new Error("Unavailable");
+    C_ENGINE.label = "Modal GCC / Clang";
+    $("compilerLabel").textContent = "C · Modal GCC / Clang";
     setStatus("C compiler ready");
-  } catch {
-    setStatus("Compiler not reachable yet");
-    writeOutput("Could not reach the C compiler service yet. It will be retried when you press Run C. Check your internet connection.\n", "error");
-  }
+  } catch { setStatus("Backend not configured yet"); }
 }
 
 function startRuntimeClock() {
@@ -1819,7 +1799,7 @@ function renderResult(r) {
   setStatus("Execution error");
 }
 
-async function executeC(source, stdin, keepConsole = false) {
+async function executeC(source, stdin, keepConsole = false, mode = "console") {
   if (running) return;
   running = true;
   currentOutputText = "";
@@ -1829,9 +1809,10 @@ async function executeC(source, stdin, keepConsole = false) {
   $("output").textContent = "";
   if (!keepConsole) $("consoleExtra").classList.remove("show");
   showRunningAnimation();
+  document.getElementById("cGraphicsFrame").hidden = true;
   startRuntimeClock();
   try {
-    const result = await submitC(source, stdin);
+    const result = await submitC(source, stdin, mode);
     renderResult(result);
   } catch (error) {
     const raw = String(error && error.message ? error.message : error);
@@ -1861,7 +1842,7 @@ async function runProgram() {
   let source;
   try { source = bundleC(entry); }
   catch (e) { toast(String(e && e.message ? e.message : e)); return; }
-  await executeC(source, $("stdinBox").value, false);
+  await executeC(source, $("stdinBox").value, false, document.getElementById("cRunMode").value);
 }
 
 try { $("stdinBox").value = localStorage.getItem(STDIN_KEY) || ""; } catch {}
