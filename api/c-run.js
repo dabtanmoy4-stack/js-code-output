@@ -1,10 +1,17 @@
 // Vercel serverless proxy. Keep Modal URL and secret on the server.
-
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({error:'Method not allowed'});
   const base = process.env.MODAL_C_RUNNER_URL;
   const secret = process.env.C_RUNNER_SHARED_SECRET;
-  if (!base || !secret) return res.status(503).json({error:'C backend is not configured'});
+if (!base || !secret) {
+  return res.status(503).json({
+    error: "C backend is not configured",
+    missing: [
+      ...(!base ? ["MODAL_C_RUNNER_URL"] : []),
+      ...(!secret ? ["C_RUNNER_SHARED_SECRET"] : [])
+    ]
+  });
+}
   // IMPORTANT: Add Firebase ID-token verification + per-user rate limiting before public launch.
   const path = req.method === 'GET' ? '/health' : '/run';
   try {
