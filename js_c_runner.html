@@ -1586,7 +1586,12 @@ function writeOutput(text, type = "normal") {
   currentOutputText += text;
   outputChunks.push({text, type});
   if (currentOutputTab === "problems") return;
-  renderOutput();
+  if (cTerminal && currentOutputTab === 'output') {
+    const color = type === 'error' ? '\x1b[31m' : type === 'success' ? '\x1b[33m' : '';
+    cTerminal.write(color + text.replace(/\r?\n/g, '\r\n') + (color ? '\x1b[0m' : ''));
+  } else {
+    renderOutput();
+  }
 }
 window.addEventListener("resize", () => { if (cTerminalFit) { try { cTerminalFit.fit(); } catch (_) {} } });
 
@@ -1699,6 +1704,65 @@ async function submitC(source, stdin, mode = "console") {
     compile_output: b64enc(data.compile_output || ""), message: b64enc(data.message || ""),
     status: {id: data.status_id || (data.ok ? 3 : 6), description: data.status || ""},
     exit_code: data.exit_code, time: data.time, memory: data.memory};
+}
+
+
+async function submitCStream(source, stdin) {
+  const response = await fetch('/api/c-run-stream', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({source, stdin, mode:'console', files, entry:pickEntry(), compiler:window.C_COMPILER || 'gcc'})
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || `Streaming backend HTTP ${response.status}`);
+  }
+  if (!response.body) throw new Error('Browser does not support streaming response');
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '', failed = false, finished = false, exitCode = null;
+  const terminal = ensureCTerminal();
+  const append = (str, type='normal') => {
+    currentOutputText += str;
+    outputChunks.push({text:str, type});
+    if (currentOutputTab === 'problems') return;
+    if (terminal && currentOutputTab === 'output') {
+      terminal.write(str.replace(/\r?\n/g, '\r\n'));
+    } else if (!terminal) {
+      $('output').textContent += str;
+    }
+  };
+  function processEvent(raw) {
+    if (!raw.startsWith('data:')) return;
+    let evt;
+    try { evt = JSON.parse(raw.slice(5).trim()); } catch { return; }
+    if (evt.type === 'stdout') append(evt.text || '');
+    if (evt.type === 'compile' && evt.text) {
+      currentErrors.push(evt.text);
+      // Compiler warnings/errors appear in Problems tab, not the animated terminal.
+    }
+    if (evt.type === 'status') setStatus(evt.message || 'Running', true);
+    if (evt.type === 'error') {
+      failed = true; currentErrors.push(evt.message || 'Execution error');
+      append('\r\n' + (evt.message || 'Execution error') + '\r\n', 'error');
+    }
+    if (evt.type === 'done') { finished = true; exitCode = evt.exit_code; }
+  }
+  while (true) {
+    const {value, done} = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, {stream:true});
+    const parts = buffer.split(/\r?\n\r?\n/);
+    buffer = parts.pop();
+    for (const part of parts) processEvent(part);
+  }
+  if (buffer.trim()) processEvent(buffer);
+  if (!failed && !finished) throw new Error('Streaming connection ended unexpectedly');
+  if (exitCode !== null && exitCode !== 0) {
+    currentErrors.push('Program exited with code ' + exitCode);
+    append('\r\nProgram exited with code ' + exitCode + '\r\n', 'error');
+  }
+  updateProblemsBadge();
+  setStatus(failed || (exitCode !== null && exitCode !== 0) ? 'Execution error' : 'C compiler ready');
 }
 
 async function initCompiler() {
@@ -1830,8 +1894,12 @@ async function executeC(source, stdin, keepConsole = false, mode = "console") {
   document.getElementById("cGraphicsFrame").hidden = true;
   startRuntimeClock();
   try {
-    const result = await submitC(source, stdin, mode);
-    renderResult(result);
+    if (mode === 'console' && !keepConsole) {
+      await submitCStream(source, stdin);
+    } else {
+      const result = await submitC(source, stdin, mode);
+      renderResult(result);
+    }
   } catch (error) {
     const raw = String(error && error.message ? error.message : error);
     const network = /Failed to fetch|NetworkError|Load failed|fetch/i.test(raw);
