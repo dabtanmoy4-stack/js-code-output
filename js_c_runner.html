@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
 
 <style>
@@ -395,6 +396,9 @@ body.light .cm-s-material-darker .cm-operator { color: #0369a1; }
 .cm-word-highlight { background: rgba(228, 198, 130, .20); border-bottom: 1px solid rgba(228, 198, 130, .6); border-radius: 2px; }
 
 /* ---------- output panel ---------- */
+.output.terminal-active { white-space: normal; overflow-wrap: normal; padding: 8px; }
+.output .xterm { height: 100%; }
+.output .xterm-viewport { overflow-y: auto !important; }
 .output-panel { display: flex; flex-direction: column; }
 .output-head { flex-wrap: wrap; row-gap: 4px; }
 .output-tabs { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
@@ -1014,6 +1018,8 @@ body.light .cm-s-material-darker .cm-operator { color: #0369a1; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
 <script>
 "use strict";
 
@@ -1511,9 +1517,34 @@ function formatCode() {
   toast("Code formatted.");
 }
 
-function renderOutput() {
+let cTerminal = null;
+let cTerminalFit = null;
+function ensureCTerminal() {
+  if (cTerminal || !window.Terminal) return cTerminal;
   const output = $("output");
   output.replaceChildren();
+  output.classList.add("terminal-active");
+  cTerminal = new Terminal({
+    convertEol: true, cursorBlink: false, disableStdin: true,
+    scrollback: 3000, fontFamily: '"JetBrains Mono", Consolas, monospace',
+    fontSize: 12, theme: { background: '#0a0b0f', foreground: '#f5f3ee' }
+  });
+  cTerminal.open(output);
+  if (window.FitAddon && window.FitAddon.FitAddon) {
+    cTerminalFit = new window.FitAddon.FitAddon();
+    cTerminal.loadAddon(cTerminalFit);
+    try { cTerminalFit.fit(); } catch (_) {}
+  }
+  return cTerminal;
+}
+function resetCTerminal() {
+  if (cTerminal) { cTerminal.dispose(); cTerminal = null; cTerminalFit = null; }
+  $("output").classList.remove("terminal-active");
+  $("output").replaceChildren();
+}
+function renderOutput() {
+  resetCTerminal();
+  const output = $("output");
   if (!outputChunks.length) {
     const ph = document.createElement("span");
     ph.className = "output-placeholder";
@@ -1521,56 +1552,43 @@ function renderOutput() {
     output.appendChild(ph);
     return;
   }
-  outputChunks.forEach(({ text, type }) => {
-    if (type === "error" || type === "success") {
-      const span = document.createElement("span");
-      span.className = type === "error" ? "output-line-error" : "output-line-success";
-      span.textContent = text;
-      output.appendChild(span);
-    } else {
-      output.appendChild(document.createTextNode(text));
-    }
-  });
-  output.scrollTop = output.scrollHeight;
+  const term = ensureCTerminal();
+  if (term) {
+    outputChunks.forEach(({text, type}) => {
+      const color = type === "error" ? "\x1b[31m" : type === "success" ? "\x1b[33m" : "";
+      term.write(color + String(text).replace(/\r?\n/g, "\r\n") + (color ? "\x1b[0m" : ""));
+    });
+  } else {
+    output.classList.remove("terminal-active");
+    output.textContent = outputChunks.map(c => c.text).join("");
+  }
 }
-
 function showOutputTab(tab) {
   currentOutputTab = tab;
   document.querySelectorAll(".output-tab").forEach(button => {
     button.classList.toggle("active", button.dataset.outputTab === tab);
   });
   $("consoleExtra").classList.toggle("show", tab === "console");
-  const output = $("output");
   if (tab === "problems") {
-    output.textContent = currentErrors.length ? currentErrors.join("\n\n") : "✓ No problems reported in the last run.";
+    resetCTerminal();
+    $("output").textContent = currentErrors.length ? currentErrors.join("\n\n") : "✓ No problems reported in the last run.";
     return;
   }
   if (tab === "console" && !outputChunks.length) {
-    output.textContent = "Quick Run ready. Type a C expression or statement below.";
+    resetCTerminal();
+    $("output").textContent = "Quick Run ready. Type a C expression or statement below.";
     return;
   }
   renderOutput();
 }
-
 function writeOutput(text, type = "normal") {
   text = String(text);
   currentOutputText += text;
-  outputChunks.push({ text, type });
+  outputChunks.push({text, type});
   if (currentOutputTab === "problems") return;
-
-  const output = $("output");
-  if (output.querySelector(".output-placeholder")) output.textContent = "";
-
-  if (type === "error" || type === "success") {
-    const span = document.createElement("span");
-    span.className = type === "error" ? "output-line-error" : "output-line-success";
-    span.textContent = text;
-    output.appendChild(span);
-  } else {
-    output.appendChild(document.createTextNode(text));
-  }
-  output.scrollTop = output.scrollHeight;
+  renderOutput();
 }
+window.addEventListener("resize", () => { if (cTerminalFit) { try { cTerminalFit.fit(); } catch (_) {} } });
 
 function setStatus(message, busy = false) {
   $("runtimeStatus").textContent = message;
@@ -1806,7 +1824,7 @@ async function executeC(source, stdin, keepConsole = false, mode = "console") {
   outputChunks = [];
   currentErrors = [];
   showOutputTab(keepConsole ? "console" : "output");
-  $("output").textContent = "";
+  resetCTerminal();
   if (!keepConsole) $("consoleExtra").classList.remove("show");
   showRunningAnimation();
   document.getElementById("cGraphicsFrame").hidden = true;
@@ -1958,7 +1976,7 @@ $("clearOutputBtn").addEventListener("click", () => {
   currentOutputText = "";
   outputChunks = [];
   currentErrors = [];
-  $("output").textContent = "";
+  resetCTerminal();
   toast("Output cleared.");
 });
 
